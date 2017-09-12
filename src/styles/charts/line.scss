@@ -26,4 +26,25 @@ $line-width: 2;
     .masking-rectangle {
         fill: $white;
     }
+
+    .x.axis text, .y.axis text {
+        font-size: 0.8em;
+    }
+    .x.axis path, .line-chart .y.axis path {
+        display: block;
+        stroke: #ADB0B6;
+    }
+    .series .line {
+        stroke-width: 1.5px;
+    }
+    .vertical-grid-line, .horizontal-grid-line {
+        stroke-dasharray: none;
+    }
+    .line {
+        fill: none;
+    }
+    .series .group-2 {
+        stroke-dasharray: 5;
+        stroke-width: 1px;
+    }
 }

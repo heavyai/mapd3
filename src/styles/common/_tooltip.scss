@@ -28,3 +28,11 @@ $tooltip-width: 1;
     border-radius: 2px;
 }
 
+.tooltip-text-container, .tooltip-divider {
+    fill: white;
+    fill-opacity: 0.8;
+    stroke: #eee;
+    stroke-width: 1;
+    pointer-events: none;
+}
+

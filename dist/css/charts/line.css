@@ -13,3 +13,23 @@
 
 .line-chart .masking-rectangle {
   fill: #ffffff; }
+
+.line-chart .x.axis text, .line-chart .y.axis text {
+  font-size: 0.8em; }
+
+.line-chart .x.axis path, .line-chart .line-chart .y.axis path {
+  display: block;
+  stroke: #ADB0B6; }
+
+.line-chart .series .line {
+  stroke-width: 1.5px; }
+
+.line-chart .vertical-grid-line, .line-chart .horizontal-grid-line {
+  stroke-dasharray: none; }
+
+.line-chart .line {
+  fill: none; }
+
+.line-chart .series .group-2 {
+  stroke-dasharray: 5;
+  stroke-width: 1px; }

@@ -1,0 +1,103 @@
+<html>
+<head>
+<link rel="stylesheet" href="../dist/css/mapd3.css">
+<style>
+  .x.axis text, .y.axis text {
+    font-size: 0.8em;
+  }
+  .line-chart .x.axis path, .line-chart .y.axis path {
+    display: block;
+    stroke: #ADB0B6;
+  }
+  .line-chart .series .line {
+    stroke-width: 1.5px;
+  }
+  .vertical-grid-line, .horizontal-grid-line {
+    stroke-dasharray: none;
+  }
+  .line-chart .line {
+    fill: none;
+  }
+  .line-chart .series .group-2 {
+    stroke-dasharray: 5;
+    stroke-width: 1px;
+  }
+  .brush-group .selection {
+    fill: #22A7F0;
+  }
+  .brush-group .handle {
+    fill: #eee
+  }
+  .tooltip-text-container, .tooltip-divider {
+    fill: white;
+    fill-opacity: 0.8;
+    stroke: #eee;
+    stroke-width: 1;
+    pointer-events: none;
+  }
+</style>
+</head><body>
+<div class="chart1"></div>
+<div class="chart2"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+<script src="../dist/bundled/mapd3.min.js"></script>
+<script>
+
+const dataManager = mapd3.dataManager()
+const data = dataManager.generateTestDataset()
+
+const observer = mapd3.observer(dataManager)
+
+const colors = mapd3.colors.mapdColors
+
+const chartNode1 = document.querySelector(".chart1")
+const chart1 = mapd3.line(chartNode1)
+  .setConfig({
+    width: 800,
+    height: 400,
+    margin: {
+      top: 8,
+      right: 32,
+      bottom: 32,
+      left: 32
+    },
+    grid: "horizontal",
+    xAxisFormat: "%x",
+    yAxisFormat: ".1f",
+    yTicks: 5,
+    colorSchema: colors
+  })
+  .setData(data)
+
+mapd3.tooltip(chart1)
+
+const chart2 = mapd3.line(".chart2")
+  .setConfig({
+    width: 800,
+    height: 100,
+    margin: {
+      top: 8,
+      right: 32,
+      bottom: 32,
+      left: 32
+    },
+    grid: "horizontal",
+    xAxisFormat: "%x",
+    yAxisFormat: ".1f",
+    yTicks: 3,
+    colorSchema: colors
+  })
+  .setData(data)
+
+mapd3.brush(chart2)
+  .on("brushMove", (e) => {
+    observer.pub("brushChange", e)
+  })
+
+observer.sub("dataFilter", (_data) => {
+  chart1.setData(_data)
+})
+
+</script>
+</body>
+</html>

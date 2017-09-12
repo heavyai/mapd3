@@ -1,0 +1,98 @@
+@font-face {
+  font-family: 'Karla', sans-serif;
+  src: url("https://fonts.googleapis.com/css?family=Karla") format("opentype");
+  font-weight: 300; }
+
+.mapd3 {
+  font-family: 'Karla', sans-serif;
+  -webkit-font-smoothing: antialiased; }
+
+.vertical-grid-line,
+.horizontal-grid-line {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: #EFF2F5;
+  stroke-width: 1;
+  stroke-dasharray: 4, 4; }
+
+.extended-y-line,
+.extended-x-line {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: #D2D6DF;
+  stroke-width: 1; }
+
+.tick line {
+  fill: none;
+  stroke: #ADB0B6;
+  stroke-width: 1;
+  shape-rendering: crispEdges; }
+
+.tick text {
+  font-size: 1rem;
+  fill: #666A73;
+  padding: 12px; }
+
+.y-axis-label,
+.x-axis-label {
+  font-size: 1rem;
+  fill: #ADB0B6; }
+
+.vertical-marker-container .vertical-marker {
+  stroke: #D2D6DF;
+  stroke-width: 1;
+  fill: none; }
+
+.vertical-marker-container .data-point-highlighter {
+  fill: #ffffff;
+  stroke-width: 2; }
+
+.tooltip-background {
+  fill: rgba(255, 255, 255, 0.97);
+  stroke: #D2D6DF;
+  stroke-width: 1;
+  border-radius: 2px; }
+
+.mapd3-legend .legend-entry.is-faded .legend-entry-name,
+.mapd3-legend .legend-entry.is-faded .legend-entry-value,
+.mapd3-legend .legend-entry.is-faded .legend-circle {
+  opacity: 0.97;
+  transition: opacity .2s ease-out;
+  -moz-transition: opacity .2s ease-out;
+  -webkit-transition: opacity .2s ease-out; }
+
+.mapd3-legend .legend-entry.is-faded .legend-entry-name,
+.mapd3-legend .legend-entry.is-faded .legend-entry-value,
+.mapd3-legend .legend-entry.is-faded .legend-circle {
+  opacity: 0.2; }
+
+.line-chart .topic .line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round; }
+
+.line-chart .x.axis path,
+.line-chart .y.axis path {
+  display: none; }
+
+.line-chart .month-axis path {
+  display: none; }
+
+.line-chart .masking-rectangle {
+  fill: #ffffff; }
+
+.brush-chart .brush-area {
+  fill: #EFF2F5; }
+
+.brush-chart rect.brush-rect.selection {
+  fill-opacity: 0.08;
+  fill: url("#brush-area-gradient");
+  stroke-linejoin: round; }
+
+.brush-chart rect.brush-rect.handle {
+  fill: #00d8d2;
+  width: 0.2rem; }
+
+.brush-chart .axis path {
+  display: none; }

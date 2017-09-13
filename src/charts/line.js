@@ -121,7 +121,7 @@ define((require) => {
         right: 0
       },
       tickPadding: 5,
-      colorSchema: colorHelper.colorSchemas.mapdColors,
+      colorSchema: colorHelper.mapdColors,
       dotRadius: 4,
       xAxisFormat: "%c",
       xTicks: null,
@@ -153,11 +153,12 @@ define((require) => {
       xScale: null, yScale: null, yScale2: null, colorScale: null,
       seriesColorScale: null,
       xAxis: null, yAxis: null, yAxis2: null,
-      groupKeys: []
+      groupKeys: [],
+      hasSecondAxis: false
     }
 
     // accessors
-    const getDate = (d) => d[keys.DATE_KEY]
+    const getDate = (d) => d[keys.DATE_KEY] // Expect date
     const getValue = (d) => d[keys.VALUE_KEY]
     const getSeries = (d) => d[keys.ID_KEY]
     const getLineColor = (d) => cache.colorScale(d[keys.ID_KEY])
@@ -221,10 +222,15 @@ define((require) => {
         .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
     }
 
+    /**
+     * Setter for data, triggers rendering
+     *
+     * @param  {Object} Data object
+     */
     function setData (_data) {
       const cleanedData = cleanData(_data)
       cache.dataBySeries = cleanedData.dataBySeries
-      cache.dataByDate = cleanedData.dataByDate
+      cache.dataByDate = cleanedData.dataByDate // Expect date
 
       buildSVG(_container)
       buildScales()
@@ -266,7 +272,7 @@ define((require) => {
     function buildAxis () {
       // let dataTimeSpan = cache.yScale.domain()[1] - cache.yScale.domain()[0]
       const tick = config.xTicks
-      const format = d3TimeFormat.timeFormat(config.xAxisFormat)
+      const format = d3TimeFormat.timeFormat(config.xAxisFormat) // Expect date
 
       cache.xAxis = d3Axis.axisBottom(cache.xScale)
           .ticks(tick)
@@ -290,36 +296,45 @@ define((require) => {
     }
 
     /**
-     * Creates the x and y scales of the graph
-     * @private
-     */
-    function buildScales () {
-      // split groups between axes
+    * Split data by GROUP_KEY to assign them to one of both axes
+    * @return {obj} Groups in the shape {$groupId: {allValues: [], allDates: []}}
+    * @private
+    */
+    function splitGroupByAxis () {
       const groups = {}
       cache.dataBySeries.forEach((d) => {
         const key = d[keys.GROUP_KEY]
         if (!groups[key]) {
           groups[key] = {
             allValues: [],
-            allDates: []
+            allDates: [] // Expect date
           }
           cache.groupKeys.push(key)
         }
         groups[key].allValues = groups[key].allValues.concat(d[keys.VALUES_KEY].map((dB) => dB[keys.VALUE_KEY]))
-        groups[key].allDates = groups[key].allDates.concat(d[keys.VALUES_KEY].map((dB) => dB[keys.DATE_KEY]))
+        groups[key].allDates = groups[key].allDates.concat(d[keys.VALUES_KEY].map((dB) => dB[keys.DATE_KEY])) // Expect date
       })
 
-      const groupAxis1 = groups[cache.groupKeys[0]]
-      const groupAxis2 = groups[cache.groupKeys[1]]
+      return groups
+    }
 
-      const datesExtent = d3Array.extent(groupAxis1.allDates)
+    /**
+     * Creates the x and y scales of the graph
+     * @private
+     */
+    function buildScales () {
+      const groups = splitGroupByAxis()
+
+      cache.hasSecondAxis = cache.groupKeys.length > 1
+
+      const groupAxis1 = groups[cache.groupKeys[0]]
+
+      const datesExtent = d3Array.extent(groupAxis1.allDates) // Expect date
       const valuesExtent = d3Array.extent(groupAxis1.allValues)
       // const yScaleBottomValue = Math.abs(minY) < 0 ? Math.abs(minY) : 0
       const yScaleBottomValue = valuesExtent[0]
 
-      const valuesExtent2 = d3Array.extent(groupAxis2.allValues)
-      const yScaleBottomValue2 = valuesExtent2[0]
-
+      // Expect date
       cache.xScale = d3Scale.scaleTime()
           .domain(datesExtent)
           .rangeRound([0, cache.chartWidth])
@@ -329,19 +344,25 @@ define((require) => {
           .rangeRound([cache.chartHeight, 0])
           .nice()
 
-      cache.yScale2 = cache.yScale.copy()
+      if (cache.hasSecondAxis) {
+        const groupAxis2 = groups[cache.groupKeys[1]]
+        const valuesExtent2 = d3Array.extent(groupAxis2.allValues)
+        const yScaleBottomValue2 = valuesExtent2[0]
+
+        cache.yScale2 = cache.yScale.copy()
           .domain([yScaleBottomValue2, Math.abs(valuesExtent2[1])])
+      }
 
       cache.colorScale = d3Scale.scaleOrdinal()
           .range(config.colorSchema)
           .domain(cache.dataBySeries.map(getSeries))
 
       const range = cache.colorScale.range()
-
-      cache.seriesColorScale = cache.colorScale.domain().reduce((memo, item, i) => {
-        memo[item] = range[i]
-        return memo
-      }, {})
+      cache.seriesColorScale = cache.colorScale.domain()
+        .reduce((memo, item, i) => {
+          memo[item] = range[i]
+          return memo
+        }, {})
     }
 
     /**
@@ -349,38 +370,42 @@ define((require) => {
      * @param  {obj} dataBySeries    Raw data grouped by topic
      * @return {obj}                Parsed data with dataBySeries and dataByDate
      */
+    // Expect date
     function cleanData (_data) {
       const dataBySeries = cloneData(_data[keys.SERIES_KEY])
       const flatData = []
 
-        // Normalize dataBySeries
+      // Normalize dataBySeries
       dataBySeries.forEach((kv) => {
         kv[keys.VALUES_KEY].forEach((d) => {
-          d[keys.DATE_KEY] = new Date(d[keys.DATE_KEY])
+          d[keys.DATE_KEY] = new Date(d[keys.DATE_KEY]) // Expect date
           d[keys.VALUE_KEY] = Number(d[keys.VALUE_KEY])
         })
       })
 
       dataBySeries.forEach((serie) => {
         serie[keys.VALUES_KEY].forEach((date) => {
-          flatData.push({
-            label: serie[keys.LABEL_KEY],
-            group: serie[keys.GROUP_KEY],
-            id: serie[keys.ID_KEY],
-            date: date[keys.DATE_KEY],
-            value: date[keys.VALUE_KEY]
-          })
+          const dataPoint = {}
+          dataPoint[keys.LABEL_KEY] = serie[keys.LABEL_KEY]
+          dataPoint[keys.GROUP_KEY] = serie[keys.GROUP_KEY]
+          dataPoint[keys.ID_KEY] = serie[keys.ID_KEY]
+          dataPoint[keys.DATE_KEY] = date[keys.DATE_KEY] // Expect date
+          dataPoint[keys.VALUE_KEY] = date[keys.VALUE_KEY]
+          flatData.push(dataPoint)
         })
       })
 
       // Nest data by date and format
+      // Expect date
       const dataByDate = d3Collection.nest()
         .key(getDate)
         .entries(flatData)
-        .map((d) => ({
-          date: new Date(d.key),
-          series: d[keys.VALUES_KEY]
-        }))
+        .map((d) => {
+          const dataPoint = {}
+          dataPoint[keys.DATE_KEY] = new Date(d.key)
+          dataPoint[keys.SERIES_KEY] = d[keys.VALUES_KEY]
+          return dataPoint
+        })
 
       return {dataBySeries, dataByDate}
     }
@@ -409,11 +434,13 @@ define((require) => {
           .ease(config.ease)
           .call(cache.yAxis)
 
-      cache.svg.select(".y-axis-group2.axis.y")
-          .attr("transform", `translate(${cache.chartWidth - config.xAxisPadding.right}, 0)`)
-          .transition()
-          .ease(config.ease)
-          .call(cache.yAxis2)
+      if (cache.hasSecondAxis) {
+        cache.svg.select(".y-axis-group2.axis.y")
+            .attr("transform", `translate(${cache.chartWidth - config.xAxisPadding.right}, 0)`)
+            .transition()
+            .ease(config.ease)
+            .call(cache.yAxis2)
+      }
     }
 
     /**
@@ -422,11 +449,11 @@ define((require) => {
      */
     function drawLines () {
       const seriesLine = d3Shape.line()
-          .x((d) => cache.xScale(d[keys.DATE_KEY]))
+          .x((d) => cache.xScale(d[keys.DATE_KEY])) // Expect date
           .y((d) => cache.yScale(d[keys.VALUE_KEY]))
 
       const seriesLine2 = d3Shape.line()
-          .x((d) => cache.xScale(d[keys.DATE_KEY]))
+          .x((d) => cache.xScale(d[keys.DATE_KEY])) // Expect date
           .y((d) => cache.yScale2(d[keys.VALUE_KEY]))
           .curve(d3.curveCatmullRom)
 
@@ -491,6 +518,10 @@ define((require) => {
       }
     }
 
+    /**
+     * Triggers the line intro animation
+     * @return void
+     */
     function triggerIntroAnimation () {
       if (config.isAnimated) {
         cache.maskingRectangle = cache.svg.select(".masking-rectangle")
@@ -506,6 +537,15 @@ define((require) => {
           .attr("x", config.width - config.margin.right)
           .on("end", () => cache.maskingRectangle.remove())
       }
+    }
+
+    /**
+     * Determines if we should add the tooltip related logic depending on the
+     * size of the chart and the tooltipThreshold variable value
+     * @return {Boolean} Should we build the tooltip?
+     */
+    function shouldShowTooltip () {
+      return config.width > config.tooltipThreshold
     }
 
     /**
@@ -534,88 +574,6 @@ define((require) => {
         .attr("y2", 0)
 
       cache.verticalMarkerLine.exit().remove()
-    }
-
-    /**
-     * Finds out which datapoint is closer to the given x position
-     * @param  {Number} x0 Date value for data point
-     * @param  {Object} d0 Previous datapoint
-     * @param  {Object} d1 Next datapoint
-     * @return {Object}    d0 or d1, the datapoint with closest date to x0
-     */
-    function findOutNearestDate (_x0, _d0, _d1) {
-      return (new Date(_x0).getTime() - new Date(_d0[keys.DATE_KEY]).getTime())
-        > (new Date(_d1[keys.DATE_KEY]).getTime() - new Date(_x0).getTime()) ? _d0 : _d1
-    }
-
-    /**
-     * Extract X position on the graph from a given mouse event
-     * @param  {Object} event D3 mouse event
-     * @return {Number}       Position on the x axis of the mouse
-     */
-    function getMouseXPosition (_event) {
-      return d3Selection.mouse(_event)[0]
-    }
-
-    /**
-     * Finds out the data entry that is closer to the given position on pixels
-     * @param  {Number} mouseX X position of the mouse
-     * @return {Object}        Data entry that is closer to that x axis position
-     */
-    function getNearestDataPoint (_mouseX) {
-      const dateFromInvertedX = cache.xScale.invert(_mouseX)
-      const bisectDate = d3Array.bisector(getDate).left
-      const dataEntryIndex = bisectDate(cache.dataByDate, dateFromInvertedX, 1)
-      const dataEntryForXPosition = cache.dataByDate[dataEntryIndex]
-      const previousDataEntryForXPosition = cache.dataByDate[dataEntryIndex - 1]
-      let nearestDataPoint = null
-
-      if (previousDataEntryForXPosition && dataEntryForXPosition) {
-        nearestDataPoint = findOutNearestDate(dateFromInvertedX, dataEntryForXPosition, previousDataEntryForXPosition)
-      } else {
-        nearestDataPoint = dataEntryForXPosition
-      }
-
-      return nearestDataPoint
-    }
-
-    /**
-     * MouseMove handler, calculates the nearest dataPoint to the cursor
-     * and updates metadata related to it
-     * @private
-     */
-    function handleMouseMove (_e) {
-      const xPositionOffset = -config.margin.left // Arbitrary number, will love to know how to assess it
-      const dataPoint = getNearestDataPoint(getMouseXPosition(_e) + xPositionOffset)
-
-      if (dataPoint) {
-        const dataPointXPosition = cache.xScale(new Date(dataPoint.date))
-        moveVerticalMarker(dataPointXPosition)
-        highlightDataPoints(dataPoint)
-        dispatcher.call("mouseMove", _e, dataPoint, cache.seriesColorScale, dataPointXPosition)
-      }
-    }
-
-    /**
-     * MouseOut handler and removes active class on verticalMarkerLine
-     * It also resets the container of the vertical marker
-     * @private
-     */
-    function handleMouseOut (_e, _d) {
-      cache.verticalMarkerLine.classed("bc-is-active", false)
-      cache.verticalMarkerContainer.attr("transform", "translate(9999, 0)")
-
-      dispatcher.call("mouseOut", _e, _d, d3Selection.mouse(_e))
-    }
-
-    /**
-     * Mouseover handler and adds active class to verticalMarkerLine
-     * @private
-     */
-    function handleMouseOver (_e, _d) {
-      cache.verticalMarkerLine.classed("bc-is-active", true)
-
-      dispatcher.call("mouseOver", _e, _d, d3Selection.mouse(_e))
     }
 
     /**
@@ -663,12 +621,79 @@ define((require) => {
     }
 
     /**
-     * Determines if we should add the tooltip related logic depending on the
-     * size of the chart and the tooltipThreshold variable value
-     * @return {Boolean} Should we build the tooltip?
+     * Finds out which datapoint is closer to the given x position
+     * @param  {Number} x0 Date value for data point
+     * @param  {Object} d0 Previous datapoint
+     * @param  {Object} d1 Next datapoint
+     * @return {Object}    d0 or d1, the datapoint with closest date to x0
      */
-    function shouldShowTooltip () {
-      return config.width > config.tooltipThreshold
+     // Expect date
+    function findOutNearestDate (_x0, _d0, _d1) {
+      return (new Date(_x0).getTime() - new Date(_d0[keys.DATE_KEY]).getTime())
+        > (new Date(_d1[keys.DATE_KEY]).getTime() - new Date(_x0).getTime()) ? _d0 : _d1
+    }
+
+    /**
+     * Finds out the data entry that is closer to the given position on pixels
+     * @param  {Number} mouseX X position of the mouse
+     * @return {Object}        Data entry that is closer to that x axis position
+     */
+     // Expect date
+    function getNearestDataPoint (_mouseX) {
+      const dateFromInvertedX = cache.xScale.invert(_mouseX)
+      const bisectDate = d3Array.bisector(getDate).left
+      const dataEntryIndex = bisectDate(cache.dataByDate, dateFromInvertedX, 1)
+      const dataEntryForXPosition = cache.dataByDate[dataEntryIndex]
+      const previousDataEntryForXPosition = cache.dataByDate[dataEntryIndex - 1]
+      let nearestDataPoint = null
+
+      if (previousDataEntryForXPosition && dataEntryForXPosition) {
+        nearestDataPoint = findOutNearestDate(dateFromInvertedX, dataEntryForXPosition, previousDataEntryForXPosition)
+      } else {
+        nearestDataPoint = dataEntryForXPosition
+      }
+
+      return nearestDataPoint
+    }
+
+    /**
+     * MouseMove handler, calculates the nearest dataPoint to the cursor
+     * and updates metadata related to it
+     * @private
+     */
+    function handleMouseMove (_e) {
+      const mouseX = d3Selection.mouse(_e)[0]
+      const xPosition = mouseX - config.margin.left
+      const dataPoint = getNearestDataPoint(xPosition)
+
+      if (dataPoint) {
+        const dataPointXPosition = cache.xScale(new Date(dataPoint.date)) // Expect date
+        moveVerticalMarker(dataPointXPosition)
+        highlightDataPoints(dataPoint)
+        dispatcher.call("mouseMove", _e, dataPoint, cache.seriesColorScale, dataPointXPosition)
+      }
+    }
+
+    /**
+     * MouseOut handler and removes active class on verticalMarkerLine
+     * It also resets the container of the vertical marker
+     * @private
+     */
+    function handleMouseOut (_e, _d) {
+      cache.verticalMarkerLine.classed("bc-is-active", false)
+      cache.verticalMarkerContainer.attr("transform", "translate(9999, 0)")
+
+      dispatcher.call("mouseOut", _e, _d, d3Selection.mouse(_e))
+    }
+
+    /**
+     * Mouseover handler and adds active class to verticalMarkerLine
+     * @private
+     */
+    function handleMouseOver (_e, _d) {
+      cache.verticalMarkerLine.classed("bc-is-active", true)
+
+      dispatcher.call("mouseOver", _e, _d, d3Selection.mouse(_e))
     }
 
     /**

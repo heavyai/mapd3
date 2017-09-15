@@ -7,43 +7,6 @@ define((require) => {
 
   const {keys} = require("./helpers/constants")
 
-  /**
-   * Tooltip Component reusable API class that renders a
-   * simple and configurable tooltip element for MapD3's
-   * line chart or stacked area chart.
-   *
-   * @module Tooltip
-   * @tutorial tooltip
-   * @requires d3-array, d3-axis, d3-dispatch, d3-format, d3-scale, d3-selection, d3-transition
-   *
-   * @example
-   * var lineChart = line(),
-   *     tooltip = tooltip();
-   *
-   * tooltip
-   *     .title('Tooltip title');
-   *
-   * lineChart
-   *     .width(500)
-   *     .on('customMouseOver', function() {
-   *          tooltip.show();
-   *     })
-   *     .on('customMouseMove', function(dataPoint, topicColorMap, dataPointXPosition) {
-   *          tooltip.update(dataPoint, topicColorMap, dataPointXPosition);
-   *     })
-   *     .on('customMouseOut', function() {
-   *          tooltip.hide();
-   *     });
-   *
-   * d3Selection.select('.css-selector')
-   *     .datum(dataset)
-   *     .call(lineChart);
-   *
-   * d3Selection.select('.metadata-group .hover-marker')
-   *     .datum([])
-   *     .call(tooltip);
-   *
-   */
   return function module (_chart) {
 
     let config = {
@@ -96,12 +59,6 @@ define((require) => {
 
     let chartCache = null
 
-    /**
-     * This function creates the graph using the selection as container
-     * @param {D3Selection} _selection A d3 selection that represents
-     *                                  the container(s) where the chart(s) will be rendered
-     * @param {Object} _data The data to attach and generate the chart
-     */
     function init () {
       cache.chart.on("mouseOver.tooltip", show)
         .on("mouseMove.tooltip", update)
@@ -111,11 +68,6 @@ define((require) => {
     }
     init()
 
-    /**
-     * Builds the SVG element that will contain the chart
-     * @param  {HTMLElement} container DOM element that will work as the container of the graph
-     * @private
-     */
     function buildSVG () {
       chartCache = cache.chart.getCache()
       setConfig(cache.chart.getConfig())
@@ -162,11 +114,6 @@ define((require) => {
       hide()
     }
 
-    /**
-     * Draws the data entries inside the tooltip for a given series
-     * @param  {Object} series series to extract data from
-     * @return void
-     */
     function updateSeriesContent (_series) {
       const tooltipLeft = cache.tooltipBody.selectAll(".tooltip-left-text")
           .data(_series)
@@ -210,12 +157,6 @@ define((require) => {
         .attr("height", cache.tooltipHeight + config.titleHeight + config.padding)
     }
 
-    /**
-     * Calculates the desired position for the tooltip
-     * @param  {Number} mouseX             Current horizontal mouse position
-     * @param  {Number} mouseY             Current vertical mouse position
-     * @return {Number[]}                  X and Y position
-     */
     function getTooltipPosition (_mouseX) {
       const tooltipX = _mouseX + config.margin.left
       let offset = 0
@@ -228,11 +169,6 @@ define((require) => {
       return [tooltipX + offset, tooltipY]
     }
 
-    /**
-     * Extracts the value from the data object
-     * @param  {Object} data Data value containing the info
-     * @return {String}      Value to show
-     */
     function getValueText (_data) {
       const value = _data[keys.VALUE_KEY]
       let valueText = null
@@ -247,14 +183,6 @@ define((require) => {
       return valueText
     }
 
-    /**
-     * Updates size and position of tooltip depending on the side of the chart we are in
-     *
-     * @param  {Object} dataPoint DataPoint of the tooltip
-     * @param  {Number} xPosition DataPoint's x position in the chart
-     * @param  {Number} xPosition DataPoint's y position in the chart
-     * @return void
-     */
     function updatePositionAndSize (_xPosition) {
       const [tooltipX, tooltipY] = getTooltipPosition(_xPosition)
 
@@ -266,44 +194,25 @@ define((require) => {
         .attr("transform", `translate(${tooltipX}, ${tooltipY})`)
     }
 
-    /**
-     * Updates value of tooltipTitle with the data meaning and the date
-     * @param  {Object} dataPoint Point of data to use as source
-     * @return void
-     */
     function updateTitle (_dataPoint) {
-      const date = new Date(_dataPoint[keys.DATE_KEY])
-      const format = d3TimeFormat.timeFormat(config.dateFormat)
-      const tooltipTitleText = [config.title, format(date)].join("")
+      const key = _dataPoint[keys.DATA_KEY]
+      let title = key
+      if (config.isTimeseries) {
+        title = d3TimeFormat.timeFormat(config.dateFormat)(key)
+      }
 
-      cache.tooltipTitle.text(tooltipTitleText)
+      cache.tooltipTitle.text(title)
     }
 
-    /**
-     * Helper method to sort the passed topics array by the names passed int he order arary
-     * @param  {Object[]} topics    Topics data, retrieved from datapoint passed by line chart
-     * @param  {Object[]} order     Array of names in the order to sort topics by
-     * @return {Object[]}           sorted topics object
-     */
     function sortByTopicsOrder (_series, _order = seriesOrder) {
       return _order.map((orderName) => _series.filter(({name}) => name === orderName)[0])
     }
 
-    /**
-     * Sorts series by alphabetical order for arrays of objects with a name proeprty
-     * @param  {Array} topics   List of series objects
-     * @return {Array}          List of series name strings
-     */
     function sortByAlpha (_series) {
       // TO DO: make this immutable
       return _series.sort()
     }
 
-    /**
-     * Draws the data entries inside the tooltip
-     * @param  {Object} dataPoint   Data entry from to take the info
-     * @return void
-     */
     function updateContent (dataPoint) {
       let series = dataPoint[keys.SERIES_KEY]
 
@@ -317,14 +226,6 @@ define((require) => {
       updateSeriesContent(series)
     }
 
-    /**
-     * Updates tooltip title, content, size and position
-     * sorts by alphatical name order if not forced order given
-     *
-     * @param  {lineChartPointByDate} dataPoint  Current datapoint to show info about
-     * @param  {Number} xPosition           Position of the mouse on the X axis
-     * @return void
-     */
     function updateTooltip (dataPoint, xPosition) {
       updateContent(dataPoint)
       updatePositionAndSize(xPosition)
@@ -332,36 +233,18 @@ define((require) => {
 
     // API
 
-    /**
-     * Hides the tooltip
-     * @return {Module} Tooltip module to chain calls
-     * @public
-     */
     function hide () {
       cache.svg.style("display", "none")
 
       return this
     }
 
-    /**
-     * Shows the tooltip
-     * @return {Module} Tooltip module to chain calls
-     * @public
-     */
     function show () {
       cache.svg.style("display", "block")
 
       return this
     }
 
-    /**
-     * Updates the position and content of the tooltip
-     * @param  {Object} dataPoint    Datapoint to represent
-     * @param  {Object} colorMapping Color scheme of the topics
-     * @param  {Number} position     X-scale position in pixels
-     * @return {Module} Tooltip module to chain calls
-     * @public
-     */
     function update (_dataPoint, _colorMapping, _xPosition, _yPosition = null) {
       updateTooltip(_dataPoint, _xPosition, _yPosition)
 

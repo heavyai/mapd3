@@ -7,8 +7,9 @@ define((require) => {
     const dispatcher = dispatch("brushChange", "dataFilter")
     const dataManager = _dataManager
 
-    dispatcher.on("brushChange.observer", (e) => {
-      const filtered = dataManager.filterByDate(e)
+    dispatcher.on("brushChange.observer", (_e, _brushConfig) => {
+      const filtered = _brushConfig.isTimeseries ? dataManager.filterByDate(_e)
+        : dataManager.filterByKey(_e)
       pub("dataFilter", filtered)
     })
 

@@ -14,7 +14,7 @@ define(() => {
   }
 
   const keys = {
-    DATE_KEY: "date",
+    DATA_KEY: "key",
     VALUE_KEY: "value",
     ID_KEY: "id",
     LABEL_KEY: "label",

@@ -9,7 +9,6 @@
 <script>
 
 /*
-* ordinal axis instead of time
 * stacked area chart
 * titles
 * axes locking
@@ -17,7 +16,8 @@
 */
 
 const dataManager = mapd3.dataManager()
-const data = dataManager.generateTestDataset()
+const IS_TIME = 0
+const data = dataManager.generateTestDataset(IS_TIME)
 
 const observer = mapd3.observer(dataManager)
 
@@ -38,7 +38,8 @@ const chart1 = mapd3.line(chartNode1)
     xAxisFormat: "%x",
     yAxisFormat: ".1f",
     yTicks: 5,
-    colorSchema: colors
+    colorSchema: colors,
+    isTimeseries: IS_TIME
   })
   .setData(data)
 
@@ -58,13 +59,14 @@ const chart2 = mapd3.line(".chart2")
     xAxisFormat: "%x",
     yAxisFormat: ".1f",
     yTicks: 3,
-    colorSchema: colors
+    colorSchema: colors,
+    isTimeseries: IS_TIME
   })
   .setData(data)
 
 mapd3.brush(chart2)
-  .on("brushMove", (e) => {
-    observer.pub("brushChange", e)
+  .on("brushMove", (...arg) => {
+    observer.pub("brushChange", ...arg)
   })
 
 observer.sub("dataFilter", (_data) => {

@@ -21,14 +21,22 @@
     .vertical-grid-line, .horizontal-grid-line {
         stroke-dasharray: none;
     }
-    .series .line {
-        stroke-width: 1.5px;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-    .series .group-2 {
-        stroke-dasharray: 5;
-        stroke-width: 1px;
+    .series {
+        .line, .area{
+            stroke-width: 1.5px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .line {
+            fill: none;
+        }
+        .area {
+            fill: blue;
+            fill-opacity: 0.8;
+        }
+        // .group-2 {
+        //     stroke-dasharray: 5;
+        //     stroke-width: 1px;
+        // }
     }
 }

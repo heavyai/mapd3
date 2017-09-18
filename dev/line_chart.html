@@ -39,7 +39,8 @@ const chart1 = mapd3.line(chartNode1)
     yAxisFormat: ".1f",
     yTicks: 5,
     colorSchema: colors,
-    isTimeseries: IS_TIME
+    isTimeseries: IS_TIME,
+    chartType: "stackedArea"
   })
   .setData(data)
 
@@ -60,7 +61,8 @@ const chart2 = mapd3.line(".chart2")
     yAxisFormat: ".1f",
     yTicks: 3,
     colorSchema: colors,
-    isTimeseries: IS_TIME
+    isTimeseries: IS_TIME,
+    chartType: "stackedArea"
   })
   .setData(data)
 

@@ -43,15 +43,17 @@ define((require) => {
       tickSizes: 8,
 
       isAnimated: false,
-      ease: d3Ease.easeQuadInOut,
+      ease: d3Ease.easeLinear,
       animationDuration: 1500,
+      axisTransitionDuration: 0,
 
       yTicks: 5,
       yTicks2: 5,
       yAxisFormat: ".2s",
       yAxisFormat2: ".2s",
 
-      isTimeseries: false
+      isTimeseries: false,
+      chartType: "line" // line, area, stackedLine, stackedArea
     }
 
     const cache = {
@@ -66,16 +68,21 @@ define((require) => {
 
       dataBySeries: null,
       dataByKey: null,
+      data: null,
       chartWidth: null, chartHeight: null,
       xScale: null, yScale: null, yScale2: null, colorScale: null,
       seriesColorScale: null,
       xAxis: null, yAxis: null, yAxis2: null,
       groupKeys: [],
-      hasSecondAxis: false
+      hasSecondAxis: false,
+
+      stackData: null,
+      stack: null
     }
 
     // accessors
     const getKey = (d) => d[keys.DATA_KEY]
+    const getID = (d) => d[keys.ID_KEY]
     const getValue = (d) => d[keys.VALUE_KEY]
     const getSeries = (d) => d[keys.ID_KEY]
     const getLineColor = (d) => cache.colorScale(d[keys.ID_KEY])
@@ -127,15 +134,29 @@ define((require) => {
     }
 
     function setData (_data) {
+      cache.data = cloneData(_data[keys.SERIES_KEY])
       const cleanedData = cleanData(_data)
       cache.dataBySeries = cleanedData.dataBySeries
       cache.dataByKey = cleanedData.dataByKey
 
       buildSVG(_container)
-      buildScales()
+
+      if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
+        buildStackedScales()
+      } else {
+        buildScales()
+      }
+
       buildAxis()
       drawAxis()
-      drawLines()
+
+      if (config.chartType === "area") {
+        drawAreas()
+      } else if (config.chartType === "line") {
+        drawLines()
+      } else if (config.chartType === "stackedArea") {
+        drawStackedAreas()
+      }
 
       if (shouldShowTooltip()) {
         drawVerticalMarker()
@@ -197,8 +218,8 @@ define((require) => {
           }
           cache.groupKeys.push(key)
         }
-        groups[key].allValues = groups[key].allValues.concat(d[keys.VALUES_KEY].map((dB) => dB[keys.VALUE_KEY]))
-        groups[key].allKeys = groups[key].allKeys.concat(d[keys.VALUES_KEY].map((dB) => dB[keys.DATA_KEY]))
+        groups[key].allValues = groups[key].allValues.concat(d[keys.VALUES_KEY].map(getValue))
+        groups[key].allKeys = groups[key].allKeys.concat(d[keys.VALUES_KEY].map(getKey))
       })
 
       return groups
@@ -252,41 +273,106 @@ define((require) => {
         }, {})
     }
 
+    function buildStackedScales () {
+      const groups = splitGroupByAxis()
+
+      cache.hasSecondAxis = cache.groupKeys.length > 1
+
+      const groupAxis1 = groups[cache.groupKeys[0]]
+
+      let datesExtent = null
+      if (config.isTimeseries) {
+        datesExtent = d3Array.extent(groupAxis1.allKeys)
+        cache.xScale = d3Scale.scaleTime()
+      } else {
+        datesExtent = groupAxis1.allKeys
+        cache.xScale = d3Scale.scalePoint().padding(0)
+      }
+
+      const allStackHeights = cache.dataByKey.map((d) => d3Array.sum(d.series.map((dB) => dB.value)))
+
+      cache.stackData = cache.dataByKey.map((d) => {
+        const points = {
+          key: d[keys.DATA_KEY]
+        }
+        d.series.forEach((dB) => {
+          points[dB[keys.ID_KEY]] = dB[keys.VALUE_KEY]
+        })
+
+        return points
+      })
+
+      cache.stack = d3Shape.stack()
+        .keys(cache.dataBySeries.map(getID))
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone)
+
+      const valuesExtent = d3Array.extent(allStackHeights)
+      const yScaleBottomValue = 0
+
+      cache.xScale.domain(datesExtent)
+          .range([yScaleBottomValue, cache.chartWidth])
+
+      cache.yScale = d3Scale.scaleLinear()
+          .domain([0, valuesExtent[1]])
+          .rangeRound([cache.chartHeight, 0])
+          .nice()
+
+      if (cache.hasSecondAxis) {
+        const groupAxis2 = groups[cache.groupKeys[1]]
+        const valuesExtent2 = d3Array.extent(groupAxis2.allValues)
+        const yScaleBottomValue2 = valuesExtent2[0]
+
+        cache.yScale2 = cache.yScale.copy()
+          .domain([yScaleBottomValue2, Math.abs(valuesExtent2[1])])
+      }
+
+      cache.colorScale = d3Scale.scaleOrdinal()
+          .range(config.colorSchema)
+          .domain(cache.dataBySeries.map(getSeries))
+
+      const range = cache.colorScale.range()
+      cache.seriesColorScale = cache.colorScale.domain()
+        .reduce((memo, item, i) => {
+          memo[item] = range[i]
+          return memo
+        }, {})
+    }
+
     function cleanData (_data) {
       const dataBySeries = cloneData(_data[keys.SERIES_KEY])
       const flatData = []
 
       // Normalize dataBySeries
-      dataBySeries.forEach((kv) => {
-        kv[keys.VALUES_KEY].forEach((d) => {
+      dataBySeries.forEach((serie) => {
+        serie[keys.VALUES_KEY] = sortData(serie[keys.VALUES_KEY])
+        serie[keys.VALUES_KEY].forEach((d) => {
           d[keys.DATA_KEY] = config.isTimeseries ? new Date(d[keys.DATA_KEY]) : d[keys.DATA_KEY]
           d[keys.VALUE_KEY] = Number(d[keys.VALUE_KEY])
         })
       })
 
       dataBySeries.forEach((serie) => {
-        serie[keys.VALUES_KEY].forEach((date) => {
+        serie[keys.VALUES_KEY].forEach((d) => {
           const dataPoint = {}
           dataPoint[keys.LABEL_KEY] = serie[keys.LABEL_KEY]
           dataPoint[keys.GROUP_KEY] = serie[keys.GROUP_KEY]
           dataPoint[keys.ID_KEY] = serie[keys.ID_KEY]
-          dataPoint[keys.DATA_KEY] = date[keys.DATA_KEY]
-          dataPoint[keys.VALUE_KEY] = date[keys.VALUE_KEY]
+          dataPoint[keys.DATA_KEY] = d[keys.DATA_KEY]
+          dataPoint[keys.VALUE_KEY] = d[keys.VALUE_KEY]
           flatData.push(dataPoint)
         })
       })
 
       const flatDataSorted = sortData(flatData, config.isTimeseries)
 
-      // Nest data by date and format
       const dataByKey = d3Collection.nest()
         .key(getKey)
         .entries(flatDataSorted)
         .map((d) => {
           const dataPoint = {}
-          dataPoint[keys.DATA_KEY] = config.isTimeseries ? new Date(d.key) : d.key // Expect date-done
-          // dataPoint[keys.DATA_KEY] = d.key
-          dataPoint[keys.SERIES_KEY] = d[keys.VALUES_KEY]
+          dataPoint[keys.DATA_KEY] = config.isTimeseries ? new Date(d.key) : d.key
+          dataPoint[keys.SERIES_KEY] = d.values
           return dataPoint
         })
 
@@ -305,6 +391,7 @@ define((require) => {
       cache.svg.select(".y-axis-group.axis.y")
           .attr("transform", `translate(${-config.xAxisPadding.left}, 0)`)
           .transition()
+          .duration(config.axisTransitionDuration)
           .ease(config.ease)
           .call(cache.yAxis)
 
@@ -312,6 +399,7 @@ define((require) => {
         cache.svg.select(".y-axis-group2.axis.y")
             .attr("transform", `translate(${cache.chartWidth - config.xAxisPadding.right}, 0)`)
             .transition()
+            .duration(config.axisTransitionDuration)
             .ease(config.ease)
             .call(cache.yAxis2)
       }
@@ -348,6 +436,75 @@ define((require) => {
       lines.exit().remove()
     }
 
+    function drawAreas () {
+      const seriesLine = d3Shape.area()
+          .x((d) => cache.xScale(d[keys.DATA_KEY]))
+          .y0((d) => cache.yScale(d[keys.VALUE_KEY]))
+          .y1(() => cache.chartHeight)
+
+      const seriesLine2 = d3Shape.area()
+          .x((d) => cache.xScale(d[keys.DATA_KEY]))
+          .y0((d) => cache.yScale2(d[keys.VALUE_KEY]))
+          .y1(() => cache.chartHeight)
+          .curve(d3.curveCatmullRom)
+
+      const areas = cache.svg.select(".chart-group").selectAll(".area")
+          .data(cache.dataBySeries)
+
+      areas.enter()
+        .append("g")
+        .attr("class", "series")
+        .append("path")
+        .merge(areas)
+        .attr("class", (d, i) => ["area", `group-${d[keys.GROUP_KEY]}`, `series-${i}`].join(" "))
+        .attr("d", (d) => {
+          if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
+            return seriesLine(d[keys.VALUES_KEY])
+          } else {
+            return seriesLine2(d[keys.VALUES_KEY])
+          }
+        })
+        .style("stroke", getLineColor)
+        .style("fill", getLineColor)
+
+      areas.exit().remove()
+    }
+
+    function drawStackedAreas () {
+      const seriesLine = d3Shape.area()
+          .x((d) => cache.xScale(d.data[keys.DATA_KEY]))
+          .y0((d) => cache.yScale(d[0]))
+          .y1((d) => cache.yScale(d[1]))
+
+      // const seriesLine2 = d3Shape.area()
+      //     .x((d) => cache.xScale(d[keys.DATA_KEY]))
+      //     .y0((d) => cache.yScale2(d[keys.VALUE_KEY]))
+      //     .y1(() => cache.chartHeight)
+      //     .curve(d3.curveCatmullRom)
+
+      const areas = cache.svg.select(".chart-group").selectAll(".area")
+          .data(cache.stack(cache.stackData))
+
+      // to do: d.index for groups
+      areas.enter()
+        .append("g")
+        .attr("class", "series")
+        .append("path")
+        .merge(areas)
+        .attr("class", (d, i) => ["area", `group-${d.index}`, `series-${i}`].join(" "))
+        .attr("d", (d, i) => {
+          // if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
+            return seriesLine(d)
+          // } else {
+          //   return seriesLine2(d[keys.VALUES_KEY])
+          // }
+        })
+        .style("stroke", "none")
+        .style("fill", (d, i) => cache.colorScale(i))
+
+      areas.exit().remove()
+    }
+
     function drawGridLines (_xTicks, _yTicks) {
       if (config.grid === "horizontal" || config.grid === "full") {
         cache.horizontalGridLines = cache.svg.select(".grid-lines-group")
@@ -359,6 +516,7 @@ define((require) => {
           .attr("class", "horizontal-grid-line")
           .merge(cache.horizontalGridLines)
           .transition()
+          .duration(config.axisTransitionDuration)
           .attr("x1", (-config.xAxisPadding.left))
           .attr("x2", cache.chartWidth)
           .attr("y1", cache.yScale)
@@ -377,6 +535,7 @@ define((require) => {
           .attr("class", "vertical-grid-line")
           .merge(cache.verticalGridLines)
           .transition()
+          .duration(config.axisTransitionDuration)
           .attr("y1", 0)
           .attr("y2", cache.chartHeight)
           .attr("x1", cache.xScale)
@@ -436,7 +595,7 @@ define((require) => {
       // so that the order always stays constant
       _dataPoint[keys.SERIES_KEY] = _dataPoint[keys.SERIES_KEY]
           .filter(t => Boolean(t))
-          .sort((a, b) => cache.seriesColorScale[a[keys.LABEL_KEY]] < cache.seriesColorScale[b[keys.LABEL_KEY]])
+          .sort((a, b) => a[keys.LABEL_KEY].localeCompare(b[keys.LABEL_KEY], "en", {numeric: false}))
 
       _dataPoint[keys.SERIES_KEY].forEach(({id}, index) => {
         const marker = cache.verticalMarkerContainer

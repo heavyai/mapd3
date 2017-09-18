@@ -86,15 +86,17 @@
 .line-chart .vertical-grid-line, .line-chart .horizontal-grid-line {
   stroke-dasharray: none; }
 
-.line-chart .series .line {
+.line-chart .series .line, .line-chart .series .area {
   stroke-width: 1.5px;
-  fill: none;
   stroke-linecap: round;
   stroke-linejoin: round; }
 
-.line-chart .series .group-2 {
-  stroke-dasharray: 5;
-  stroke-width: 1px; }
+.line-chart .series .line {
+  fill: none; }
+
+.line-chart .series .area {
+  fill: blue;
+  fill-opacity: 0.8; }
 
 .brush-chart .brush-area {
   fill: #EFF2F5; }

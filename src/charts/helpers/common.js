@@ -38,7 +38,7 @@ define(function (require) {
     if (_isTimeseries) {
       sortedData.sort((a, b) => new Date(a[keys.DATA_KEY]).getTime() - new Date(b[keys.DATA_KEY]).getTime())
     } else {
-      sortedData.sort((a, b) => a[keys.DATA_KEY].localeCompare(b[keys.DATA_KEY], "en", {numeric: true}))
+      sortedData.sort((a, b) => a[keys.DATA_KEY].localeCompare(b[keys.DATA_KEY], "en", {numeric: false}))
     }
     return sortedData
   }

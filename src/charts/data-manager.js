@@ -1,6 +1,7 @@
 define((require) => {
   "use strict"
 
+  const d3Array = require("d3-array")
   const d3Random = require("d3-random")
   const {timeDay, timeMonth} = require("d3-time")
   const {keys} = require("./helpers/constants")
@@ -8,50 +9,71 @@ define((require) => {
   return function dataManager () {
 
     const VALUE_RANGE = 100
+    const POINT_COUNT = 30
     const cache = {
       data: null,
       baseDate: null
     }
 
-    function generateSeries (_range, isTime) {
-      cache.baseDate = new Date()
-      const dateRange = timeDay.range(timeMonth.floor(cache.baseDate), timeMonth.ceil(cache.baseDate))
+    function generateRandomString (count) {
+      return Math.random().toString(36).replace(/[^a-z0-9]+/g, "").substr(0, count || 5)
+    }
+
+    function generateRandomNumber (count) {
+      return Math.floor(Math.random() * 100)
+    }
+
+    function generateSeries (_dataKeys, _range, _isTime, _allowNegative) {
       let value = 0
       const rnd = d3Random.randomNormal(0, 1)
       const STEP_RATIO = 100
       const STEP = _range / STEP_RATIO
-      return dateRange.map((d, i) => {
+      return _dataKeys.map((d) => {
         value = value + rnd() * STEP
+        if (!_allowNegative && value < STEP) {
+          value = value + (rnd() + 3) * STEP
+        }
         return {
           value,
-          key: isTime ? d.toISOString() : (10 + i).toString(36)
+          key: _isTime ? d.toISOString() : d
         }
       })
     }
 
-    function generateTestDataset (isTime) {
+    function generateTestDataset (_isTime) {
+      let dataKeys = null
+      if (_isTime) {
+        cache.baseDate = new Date()
+        dataKeys = timeDay.range(timeMonth.floor(cache.baseDate), timeMonth.ceil(cache.baseDate))
+      } else {
+        dataKeys = d3Array.range(0, POINT_COUNT).map(() => generateRandomString())
+        // dataKeys = d3Array.range(0, POINT_COUNT).map(() => generateRandomNumber().toString())
+      }
+
       cache.data = {
         series: [
           {
             label: "line A",
             id: 1,
             group: 1,
-            values: generateSeries(VALUE_RANGE, isTime)
+            values: generateSeries(dataKeys, VALUE_RANGE, _isTime)
           },
           {
             label: "line B",
             id: 2,
             group: 1,
-            values: generateSeries(VALUE_RANGE, isTime)
+            values: generateSeries(dataKeys, VALUE_RANGE, _isTime)
           },
           {
             label: "line C",
             id: 3,
-            group: 2,
-            values: generateSeries(VALUE_RANGE * 2, isTime)
+            group: 1,
+            values: generateSeries(dataKeys, VALUE_RANGE * 2, _isTime)
           }
         ]
       }
+
+      console.log(cache.data)
 
       return cache.data
     }

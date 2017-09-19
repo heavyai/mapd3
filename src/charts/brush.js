@@ -80,7 +80,7 @@ export default function module (_chart) {
 
   function extractBrushDimension (_data) {
     const merged = merge(_data.map((d) => d[keys.VALUES_KEY]))
-    return sortData(merged)
+    return sortData(merged, config.keyType)
   }
 
   function drawBrush () {
@@ -92,7 +92,7 @@ export default function module (_chart) {
 
   function getDataExtent () {
     const selection = event.selection
-    const dataExtent = selection.map((d) => invertScale(chartCache.xScale, d, config.isTimeseries))
+    const dataExtent = selection.map((d) => invertScale(chartCache.xScale, d, config.keyType))
     return dataExtent
   }
 

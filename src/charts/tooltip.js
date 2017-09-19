@@ -194,7 +194,7 @@ export default function module (_chart) {
   function updateTitle (_dataPoint) {
     const key = _dataPoint[keys.DATA_KEY]
     let title = key
-    if (config.isTimeseries) {
+    if (config.keyType === "time") {
       title = timeFormat(config.dateFormat)(key)
     }
 

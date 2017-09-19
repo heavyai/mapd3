@@ -1,50 +1,53 @@
 import {range} from "d3-array"
-import {randomNormal} from "d3-random"
+import {randomUniform, randomNormal} from "d3-random"
 import {timeDay, timeMonth} from "d3-time"
 import {keys} from "./helpers/constants"
+import {cloneData} from "./helpers/common"
 
 export default function dataManager () {
-
-  const VALUE_RANGE = 100
-  const POINT_COUNT = 30
+  /* eslint-disable no-magic-numbers */
+  let config = {
+    keyType: "number", // number, string, time,
+    range: [0, 100],
+    pointCount: 30,
+    groupCount: 2
+  }
   const cache = {
     data: null,
     baseDate: null
   }
 
-  function generateRandomString (count) {
-    return Math.random().toString(36).replace(/[^a-z0-9]+/g, "").substr(0, count || 5)
+  function generateRandomString (_length) {
+    return Math.random().toString(36).replace(/[^a-z0-9]+/g, "").substr(0, _length || 5)
   }
 
-  function generateRandomNumber (count) {
-    return Math.floor(Math.random() * 100)
-  }
-
-  function generateSeries (_dataKeys, _range, _isTime, _allowNegative) {
-    let value = 0
+  function generateSeries (_dataKeys, _range, _allowNegative) {
+    let value = randomUniform(..._range)()
+    const variabilityRatio = 50
+    const randomWalkStepSize = (_range[1] - _range[0]) / variabilityRatio
     const rnd = randomNormal(0, 1)
-    const STEP_RATIO = 100
-    const STEP = _range / STEP_RATIO
     return _dataKeys.map((d) => {
-      value = value + rnd() * STEP
-      if (!_allowNegative && value < STEP) {
-        value = value + (rnd() + 3) * STEP
+      value = value + rnd() * randomWalkStepSize
+      if (!_allowNegative && value < randomWalkStepSize) {
+        value = value + randomWalkStepSize
       }
       return {
         value,
-        key: _isTime ? d.toISOString() : d
+        key: config.keyType === "time" ? d.toISOString() : d
       }
     })
   }
 
-  function generateTestDataset (_isTime) {
+  function generateTestDataset () {
     let dataKeys = null
-    if (_isTime) {
+    if (config.keyType === "time") {
       cache.baseDate = new Date()
       dataKeys = timeDay.range(timeMonth.floor(cache.baseDate), timeMonth.ceil(cache.baseDate))
-    } else {
-      dataKeys = range(0, POINT_COUNT).map(() => generateRandomString())
-      // dataKeys = .range(0, POINT_COUNT).map(() => generateRandomNumber().toString())
+    } else if (config.keyType === "string") {
+      dataKeys = range(0, config.pointCount).map(() => generateRandomString())
+      dataKeys.sort((a, b) => a.localeCompare(b, "en", {numeric: false}))
+    } else if (config.keyType === "number") {
+      dataKeys = range(0, config.pointCount).map((d, i) => i)
     }
 
     cache.data = {
@@ -53,30 +56,30 @@ export default function dataManager () {
           label: "line A",
           id: 1,
           group: 1,
-          values: generateSeries(dataKeys, VALUE_RANGE, _isTime)
+          values: generateSeries(dataKeys, config.range)
         },
         {
           label: "line B",
           id: 2,
           group: 1,
-          values: generateSeries(dataKeys, VALUE_RANGE, _isTime)
+          values: generateSeries(dataKeys, config.range)
         },
         {
           label: "line C",
           id: 3,
-          group: 1,
-          values: generateSeries(dataKeys, VALUE_RANGE * 2, _isTime)
+          group: 1, // to do
+          values: generateSeries(dataKeys, config.range) // to do
         }
       ]
     }
 
-    console.log(cache.data)
+    console.log("generated data", cache.data)
 
     return cache.data
   }
 
   function filterByKey (_extent) {
-    const data = JSON.parse(JSON.stringify(cache.data))
+    const data = cloneData(cache.data)
 
     data[keys.SERIES_KEY].forEach((series) => {
       const values = series[keys.VALUES_KEY]
@@ -90,7 +93,7 @@ export default function dataManager () {
   }
 
   function filterByDate (_dateExtent) {
-    const data = JSON.parse(JSON.stringify(cache.data))
+    const data = cloneData(cache.data)
 
     data[keys.SERIES_KEY].forEach((series) => {
       series[keys.VALUES_KEY] = series[keys.VALUES_KEY].filter((d) => {
@@ -103,11 +106,17 @@ export default function dataManager () {
     return data
   }
 
+  function setConfig (_config) {
+    config = Object.assign({}, config, _config)
+    return this
+  }
+
   return {
     generateTestDataset,
     generateSeries,
     filterByDate,
-    filterByKey
+    filterByKey,
+    setConfig
   }
 }
 

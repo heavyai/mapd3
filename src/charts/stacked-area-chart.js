@@ -12,7 +12,7 @@ import {format} from "d3-format"
 import {exportChart} from "./helpers/exportChart"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, getUnique, invertScale, sortData} from "./helpers/common"
+import {cloneData, invertScale, sortData} from "./helpers/common"
 
 export default function mapdLine (_container) {
 
@@ -74,13 +74,11 @@ export default function mapdLine (_container) {
     hasSecondAxis: false,
 
     stackData: null,
-    stack: null,
-    flatDataSorted: null
+    stack: null
   }
 
   // accessors
   const getKey = (d) => d[keys.DATA_KEY]
-  const getGroup = (d) => d[keys.GROUP_KEY]
   const getID = (d) => d[keys.ID_KEY]
   const getValue = (d) => d[keys.VALUE_KEY]
   const getSeries = (d) => d[keys.ID_KEY]
@@ -89,83 +87,96 @@ export default function mapdLine (_container) {
   // events
   const dispatcher = dispatch("mouseOver", "mouseOut", "mouseMove")
 
-  function init () {
-    buildSVG(_container)
+  function buildAxis () {
+    cache.xAxis = axisBottom(cache.xScale)
+        .ticks(config.xTicks)
+        .tickSize(config.tickSizes, 0)
+        .tickPadding(config.tickPadding)
 
-    return this
-  }
-  init()
-
-  function buildSVG () {
-    const w = config.width || this.clientWidth
-    const h = config.height || this.clientHeight
-    cache.chartWidth = w - config.margin.left - config.margin.right
-    cache.chartHeight = h - config.margin.top - config.margin.bottom
-
-    if (!cache.svg) {
-      cache.svg = select(cache.container)
-        .append("svg")
-        .classed("mapd3 line-chart", true)
-
-      const container = cache.svg.append("g")
-        .classed("container-group", true)
-
-      container.append("g").classed("grid-lines-group", true)
-      container.append("g").classed("x-axis-group", true)
-        .append("g").classed("axis x", true)
-      container.append("g").classed("y-axis-group axis y", true)
-      container.append("g").classed("y-axis-group2 axis y", true)
-      container.append("g").classed("chart-group", true)
-
-      const metadataGroup = container.append("g")
-          .classed("metadata-group", true)
-      metadataGroup.append("g")
-          .attr("class", "hover-marker vertical-marker-container")
-
-      cache.maskingRectangle = cache.svg.append("rect")
-        .attr("class", "masking-rectangle")
+    if (config.keyType === "time") {
+      const formatter = timeFormat(config.xAxisFormat)
+      cache.xAxis.tickFormat(formatter)
     }
 
-    cache.svg.attr("width", config.width)
-      .attr("height", config.height)
-      .select(".container-group")
-      .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
+    cache.yAxis = axisLeft(cache.yScale)
+        .ticks(config.yTicks)
+        .tickSize([config.tickSizes])
+        .tickPadding(config.tickPadding)
+        .tickFormat(format(config.yAxisFormat))
+
+    cache.yAxis2 = axisRight(cache.yScale2)
+        .ticks(config.yTicks)
+        .tickSize([config.tickSizes])
+        .tickPadding(config.tickPadding)
+        .tickFormat(format(config.yAxisFormat))
+
+    drawGridLines(config.xTicks, config.yTicks)
   }
 
-  function setData (_data) {
-    cache.data = cloneData(_data[keys.SERIES_KEY])
-    const cleanedData = cleanData(_data)
-    cache.dataBySeries = cleanedData.dataBySeries
-    cache.dataByKey = cleanedData.dataByKey
+  function buildStackedScales () {
+    const groups = splitGroupByAxis()
 
-    buildSVG(_container)
+    cache.hasSecondAxis = cache.groupKeys.length > 1
 
-    if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
-      buildStackedScales()
+    const groupAxis1 = groups[cache.groupKeys[0]]
+
+    let datesExtent = null
+    if (config.keyType === "time") {
+      datesExtent = extent(groupAxis1.allKeys)
+      cache.xScale = scaleTime()
     } else {
-      buildScales()
+      datesExtent = groupAxis1.allKeys
+      cache.xScale = scalePoint().padding(0)
     }
 
-    buildAxis()
-    drawGridLines()
-    drawAxis()
+    const allStackHeights = cache.dataByKey.map((d) => sum(d.series.map((dB) => dB.value)))
 
-    if (config.chartType === "area") {
-      drawAreas()
-    } else if (config.chartType === "line") {
-      drawLines()
-    } else if (config.chartType === "stackedArea") {
-      drawStackedAreas()
+    cache.stackData = cache.dataByKey.map((d) => {
+      const points = {
+        key: d[keys.DATA_KEY]
+      }
+      d.series.forEach((dB) => {
+        points[dB[keys.ID_KEY]] = dB[keys.VALUE_KEY]
+      })
+
+      return points
+    })
+
+    cache.stack = stack()
+      .keys(cache.dataBySeries.map(getID))
+      .order(d3.stackOrderNone)
+      .offset(d3.stackOffsetNone)
+
+    const valuesExtent = extent(allStackHeights)
+    const yScaleBottomValue = 0
+
+    cache.xScale.domain(datesExtent)
+        .range([yScaleBottomValue, cache.chartWidth])
+
+    cache.yScale = scaleLinear()
+        .domain([0, valuesExtent[1]])
+        .rangeRound([cache.chartHeight, 0])
+        .nice()
+
+    if (cache.hasSecondAxis) {
+      const groupAxis2 = groups[cache.groupKeys[1]]
+      const valuesExtent2 = extent(groupAxis2.allValues)
+      const yScaleBottomValue2 = valuesExtent2[0]
+
+      cache.yScale2 = cache.yScale.copy()
+        .domain([yScaleBottomValue2, Math.abs(valuesExtent2[1])])
     }
 
-    if (shouldShowTooltip()) {
-      drawVerticalMarker()
-      addMouseEvents()
-    }
+    cache.colorScale = scaleOrdinal()
+        .range(config.colorSchema)
+        .domain(cache.dataBySeries.map(getSeries))
 
-    triggerIntroAnimation()
-
-    return this
+    const range = cache.colorScale.range()
+    cache.seriesColorScale = cache.colorScale.domain()
+      .reduce((memo, item, i) => {
+        memo[item] = range[i]
+        return memo
+      }, {})
   }
 
   function cleanData (_data) {
@@ -187,17 +198,17 @@ export default function mapdLine (_container) {
         dataPoint[keys.LABEL_KEY] = serie[keys.LABEL_KEY]
         dataPoint[keys.GROUP_KEY] = serie[keys.GROUP_KEY]
         dataPoint[keys.ID_KEY] = serie[keys.ID_KEY]
-        dataPoint[keys.DATA_KEY] = config.keyType === "time" ? new Date(d[keys.DATA_KEY]) : d[keys.DATA_KEY]
+        dataPoint[keys.DATA_KEY] = d[keys.DATA_KEY]
         dataPoint[keys.VALUE_KEY] = d[keys.VALUE_KEY]
         flatData.push(dataPoint)
       })
     })
 
-    cache.flatDataSorted = sortData(flatData, config.keyType)
+    const flatDataSorted = sortData(flatData, config.keyType)
 
     const dataByKey = nest()
       .key(getKey)
-      .entries(cache.flatDataSorted)
+      .entries(flatDataSorted)
       .map((d) => {
         const dataPoint = {}
         dataPoint[keys.DATA_KEY] = config.keyType === "time" ? new Date(d.key) : d.key
@@ -205,138 +216,7 @@ export default function mapdLine (_container) {
         return dataPoint
       })
 
-    const allGroupKeys = dataBySeries.map(getGroup)
-    cache.groupKeys = getUnique(allGroupKeys)
-
     return {dataBySeries, dataByKey}
-  }
-
-  function splitByGroups () {
-    const groups = {}
-    cache.dataBySeries.forEach((d) => {
-      const key = d[keys.GROUP_KEY]
-      if (!groups[key]) {
-        groups[key] = {
-          allValues: [],
-          allKeys: []
-        }
-      }
-      groups[key].allValues = groups[key].allValues.concat(d[keys.VALUES_KEY].map(getValue))
-      groups[key].allKeys = groups[key].allKeys.concat(d[keys.VALUES_KEY].map(getKey))
-    })
-
-    return groups
-  }
-
-  function buildXScale (_allKeys) {
-    let datesExtent = null
-    if (config.keyType === "time") {
-      datesExtent = extent(_allKeys)
-      cache.xScale = scaleTime()
-    } else {
-      datesExtent = _allKeys
-      cache.xScale = scalePoint().padding(0)
-    }
-
-    cache.xScale.domain(datesExtent)
-      .range([0, cache.chartWidth])
-  }
-
-  function buildColorScale () {
-    cache.colorScale = scaleOrdinal()
-        .range(config.colorSchema)
-        .domain(cache.dataBySeries.map(getSeries))
-
-    const range = cache.colorScale.range()
-    cache.seriesColorScale = cache.colorScale.domain()
-      .reduce((memo, item, i) => {
-        memo[item] = range[i]
-        return memo
-      }, {})
-  }
-
-  function buildYScale (_extent) {
-    cache.yScale = scaleLinear()
-        .domain(_extent)
-        .rangeRound([cache.chartHeight, 0])
-        .nice()
-  }
-
-  function buildScales () {
-    const groups = splitByGroups()
-
-    cache.hasSecondAxis = cache.groupKeys.length > 1
-
-    const groupAxis1 = groups[cache.groupKeys[0]]
-    const allUniqueKeys = groupAxis1.allKeys
-    const valuesExtent = extent(groupAxis1.allValues)
-
-    buildXScale(allUniqueKeys)
-    buildColorScale()
-    buildYScale(valuesExtent)
-
-    if (cache.hasSecondAxis) {
-      const groupAxis2 = groups[cache.groupKeys[1]]
-      const valuesExtent2 = extent(groupAxis2.allValues)
-
-      cache.yScale2 = cache.yScale.copy()
-        .domain(valuesExtent2)
-    }
-  }
-
-  function buildStackedScales () {
-    const allStackHeights = cache.dataByKey.map((d) => sum(d.series.map((dB) => dB.value)))
-
-    cache.stackData = cache.dataByKey.map((d) => {
-      const points = {
-        key: d[keys.DATA_KEY]
-      }
-      d.series.forEach((dB) => {
-        points[dB[keys.ID_KEY]] = dB[keys.VALUE_KEY]
-      })
-
-      return points
-    })
-
-    cache.stack = stack()
-      .keys(cache.dataBySeries.map(getID))
-      .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetNone)
-
-    const valuesExtent = extent(allStackHeights)
-
-    const allKeys = cache.flatDataSorted.map(getKey)
-    const allUniqueKeys = getUnique(allKeys)
-
-    buildXScale(allUniqueKeys)
-    buildColorScale()
-    buildYScale([0, valuesExtent[1]])
-  }
-
-  function buildAxis () {
-    cache.xAxis = axisBottom(cache.xScale)
-        .ticks(config.xTicks)
-        .tickSize(config.tickSizes, 0)
-        .tickPadding(config.tickPadding)
-
-    if (config.keyType === "time") {
-      const formatter = timeFormat(config.xAxisFormat)
-      cache.xAxis.tickFormat(formatter)
-    }
-
-    cache.yAxis = axisLeft(cache.yScale)
-        .ticks(config.yTicks)
-        .tickSize([config.tickSizes])
-        .tickPadding(config.tickPadding)
-        .tickFormat(format(config.yAxisFormat))
-
-    if (cache.hasSecondAxis) {
-      cache.yAxis2 = axisRight(cache.yScale2)
-          .ticks(config.yTicks)
-          .tickSize([config.tickSizes])
-          .tickPadding(config.tickPadding)
-          .tickFormat(format(config.yAxisFormat))
-    }
   }
 
   function cleanDataPointHighlights () {
@@ -368,10 +248,7 @@ export default function mapdLine (_container) {
   function drawLines () {
     const seriesLine = line()
         .x((d) => cache.xScale(d[keys.DATA_KEY]))
-        // .y((d) => cache.yScale(d[keys.VALUE_KEY]))
-        .y((d) => {
-          return cache.yScale(d[keys.VALUE_KEY])
-        })
+        .y((d) => cache.yScale(d[keys.VALUE_KEY]))
 
     const seriesLine2 = line()
         .x((d) => cache.xScale(d[keys.DATA_KEY]))
@@ -400,12 +277,12 @@ export default function mapdLine (_container) {
   }
 
   function drawAreas () {
-    const seriesArea = area()
+    const seriesLine = area()
         .x((d) => cache.xScale(d[keys.DATA_KEY]))
         .y0((d) => cache.yScale(d[keys.VALUE_KEY]))
         .y1(() => cache.chartHeight)
 
-    const seriesArea2 = area()
+    const seriesLine2 = area()
         .x((d) => cache.xScale(d[keys.DATA_KEY]))
         .y0((d) => cache.yScale2(d[keys.VALUE_KEY]))
         .y1(() => cache.chartHeight)
@@ -422,9 +299,9 @@ export default function mapdLine (_container) {
       .attr("class", (d, i) => ["area", `group-${d[keys.GROUP_KEY]}`, `series-${i}`].join(" "))
       .attr("d", (d) => {
         if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
-          return seriesArea(d[keys.VALUES_KEY])
+          return seriesLine(d[keys.VALUES_KEY])
         } else {
-          return seriesArea2(d[keys.VALUES_KEY])
+          return seriesLine2(d[keys.VALUES_KEY])
         }
       })
       .style("stroke", getLineColor)
@@ -439,27 +316,40 @@ export default function mapdLine (_container) {
         .y0((d) => cache.yScale(d[0]))
         .y1((d) => cache.yScale(d[1]))
 
+    // const seriesLine2 = area()
+    //     .x((d) => cache.xScale(d[keys.DATA_KEY]))
+    //     .y0((d) => cache.yScale2(d[keys.VALUE_KEY]))
+    //     .y1(() => cache.chartHeight)
+    //     .curve(d3.curveCatmullRom)
+
     const areas = cache.svg.select(".chart-group").selectAll(".area")
         .data(cache.stack(cache.stackData))
 
+    // to do: d.index for groups
     areas.enter()
       .append("g")
       .attr("class", "series")
       .append("path")
       .merge(areas)
-      .attr("class", (d, i) => ["area", `series-${i}`].join(" "))
-      .attr("d", seriesLine)
+      .attr("class", (d, i) => ["area", `group-${d.index}`, `series-${i}`].join(" "))
+      .attr("d", (d, i) => {
+        // if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
+          return seriesLine(d)
+        // } else {
+        //   return seriesLine2(d[keys.VALUES_KEY])
+        // }
+      })
       .style("stroke", "none")
       .style("fill", (d, i) => cache.colorScale(i))
 
     areas.exit().remove()
   }
 
-  function drawGridLines () {
+  function drawGridLines (_xTicks, _yTicks) {
     if (config.grid === "horizontal" || config.grid === "full") {
       cache.horizontalGridLines = cache.svg.select(".grid-lines-group")
           .selectAll("line.horizontal-grid-line")
-          .data(cache.yScale.ticks(config.yTicks))
+          .data(cache.yScale.ticks(_yTicks))
 
       cache.horizontalGridLines.enter()
         .append("line")
@@ -478,7 +368,7 @@ export default function mapdLine (_container) {
     if (config.grid === "vertical" || config.grid === "full") {
       cache.verticalGridLines = cache.svg.select(".grid-lines-group")
           .selectAll("line.vertical-grid-line")
-          .data(cache.xScale.ticks(config.xTicks))
+          .data(cache.xScale.ticks(_xTicks))
 
       cache.verticalGridLines.enter()
         .append("line")
@@ -561,10 +451,7 @@ export default function mapdLine (_container) {
 
       marker.attr("transform", () => {
         const datum = _dataPoint[keys.SERIES_KEY][index]
-        const scale = datum.group === cache.groupKeys[0] ?
-            cache.yScale(datum[keys.VALUE_KEY]) :
-            cache.yScale2(datum[keys.VALUE_KEY])
-
+        const scale = datum.group === cache.groupKeys[0] ? cache.yScale(datum[keys.VALUE_KEY]) : cache.yScale2(datum[keys.VALUE_KEY])
         return `translate( ${(-config.dotRadius / 2)}, ${scale} )`
       })
     })
@@ -585,19 +472,6 @@ export default function mapdLine (_container) {
       nearestDataPoint = dataEntryForXPosition
     }
     return nearestDataPoint
-  }
-
-  function addMouseEvents () {
-    cache.svg
-      .on("mouseover", function mouseover (d) {
-        handleMouseOver(this, d)
-      })
-      .on("mouseout", function mouseout (d) {
-        handleMouseOut(this, d)
-      })
-      .on("mousemove", function mousemove (d) {
-        handleMouseMove(this, d)
-      })
   }
 
   function handleMouseMove (_e) {

@@ -9,15 +9,27 @@
 <script>
 
 /*
-* stacked area chart
+* split draw* and scale*
+* stacked tooltip
+* generator config: multiaxis
+* stacked: handle groups ?
+* single point line/area chart
 * titles
 * axes locking
 * domain editor
 */
 
+const keyType = "time" // time, number, string
+const chartType = "stackedArea" // line, area, stackedArea
+
 const dataManager = mapd3.dataManager()
-const IS_TIME = 0
-const data = dataManager.generateTestDataset(IS_TIME)
+    .setConfig({
+      keyType,
+      range: [0, 100],
+      pointCount: 30,
+      groupCount: 2
+    })
+const data = dataManager.generateTestDataset()
 
 const observer = mapd3.observer(dataManager)
 
@@ -39,8 +51,8 @@ const chart1 = mapd3.line(chartNode1)
     yAxisFormat: ".1f",
     yTicks: 5,
     colorSchema: colors,
-    isTimeseries: IS_TIME,
-    chartType: "stackedArea"
+    keyType,
+    chartType
   })
   .setData(data)
 
@@ -61,8 +73,8 @@ const chart2 = mapd3.line(".chart2")
     yAxisFormat: ".1f",
     yTicks: 3,
     colorSchema: colors,
-    isTimeseries: IS_TIME,
-    chartType: "stackedArea"
+    keyType,
+    chartType
   })
   .setData(data)
 

@@ -5,7 +5,7 @@ export default function observer (_dataManager) {
   const dataManager = _dataManager
 
   dispatcher.on("brushChange.observer", (_e, _brushConfig) => {
-    const filtered = _brushConfig.isTimeseries ? dataManager.filterByDate(_e)
+    const filtered = _brushConfig.keyType === "time" ? dataManager.filterByDate(_e)
       : dataManager.filterByKey(_e)
     pub("dataFilter", filtered)
   })

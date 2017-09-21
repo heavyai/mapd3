@@ -9,7 +9,7 @@ export default function dataManager () {
   let config = {
     keyType: "number", // number, string, time,
     range: [0, 100],
-    pointCount: 30,
+    pointCount: 200,
     groupCount: 2
   }
   const cache = {

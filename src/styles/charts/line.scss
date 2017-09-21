@@ -2,8 +2,6 @@
 
 .line-chart {
 
-    // This is the div that we use to simulate a line drawing animation
-    // NOTE: it should be of the same color of the background of the chart
     .masking-rectangle {
         fill: $white;
     }
@@ -21,22 +19,18 @@
     .vertical-grid-line, .horizontal-grid-line {
         stroke-dasharray: none;
     }
-    .series {
-        .line, .area{
-            stroke-width: 1.5px;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .line {
-            fill: none;
-        }
-        .area {
-            fill: blue;
-            fill-opacity: 0.8;
-        }
-        // .group-2 {
-        //     stroke-dasharray: 5;
-        //     stroke-width: 1px;
-        // }
+    .line, .area, .stacked-area{
+        stroke-width: 1.5px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .line {
+        fill: none;
+    }
+    .area {
+        fill-opacity: 0.5;
+    }
+    .stacked-area {
+        fill-opacity: 0.5;
     }
 }

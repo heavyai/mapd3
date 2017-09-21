@@ -16,16 +16,10 @@ export default function module (_chart) {
     width: 250,
     height: 45,
 
-    title: "",
     valueFormat: ".2s",
 
-    tooltipOffset: {
-      y: -55,
-      x: 0
-    },
     tooltipMaxTopicLength: 170,
     tooltipBorderRadius: 3,
-    entryLineLimit: 3,
 
     // Animations
     mouseChaseDuration: 30,
@@ -37,13 +31,15 @@ export default function module (_chart) {
     dotRadius: 4,
 
     dateFormat: "%x",
-    seriesOrder: []
+    seriesOrder: [],
+
+    // from chart
+    keyType: "time"
   }
 
   const cache = {
     chart: _chart,
     svg: null,
-    colorMap: null,
     chartWidth: null,
     chartHeight: null,
     tooltipDivider: null,
@@ -167,17 +163,9 @@ export default function module (_chart) {
   }
 
   function getValueText (_data) {
-    const value = _data[keys.VALUE_KEY]
-    let valueText = null
     const formatter = format(config.valueFormat)
 
-    if (data.missingValue) {
-      valueText = "-"
-    } else {
-      valueText = formatter(value)
-    }
-
-    return valueText
+    return formatter(_data[keys.VALUE_KEY])
   }
 
   function updatePositionAndSize (_xPosition) {

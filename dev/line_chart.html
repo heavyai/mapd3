@@ -1,32 +1,30 @@
 <html>
 <head>
-<link rel="stylesheet" href="../dist/css/mapd3.css">
+<link rel="stylesheet" href="../dist/mapd3.css">
 </head><body>
 <div class="chart1"></div>
 <div class="chart2"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
-<script src="../dist/bundled/mapd3.min.js"></script>
+<script src="../dist/mapd3.min.js"></script>
 <script>
 
 /*
-* split draw* and scale*
 * stacked tooltip
 * generator config: multiaxis
-* stacked: handle groups ?
 * single point line/area chart
 * titles
 * axes locking
 * domain editor
 */
 
-const keyType = "time" // time, number, string
+const keyType = "number" // time, number, string
 const chartType = "stackedArea" // line, area, stackedArea
 
 const dataManager = mapd3.dataManager()
     .setConfig({
       keyType,
       range: [0, 100],
-      pointCount: 30,
+      pointCount: 500,
       groupCount: 2
     })
 const data = dataManager.generateTestDataset()
@@ -52,7 +50,8 @@ const chart1 = mapd3.line(chartNode1)
     yTicks: 5,
     colorSchema: colors,
     keyType,
-    chartType
+    chartType,
+    tickSkip: 20
   })
   .setData(data)
 
@@ -74,7 +73,8 @@ const chart2 = mapd3.line(".chart2")
     yTicks: 3,
     colorSchema: colors,
     keyType,
-    chartType
+    chartType,
+    tickSkip: 20
   })
   .setData(data)
 

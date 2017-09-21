@@ -25,7 +25,7 @@ export default function mapdLine (_container) {
     },
     width: 800,
     height: 500,
-    tooltipThreshold: 480,
+    hoverThreshold: 480,
     xAxisPadding: {
       top: 0,
       left: 0,
@@ -36,7 +36,7 @@ export default function mapdLine (_container) {
     colorSchema: colors.mapdColors,
     dotRadius: 4,
     xAxisFormat: "%c",
-    xTicks: null,
+    tickSkip: 1,
     tickSizes: 8,
 
     isAnimated: false,
@@ -83,14 +83,13 @@ export default function mapdLine (_container) {
   const getGroup = (d) => d[keys.GROUP_KEY]
   const getID = (d) => d[keys.ID_KEY]
   const getValue = (d) => d[keys.VALUE_KEY]
-  const getSeries = (d) => d[keys.ID_KEY]
-  const getLineColor = (d) => cache.colorScale(d[keys.ID_KEY])
+  const getColor = (d) => cache.colorScale(d[keys.ID_KEY])
 
   // events
   const dispatcher = dispatch("mouseOver", "mouseOut", "mouseMove")
 
   function init () {
-    buildSVG(_container)
+    buildSVG()
 
     return this
   }
@@ -138,7 +137,7 @@ export default function mapdLine (_container) {
     cache.dataBySeries = cleanedData.dataBySeries
     cache.dataByKey = cleanedData.dataByKey
 
-    buildSVG(_container)
+    buildSVG()
 
     if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
       buildStackedScales()
@@ -158,7 +157,7 @@ export default function mapdLine (_container) {
       drawStackedAreas()
     }
 
-    if (shouldShowTooltip()) {
+    if (shouldShowHoverMarkers()) {
       drawVerticalMarker()
       addMouseEvents()
     }
@@ -245,7 +244,7 @@ export default function mapdLine (_container) {
   function buildColorScale () {
     cache.colorScale = scaleOrdinal()
         .range(config.colorSchema)
-        .domain(cache.dataBySeries.map(getSeries))
+        .domain(cache.dataBySeries.map(getID))
 
     const range = cache.colorScale.range()
     cache.seriesColorScale = cache.colorScale.domain()
@@ -315,13 +314,14 @@ export default function mapdLine (_container) {
 
   function buildAxis () {
     cache.xAxis = axisBottom(cache.xScale)
-        .ticks(config.xTicks)
         .tickSize(config.tickSizes, 0)
         .tickPadding(config.tickPadding)
 
     if (config.keyType === "time") {
       const formatter = timeFormat(config.xAxisFormat)
       cache.xAxis.tickFormat(formatter)
+    } else {
+      cache.xAxis.tickValues(cache.xScale.domain().filter((d, i) => !(i % config.tickSkip)))
     }
 
     cache.yAxis = axisLeft(cache.yScale)
@@ -337,10 +337,6 @@ export default function mapdLine (_container) {
           .tickPadding(config.tickPadding)
           .tickFormat(format(config.yAxisFormat))
     }
-  }
-
-  function cleanDataPointHighlights () {
-    cache.verticalMarkerContainer.selectAll(".circle-container").remove()
   }
 
   function drawAxis () {
@@ -368,10 +364,7 @@ export default function mapdLine (_container) {
   function drawLines () {
     const seriesLine = line()
         .x((d) => cache.xScale(d[keys.DATA_KEY]))
-        // .y((d) => cache.yScale(d[keys.VALUE_KEY]))
-        .y((d) => {
-          return cache.yScale(d[keys.VALUE_KEY])
-        })
+        .y((d) => cache.yScale(d[keys.VALUE_KEY]))
 
     const seriesLine2 = line()
         .x((d) => cache.xScale(d[keys.DATA_KEY]))
@@ -382,11 +375,9 @@ export default function mapdLine (_container) {
         .data(cache.dataBySeries)
 
     lines.enter()
-      .append("g")
-      .attr("class", "series")
       .append("path")
+      .attr("class", "line")
       .merge(lines)
-      .attr("class", (d, i) => ["line", `group-${d[keys.GROUP_KEY]}`, `series-${i}`].join(" "))
       .attr("d", (d) => {
         if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
           return seriesLine(d[keys.VALUES_KEY])
@@ -394,7 +385,7 @@ export default function mapdLine (_container) {
           return seriesLine2(d[keys.VALUES_KEY])
         }
       })
-      .style("stroke", getLineColor)
+      .style("stroke", getColor)
 
     lines.exit().remove()
   }
@@ -415,11 +406,9 @@ export default function mapdLine (_container) {
         .data(cache.dataBySeries)
 
     areas.enter()
-      .append("g")
-      .attr("class", "series")
       .append("path")
+      .attr("class", "area")
       .merge(areas)
-      .attr("class", (d, i) => ["area", `group-${d[keys.GROUP_KEY]}`, `series-${i}`].join(" "))
       .attr("d", (d) => {
         if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
           return seriesArea(d[keys.VALUES_KEY])
@@ -427,8 +416,8 @@ export default function mapdLine (_container) {
           return seriesArea2(d[keys.VALUES_KEY])
         }
       })
-      .style("stroke", getLineColor)
-      .style("fill", getLineColor)
+      .style("stroke", getColor)
+      .style("fill", getColor)
 
     areas.exit().remove()
   }
@@ -439,20 +428,57 @@ export default function mapdLine (_container) {
         .y0((d) => cache.yScale(d[0]))
         .y1((d) => cache.yScale(d[1]))
 
-    const areas = cache.svg.select(".chart-group").selectAll(".area")
+    const areas = cache.svg.select(".chart-group").selectAll(".stacked-area")
         .data(cache.stack(cache.stackData))
 
     areas.enter()
-      .append("g")
-      .attr("class", "series")
       .append("path")
+      .attr("class", "stacked-area")
       .merge(areas)
-      .attr("class", (d, i) => ["area", `series-${i}`].join(" "))
       .attr("d", seriesLine)
       .style("stroke", "none")
-      .style("fill", (d, i) => cache.colorScale(i))
+      .style("fill", (d) => cache.colorScale(d.key))
 
     areas.exit().remove()
+  }
+
+  function highlightStackedDataPoints (_dataPoint) {
+    const stackedDataPoint = {key: _dataPoint[keys.DATA_KEY]}
+    _dataPoint.series.forEach((d) => {
+      const id = d[keys.ID_KEY]
+      stackedDataPoint[id] = d[keys.VALUE_KEY]
+    })
+
+    const dotsStack = cache.stack([stackedDataPoint])
+    const dotsData = dotsStack.map((d) => {
+      const dot = {value: d[0][1]}
+      dot[keys.ID_KEY] = d.key
+      return dot
+    })
+
+    drawHighlightDataPoints(dotsData)
+  }
+
+  function highlightDataPoints (_dataPoint) {
+    const dotsData = _dataPoint[keys.SERIES_KEY]
+
+    drawHighlightDataPoints(dotsData)
+  }
+
+  function drawHighlightDataPoints (_dotsData) {
+    const dots = cache.verticalMarkerContainer.selectAll(".dot")
+        .data(_dotsData)
+
+    dots.enter()
+      .append("circle")
+      .attr("class", "dot")
+      .merge(dots)
+      .attr("cy", (d) => cache.yScale(d[keys.VALUE_KEY]))
+      .attr("r", config.dotRadius)
+      .style("stroke", "none")
+      .style("fill", getColor)
+
+    dots.exit().remove()
   }
 
   function drawGridLines () {
@@ -478,7 +504,7 @@ export default function mapdLine (_container) {
     if (config.grid === "vertical" || config.grid === "full") {
       cache.verticalGridLines = cache.svg.select(".grid-lines-group")
           .selectAll("line.vertical-grid-line")
-          .data(cache.xScale.ticks(config.xTicks))
+          .data(cache.xAxis.tickValues())
 
       cache.verticalGridLines.enter()
         .append("line")
@@ -510,8 +536,8 @@ export default function mapdLine (_container) {
     }
   }
 
-  function shouldShowTooltip () {
-    return config.width > config.tooltipThreshold
+  function shouldShowHoverMarkers () {
+    return config.width > config.hoverThreshold
   }
 
   function drawVerticalMarker () {
@@ -519,55 +545,15 @@ export default function mapdLine (_container) {
         .attr("transform", "translate(9999, 0)")
 
     cache.verticalMarkerLine = cache.verticalMarkerContainer.selectAll("path")
-        .data([{
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 0
-        }])
+        .data([])
 
     cache.verticalMarkerLine.enter()
       .append("line")
       .classed("vertical-marker", true)
       .merge(cache.verticalMarkerLine)
-      .attr("x1", 0)
       .attr("y1", cache.chartHeight)
-      .attr("x2", 0)
-      .attr("y2", 0)
 
     cache.verticalMarkerLine.exit().remove()
-  }
-
-  function highlightDataPoints (_dataPoint) {
-    cleanDataPointHighlights()
-
-    // sorting the series based on the order of the colors,
-    // so that the order always stays constant
-    _dataPoint[keys.SERIES_KEY] = _dataPoint[keys.SERIES_KEY]
-        .filter(t => Boolean(t))
-        .sort((a, b) => a[keys.LABEL_KEY].localeCompare(b[keys.LABEL_KEY], "en", {numeric: false}))
-
-    _dataPoint[keys.SERIES_KEY].forEach(({id}, index) => {
-      const marker = cache.verticalMarkerContainer
-          .append("g")
-          .classed("circle-container", true)
-
-      marker.append("circle")
-        .classed("data-point-highlighter", true)
-        .attr("cx", config.dotRadius / 2)
-        .attr("cy", 0)
-        .attr("r", config.dotRadius)
-        .style("stroke", cache.seriesColorScale[id])
-
-      marker.attr("transform", () => {
-        const datum = _dataPoint[keys.SERIES_KEY][index]
-        const scale = datum.group === cache.groupKeys[0] ?
-            cache.yScale(datum[keys.VALUE_KEY]) :
-            cache.yScale2(datum[keys.VALUE_KEY])
-
-        return `translate( ${(-config.dotRadius / 2)}, ${scale} )`
-      })
-    })
   }
 
   function moveVerticalMarker (_verticalMarkerXPosition) {
@@ -608,7 +594,11 @@ export default function mapdLine (_container) {
     if (dataPoint) {
       const dataPointXPosition = cache.xScale(dataPoint[keys.DATA_KEY])
       moveVerticalMarker(dataPointXPosition)
-      highlightDataPoints(dataPoint)
+      if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
+        highlightStackedDataPoints(dataPoint)
+      } else {
+        highlightDataPoints(dataPoint)
+      }
       dispatcher.call("mouseMove", _e, dataPoint, cache.seriesColorScale, dataPointXPosition)
     }
   }

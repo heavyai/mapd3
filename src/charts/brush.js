@@ -79,7 +79,7 @@ export default function module (_chart) {
   }
 
   function extractBrushDimension (_data) {
-    const merged = merge(_data.map((d) => d[keys.VALUES_KEY]))
+    const merged = merge(_data.map((d) => d[keys.VALUES]))
     return sortData(merged, config.keyType)
   }
 

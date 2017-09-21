@@ -81,12 +81,12 @@ export default function dataManager () {
   function filterByKey (_extent) {
     const data = cloneData(cache.data)
 
-    data[keys.SERIES_KEY].forEach((series) => {
-      const values = series[keys.VALUES_KEY]
-      const allKeys = values.map(d => d[keys.DATA_KEY])
+    data[keys.SERIES].forEach((series) => {
+      const values = series[keys.VALUES]
+      const allKeys = values.map(d => d[keys.DATA])
       const extentMinIndex = allKeys.indexOf(_extent[0])
       const extentMaxIndex = allKeys.indexOf(_extent[1])
-      series[keys.VALUES_KEY] = series[keys.VALUES_KEY].slice(extentMinIndex, extentMaxIndex)
+      series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
     })
 
     return data
@@ -95,9 +95,9 @@ export default function dataManager () {
   function filterByDate (_dateExtent) {
     const data = cloneData(cache.data)
 
-    data[keys.SERIES_KEY].forEach((series) => {
-      series[keys.VALUES_KEY] = series[keys.VALUES_KEY].filter((d) => {
-        const epoch = new Date(d[keys.DATA_KEY]).getTime()
+    data[keys.SERIES].forEach((series) => {
+      series[keys.VALUES] = series[keys.VALUES].filter((d) => {
+        const epoch = new Date(d[keys.DATA]).getTime()
         return epoch >= _dateExtent[0].getTime()
           && epoch <= _dateExtent[1].getTime()
       })

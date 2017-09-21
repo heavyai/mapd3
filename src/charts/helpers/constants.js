@@ -1,9 +1,9 @@
 export const keys = {
-  DATA_KEY: "key",
-  VALUE_KEY: "value",
-  ID_KEY: "id",
-  LABEL_KEY: "label",
-  GROUP_KEY: "group",
-  VALUES_KEY: "values",
-  SERIES_KEY: "series"
+  DATA: "key",
+  VALUE: "value",
+  ID: "id",
+  LABEL: "label",
+  GROUP: "group",
+  VALUES: "values",
+  SERIES: "series"
 }

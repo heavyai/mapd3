@@ -3,6 +3,7 @@ import {format} from "d3-format"
 import {timeFormat} from "d3-time-format"
 
 import {keys} from "./helpers/constants"
+import {cloneData} from "./helpers/common"
 
 export default function module (_chart) {
 
@@ -117,7 +118,7 @@ export default function module (_chart) {
       .attr("dx", config.padding * 2 + config.dotRadius)
       .merge(tooltipLeft)
       .attr("y", (d, i) => i * config.elementHeight + config.titleHeight)
-      .text((d) => d[keys.LABEL_KEY])
+      .text((d) => d[keys.LABEL])
     tooltipLeft.exit().remove()
 
     const tooltipRight = cache.tooltipBody.selectAll(".tooltip-right-text")
@@ -142,7 +143,7 @@ export default function module (_chart) {
       .attr("cx", config.padding + config.dotRadius)
       .attr("cy", (d, i) => i * config.elementHeight + config.titleHeight + config.elementHeight / 2)
       .attr("r", config.dotRadius)
-      .style("fill", (d) => chartCache.seriesColorScale[d[keys.ID_KEY]])
+      .style("fill", (d) => chartCache.seriesColorScale[d[keys.ID]])
     tooltipCircles.exit().remove()
 
     cache.tooltipHeight = cache.tooltipBody.node().getBBox().height
@@ -165,7 +166,7 @@ export default function module (_chart) {
   function getValueText (_data) {
     const formatter = format(config.valueFormat)
 
-    return formatter(_data[keys.VALUE_KEY])
+    return formatter(_data[keys.VALUE])
   }
 
   function updatePositionAndSize (_xPosition) {
@@ -180,7 +181,7 @@ export default function module (_chart) {
   }
 
   function updateTitle (_dataPoint) {
-    const key = _dataPoint[keys.DATA_KEY]
+    const key = _dataPoint[keys.DATA]
     let title = key
     if (config.keyType === "time") {
       title = timeFormat(config.dateFormat)(key)
@@ -194,16 +195,16 @@ export default function module (_chart) {
   }
 
   function sortByAlpha (_series) {
-    // TO DO: make this immutable
-    return _series.sort()
+    const series = cloneData(_series)
+    return series.sort((a, b) => a[keys.LABEL].localeCompare(b[keys.LABEL], "en", {numeric: false}))
   }
 
   function updateContent (dataPoint) {
-    let series = dataPoint[keys.SERIES_KEY]
+    let series = dataPoint[keys.SERIES]
 
     if (config.seriesOrder.length) {
       series = sortByTopicsOrder(series)
-    } else if (series.length && series[0].name) {
+    } else if (series.length && series[0][keys.LABEL]) {
       series = sortByAlpha(series)
     }
 

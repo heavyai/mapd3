@@ -79,11 +79,11 @@ export default function mapdLine (_container) {
   }
 
   // accessors
-  const getKey = (d) => d[keys.DATA_KEY]
-  const getGroup = (d) => d[keys.GROUP_KEY]
-  const getID = (d) => d[keys.ID_KEY]
-  const getValue = (d) => d[keys.VALUE_KEY]
-  const getColor = (d) => cache.colorScale(d[keys.ID_KEY])
+  const getKey = (d) => d[keys.DATA]
+  const getGroup = (d) => d[keys.GROUP]
+  const getID = (d) => d[keys.ID]
+  const getValue = (d) => d[keys.VALUE]
+  const getColor = (d) => cache.colorScale(d[keys.ID])
 
   // events
   const dispatcher = dispatch("mouseOver", "mouseOut", "mouseMove")
@@ -132,7 +132,7 @@ export default function mapdLine (_container) {
   }
 
   function setData (_data) {
-    cache.data = cloneData(_data[keys.SERIES_KEY])
+    cache.data = cloneData(_data[keys.SERIES])
     const cleanedData = cleanData(_data)
     cache.dataBySeries = cleanedData.dataBySeries
     cache.dataByKey = cleanedData.dataByKey
@@ -168,26 +168,26 @@ export default function mapdLine (_container) {
   }
 
   function cleanData (_data) {
-    const dataBySeries = cloneData(_data[keys.SERIES_KEY])
+    const dataBySeries = cloneData(_data[keys.SERIES])
     const flatData = []
 
     // Normalize dataBySeries
     dataBySeries.forEach((serie) => {
-      serie[keys.VALUES_KEY] = sortData(serie[keys.VALUES_KEY], config.keyType)
-      serie[keys.VALUES_KEY].forEach((d) => {
-        d[keys.DATA_KEY] = config.keyType === "time" ? new Date(d[keys.DATA_KEY]) : d[keys.DATA_KEY]
-        d[keys.VALUE_KEY] = Number(d[keys.VALUE_KEY])
+      serie[keys.VALUES] = sortData(serie[keys.VALUES], config.keyType)
+      serie[keys.VALUES].forEach((d) => {
+        d[keys.DATA] = config.keyType === "time" ? new Date(d[keys.DATA]) : d[keys.DATA]
+        d[keys.VALUE] = Number(d[keys.VALUE])
       })
     })
 
     dataBySeries.forEach((serie) => {
-      serie[keys.VALUES_KEY].forEach((d) => {
+      serie[keys.VALUES].forEach((d) => {
         const dataPoint = {}
-        dataPoint[keys.LABEL_KEY] = serie[keys.LABEL_KEY]
-        dataPoint[keys.GROUP_KEY] = serie[keys.GROUP_KEY]
-        dataPoint[keys.ID_KEY] = serie[keys.ID_KEY]
-        dataPoint[keys.DATA_KEY] = config.keyType === "time" ? new Date(d[keys.DATA_KEY]) : d[keys.DATA_KEY]
-        dataPoint[keys.VALUE_KEY] = d[keys.VALUE_KEY]
+        dataPoint[keys.LABEL] = serie[keys.LABEL]
+        dataPoint[keys.GROUP] = serie[keys.GROUP]
+        dataPoint[keys.ID] = serie[keys.ID]
+        dataPoint[keys.DATA] = config.keyType === "time" ? new Date(d[keys.DATA]) : d[keys.DATA]
+        dataPoint[keys.VALUE] = d[keys.VALUE]
         flatData.push(dataPoint)
       })
     })
@@ -199,8 +199,8 @@ export default function mapdLine (_container) {
       .entries(cache.flatDataSorted)
       .map((d) => {
         const dataPoint = {}
-        dataPoint[keys.DATA_KEY] = config.keyType === "time" ? new Date(d.key) : d.key
-        dataPoint[keys.SERIES_KEY] = d.values
+        dataPoint[keys.DATA] = config.keyType === "time" ? new Date(d.key) : d.key
+        dataPoint[keys.SERIES] = d.values
         return dataPoint
       })
 
@@ -213,15 +213,15 @@ export default function mapdLine (_container) {
   function splitByGroups () {
     const groups = {}
     cache.dataBySeries.forEach((d) => {
-      const key = d[keys.GROUP_KEY]
+      const key = d[keys.GROUP]
       if (!groups[key]) {
         groups[key] = {
           allValues: [],
           allKeys: []
         }
       }
-      groups[key].allValues = groups[key].allValues.concat(d[keys.VALUES_KEY].map(getValue))
-      groups[key].allKeys = groups[key].allKeys.concat(d[keys.VALUES_KEY].map(getKey))
+      groups[key].allValues = groups[key].allValues.concat(d[keys.VALUES].map(getValue))
+      groups[key].allKeys = groups[key].allKeys.concat(d[keys.VALUES].map(getKey))
     })
 
     return groups
@@ -288,10 +288,10 @@ export default function mapdLine (_container) {
 
     cache.stackData = cache.dataByKey.map((d) => {
       const points = {
-        key: d[keys.DATA_KEY]
+        key: d[keys.DATA]
       }
       d.series.forEach((dB) => {
-        points[dB[keys.ID_KEY]] = dB[keys.VALUE_KEY]
+        points[dB[keys.ID]] = dB[keys.VALUE]
       })
 
       return points
@@ -363,12 +363,12 @@ export default function mapdLine (_container) {
 
   function drawLines () {
     const seriesLine = line()
-        .x((d) => cache.xScale(d[keys.DATA_KEY]))
-        .y((d) => cache.yScale(d[keys.VALUE_KEY]))
+        .x((d) => cache.xScale(d[keys.DATA]))
+        .y((d) => cache.yScale(d[keys.VALUE]))
 
     const seriesLine2 = line()
-        .x((d) => cache.xScale(d[keys.DATA_KEY]))
-        .y((d) => cache.yScale2(d[keys.VALUE_KEY]))
+        .x((d) => cache.xScale(d[keys.DATA]))
+        .y((d) => cache.yScale2(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
 
     const lines = cache.svg.select(".chart-group").selectAll(".line")
@@ -379,10 +379,10 @@ export default function mapdLine (_container) {
       .attr("class", "line")
       .merge(lines)
       .attr("d", (d) => {
-        if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
-          return seriesLine(d[keys.VALUES_KEY])
+        if (d[keys.GROUP] === cache.groupKeys[0]) {
+          return seriesLine(d[keys.VALUES])
         } else {
-          return seriesLine2(d[keys.VALUES_KEY])
+          return seriesLine2(d[keys.VALUES])
         }
       })
       .style("stroke", getColor)
@@ -392,13 +392,13 @@ export default function mapdLine (_container) {
 
   function drawAreas () {
     const seriesArea = area()
-        .x((d) => cache.xScale(d[keys.DATA_KEY]))
-        .y0((d) => cache.yScale(d[keys.VALUE_KEY]))
+        .x((d) => cache.xScale(d[keys.DATA]))
+        .y0((d) => cache.yScale(d[keys.VALUE]))
         .y1(() => cache.chartHeight)
 
     const seriesArea2 = area()
-        .x((d) => cache.xScale(d[keys.DATA_KEY]))
-        .y0((d) => cache.yScale2(d[keys.VALUE_KEY]))
+        .x((d) => cache.xScale(d[keys.DATA]))
+        .y0((d) => cache.yScale2(d[keys.VALUE]))
         .y1(() => cache.chartHeight)
         .curve(d3.curveCatmullRom)
 
@@ -410,10 +410,10 @@ export default function mapdLine (_container) {
       .attr("class", "area")
       .merge(areas)
       .attr("d", (d) => {
-        if (d[keys.GROUP_KEY] === cache.groupKeys[0]) {
-          return seriesArea(d[keys.VALUES_KEY])
+        if (d[keys.GROUP] === cache.groupKeys[0]) {
+          return seriesArea(d[keys.VALUES])
         } else {
-          return seriesArea2(d[keys.VALUES_KEY])
+          return seriesArea2(d[keys.VALUES])
         }
       })
       .style("stroke", getColor)
@@ -424,7 +424,7 @@ export default function mapdLine (_container) {
 
   function drawStackedAreas () {
     const seriesLine = area()
-        .x((d) => cache.xScale(d.data[keys.DATA_KEY]))
+        .x((d) => cache.xScale(d.data[keys.DATA]))
         .y0((d) => cache.yScale(d[0]))
         .y1((d) => cache.yScale(d[1]))
 
@@ -443,16 +443,16 @@ export default function mapdLine (_container) {
   }
 
   function highlightStackedDataPoints (_dataPoint) {
-    const stackedDataPoint = {key: _dataPoint[keys.DATA_KEY]}
+    const stackedDataPoint = {key: _dataPoint[keys.DATA]}
     _dataPoint.series.forEach((d) => {
-      const id = d[keys.ID_KEY]
-      stackedDataPoint[id] = d[keys.VALUE_KEY]
+      const id = d[keys.ID]
+      stackedDataPoint[id] = d[keys.VALUE]
     })
 
     const dotsStack = cache.stack([stackedDataPoint])
     const dotsData = dotsStack.map((d) => {
       const dot = {value: d[0][1]}
-      dot[keys.ID_KEY] = d.key
+      dot[keys.ID] = d.key
       return dot
     })
 
@@ -460,7 +460,7 @@ export default function mapdLine (_container) {
   }
 
   function highlightDataPoints (_dataPoint) {
-    const dotsData = _dataPoint[keys.SERIES_KEY]
+    const dotsData = _dataPoint[keys.SERIES]
 
     drawHighlightDataPoints(dotsData)
   }
@@ -473,7 +473,7 @@ export default function mapdLine (_container) {
       .append("circle")
       .attr("class", "dot")
       .merge(dots)
-      .attr("cy", (d) => cache.yScale(d[keys.VALUE_KEY]))
+      .attr("cy", (d) => cache.yScale(d[keys.VALUE]))
       .attr("r", config.dotRadius)
       .style("stroke", "none")
       .style("fill", getColor)
@@ -592,7 +592,7 @@ export default function mapdLine (_container) {
     const dataPoint = getNearestDataPoint(xPosition)
 
     if (dataPoint) {
-      const dataPointXPosition = cache.xScale(dataPoint[keys.DATA_KEY])
+      const dataPointXPosition = cache.xScale(dataPoint[keys.DATA])
       moveVerticalMarker(dataPointXPosition)
       if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
         highlightStackedDataPoints(dataPoint)

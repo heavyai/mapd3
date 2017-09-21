@@ -75,43 +75,9 @@ const config = {
     devtool: "eval",
 
     output: {
-      path: "dist/bundled",
+      path: "dist",
       filename: `${projectName}.min.js`,
       library: ["mapd3"],
-      libraryTarget: "umd"
-    },
-
-    externals: {
-      d3: "d3"
-    },
-
-    module: {
-      loaders: [defaultJSLoader],
-      // Tell Webpack not to parse certain modules.
-      noParse: [
-        new RegExp(`${vendorsPath}/d3/d3.js`)
-      ]
-    },
-
-    resolve: {
-      alias: {
-        d3: `${vendorsPath}/d3`
-      }
-    },
-
-    plugins
-  },
-
-  // Creates minified UMD versions of each chart
-  prodUMD: {
-    entry: currentCharts,
-
-    devtool: "eval",
-
-    output: {
-      path: "dist/umd",
-      filename: "[name].min.js",
-      library: ["mapd3", "[name]"],
       libraryTarget: "umd"
     },
 

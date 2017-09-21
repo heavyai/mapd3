@@ -1,8 +1,8 @@
 {
-  "name": "mapd3",
+  "name": "MapD3",
   "version": "0.1.0",
-  "description": "MapD3 chart library",
-  "main": "dist/bundled/mapd3.min.js",
+  "description": "A fast chart library for the fastest DB",
+  "main": "dist/mapd3.min.js",
   "private": true,
   "contributors": [
     {
@@ -19,13 +19,12 @@
     "release:major": "npm run prod && grunt release:major",
     "test": "karma start --mode=test",
     "_prod": "webpack --mode=prod --watch",
-    "_prodUMD": "webpack --mode=prodUMD --watch",
     "watch": "grunt watch",
     "clean": "yarn cache clean && rm -rf node_modules"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/mapd/mapd3"
   },
   "keywords": [
     "d3",
@@ -40,9 +39,9 @@
   "author": "MapD",
   "license": "Apache-2.0",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/mapd/mapd3/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/mapd/mapd3",
   "dependencies": {
     "base-64": "^0.1.0",
     "d3": "^4.10.0"
@@ -83,15 +82,11 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "load-grunt-tasks": "^3.5.2",
-    "moment": "^2.17.0",
-    "prismjs": "^1.6.0",
-    "pubsub-js": "^1.5.7",
     "requirejs-plugins": "^1.0.2",
     "sanitize-html": "^1.13.0",
     "shelljs": "^0.7.8",
     "sinon": "^3.0.0",
     "text": "requirejs/text",
-    "underscore": "~1.8.3",
     "webpack": "^1.13.3",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^1.16.2",

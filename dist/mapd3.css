@@ -86,17 +86,19 @@
 .line-chart .vertical-grid-line, .line-chart .horizontal-grid-line {
   stroke-dasharray: none; }
 
-.line-chart .series .line, .line-chart .series .area {
+.line-chart .line, .line-chart .area, .line-chart .stacked-area {
   stroke-width: 1.5px;
   stroke-linecap: round;
   stroke-linejoin: round; }
 
-.line-chart .series .line {
+.line-chart .line {
   fill: none; }
 
-.line-chart .series .area {
-  fill: blue;
-  fill-opacity: 0.8; }
+.line-chart .area {
+  fill-opacity: 0.5; }
+
+.line-chart .stacked-area {
+  fill-opacity: 0.5; }
 
 .brush-chart .brush-area {
   fill: #EFF2F5; }

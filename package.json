@@ -2,7 +2,7 @@
   "name": "MapD3",
   "version": "0.1.0",
   "description": "A fast chart library for the fastest DB",
-  "main": "dist/mapd3.min.js",
+  "main": "dist/mapd3.js",
   "private": true,
   "contributors": [
     {
@@ -13,12 +13,12 @@
   "scripts": {
     "styles": "grunt lint && grunt sass && grunt cssmin",
     "docs": "webpack --mode=demos && npm run styles && grunt docs",
-    "prod": "npm run _prodUMD && npm run _prod",
+    "prod": "webpack --mode=prod --watch",
+    "dev": "webpack --mode=dev --watch",
     "release": "npm run prod && grunt release:patch",
     "release:minor": "npm run prod && grunt release:minor",
     "release:major": "npm run prod && grunt release:major",
     "test": "karma start --mode=test",
-    "_prod": "webpack --mode=prod --watch",
     "watch": "grunt watch",
     "clean": "yarn cache clean && rm -rf node_modules"
   },

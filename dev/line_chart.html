@@ -18,7 +18,7 @@
 */
 
 const keyType = "number" // time, number, string
-const chartType = "stackedArea" // line, area, stackedArea
+const chartType = "line" // line, area, stackedArea
 
 const dataManager = mapd3.dataManager()
     .setConfig({
@@ -54,6 +54,13 @@ const chart1 = mapd3.line(chartNode1)
     tickSkip: 20
   })
   .setData(data)
+  .setConfig({width: 1200})
+  .render()
+
+const chart1Tooltip = mapd3.tooltip(chart1)
+
+chart1Tooltip.setConfig({width: 1200})
+  .render()
 
 mapd3.tooltip(chart1)
 

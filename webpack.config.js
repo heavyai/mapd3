@@ -8,7 +8,7 @@ const fixturesPath = path.resolve("./test/fixtures")
 const vendorsPath = path.resolve("./node_modules")
 const bundleIndexPath = path.resolve("./src/bundle.js")
 
-const isProduction = env === "prod" || env === "prodUMD"
+const isProduction = env === "prod"
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 const projectName = "mapd3"
 
@@ -100,6 +100,39 @@ const config = {
     },
 
     plugins
+  },
+
+  dev: {
+    entry: {
+      mapd3: bundleIndexPath
+    },
+
+    devtool: "eval",
+
+    output: {
+      path: "dist",
+      filename: `${projectName}.js`,
+      library: ["mapd3"],
+      libraryTarget: "umd"
+    },
+
+    externals: {
+      d3: "d3"
+    },
+
+    module: {
+      loaders: [defaultJSLoader],
+      // Tell Webpack not to parse certain modules.
+      noParse: [
+        new RegExp(`${vendorsPath}/d3/d3.js`)
+      ]
+    },
+
+    resolve: {
+      alias: {
+        d3: `${vendorsPath}/d3`
+      }
+    }
   }
 }
 

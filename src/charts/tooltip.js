@@ -58,9 +58,15 @@ export default function module (_chart) {
       .on("mouseMove.tooltip", update)
       .on("mouseOut.tooltip", hide)
 
-    buildSVG()
+    render()
   }
   init()
+
+  function render () {
+    buildSVG()
+
+    return this
+  }
 
   function buildSVG () {
     chartCache = cache.chart.getCache()
@@ -101,9 +107,6 @@ export default function module (_chart) {
     cache.tooltipDivider.attr("x2", cache.tooltipWidth)
         .attr("y1", config.titleHeight)
         .attr("y2", config.titleHeight)
-
-    cache.tooltipBody = cache.svg.append("g")
-        .classed("tooltip-body", true)
 
     hide()
   }
@@ -251,6 +254,7 @@ export default function module (_chart) {
     show,
     update,
     setConfig,
-    getCache
+    getCache,
+    render
   }
 }

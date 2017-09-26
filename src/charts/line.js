@@ -25,7 +25,6 @@ export default function mapdLine (_container) {
     },
     width: 800,
     height: 500,
-    hoverThreshold: 480,
     xAxisPadding: {
       top: 0,
       left: 0,
@@ -89,15 +88,24 @@ export default function mapdLine (_container) {
   const dispatcher = dispatch("mouseOver", "mouseOut", "mouseMove")
 
   function init () {
-    buildSVG()
-
-    return this
+    render()
+    addMouseEvents()
   }
   init()
 
+  function render () {
+    buildSVG()
+
+    if (cache.dataBySeries) {
+      buildChart()
+    }
+
+    return this
+  }
+
   function buildSVG () {
-    const w = config.width || this.clientWidth
-    const h = config.height || this.clientHeight
+    const w = config.width || cache.container.clientWidth
+    const h = config.height || cache.container.clientHeight
     cache.chartWidth = w - config.margin.left - config.margin.right
     cache.chartHeight = h - config.margin.top - config.margin.bottom
 
@@ -129,6 +137,8 @@ export default function mapdLine (_container) {
       .attr("height", config.height)
       .select(".container-group")
       .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
+
+    return this
   }
 
   function setData (_data) {
@@ -137,8 +147,12 @@ export default function mapdLine (_container) {
     cache.dataBySeries = cleanedData.dataBySeries
     cache.dataByKey = cleanedData.dataByKey
 
-    buildSVG()
+    render()
 
+    return this
+  }
+
+  function buildChart () {
     if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
       buildStackedScales()
     } else {
@@ -157,10 +171,7 @@ export default function mapdLine (_container) {
       drawStackedAreas()
     }
 
-    if (shouldShowHoverMarkers()) {
-      drawVerticalMarker()
-      addMouseEvents()
-    }
+    drawVerticalMarker()
 
     triggerIntroAnimation()
 
@@ -371,12 +382,12 @@ export default function mapdLine (_container) {
         .y((d) => cache.yScale2(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
 
-    const lines = cache.svg.select(".chart-group").selectAll(".line")
+    const lines = cache.svg.select(".chart-group").selectAll(".mark")
         .data(cache.dataBySeries)
 
     lines.enter()
       .append("path")
-      .attr("class", "line")
+      .attr("class", () => ["mark", "line"].join(" "))
       .merge(lines)
       .attr("d", (d) => {
         if (d[keys.GROUP] === cache.groupKeys[0]) {
@@ -386,6 +397,7 @@ export default function mapdLine (_container) {
         }
       })
       .style("stroke", getColor)
+      .style("fill", "none")
 
     lines.exit().remove()
   }
@@ -402,12 +414,12 @@ export default function mapdLine (_container) {
         .y1(() => cache.chartHeight)
         .curve(d3.curveCatmullRom)
 
-    const areas = cache.svg.select(".chart-group").selectAll(".area")
+    const areas = cache.svg.select(".chart-group").selectAll(".mark")
         .data(cache.dataBySeries)
 
     areas.enter()
       .append("path")
-      .attr("class", "area")
+      .attr("class", () => ["mark", "area"].join(" "))
       .merge(areas)
       .attr("d", (d) => {
         if (d[keys.GROUP] === cache.groupKeys[0]) {
@@ -428,12 +440,12 @@ export default function mapdLine (_container) {
         .y0((d) => cache.yScale(d[0]))
         .y1((d) => cache.yScale(d[1]))
 
-    const areas = cache.svg.select(".chart-group").selectAll(".stacked-area")
+    const areas = cache.svg.select(".chart-group").selectAll(".mark")
         .data(cache.stack(cache.stackData))
 
     areas.enter()
       .append("path")
-      .attr("class", "stacked-area")
+      .attr("class", () => ["mark", "stacked-area"].join(" "))
       .merge(areas)
       .attr("d", seriesLine)
       .style("stroke", "none")
@@ -536,10 +548,6 @@ export default function mapdLine (_container) {
     }
   }
 
-  function shouldShowHoverMarkers () {
-    return config.width > config.hoverThreshold
-  }
-
   function drawVerticalMarker () {
     cache.verticalMarkerContainer = cache.svg.select(".metadata-group .vertical-marker-container")
         .attr("transform", "translate(9999, 0)")
@@ -574,6 +582,7 @@ export default function mapdLine (_container) {
   }
 
   function addMouseEvents () {
+    console.log("addMouseEvents", cache.svg)
     cache.svg
       .on("mouseover", function mouseover (d) {
         handleMouseOver(this, d)
@@ -591,7 +600,7 @@ export default function mapdLine (_container) {
     const xPosition = mouseX - config.margin.left
     const dataPoint = getNearestDataPoint(xPosition)
 
-    if (dataPoint) {
+    if (dataPoint && cache.verticalMarkerContainer) {
       const dataPointXPosition = cache.xScale(dataPoint[keys.DATA])
       moveVerticalMarker(dataPointXPosition)
       if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
@@ -604,14 +613,17 @@ export default function mapdLine (_container) {
   }
 
   function handleMouseOut (_e, _d) {
-    cache.verticalMarkerLine.classed("bc-is-active", false)
-    cache.verticalMarkerContainer.attr("transform", "translate(9999, 0)")
+    if (cache.verticalMarkerContainer) {
+      cache.verticalMarkerContainer.style("display", "none")
+    }
 
     dispatcher.call("mouseOut", _e, _d, mouse(_e))
   }
 
   function handleMouseOver (_e, _d) {
-    cache.verticalMarkerLine.classed("bc-is-active", true)
+    if (cache.verticalMarkerContainer) {
+      cache.verticalMarkerContainer.style("display", "block")
+    }
 
     dispatcher.call("mouseOver", _e, _d, mouse(_e))
   }
@@ -638,7 +650,7 @@ export default function mapdLine (_container) {
   }
 
   return {
-    init,
+    render,
     setConfig,
     setData,
     getCache,

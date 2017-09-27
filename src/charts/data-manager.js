@@ -4,7 +4,7 @@ import {timeDay, timeMonth} from "d3-time"
 import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"
 
-export default function dataManager () {
+export default function DataManager () {
   /* eslint-disable no-magic-numbers */
   let config = {
     keyType: "number", // number, string, time,

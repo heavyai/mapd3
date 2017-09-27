@@ -1,6 +1,6 @@
 import {dispatch} from "d3-dispatch"
 
-export default function observer (_dataManager) {
+export default function Observer (_dataManager) {
   const dispatcher = dispatch("brushChange", "dataFilter")
   const dataManager = _dataManager
 

@@ -14,7 +14,7 @@ import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
 import {cloneData, getUnique, invertScale, sortData} from "./helpers/common"
 
-export default function mapdLine (_container) {
+export default function Line (_container) {
 
   let config = {
     margin: {
@@ -582,7 +582,6 @@ export default function mapdLine (_container) {
   }
 
   function addMouseEvents () {
-    console.log("addMouseEvents", cache.svg)
     cache.svg
       .on("mouseover", function mouseover (d) {
         handleMouseOver(this, d)
@@ -596,11 +595,15 @@ export default function mapdLine (_container) {
   }
 
   function handleMouseMove (_e) {
+    if (!cache.verticalMarkerContainer) {
+      return
+    }
+
     const mouseX = mouse(_e)[0]
     const xPosition = mouseX - config.margin.left
     const dataPoint = getNearestDataPoint(xPosition)
 
-    if (dataPoint && cache.verticalMarkerContainer) {
+    if (dataPoint) {
       const dataPointXPosition = cache.xScale(dataPoint[keys.DATA])
       moveVerticalMarker(dataPointXPosition)
       if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
@@ -613,17 +616,21 @@ export default function mapdLine (_container) {
   }
 
   function handleMouseOut (_e, _d) {
-    if (cache.verticalMarkerContainer) {
-      cache.verticalMarkerContainer.style("display", "none")
+    if (!cache.verticalMarkerContainer) {
+      return
     }
+
+    cache.verticalMarkerContainer.style("display", "none")
 
     dispatcher.call("mouseOut", _e, _d, mouse(_e))
   }
 
   function handleMouseOver (_e, _d) {
-    if (cache.verticalMarkerContainer) {
-      cache.verticalMarkerContainer.style("display", "block")
+    if (!cache.verticalMarkerContainer) {
+      return
     }
+    
+    cache.verticalMarkerContainer.style("display", "block")
 
     dispatcher.call("mouseOver", _e, _d, mouse(_e))
   }
@@ -649,6 +656,10 @@ export default function mapdLine (_container) {
     return cache
   }
 
+  function destroy () {
+    cache.svg.on(".", null).remove()
+  }
+
   return {
     render,
     setConfig,
@@ -656,6 +667,7 @@ export default function mapdLine (_container) {
     getCache,
     getConfig,
     on,
-    save
+    save,
+    destroy
   }
 }

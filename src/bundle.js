@@ -1,15 +1,15 @@
-import line from "./charts/line.js"
-import tooltip from "./charts/tooltip.js"
-import dataManager from "./charts/data-manager.js"
-import observer from "./charts/observer.js"
-import brush from "./charts/brush.js"
+import Line from "./charts/line.js"
+import Tooltip from "./charts/tooltip.js"
+import DataManager from "./charts/data-manager.js"
+import Observer from "./charts/observer.js"
+import Brush from "./charts/brush.js"
 import {colors} from "./charts/helpers/colors.js"
 
 export {
-  line,
-  tooltip,
-  dataManager,
-  observer,
-  brush,
+  Line,
+  Tooltip,
+  DataManager,
+  Observer,
+  Brush,
   colors
 }

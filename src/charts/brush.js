@@ -6,7 +6,7 @@ import {event, select} from "d3-selection"
 import {keys} from "./helpers/constants"
 import {cloneData, invertScale, sortData} from "./helpers/common"
 
-export default function module (_chart) {
+export default function Brush (_chart) {
 
   let config = {
     margin: {
@@ -42,14 +42,20 @@ export default function module (_chart) {
   const dispatcher = dispatch("brushStart", "brushMove", "brushEnd")
 
   function init () {
-    buildSVG()
-
-    cache.data = extractBrushDimension(cloneData(chartCache.dataBySeries))
-    buildScales()
-    buildBrush()
-    drawBrush()
+    render()
   }
   init()
+
+  function render () {
+    buildSVG()
+
+    if (chartCache.dataBySeries) {
+      cache.data = extractBrushDimension(cloneData(chartCache.dataBySeries))
+      buildScales()
+      buildBrush()
+      drawBrush()
+    }
+  }
 
   function buildSVG () {
     chartCache = cache.chart.getCache()
@@ -66,21 +72,22 @@ export default function module (_chart) {
     cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
-  function buildBrush () {
-    cache.brush = brushX()
-        .extent([[0, 0], [cache.chartWidth, cache.chartHeight]])
-        .on("start", handleBrushStart)
-        .on("brush", handleBrushMove)
-        .on("end", handleBrushEnd)
+  function extractBrushDimension (_data) {
+    const merged = merge(_data.map((d) => d[keys.VALUES]))
+    return sortData(merged, config.keyType)
   }
 
   function buildScales () {
     cache.xScale = chartCache.xScale
   }
 
-  function extractBrushDimension (_data) {
-    const merged = merge(_data.map((d) => d[keys.VALUES]))
-    return sortData(merged, config.keyType)
+  function buildBrush () {
+    cache.brush = cache.brush || brushX()
+        .on("start", handleBrushStart)
+        .on("brush", handleBrushMove)
+        .on("end", handleBrushEnd)
+
+    cache.brush.extent([[0, 0], [cache.chartWidth, cache.chartHeight]])
   }
 
   function drawBrush () {
@@ -177,9 +184,20 @@ export default function module (_chart) {
     return cache
   }
 
+  function destroy () {
+    cache.svg.remove()
+  }
+
+  function update () {
+    render()
+    return this
+  }
+
   return {
     getCache,
     on,
-    setConfig
+    setConfig,
+    destroy,
+    update
   }
 }

@@ -20,7 +20,7 @@
 const keyType = "number" // time, number, string
 const chartType = "line" // line, area, stackedArea
 
-const dataManager = mapd3.dataManager()
+const dataManager = mapd3.DataManager()
     .setConfig({
       keyType,
       range: [0, 100],
@@ -29,12 +29,12 @@ const dataManager = mapd3.dataManager()
     })
 const data = dataManager.generateTestDataset()
 
-const observer = mapd3.observer(dataManager)
+const observer = mapd3.Observer(dataManager)
 
 const colors = mapd3.colors.mapdColors
 
 const chartNode1 = document.querySelector(".chart1")
-const chart1 = mapd3.line(chartNode1)
+const chart1 = mapd3.Line(chartNode1)
   .setConfig({
     width: 800,
     height: 400,
@@ -57,14 +57,14 @@ const chart1 = mapd3.line(chartNode1)
   .setConfig({width: 1200})
   .render()
 
-const chart1Tooltip = mapd3.tooltip(chart1)
+const chart1Tooltip = mapd3.Tooltip(chart1)
 
 chart1Tooltip.setConfig({width: 1200})
   .render()
 
-mapd3.tooltip(chart1)
+mapd3.Tooltip(chart1)
 
-const chart2 = mapd3.line(".chart2")
+const chart2 = mapd3.Line(".chart2")
   .setConfig({
     width: 800,
     height: 100,
@@ -85,10 +85,13 @@ const chart2 = mapd3.line(".chart2")
   })
   .setData(data)
 
-mapd3.brush(chart2)
-  .on("brushMove", (...arg) => {
-    observer.pub("brushChange", ...arg)
-  })
+const chart2Brush = mapd3.Brush(chart2)
+chart2Brush.on("brushMove", (...arg) => {
+  observer.pub("brushChange", ...arg)
+})
+
+// chart2.setData(data)
+// chart2Brush.update()
 
 observer.sub("dataFilter", (_data) => {
   chart1.setData(_data)

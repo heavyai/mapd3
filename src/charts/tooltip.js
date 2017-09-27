@@ -5,7 +5,7 @@ import {timeFormat} from "d3-time-format"
 import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"
 
-export default function module (_chart) {
+export default function Tooltip (_chart) {
 
   let config = {
     margin: {
@@ -249,12 +249,18 @@ export default function module (_chart) {
     return cache
   }
 
+  function destroy () {
+    cache.chart.on(".tooltip", null)
+    cache.svg.remove()
+  }
+
   return {
     hide,
     show,
     update,
     setConfig,
     getCache,
-    render
+    render,
+    destroy
   }
 }

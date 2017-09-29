@@ -67,13 +67,13 @@ export default function DataManager () {
         {
           label: "line C",
           id: 3,
-          group: 1, // to do
+          group: 2, // to do
           values: generateSeries(dataKeys, config.range) // to do
         }
       ]
     }
 
-    console.log("generated data", cache.data)
+    // console.log("generated data", cache.data)
 
     return cache.data
   }

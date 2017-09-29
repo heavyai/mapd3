@@ -17,7 +17,7 @@ export default function Tooltip (_chart) {
     width: 250,
     height: 45,
 
-    valueFormat: ".2s",
+    valueFormat: ".2f",
 
     tooltipMaxTopicLength: 170,
     tooltipBorderRadius: 3,
@@ -31,7 +31,10 @@ export default function Tooltip (_chart) {
     padding: 8,
     dotRadius: 4,
 
-    dateFormat: "%x",
+    tooltipHeight: 48,
+    tooltipWidth: 100,
+
+    dateFormat: "%b %d, %Y",
     seriesOrder: [],
 
     // from chart
@@ -46,8 +49,6 @@ export default function Tooltip (_chart) {
     tooltipDivider: null,
     tooltipBody: null,
     tooltipTitle: null,
-    tooltipHeight: 48,
-    tooltipWidth: 150,
     tooltipBackground: null
   }
 
@@ -96,15 +97,15 @@ export default function Tooltip (_chart) {
     cache.svg.attr("width", config.width)
       .attr("height", config.height)
 
-    cache.tooltipBackground.attr("width", cache.tooltipWidth)
-        .attr("height", cache.tooltipHeight)
+    cache.tooltipBackground.attr("width", config.tooltipWidth)
+        .attr("height", config.tooltipHeight)
         .attr("rx", config.tooltipBorderRadius)
         .attr("ry", config.tooltipBorderRadius)
 
     cache.tooltipTitle.attr("dy", config.padding)
         .attr("dx", config.padding)
 
-    cache.tooltipDivider.attr("x2", cache.tooltipWidth)
+    cache.tooltipDivider.attr("x2", config.tooltipWidth)
         .attr("y1", config.titleHeight)
         .attr("y2", config.titleHeight)
 
@@ -133,7 +134,7 @@ export default function Tooltip (_chart) {
       .attr("dy", config.padding)
       .attr("dx", -config.padding)
       .merge(tooltipRight)
-      .attr("x", cache.tooltipWidth)
+      .attr("x", config.tooltipWidth)
       .attr("y", (d, i) => i * config.elementHeight + config.titleHeight)
       .text(getValueText)
     tooltipRight.exit().remove()
@@ -149,9 +150,9 @@ export default function Tooltip (_chart) {
       .style("fill", (d) => chartCache.seriesColorScale[d[keys.ID]])
     tooltipCircles.exit().remove()
 
-    cache.tooltipHeight = cache.tooltipBody.node().getBBox().height
-    cache.tooltipBackground.attr("width", cache.tooltipWidth)
-      .attr("height", cache.tooltipHeight + config.titleHeight + config.padding)
+    config.tooltipHeight = cache.tooltipBody.node().getBBox().height
+    cache.tooltipBackground.attr("width", config.tooltipWidth)
+      .attr("height", config.tooltipHeight + config.titleHeight + config.padding)
   }
 
   function getTooltipPosition (_mouseX) {
@@ -160,7 +161,7 @@ export default function Tooltip (_chart) {
     const tooltipY = config.margin.top
 
     if (_mouseX > (cache.chartWidth / 2)) {
-      offset = -cache.tooltipWidth
+      offset = -config.tooltipWidth
     }
 
     return [tooltipX + offset, tooltipY]
@@ -175,8 +176,8 @@ export default function Tooltip (_chart) {
   function updatePositionAndSize (_xPosition) {
     const [tooltipX, tooltipY] = getTooltipPosition(_xPosition)
 
-    cache.svg.attr("width", cache.tooltipWidth)
-      .attr("height", cache.tooltipHeight)
+    cache.svg.attr("width", config.tooltipWidth)
+      .attr("height", config.tooltipHeight)
       .transition()
       .duration(config.mouseChaseDuration)
       .ease(config.ease)

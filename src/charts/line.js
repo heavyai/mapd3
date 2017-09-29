@@ -45,8 +45,8 @@ export default function Line (_container) {
 
     yTicks: 5,
     yTicks2: 5,
-    yAxisFormat: ".2s",
-    yAxisFormat2: ".2s",
+    yAxisFormat: ".2f",
+    yAxisFormat2: ".2f",
 
     keyType: "time",
     chartType: "line" // line, area, stackedLine, stackedArea

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "A fast chart library for the fastest DB",
   "main": "dist/mapd3.js",
-  "private": true,
   "contributors": [
     {
       "name": "Christophe Viau",

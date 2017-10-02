@@ -1,5 +1,5 @@
 {
-  "name": "MapD3",
+  "name": "mapd3",
   "version": "0.1.0",
   "description": "A fast chart library for the fastest DB",
   "main": "dist/mapd3.js",

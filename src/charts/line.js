@@ -4,7 +4,7 @@ import {nest} from "d3-collection"
 import {dispatch} from "d3-dispatch"
 import {easeLinear} from "d3-ease"
 import {scaleTime, scalePoint, scaleLinear, scaleOrdinal} from "d3-scale"
-import {area, line, stack} from "d3-shape"
+import {area, curveCatmullRom, line, stack, stackOffsetNone, stackOrderNone} from "d3-shape"
 import {select, mouse} from "d3-selection"
 import {timeFormat} from "d3-time-format"
 import {format} from "d3-format"
@@ -110,27 +110,25 @@ export default function Line (_container) {
     cache.chartHeight = h - config.margin.top - config.margin.bottom
 
     if (!cache.svg) {
+      const template = `<svg class="mapd3 line-chart">
+        <g class="container-group">
+          <g class="grid-lines-group"></g>
+          <g class="x-axis-group">
+            <g class="axis x"></g>
+          </g>
+          <g class="y-axis-group axis y"></g>
+          <g class="y-axis-group2 axis y"></g>
+          <g class="chart-group"></g>
+          <g class="metadata-group">
+            <g class="hover-marker vertical-marker-container"></g>
+          </g>
+        </g>
+        <rect class="masking-rectangle"></rect>
+      </svg>`
+
       cache.svg = select(cache.container)
-        .append("svg")
-        .classed("mapd3 line-chart", true)
-
-      const container = cache.svg.append("g")
-        .classed("container-group", true)
-
-      container.append("g").classed("grid-lines-group", true)
-      container.append("g").classed("x-axis-group", true)
-        .append("g").classed("axis x", true)
-      container.append("g").classed("y-axis-group axis y", true)
-      container.append("g").classed("y-axis-group2 axis y", true)
-      container.append("g").classed("chart-group", true)
-
-      const metadataGroup = container.append("g")
-          .classed("metadata-group", true)
-      metadataGroup.append("g")
-          .attr("class", "hover-marker vertical-marker-container")
-
-      cache.maskingRectangle = cache.svg.append("rect")
-        .attr("class", "masking-rectangle")
+          .html(template)
+          .select("svg")
     }
 
     cache.svg.attr("width", config.width)
@@ -310,8 +308,8 @@ export default function Line (_container) {
 
     cache.stack = stack()
       .keys(cache.dataBySeries.map(getID))
-      .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetNone)
+      .order(stackOrderNone)
+      .offset(stackOffsetNone)
 
     const valuesExtent = extent(allStackHeights)
 
@@ -380,7 +378,7 @@ export default function Line (_container) {
     const seriesLine2 = line()
         .x((d) => cache.xScale(d[keys.DATA]))
         .y((d) => cache.yScale2(d[keys.VALUE]))
-        .curve(d3.curveCatmullRom)
+        .curve(curveCatmullRom)
 
     const lines = cache.svg.select(".chart-group").selectAll(".mark")
         .data(cache.dataBySeries)
@@ -412,7 +410,7 @@ export default function Line (_container) {
         .x((d) => cache.xScale(d[keys.DATA]))
         .y0((d) => cache.yScale2(d[keys.VALUE]))
         .y1(() => cache.chartHeight)
-        .curve(d3.curveCatmullRom)
+        .curve(curveCatmullRom)
 
     const areas = cache.svg.select(".chart-group").selectAll(".mark")
         .data(cache.dataBySeries)

@@ -1,6 +1,6 @@
 import {dispatch} from "d3-dispatch"
 
-import {exclusiveToggle} from "./interactors"
+import {exclusiveToggle, toggleOnOff} from "./interactors"
 
 export default function Binning (_chart) {
 
@@ -11,22 +11,19 @@ export default function Binning (_chart) {
       bottom: 40,
       left: 70
     },
-    width: 800,
-    height: 500
+    toggle: ["auto"],
+    exclusiveToggle: ["1y", "1q", "1mo", "1w"],
+    label: "BIN:"
   }
 
   const cache = {
     chart: _chart,
-    svg: null,
-    chartWidth: null,
-    chartHeight: null
+    svg: null
   }
 
   let chartCache = {
     svg: null
   }
-
-  const data = ["auto", "1y", "1q", "1mo", "1w"]
 
   // events
   const dispatcher = dispatch("change")
@@ -40,28 +37,48 @@ export default function Binning (_chart) {
     chartCache = cache.chart.getCache()
     setConfig(cache.chart.getConfig())
 
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.svg) {
       cache.svg = chartCache.svg.append("g")
           .classed("binning-group", true)
           .append("text")
+
+      cache.svg.append("tspan")
+        .text(config.label)
+        .attr("y", "1em")
+        .attr("class", "item")
     }
 
-    cache.svg.attr("transform", `translate(${[config.margin.left, config.margin.top / 2]})`)
+    cache.svg.attr("transform", `translate(${[config.margin.left, 0]})`)
 
-    const texts = cache.svg.selectAll(".item")
-      .data(["BIN:"].concat(data))
-    texts.enter().append("tspan").classed("item", true)
-      .attr("dx", "0.5em")
-      .on("click.dispatch", (d) => {
-        dispatcher.call("change", this, d)
+    const items = cache.svg.selectAll(".toggleOnOff")
+        .data(config.toggle)
+    items.enter().append("tspan")
+      .attr("class", (d) => `item ${d} toggleOnOff`)
+      .attr("dx", "0.8em")
+      .attr("y", "1em")
+      .on("click.select", toggleOnOff(".binning-group .item.toggleOnOff"))
+      .on("click.dispatch", function click (d) {
+        const isSelected = this.classList.contains("selected")
+        dispatcher.call("change", this, d, {isSelected})
       })
-      .on("click.select", exclusiveToggle(".binning-group tspan.item"))
-      .merge(texts)
+      .merge(items)
       .text((d) => d)
-    texts.exit().remove()
+    items.exit().remove()
+
+    const itemsExclusive = cache.svg.selectAll(".toggleExclusive")
+        .data(config.exclusiveToggle)
+    itemsExclusive.enter().append("tspan")
+      .attr("class", (d) => `item ${d} toggleExclusive`)
+      .attr("dx", "0.8em")
+      .attr("y", "1em")
+      .on("click.select", exclusiveToggle(".binning-group .item.toggleExclusive"))
+      .on("click.dispatch", function click (d) {
+        const isSelected = this.classList.contains("selected")
+        dispatcher.call("change", this, d, {isSelected})
+      })
+      .merge(itemsExclusive)
+      .text((d) => d)
+    itemsExclusive.exit().remove()
   }
 
   function on (...args) {

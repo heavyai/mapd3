@@ -9,9 +9,14 @@ import {select} from "d3-selection"
  * @return {void}
  */
 
-export function exclusiveToggle (selector) {
-  const toggleOffIsEnabled = false
-  const toggleMultipleIsEnabled = false
+export function toggleOnOff (selector) {
+  return exclusiveToggle(selector, {
+    toggleOffIsEnabled: true,
+    toggleMultipleIsEnabled: false
+  })
+}
+
+export function exclusiveToggle (selector, options = {toggleOffIsEnabled: false, toggleMultipleIsEnabled: false}) {
 
   return function toggle () {
     /* eslint-disable consistent-this */
@@ -26,9 +31,9 @@ export function exclusiveToggle (selector) {
       let shouldBeSelected = false
 
       if (hasJustBeenClicked) {
-        shouldBeSelected = toggleOffIsEnabled ? !isSelected : true
+        shouldBeSelected = options.toggleOffIsEnabled ? !isSelected : true
       } else {
-        shouldBeSelected = toggleMultipleIsEnabled ? isSelected : false
+        shouldBeSelected = options.toggleMultipleIsEnabled ? isSelected : false
       }
 
       hasSelection = hasSelection || shouldBeSelected

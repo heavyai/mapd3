@@ -67,7 +67,7 @@ chart1Tooltip.setConfig({width: 1200})
 mapd3.Tooltip(chart1)
 
 mapd3.Binning(chart1)
-  .on("change", (d) => console.log(d))
+  .on("change", (d, info) => console.log(d, info))
 
 const chart2 = mapd3.Line(".chart2")
   .setConfig({

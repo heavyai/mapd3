@@ -32,11 +32,12 @@ export default function Line (_container) {
       right: 0
     },
     tickPadding: 5,
-    colorSchema: colors.mapdColors,
+    colorSchema: colors.mapdColors.map((d) => ({value: d})),
     dotRadius: 4,
     xAxisFormat: "%c",
     tickSkip: 1,
     tickSizes: 8,
+    defaultColor: "skyblue",
 
     isAnimated: false,
     ease: easeLinear,
@@ -67,7 +68,6 @@ export default function Line (_container) {
     data: null,
     chartWidth: null, chartHeight: null,
     xScale: null, yScale: null, yScale2: null, colorScale: null,
-    seriesColorScale: null,
     xAxis: null, yAxis: null, yAxis2: null,
     groupKeys: [],
     hasSecondAxis: false,
@@ -251,16 +251,12 @@ export default function Line (_container) {
   }
 
   function buildColorScale () {
+    const ids = cache.dataBySeries.map(getID)
     cache.colorScale = scaleOrdinal()
-        .range(config.colorSchema)
-        .domain(cache.dataBySeries.map(getID))
-
-    const range = cache.colorScale.range()
-    cache.seriesColorScale = cache.colorScale.domain()
-      .reduce((memo, item, i) => {
-        memo[item] = range[i]
-        return memo
-      }, {})
+        .range(config.colorSchema.map((d) => d.value))
+        .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
+        .unknown(config.defaultColor)
+    console.log(111, cache.colorScale.range(), cache.colorScale.domain(), ids, config.colorSchema)
   }
 
   function buildYScale (_extent) {
@@ -394,7 +390,8 @@ export default function Line (_container) {
           return seriesLine2(d[keys.VALUES])
         }
       })
-      .style("stroke", getColor)
+      .style("stroke", (d) => cache.colorScale(d[keys.ID]))
+      // .style("stroke", getColor)
       .style("fill", "none")
 
     lines.exit().remove()
@@ -609,7 +606,7 @@ export default function Line (_container) {
       } else {
         highlightDataPoints(dataPoint)
       }
-      dispatcher.call("mouseMove", _e, dataPoint, cache.seriesColorScale, dataPointXPosition)
+      dispatcher.call("mouseMove", _e, dataPoint, dataPointXPosition)
     }
   }
 
@@ -627,7 +624,7 @@ export default function Line (_container) {
     if (!cache.verticalMarkerContainer) {
       return
     }
-    
+
     cache.verticalMarkerContainer.style("display", "block")
 
     dispatcher.call("mouseOver", _e, _d, mouse(_e))

@@ -1,6 +1,14 @@
 <html>
 <head>
 <link rel="stylesheet" href="../dist/mapd3.css">
+<style>
+  .binning-group .item {
+    font-size: 11px;
+  }
+  .binning-group .item.selected {
+    text-decoration: underline;
+  }
+</style>
 </head><body>
 <div class="chart1"></div>
 <div class="chart2"></div>
@@ -32,6 +40,7 @@ const data = dataManager.generateTestDataset()
 const observer = mapd3.Observer(dataManager)
 
 const colors = mapd3.colors.mapdColors
+const palette = data.series.map((d, i) => ({key: d.id, value: colors[i]}))
 
 const chartNode1 = document.querySelector(".chart1")
 const chart1 = mapd3.Line(chartNode1)
@@ -39,7 +48,7 @@ const chart1 = mapd3.Line(chartNode1)
     width: 800,
     height: 400,
     margin: {
-      top: 8,
+      top: 16,
       right: 32,
       bottom: 32,
       left: 32
@@ -48,7 +57,7 @@ const chart1 = mapd3.Line(chartNode1)
     xAxisFormat: "%x",
     yAxisFormat: ".1f",
     yTicks: 5,
-    colorSchema: colors,
+    colorSchema: palette,
     keyType,
     chartType,
     tickSkip: 20
@@ -61,6 +70,9 @@ chart1Tooltip.setConfig({width: 1200})
   .render()
 
 mapd3.Tooltip(chart1)
+
+mapd3.Binning(chart1)
+  .on("change", (d) => console.log(d))
 
 const chart2 = mapd3.Line(".chart2")
   .setConfig({
@@ -76,7 +88,7 @@ const chart2 = mapd3.Line(".chart2")
     xAxisFormat: "%x",
     yAxisFormat: ".1f",
     yTicks: 3,
-    colorSchema: colors,
+    colorSchema: palette,
     keyType,
     chartType,
     tickSkip: 20

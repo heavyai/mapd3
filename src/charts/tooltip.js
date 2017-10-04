@@ -147,7 +147,7 @@ export default function Tooltip (_chart) {
       .attr("cx", config.padding + config.dotRadius)
       .attr("cy", (d, i) => i * config.elementHeight + config.titleHeight + config.elementHeight / 2)
       .attr("r", config.dotRadius)
-      .style("fill", (d) => chartCache.seriesColorScale[d[keys.ID]])
+      .style("fill", (d) => chartCache.colorScale(d[keys.ID]))
     tooltipCircles.exit().remove()
 
     config.tooltipHeight = cache.tooltipBody.node().getBBox().height
@@ -235,7 +235,7 @@ export default function Tooltip (_chart) {
     return this
   }
 
-  function update (_dataPoint, _colorMapping, _xPosition, _yPosition = null) {
+  function update (_dataPoint, _xPosition, _yPosition = null) {
     updateTooltip(_dataPoint, _xPosition, _yPosition)
 
     return this

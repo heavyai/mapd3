@@ -49,13 +49,12 @@ export default function Binning (_chart) {
           .append("text")
     }
 
-    cache.svg.attr("transform", `translate(${[config.margin.left, 0]})`)
+    cache.svg.attr("transform", `translate(${[config.margin.left, config.margin.top / 2]})`)
 
     const texts = cache.svg.selectAll(".item")
       .data(["BIN:"].concat(data))
     texts.enter().append("tspan").classed("item", true)
       .attr("dx", "0.5em")
-      .attr("dominant-baseline", "hanging")
       .on("click.dispatch", (d) => {
         dispatcher.call("change", this, d)
       })

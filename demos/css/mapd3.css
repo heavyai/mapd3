@@ -120,3 +120,9 @@
 
 .brush-group .handle {
   fill: #eee; }
+
+.binning-group .item {
+  font-size: 11px; }
+
+.binning-group .item.selected {
+  text-decoration: underline; }

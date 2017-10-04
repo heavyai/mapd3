@@ -256,7 +256,6 @@ export default function Line (_container) {
         .range(config.colorSchema.map((d) => d.value))
         .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
         .unknown(config.defaultColor)
-    console.log(111, cache.colorScale.range(), cache.colorScale.domain(), ids, config.colorSchema)
   }
 
   function buildYScale (_extent) {

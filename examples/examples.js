@@ -1,6 +1,5 @@
 /*
 to do:
-  - render
   - on
   - destroy
   - tooltip
@@ -21,18 +20,18 @@ const dataManager = mapd3.DataManager()
 const data = dataManager.generateTestDataset()
 
 /**
- * A line/area/stacked area chart.
- * @namespace line
- * @name line
+ * A base chart for line/area/stacked charts.
+ * @namespace Chart
+ * @name Chart
  * @param {object} container The DOM element or selector for the container
- * @returns {object} The line chart instance.
+ * @returns {object} The chart instance.
  * @example
- * mapd3.Line(document.querySelector('.chart'))
+ * mapd3.Chart(document.querySelector('.chart'))
  */
-const chart = mapd3.Line(document.querySelector(".chart1"))
+const chart = mapd3.Chart(document.querySelector(".chart1"))
 
 /**
- * Configure the line chart
+ * Configure the chart
  * @name setConfig
  * @param {object} config A config object.
  * @param {string} config.keyType Data type of x values: time, number, string
@@ -44,13 +43,13 @@ const chart = mapd3.Line(document.querySelector(".chart1"))
  * @param {string} config.xAxisFormat d3-format string for x axis
  * @param {string} config.yAxisFormat d3-format string for y axis
  * @param {string} config.yTicks Suggestion for the number of y ticks
- * @param {Array.<string>} config.colorSchema List of colors to use on marks
+ * @param {Array.<string>} config.colorSchema List of {key, value} colors to use on marks
  * @param {number} config.tickSkip The number of ticks to skip to simplify the x axis
- * @returns {object} The line chart instance.
- * @memberof line
+ * @returns {object} The chart instance.
+ * @memberof Chart
  * @instance
  * @example
- * mapd3.Line(document.querySelector('.chart'))
+ * mapd3.Chart(document.querySelector('.chart'))
  * .setConfig({
  *     width: 100
  * })
@@ -68,7 +67,7 @@ chart.setConfig({
   xAxisFormat: "%x",
   yAxisFormat: ".1f",
   yTicks: 5,
-  colorSchema: mapd3.colors.mapdColors,
+  colorSchema: mapd3.colors.mapdColors.map((d, i) => ({key: i, value: d})),
   keyType,
   chartType,
   tickSkip: 20
@@ -78,11 +77,11 @@ chart.setConfig({
  * Set the data
  * @name setData
  * @param {object} data The data object.
- * @returns {object} The line chart instance.
- * @memberof line
+ * @returns {object} The chart instance.
+ * @memberof Chart
  * @instance
  * @example
- * mapd3.Line(document.querySelector('.chart'))
+ * mapd3.Chart(document.querySelector('.chart'))
  * .setData({
  *   "series": [{
  *     "label": "line A",
@@ -119,11 +118,11 @@ chart.setData(data)
  * Forces a render, for example after using setConfig.
  * Automatically called by setData, Uses cached data.
  * @name render
- * @returns {object} The line chart instance.
- * @memberof line
+ * @returns {object} The chart instance.
+ * @memberof Chart
  * @instance
  * @example
- * mapd3.Line(document.querySelector('.chart'))
+ * mapd3.Chart(document.querySelector('.chart'))
  * .setConfig({width: 100})
  * .render()
  */
@@ -132,12 +131,12 @@ chart.setConfig({width: 700})
 
 /**
  * A simple tooltip.
- * @namespace tooltip
- * @name tooltip
+ * @namespace Tooltip
+ * @name Tooltip
  * @param {object} chart The chart object to apply the tooltip to
  * @returns {object} The tooltip instance.
  * @example
- * var chart = mapd3.Line(document.querySelector('.chart'))
+ * var chart = mapd3.Chart(document.querySelector('.chart'))
  * mapd3.Tooltip(chart)
  */
 

@@ -1,4 +1,4 @@
-import Line from "./charts/line.js"
+import Chart from "./charts/chart.js"
 import Tooltip from "./charts/tooltip.js"
 import DataManager from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
@@ -8,7 +8,7 @@ import Interactors from "./charts/interactors.js"
 import {colors} from "./charts/helpers/colors.js"
 
 export {
-  Line,
+  Chart,
   Tooltip,
   DataManager,
   Observer,

@@ -32,7 +32,7 @@ export default function Tooltip (_chart) {
     dotRadius: 4,
 
     tooltipHeight: 48,
-    tooltipWidth: 100,
+    tooltipWidth: 160,
 
     dateFormat: "%b %d, %Y",
     seriesOrder: [],

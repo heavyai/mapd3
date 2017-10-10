@@ -2,7 +2,6 @@
 <head>
 <link rel="stylesheet" href="../dist/mapd3.css">
 <style>
-
 </style>
 </head><body>
 <div class="chart1"></div>
@@ -12,28 +11,29 @@
 <script>
 
 /*
-* make hover a component like brush that listens to events
-* legend
+* legend (sharing with tooltip?)
 * titles
 * axes locking
 * domain editor
-* generator config: multiaxis
+* problem with selecting first point
 * single point line/area chart
+* null line break
 */
 
-const keyType = "number" // time, number, string
-const chartType = "line" // line, area, stackedArea
+const keyType = "string" // time, number, string
+const chartType = "line" // line, area, stackedArea, bar, stackedBar
 
 const dataManager = mapd3.DataManager()
     .setConfig({
       keyType,
       range: [0, 100],
-      pointCount: 500,
-      groupCount: 2
+      pointCount: 20,
+      groupCount: 2,
+      lineCount: 4
     })
 const data = dataManager.generateTestDataset()
 
-const observer = mapd3.Observer(dataManager)
+// const observer = mapd3.Observer(dataManager)
 
 const colors = mapd3.colors.mapdColors
 const palette = data.series.map((d, i) => ({key: d.id, value: colors[i]}))
@@ -56,7 +56,7 @@ const chart1 = mapd3.Chart(chartNode1)
     colorSchema: palette,
     keyType,
     chartType,
-    tickSkip: 20
+    tickSkip: 4
   })
   .setData(data)
 
@@ -65,41 +65,47 @@ mapd3.Tooltip(chart1)
     tooltipWidth: 160
   })
 
+mapd3.Brush(chart1)
+// .on("brushMove", (...arg) => console.log("brush", ...arg))
+
+mapd3.Hover(chart1)
+  // .on("hover", (...arg) => console.log("hover", ...arg))
+
 mapd3.Binning(chart1)
-  .on("change", (d, info) => console.log(d, info))
+  // .on("change", (...arg) => console.log("binning", ...arg))
 
-const chart2 = mapd3.Chart(".chart2")
-  .setConfig({
-    width: 800,
-    height: 100,
-    margin: {
-      top: 8,
-      right: 32,
-      bottom: 32,
-      left: 32
-    },
-    grid: "horizontal",
-    xAxisFormat: "%x",
-    yAxisFormat: ".1f",
-    yTicks: 3,
-    colorSchema: palette,
-    keyType,
-    chartType,
-    tickSkip: 20
-  })
-  .setData(data)
+// const chart2 = mapd3.Chart(".chart2")
+//   .setConfig({
+//     width: 800,
+//     height: 100,
+//     margin: {
+//       top: 8,
+//       right: 32,
+//       bottom: 32,
+//       left: 32
+//     },
+//     grid: "horizontal",
+//     xAxisFormat: "%x",
+//     yAxisFormat: ".1f",
+//     yTicks: 3,
+//     colorSchema: palette,
+//     keyType,
+//     chartType,
+//     tickSkip: 20
+//   })
+//   .setData(data)
 
-const chart2Brush = mapd3.Brush(chart2)
-chart2Brush.on("brushMove", (...arg) => {
-  observer.pub("brushChange", ...arg)
-})
+// const chart2Brush = mapd3.Brush(chart2)
+// chart2Brush.on("brushMove", (...arg) => {
+//   observer.pub("brushChange", ...arg)
+// })
 
-// chart2.setData(data)
-// chart2Brush.update()
+// // chart2.setData(data)
+// // chart2Brush.update()
 
-observer.sub("dataFilter", (_data) => {
-  chart1.setData(_data)
-})
+// observer.sub("dataFilter", (_data) => {
+//   chart1.setData(_data)
+// })
 
 </script>
 </body>

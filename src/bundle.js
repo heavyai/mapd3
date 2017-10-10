@@ -4,6 +4,7 @@ import DataManager from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
 import Binning from "./charts/binning.js"
 import Brush from "./charts/brush.js"
+import Hover from "./charts/hover.js"
 import Interactors from "./charts/interactors.js"
 import {colors} from "./charts/helpers/colors.js"
 
@@ -14,6 +15,7 @@ export {
   Observer,
   Binning,
   Brush,
+  Hover,
   Interactors,
   colors
 }

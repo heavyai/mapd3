@@ -10,7 +10,8 @@ export default function DataManager () {
     keyType: "number", // number, string, time,
     range: [0, 100],
     pointCount: 200,
-    groupCount: 2
+    groupCount: 2,
+    lineCount: 4
   }
   const cache = {
     data: null,
@@ -50,28 +51,14 @@ export default function DataManager () {
       dataKeys = range(0, config.pointCount).map((d, i) => i)
     }
 
-    cache.data = {
-      series: [
-        {
-          label: "line A",
-          id: 1,
-          group: 1,
-          values: generateSeries(dataKeys, config.range)
-        },
-        {
-          label: "line B",
-          id: 2,
-          group: 1,
-          values: generateSeries(dataKeys, config.range)
-        },
-        {
-          label: "line C",
-          id: 3,
-          group: 2, // to do
-          values: generateSeries(dataKeys, config.range) // to do
-        }
-      ]
-    }
+    const series = range(config.lineCount).map((d) => ({
+      label: `Label ${d}`,
+      id: d,
+      group: d < config.groupCount ? d : 0,
+      values: generateSeries(dataKeys, config.range)
+    }))
+
+    cache.data = {series}
 
     // console.log("generated data", cache.data)
 

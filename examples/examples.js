@@ -139,5 +139,16 @@ chart.setConfig({width: 700})
  * var chart = mapd3.Chart(document.querySelector('.chart'))
  * mapd3.Tooltip(chart)
  */
-
 mapd3.Tooltip(chart)
+
+/**
+ * Some hover marks.
+ * @namespace Hover
+ * @name Hover
+ * @param {object} chart The chart object to apply the hover to
+ * @returns {object} The hover instance.
+ * @example
+ * var chart = mapd3.Chart(document.querySelector('.chart'))
+ * mapd3.Hover(chart)
+ */
+mapd3.Hover(chart1)

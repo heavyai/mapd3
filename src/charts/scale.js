@@ -1,8 +1,9 @@
-import {scaleTime, scalePoint, scaleLinear, scaleOrdinal} from "d3-scale"
+import {scaleTime, scalePoint, scaleBand, scaleLinear, scaleOrdinal} from "d3-scale"
 import {stack, stackOffsetNone, stackOrderNone} from "d3-shape"
-import {extent} from "d3-array"
+import {extent, sum} from "d3-array"
 
 import {keys} from "./helpers/constants"
+import {getUnique} from "./helpers/common"
 
 export default function Scale (config, cache) {
 
@@ -46,7 +47,8 @@ export default function Scale (config, cache) {
       cache.xScale = scaleTime()
     } else {
       datesExtent = _allKeys
-      cache.xScale = scalePoint().padding(0)
+      cache.xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? scaleBand() : scalePoint()
+      cache.xScale.padding(0)
     }
 
     cache.xScale.domain(datesExtent)

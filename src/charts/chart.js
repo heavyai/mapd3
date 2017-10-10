@@ -11,7 +11,7 @@ import {cloneData, getUnique, invertScale, sortData} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
-import Hover from "./hover"
+import Bar from "./bar"
 import Axis from "./axis"
 
 export default function Chart (_container) {
@@ -81,6 +81,7 @@ export default function Chart (_container) {
     scale: null,
     axis: null,
     line: null,
+    bar: null,
     hover: null
   }
 
@@ -123,9 +124,6 @@ export default function Chart (_container) {
           <g class="y-axis-group axis y"></g>
           <g class="y-axis-group2 axis y"></g>
           <g class="chart-group"></g>
-          <g class="metadata-group">
-            <g class="hover-marker vertical-marker-container"></g>
-          </g>
         </g>
         <rect class="masking-rectangle"></rect>
       </svg>`
@@ -146,10 +144,12 @@ export default function Chart (_container) {
   function buildChart () {
     components.scale = Scale(config, cache)
     components.line = Line(config, cache)
+    components.bar = Bar(config, cache)
     components.axis = Axis(config, cache)
-    components.hover = Hover(config, cache)
 
-    if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
+    if (config.chartType === "stackedLine"
+      || config.chartType === "stackedArea"
+      || config.chartType === "stackedBar") {
       components.scale.buildStackedScales()
     } else {
       components.scale.buildScales()
@@ -165,9 +165,11 @@ export default function Chart (_container) {
       components.line.drawLines()
     } else if (config.chartType === "stackedArea") {
       components.line.drawStackedAreas()
+    } else if (config.chartType === "bar") {
+      components.bar.drawBars()
+    } else if (config.chartType === "stackedBar") {
+      components.bar.drawStackedBars()
     }
-
-    components.hover.drawVerticalMarker()
 
     triggerIntroAnimation()
 
@@ -260,56 +262,25 @@ export default function Chart (_container) {
 
   function addMouseEvents () {
     cache.svg
-      .on("mouseover", function mouseover (d) {
-        handleMouseOver(this, d)
+      .on("mouseover.dispatch", function mouseover (d) {
+        if (!cache.data) { return }
+        dispatcher.call("mouseOver", this, d, mouse(this))
       })
-      .on("mouseout", function mouseout (d) {
-        handleMouseOut(this, d)
+      .on("mouseout.dispatch", function mouseout (d) {
+        if (!cache.data) { return }
+        dispatcher.call("mouseOut", this, d, mouse(this))
       })
-      .on("mousemove", function mousemove (d) {
-        handleMouseMove(this, d)
+      .on("mousemove.dispatch", function mousemove () {
+        if (!cache.data) { return }
+        const mouseX = mouse(this)[0]
+        const xPosition = mouseX - config.margin.left
+        const dataPoint = getNearestDataPoint(xPosition)
+
+        if (dataPoint) {
+          const dataPointXPosition = cache.xScale(dataPoint[keys.DATA])
+          dispatcher.call("mouseMove", this, dataPoint, dataPointXPosition)
+        }
       })
-  }
-
-  function handleMouseMove (_e) {
-    if (!cache.verticalMarkerContainer) {
-      return
-    }
-
-    const mouseX = mouse(_e)[0]
-    const xPosition = mouseX - config.margin.left
-    const dataPoint = getNearestDataPoint(xPosition)
-
-    if (dataPoint) {
-      const dataPointXPosition = cache.xScale(dataPoint[keys.DATA])
-      components.hover.moveVerticalMarker(dataPointXPosition)
-      if (config.chartType === "stackedLine" || config.chartType === "stackedArea") {
-        components.hover.highlightStackedDataPoints(dataPoint)
-      } else {
-        components.hover.highlightDataPoints(dataPoint)
-      }
-      dispatcher.call("mouseMove", _e, dataPoint, dataPointXPosition)
-    }
-  }
-
-  function handleMouseOut (_e, _d) {
-    if (!cache.verticalMarkerContainer) {
-      return
-    }
-
-    cache.verticalMarkerContainer.style("display", "none")
-
-    dispatcher.call("mouseOut", _e, _d, mouse(_e))
-  }
-
-  function handleMouseOver (_e, _d) {
-    if (!cache.verticalMarkerContainer) {
-      return
-    }
-
-    cache.verticalMarkerContainer.style("display", "block")
-
-    dispatcher.call("mouseOver", _e, _d, mouse(_e))
   }
 
   function save (_filename, _title) {

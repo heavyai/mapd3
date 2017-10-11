@@ -142,6 +142,88 @@ chart.setConfig({width: 700})
 mapd3.Tooltip(chart)
 
 /**
+ * A simple Legend.
+ * @namespace Legend
+ * @name Legend
+ * @param {object} chart The chart object to apply the legend to
+ * @returns {object} The legend instance.
+ * @example
+ * var chart = mapd3.Chart(document.querySelector('.chart'))
+ * mapd3.Legend(chart)
+ */
+ /**
+ * Set the content
+ * @name setContent
+ * @param {object} series The data series.
+ * @returns {object} The legend instance.
+ * @memberof Legend
+ * @instance
+ * @example
+ * mapd3.Legend(document.querySelector('.chart'))
+ * .setContent(data.series)
+ */
+ /**
+ * Set the title
+ * @name setTitle
+ * @param {string} title The new title.
+ * @returns {object} The legend instance.
+ * @memberof Legend
+ * @instance
+ * @example
+ * mapd3.Legend(document.querySelector('.chart'))
+ * .setTitle("title")
+ */
+ /**
+ * Set size
+ * @name setSize
+ * @param {number} width Can be a number or "auto".
+ * @param {number} height Can be a number or "auto".
+ * @returns {object} The legend instance.
+ * @memberof Legend
+ * @instance
+ * @example
+ * mapd3.Legend(document.querySelector('.chart'))
+ * .setSize(100, "auto")
+ */
+ /**
+ * Set position
+ * @name setPosition
+ * @param {number} xPosition X position.
+ * @returns {object} The legend instance.
+ * @memberof Legend
+ * @instance
+ * @example
+ * mapd3.Legend(document.querySelector('.chart'))
+ * .setPosition(100)
+ */
+ /**
+ * Show
+ * @name show
+ * @returns {object} The legend instance.
+ * @memberof Legend
+ * @instance
+ * @example
+ * mapd3.Legend(document.querySelector('.chart'))
+ * .show()
+ */
+ /**
+ * Hide
+ * @name hide
+ * @returns {object} The legend instance.
+ * @memberof Legend
+ * @instance
+ * @example
+ * mapd3.Legend(document.querySelector('.chart'))
+ * .hide()
+ */
+mapd3.Legend(chart)
+  .setContent(data.series)
+  .setTitle("Title")
+  .setSize(80, "auto")
+  .setPosition(780)
+  .show()
+
+/**
  * Some hover marks.
  * @namespace Hover
  * @name Hover

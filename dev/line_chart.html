@@ -65,6 +65,14 @@ mapd3.Tooltip(chart1)
     tooltipWidth: 160
   })
 
+
+mapd3.Legend(chart1)
+  .setContent(data.series)
+  .setTitle("Title")
+  .setSize(80, "auto")
+  .setPosition(780)
+  .show()
+
 mapd3.Brush(chart1)
 // .on("brushMove", (...arg) => console.log("brush", ...arg))
 

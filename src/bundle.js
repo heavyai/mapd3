@@ -1,5 +1,6 @@
 import Chart from "./charts/chart.js"
 import Tooltip from "./charts/tooltip.js"
+import Legend from "./charts/legend.js"
 import DataManager from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
 import Binning from "./charts/binning.js"
@@ -11,6 +12,7 @@ import {colors} from "./charts/helpers/colors.js"
 export {
   Chart,
   Tooltip,
+  Legend,
   DataManager,
   Observer,
   Binning,

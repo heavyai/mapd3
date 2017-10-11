@@ -5,7 +5,7 @@ import {timeFormat} from "d3-time-format"
 import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"
 
-export default function Tooltip (_chart) {
+export default function Tooltip (_chart, isStatic) {
 
   let config = {
     margin: {
@@ -55,9 +55,11 @@ export default function Tooltip (_chart) {
   let chartCache = null
 
   function init () {
-    cache.chart.on("mouseOver.tooltip", show)
-      .on("mouseMove.tooltip", update)
-      .on("mouseOut.tooltip", hide)
+    if (!isStatic) {
+      cache.chart.on("mouseOver.tooltip", show)
+        .on("mouseMove.tooltip", update)
+        .on("mouseOut.tooltip", hide)
+    }
 
     render()
   }
@@ -94,25 +96,60 @@ export default function Tooltip (_chart) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    cache.svg.attr("width", config.width)
-      .attr("height", config.height)
-
-    cache.tooltipBackground.attr("width", config.tooltipWidth)
-        .attr("height", config.tooltipHeight)
-        .attr("rx", config.tooltipBorderRadius)
+    cache.tooltipBackground.attr("rx", config.tooltipBorderRadius)
         .attr("ry", config.tooltipBorderRadius)
 
     cache.tooltipTitle.attr("dy", config.padding)
         .attr("dx", config.padding)
 
-    cache.tooltipDivider.attr("x2", config.tooltipWidth)
-        .attr("y1", config.titleHeight)
-        .attr("y2", config.titleHeight)
-
+    setSize("auto", "auto")
     hide()
   }
 
-  function updateSeriesContent (_series) {
+  function calculateTooltipPosition (_mouseX) {
+    const tooltipX = _mouseX + config.margin.left
+    let offset = 0
+    const tooltipY = config.margin.top
+
+    if (_mouseX > (cache.chartWidth / 2)) {
+      offset = -config.tooltipWidth
+    }
+
+    return [tooltipX + offset, tooltipY]
+  }
+
+  function setPosition (_xPosition) {
+    const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition)
+
+    cache.svg.transition()
+      .duration(config.mouseChaseDuration)
+      .ease(config.ease)
+      .attr("transform", `translate(${tooltipX}, ${tooltipY})`)
+
+    return this
+  }
+
+  function setSize (_width, _height) {
+    let height = _height
+    if (_height === "auto") {
+      height = cache.tooltipBody.node().getBoundingClientRect().height + config.titleHeight + config.padding
+    }
+    let width = _width
+    if (_width === "auto") {
+      width = cache.tooltipBody.node().getBoundingClientRect().width + config.padding * 2
+    }
+
+    cache.tooltipBackground.attr("width", width)
+      .attr("height", height)
+
+    cache.tooltipDivider.attr("x2", width)
+      .attr("y1", config.titleHeight)
+      .attr("y2", config.titleHeight)
+
+    return this
+  }
+
+  function setSeriesContent (_series) {
     const tooltipLeft = cache.tooltipBody.selectAll(".tooltip-left-text")
         .data(_series)
     tooltipLeft.enter().append("text")
@@ -125,8 +162,9 @@ export default function Tooltip (_chart) {
       .text((d) => d[keys.LABEL])
     tooltipLeft.exit().remove()
 
+    const values = _series.map(getValueText)
     const tooltipRight = cache.tooltipBody.selectAll(".tooltip-right-text")
-        .data(_series)
+        .data(values)
     tooltipRight.enter().append("text")
       .classed("tooltip-right-text", true)
       .attr("text-anchor", "end")
@@ -136,7 +174,7 @@ export default function Tooltip (_chart) {
       .merge(tooltipRight)
       .attr("x", config.tooltipWidth)
       .attr("y", (d, i) => i * config.elementHeight + config.titleHeight)
-      .text(getValueText)
+      .text((d) => d)
     tooltipRight.exit().remove()
 
     const tooltipCircles = cache.tooltipBody.selectAll(".tooltip-circle")
@@ -149,49 +187,41 @@ export default function Tooltip (_chart) {
       .attr("r", config.dotRadius)
       .style("fill", (d) => chartCache.colorScale(d[keys.ID]))
     tooltipCircles.exit().remove()
-
-    config.tooltipHeight = cache.tooltipBody.node().getBBox().height
-    cache.tooltipBackground.attr("width", config.tooltipWidth)
-      .attr("height", config.tooltipHeight + config.titleHeight + config.padding)
   }
 
-  function getTooltipPosition (_mouseX) {
-    const tooltipX = _mouseX + config.margin.left
-    let offset = 0
-    const tooltipY = config.margin.top
-
-    if (_mouseX > (cache.chartWidth / 2)) {
-      offset = -config.tooltipWidth
-    }
-
-    return [tooltipX + offset, tooltipY]
-  }
-
-  function getValueText (_data) {
-    const formatter = format(config.valueFormat)
-
-    return formatter(_data[keys.VALUE])
-  }
-
-  function updatePositionAndSize (_xPosition) {
-    const [tooltipX, tooltipY] = getTooltipPosition(_xPosition)
-
-    cache.svg.attr("width", config.tooltipWidth)
-      .attr("height", config.tooltipHeight)
-      .transition()
-      .duration(config.mouseChaseDuration)
-      .ease(config.ease)
-      .attr("transform", `translate(${tooltipX}, ${tooltipY})`)
-  }
-
-  function updateTitle (_dataPoint) {
-    const key = _dataPoint[keys.DATA]
-    let title = key
+  function setTitle (_title) {
+    let title = _title
     if (config.keyType === "time") {
       title = timeFormat(config.dateFormat)(key)
     }
 
     cache.tooltipTitle.text(title)
+
+    return this
+  }
+
+  function getValueText (_data) {
+    const value = _data[keys.VALUE]
+    if (value) {
+      const formatter = format(config.valueFormat)
+      return formatter(_data[keys.VALUE])
+    } else {
+      return null
+    }
+  }
+
+  function setContent (_series) {
+    let series = _series
+
+    if (config.seriesOrder.length) {
+      series = sortByTopicsOrder(_series)
+    } else if (_series.length && _series[0][keys.LABEL]) {
+      series = sortByAlpha(_series)
+    }
+
+    setSeriesContent(series)
+
+    return this
   }
 
   function sortByTopicsOrder (_series, _order = seriesOrder) {
@@ -202,26 +232,6 @@ export default function Tooltip (_chart) {
     const series = cloneData(_series)
     return series.sort((a, b) => a[keys.LABEL].localeCompare(b[keys.LABEL], "en", {numeric: false}))
   }
-
-  function updateContent (dataPoint) {
-    let series = dataPoint[keys.SERIES]
-
-    if (config.seriesOrder.length) {
-      series = sortByTopicsOrder(series)
-    } else if (series.length && series[0][keys.LABEL]) {
-      series = sortByAlpha(series)
-    }
-
-    updateTitle(dataPoint)
-    updateSeriesContent(series)
-  }
-
-  function updateTooltip (dataPoint, xPosition) {
-    updateContent(dataPoint)
-    updatePositionAndSize(xPosition)
-  }
-
-  // API
 
   function hide () {
     cache.svg.style("display", "none")
@@ -235,8 +245,11 @@ export default function Tooltip (_chart) {
     return this
   }
 
-  function update (_dataPoint, _xPosition, _yPosition = null) {
-    updateTooltip(_dataPoint, _xPosition, _yPosition)
+  function update (_dataPoint, _xPosition) {
+    setTitle(_dataPoint[keys.DATA])
+    setContent(_dataPoint[keys.SERIES])
+    setSize(config.tooltipWidth, "auto")
+    setPosition(_xPosition)
 
     return this
   }
@@ -256,6 +269,10 @@ export default function Tooltip (_chart) {
   }
 
   return {
+    setPosition,
+    setSize,
+    setContent,
+    setTitle,
     hide,
     show,
     update,

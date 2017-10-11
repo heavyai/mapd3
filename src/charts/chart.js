@@ -49,6 +49,9 @@ export default function Chart (_container) {
     yAxisFormat: ".2f",
     yAxisFormat2: ".2f",
 
+    xTitle: "",
+    yTitle: "",
+
     keyType: "time",
     chartType: "line" // line, area, stackedLine, stackedArea
   }
@@ -125,6 +128,8 @@ export default function Chart (_container) {
           <g class="y-axis-group2 axis y"></g>
           <g class="chart-group"></g>
         </g>
+        <text class="x-title"></text>
+        <text class="y-title"></text>
         <rect class="masking-rectangle"></rect>
       </svg>`
 
@@ -158,6 +163,7 @@ export default function Chart (_container) {
     components.axis.buildAxis()
     components.axis.drawGridLines()
     components.axis.drawAxis()
+    components.axis.drawAxisTitles()
 
     if (config.chartType === "area") {
       components.line.drawAreas()
@@ -296,6 +302,16 @@ export default function Chart (_container) {
     return this
   }
 
+  function setXTitle (_xTitle) {
+    config = Object.assign({}, config, {xTitle: _xTitle})
+    return this
+  }
+
+  function setYTitle (_yTitle) {
+    config = Object.assign({}, config, {yTitle: _yTitle})
+    return this
+  }
+
   function getConfig () {
     return config
   }
@@ -312,6 +328,8 @@ export default function Chart (_container) {
     render,
     setConfig,
     setData,
+    setXTitle,
+    setYTitle,
     getCache,
     getConfig,
     on,

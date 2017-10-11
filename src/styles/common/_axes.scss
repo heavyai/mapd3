@@ -20,3 +20,7 @@ $tick-size: 1;
     font-size: $text-size;
     fill: $grey-500;
 }
+
+.y-title, .x-title {
+    font-size: 0.8em;
+}

@@ -53,6 +53,21 @@ export default function Axis (config, cache) {
     }
   }
 
+  function drawAxisTitles () {
+    cache.svg.select(".y-title")
+      .text(config.yTitle)
+      .attr("text-anchor", "middle")
+      .attr("transform", function transform () {
+        const textHeight = this.getBBox().height
+        return `translate(${[textHeight, config.height / 2]}) rotate(-90)`
+      })
+
+    cache.svg.select(".x-title")
+      .text(config.xTitle)
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${[config.width / 2, config.height]})`)
+  }
+
   function drawGridLines () {
     if (config.grid === "horizontal" || config.grid === "full") {
       cache.horizontalGridLines = cache.svg.select(".grid-lines-group")
@@ -88,12 +103,15 @@ export default function Axis (config, cache) {
         .attr("y2", cache.chartHeight)
         .attr("x1", cache.xScale)
         .attr("x2", cache.xScale)
+
+      cache.verticalGridLines.exit().remove()
     }
   }
 
   return {
     buildAxis,
     drawAxis,
+    drawAxisTitles,
     drawGridLines
   }
 }

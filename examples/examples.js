@@ -58,10 +58,10 @@ chart.setConfig({
   width: 800,
   height: 400,
   margin: {
-    top: 8,
+    top: 16,
     right: 32,
-    bottom: 32,
-    left: 32
+    bottom: 40,
+    left: 64
   },
   grid: "horizontal",
   xAxisFormat: "%x",
@@ -72,6 +72,32 @@ chart.setConfig({
   chartType,
   tickSkip: 20
 })
+
+/**
+ * Set the X title
+ * @name setXTitle
+ * @param {object} data The new x title.
+ * @returns {object} The chart instance.
+ * @memberof Chart
+ * @instance
+ * @example
+ * mapd3.Chart(document.querySelector('.chart'))
+ * .setXTitle("X Title")
+ */
+chart.setXTitle("X Title")
+
+/**
+ * Set the Y title
+ * @name setYTitle
+ * @param {object} data The new y title.
+ * @returns {object} The chart instance.
+ * @memberof Chart
+ * @instance
+ * @example
+ * mapd3.Chart(document.querySelector('.chart'))
+ * .setYTitle("Y Title")
+ */
+chart.setYTitle("Y Title")
 
 /**
  * Set the data
@@ -220,7 +246,7 @@ mapd3.Legend(chart)
   .setContent(data.series)
   .setTitle("Title")
   .setSize(80, "auto")
-  .setPosition(780)
+  .setPosition(680)
   .show()
 
 /**
@@ -233,4 +259,4 @@ mapd3.Legend(chart)
  * var chart = mapd3.Chart(document.querySelector('.chart'))
  * mapd3.Hover(chart)
  */
-mapd3.Hover(chart1)
+mapd3.Hover(chart)

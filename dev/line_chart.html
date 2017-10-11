@@ -2,6 +2,7 @@
 <head>
 <link rel="stylesheet" href="../dist/mapd3.css">
 <style>
+
 </style>
 </head><body>
 <div class="chart1"></div>
@@ -11,8 +12,6 @@
 <script>
 
 /*
-* legend (sharing with tooltip?)
-* titles
 * axes locking
 * domain editor
 * problem with selecting first point
@@ -46,8 +45,8 @@ const chart1 = mapd3.Chart(chartNode1)
     margin: {
       top: 16,
       right: 32,
-      bottom: 32,
-      left: 32
+      bottom: 40,
+      left: 64
     },
     grid: "horizontal",
     xAxisFormat: "%x",
@@ -58,6 +57,8 @@ const chart1 = mapd3.Chart(chartNode1)
     chartType,
     tickSkip: 4
   })
+  .setXTitle("X Title")
+  .setYTitle("Y Title")
   .setData(data)
 
 mapd3.Tooltip(chart1)

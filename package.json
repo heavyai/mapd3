@@ -43,7 +43,7 @@
   "homepage": "https://github.com/mapd/mapd3",
   "dependencies": {
     "base-64": "^0.1.0",
-    "d3": "^4.10.0"
+    "d3": "4.11.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

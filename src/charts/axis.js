@@ -1,33 +1,31 @@
-import {axisBottom, axisLeft, axisRight} from "d3-axis"
-import {timeFormat} from "d3-time-format"
-import {format} from "d3-format"
+import * as d3 from "./helpers/d3-service"
 
 export default function Axis (config, cache) {
 
   function buildAxis () {
-    cache.xAxis = axisBottom(cache.xScale)
+    cache.xAxis = d3.axisBottom(cache.xScale)
         .tickSize(config.tickSizes, 0)
         .tickPadding(config.tickPadding)
 
     if (config.keyType === "time") {
-      const formatter = timeFormat(config.xAxisFormat)
+      const formatter = d3.timeFormat(config.xAxisFormat)
       cache.xAxis.tickFormat(formatter)
     } else {
       cache.xAxis.tickValues(cache.xScale.domain().filter((d, i) => !(i % config.tickSkip)))
     }
 
-    cache.yAxis = axisLeft(cache.yScale)
+    cache.yAxis = d3.axisLeft(cache.yScale)
         .ticks(config.yTicks)
         .tickSize([config.tickSizes])
         .tickPadding(config.tickPadding)
-        .tickFormat(format(config.yAxisFormat))
+        .tickFormat(d3.format(config.yAxisFormat))
 
     if (cache.hasSecondAxis) {
-      cache.yAxis2 = axisRight(cache.yScale2)
+      cache.yAxis2 = d3.axisRight(cache.yScale2)
           .ticks(config.yTicks)
           .tickSize([config.tickSizes])
           .tickPadding(config.tickPadding)
-          .tickFormat(format(config.yAxisFormat))
+          .tickFormat(d3.format(config.yAxisFormat))
     }
   }
 

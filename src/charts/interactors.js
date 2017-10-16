@@ -1,4 +1,4 @@
-import {select} from "d3-selection"
+import * as d3 from "./helpers/d3-service"
 
 /**
  * Toggles selection on clickable elements. Will set classes "selected" and "dimmed".
@@ -22,7 +22,7 @@ export function exclusiveToggle (selector, options = {toggleOffIsEnabled: false,
     /* eslint-disable consistent-this */
     const that = this
     let hasSelection = false
-    const selection = select(this.farthestViewportElement)
+    const selection = d3.select(this.farthestViewportElement)
         .selectAll(selector)
 
     selection.classed("selected", function selectedClass () {

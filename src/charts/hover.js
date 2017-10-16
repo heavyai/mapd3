@@ -1,4 +1,4 @@
-import {dispatch} from "d3-dispatch"
+import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
 
@@ -41,7 +41,7 @@ export default function Hover (_chart) {
   }
 
   // events
-  const dispatcher = dispatch("hover")
+  const dispatcher = d3.dispatch("hover")
 
   function init () {
     cache.chart.on("mouseOver.hover", show)

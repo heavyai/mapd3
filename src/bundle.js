@@ -4,6 +4,7 @@ import Legend from "./charts/legend.js"
 import DataManager from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
 import Binning from "./charts/binning.js"
+import DomainEditor from "./charts/domain-editor.js"
 import Brush from "./charts/brush.js"
 import Hover from "./charts/hover.js"
 import Interactors from "./charts/interactors.js"
@@ -16,6 +17,7 @@ export {
   DataManager,
   Observer,
   Binning,
+  DomainEditor,
   Brush,
   Hover,
   Interactors,

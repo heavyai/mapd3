@@ -1,6 +1,4 @@
-import {scaleTime, scalePoint, scaleBand, scaleLinear, scaleOrdinal} from "d3-scale"
-import {stack, stackOffsetNone, stackOrderNone} from "d3-shape"
-import {extent, sum} from "d3-array"
+import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
 import {getUnique} from "./helpers/common"
@@ -12,7 +10,7 @@ export default function Scale (config, cache) {
   const getValue = (d) => d[keys.VALUE]
 
   function buildStackedScales () {
-    const allStackHeights = cache.dataByKey.map((d) => sum(d.series.map((dB) => dB.value)))
+    const allStackHeights = cache.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
 
     cache.stackData = cache.dataByKey.map((d) => {
       const points = {
@@ -25,12 +23,12 @@ export default function Scale (config, cache) {
       return points
     })
 
-    cache.stack = stack()
+    cache.d3.stack = d3.stack()
       .keys(cache.dataBySeries.map(getID))
-      .order(stackOrderNone)
-      .offset(stackOffsetNone)
+      .order(d3.stackOrderNone)
+      .offset(d3.stackOffsetNone)
 
-    const valuesExtent = extent(allStackHeights)
+    const valuesExtent = d3.extent(allStackHeights)
 
     const allKeys = cache.flatDataSorted.map(getKey)
     const allUniqueKeys = getUnique(allKeys)
@@ -43,11 +41,11 @@ export default function Scale (config, cache) {
   function buildXScale (_allKeys) {
     let datesExtent = null
     if (config.keyType === "time") {
-      datesExtent = extent(_allKeys)
-      cache.xScale = scaleTime()
+      datesExtent = d3.extent(_allKeys)
+      cache.xScale = d3.scaleTime()
     } else {
       datesExtent = _allKeys
-      cache.xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? scaleBand() : scalePoint()
+      cache.xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? d3.scaleBand() : d3.scalePoint()
       cache.xScale.padding(0)
     }
 
@@ -57,14 +55,14 @@ export default function Scale (config, cache) {
 
   function buildColorScale () {
     const ids = cache.dataBySeries.map(getID)
-    cache.colorScale = scaleOrdinal()
+    cache.colorScale = d3.scaleOrdinal()
         .range(config.colorSchema.map((d) => d.value))
         .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
         .unknown(config.defaultColor)
   }
 
   function buildYScale (_extent) {
-    cache.yScale = scaleLinear()
+    cache.yScale = d3.scaleLinear()
         .domain(_extent)
         .rangeRound([cache.chartHeight, 0])
         .nice()
@@ -94,7 +92,7 @@ export default function Scale (config, cache) {
 
     const groupAxis1 = groups[cache.groupKeys[0]]
     const allUniqueKeys = groupAxis1.allKeys
-    const valuesExtent = extent(groupAxis1.allValues)
+    const valuesExtent = d3.extent(groupAxis1.allValues)
 
     buildXScale(allUniqueKeys)
     buildColorScale()
@@ -102,7 +100,7 @@ export default function Scale (config, cache) {
 
     if (cache.hasSecondAxis) {
       const groupAxis2 = groups[cache.groupKeys[1]]
-      const valuesExtent2 = extent(groupAxis2.allValues)
+      const valuesExtent2 = d3.extent(groupAxis2.allValues)
 
       cache.yScale2 = cache.yScale.copy()
         .domain(valuesExtent2)

@@ -1,6 +1,4 @@
-import {easeQuadInOut} from "d3-ease"
-import {format} from "d3-format"
-import {timeFormat} from "d3-time-format"
+import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"
@@ -24,7 +22,7 @@ export default function Tooltip (_chart, isStatic) {
 
     // Animations
     mouseChaseDuration: 30,
-    ease: easeQuadInOut,
+    ease: d3.easeQuadInOut,
 
     titleHeight: 32,
     elementHeight: 24,
@@ -192,7 +190,7 @@ export default function Tooltip (_chart, isStatic) {
   function setTitle (_title) {
     let title = _title
     if (config.keyType === "time") {
-      title = timeFormat(config.dateFormat)(key)
+      title = d3.timeFormat(config.dateFormat)(key)
     }
 
     cache.tooltipTitle.text(title)
@@ -203,7 +201,7 @@ export default function Tooltip (_chart, isStatic) {
   function getValueText (_data) {
     const value = _data[keys.VALUE]
     if (value) {
-      const formatter = format(config.valueFormat)
+      const formatter = d3.format(config.valueFormat)
       return formatter(_data[keys.VALUE])
     } else {
       return null

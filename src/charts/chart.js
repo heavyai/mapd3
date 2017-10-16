@@ -1,8 +1,4 @@
-import {bisector} from "d3-array"
-import {nest} from "d3-collection"
-import {dispatch} from "d3-dispatch"
-import {easeLinear} from "d3-ease"
-import {select, mouse} from "d3-selection"
+import * as d3 from "./helpers/d3-service"
 
 import {exportChart} from "./helpers/exportChart"
 import {colors} from "./helpers/colors"
@@ -40,7 +36,7 @@ export default function Chart (_container) {
     defaultColor: "skyblue",
 
     isAnimated: false,
-    ease: easeLinear,
+    ease: d3.easeLinear,
     animationDuration: 1500,
     axisTransitionDuration: 0,
 
@@ -93,7 +89,7 @@ export default function Chart (_container) {
   const getGroup = (d) => d[keys.GROUP]
 
   // events
-  const dispatcher = dispatch("mouseOver", "mouseOut", "mouseMove")
+  const dispatcher = d3.dispatch("mouseOver", "mouseOut", "mouseMove")
 
   function init () {
     render()
@@ -133,7 +129,7 @@ export default function Chart (_container) {
         <rect class="masking-rectangle"></rect>
       </svg>`
 
-      cache.svg = select(cache.container)
+      cache.svg = d3.select(cache.container)
           .html(template)
           .select("svg")
     }
@@ -220,7 +216,7 @@ export default function Chart (_container) {
 
     cache.flatDataSorted = sortData(flatData, config.keyType)
 
-    const dataByKey = nest()
+    const dataByKey = d3.nest()
       .key(getKey)
       .entries(cache.flatDataSorted)
       .map((d) => {
@@ -238,7 +234,7 @@ export default function Chart (_container) {
 
   function triggerIntroAnimation () {
     if (config.isAnimated) {
-      cache.maskingRectangle = cache.svg.select(".masking-rectangle")
+      cache.maskingRectangle = cache.svg.d3.select(".masking-rectangle")
         .attr("width", cache.chartWidth - 2)
         .attr("height", cache.chartHeight)
         .attr("x", config.margin.left + 1)
@@ -255,7 +251,7 @@ export default function Chart (_container) {
 
   function getNearestDataPoint (_mouseX) {
     const keyFromInvertedX = invertScale(cache.xScale, _mouseX, config.keyType)
-    const bisectLeft = bisector(getKey).left
+    const bisectLeft = d3.bisector(getKey).left
     const dataEntryIndex = bisectLeft(cache.dataByKey, keyFromInvertedX)
     const dataEntryForXPosition = cache.dataByKey[dataEntryIndex]
     let nearestDataPoint = null
@@ -268,17 +264,17 @@ export default function Chart (_container) {
 
   function addMouseEvents () {
     cache.svg
-      .on("mouseover.dispatch", function mouseover (d) {
+      .on("mouseover.d3.dispatch", function mouseover (d) {
         if (!cache.data) { return }
-        dispatcher.call("mouseOver", this, d, mouse(this))
+        dispatcher.call("mouseOver", this, d, d3.mouse(this))
       })
-      .on("mouseout.dispatch", function mouseout (d) {
+      .on("mouseout.d3.dispatch", function mouseout (d) {
         if (!cache.data) { return }
-        dispatcher.call("mouseOut", this, d, mouse(this))
+        dispatcher.call("mouseOut", this, d, d3.mouse(this))
       })
-      .on("mousemove.dispatch", function mousemove () {
+      .on("mousemove.d3.dispatch", function mousemove () {
         if (!cache.data) { return }
-        const mouseX = mouse(this)[0]
+        const mouseX = d3.mouse(this)[0]
         const xPosition = mouseX - config.margin.left
         const dataPoint = getNearestDataPoint(xPosition)
 

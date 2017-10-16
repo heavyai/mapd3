@@ -1,7 +1,7 @@
-import {dispatch} from "d3-dispatch"
+import * as d3 from "./helpers/d3-service"
 
 export default function Observer (_dataManager) {
-  const dispatcher = dispatch("brushChange", "dataFilter")
+  const dispatcher = d3.dispatch("brushChange", "dataFilter")
   const dataManager = _dataManager
 
   dispatcher.on("brushChange.observer", (_e, _brushConfig) => {

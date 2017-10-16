@@ -1,4 +1,4 @@
-import {dispatch} from "d3-dispatch"
+import * as d3 from "./helpers/d3-service"
 
 import {exclusiveToggle, toggleOnOff} from "./interactors"
 
@@ -26,7 +26,7 @@ export default function Binning (_chart) {
   }
 
   // events
-  const dispatcher = dispatch("change")
+  const dispatcher = d3.dispatch("change")
 
   function render () {
     buildSVG()
@@ -57,7 +57,7 @@ export default function Binning (_chart) {
       .attr("dx", "0.8em")
       .attr("y", "1em")
       .on("click.select", toggleOnOff(".binning-group .item.toggleOnOff"))
-      .on("click.dispatch", function click (d) {
+      .on("click.d3.dispatch", function click (d) {
         const isSelected = this.classList.contains("selected")
         dispatcher.call("change", this, d, {isSelected})
       })
@@ -72,7 +72,7 @@ export default function Binning (_chart) {
       .attr("dx", "0.8em")
       .attr("y", "1em")
       .on("click.select", exclusiveToggle(".binning-group .item.toggleExclusive"))
-      .on("click.dispatch", function click (d) {
+      .on("click.d3.dispatch", function click (d) {
         const isSelected = this.classList.contains("selected")
         dispatcher.call("change", this, d, {isSelected})
       })

@@ -12,13 +12,6 @@ const isProduction = env === "prod"
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 const projectName = "mapd3"
 
-const currentCharts = {
-  line: "./src/charts/line.js",
-  tooltip: "./src/charts/tooltip.js",
-  brush: "./src/charts/brush.js",
-  // hack to make webpack use colors as an entry point while its also a dependency of the charts above
-  colors: ["./src/charts/helpers/colors.js"]
-}
 const defaultJSLoader = {
   test: /\.js$/,
   loader: "babel",
@@ -72,7 +65,7 @@ const config = {
       mapd3: bundleIndexPath
     },
 
-    devtool: "eval",
+    devtool: "source-map",
 
     output: {
       path: "dist",
@@ -82,21 +75,11 @@ const config = {
     },
 
     externals: {
-      d3: "d3"
+      // "d3/build/d3": "d3/build/d3"
     },
 
     module: {
-      loaders: [defaultJSLoader],
-      // Tell Webpack not to parse certain modules.
-      noParse: [
-        new RegExp(`${vendorsPath}/d3/d3.js`)
-      ]
-    },
-
-    resolve: {
-      alias: {
-        d3: `${vendorsPath}/d3`
-      }
+      loaders: [defaultJSLoader]
     },
 
     plugins
@@ -117,21 +100,11 @@ const config = {
     },
 
     externals: {
-      d3: "d3"
+      // "d3/build/d3": "d3/build/d3"
     },
 
     module: {
-      loaders: [defaultJSLoader],
-      // Tell Webpack not to parse certain modules.
-      noParse: [
-        new RegExp(`${vendorsPath}/d3/d3.js`)
-      ]
-    },
-
-    resolve: {
-      alias: {
-        d3: `${vendorsPath}/d3`
-      }
+      loaders: [defaultJSLoader]
     }
   }
 }

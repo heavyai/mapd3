@@ -1,7 +1,4 @@
-import {merge} from "d3-array"
-import {brushX} from "d3-brush"
-import {dispatch} from "d3-dispatch"
-import {event, select} from "d3-selection"
+import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
 import {cloneData, invertScale, sortData} from "./helpers/common"
@@ -39,7 +36,7 @@ export default function Brush (_chart) {
   }
 
   // events
-  const dispatcher = dispatch("brushStart", "brushMove", "brushEnd")
+  const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd")
 
   function init () {
     render()
@@ -73,7 +70,7 @@ export default function Brush (_chart) {
   }
 
   function extractBrushDimension (_data) {
-    const merged = merge(_data.map((d) => d[keys.VALUES]))
+    const merged = d3.merge(_data.map((d) => d[keys.VALUES]))
     return sortData(merged, config.keyType)
   }
 
@@ -82,7 +79,7 @@ export default function Brush (_chart) {
   }
 
   function buildBrush () {
-    cache.brush = cache.brush || brushX()
+    cache.brush = cache.brush || d3.brushX()
         .on("start", handleBrushStart)
         .on("brush", handleBrushMove)
         .on("end", handleBrushEnd)
@@ -98,7 +95,7 @@ export default function Brush (_chart) {
   }
 
   function getDataExtent () {
-    const selection = event.selection
+    const selection = d3.event.selection
     const dataExtent = selection.map((d) => invertScale(chartCache.xScale, d, config.keyType))
     return dataExtent
   }
@@ -113,15 +110,15 @@ export default function Brush (_chart) {
 
   function handleBrushEnd () {
     // Only transition after input, ignore empty selections.
-    if (!event.sourceEvent || !event.selection) {
+    if (!d3.event.sourceEvent || !d3.event.selection) {
       return
     }
 
     const dataExtent = getDataExtent()
 
-    select(this)
+    d3.select(this)
       .transition()
-      .call(event.target.move, dataExtent.map(cache.xScale))
+      .call(d3.event.target.move, dataExtent.map(cache.xScale))
 
     dispatcher.call("brushEnd", this, dataExtent, config)
   }

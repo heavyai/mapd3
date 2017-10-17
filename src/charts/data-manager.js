@@ -1,6 +1,6 @@
-import {range} from "d3-array"
-import {randomUniform, randomNormal} from "d3-random"
-import {timeDay, timeMonth} from "d3-time"
+import * as d3 from "./helpers/d3-service"
+export {bisector, extent, sum, range, merge} from "d3-array"
+
 import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"
 
@@ -10,7 +10,8 @@ export default function DataManager () {
     keyType: "number", // number, string, time,
     range: [0, 100],
     pointCount: 200,
-    groupCount: 2
+    groupCount: 2,
+    lineCount: 4
   }
   const cache = {
     data: null,
@@ -22,10 +23,10 @@ export default function DataManager () {
   }
 
   function generateSeries (_dataKeys, _range, _allowNegative) {
-    let value = randomUniform(..._range)()
+    let value = d3.randomUniform(..._range)()
     const variabilityRatio = 50
     const randomWalkStepSize = (_range[1] - _range[0]) / variabilityRatio
-    const rnd = randomNormal(0, 1)
+    const rnd = d3.randomNormal(0, 1)
     return _dataKeys.map((d) => {
       value = value + rnd() * randomWalkStepSize
       if (!_allowNegative && value < randomWalkStepSize) {
@@ -42,36 +43,22 @@ export default function DataManager () {
     let dataKeys = null
     if (config.keyType === "time") {
       cache.baseDate = new Date()
-      dataKeys = timeDay.range(timeMonth.floor(cache.baseDate), timeMonth.ceil(cache.baseDate))
+      dataKeys = d3.timeDay.range(d3.timeMonth.floor(cache.baseDate), d3.timeMonth.ceil(cache.baseDate))
     } else if (config.keyType === "string") {
-      dataKeys = range(0, config.pointCount).map(() => generateRandomString())
+      dataKeys = d3.range(0, config.pointCount).map(() => generateRandomString())
       dataKeys.sort((a, b) => a.localeCompare(b, "en", {numeric: false}))
     } else if (config.keyType === "number") {
-      dataKeys = range(0, config.pointCount).map((d, i) => i)
+      dataKeys = d3.range(0, config.pointCount).map((d, i) => i)
     }
 
-    cache.data = {
-      series: [
-        {
-          label: "line A",
-          id: 1,
-          group: 1,
-          values: generateSeries(dataKeys, config.range)
-        },
-        {
-          label: "line B",
-          id: 2,
-          group: 1,
-          values: generateSeries(dataKeys, config.range)
-        },
-        {
-          label: "line C",
-          id: 3,
-          group: 2, // to do
-          values: generateSeries(dataKeys, config.range) // to do
-        }
-      ]
-    }
+    const series = d3.range(config.lineCount).map((d) => ({
+      label: `Label ${d}`,
+      id: d,
+      group: d < config.groupCount ? d : 0,
+      values: generateSeries(dataKeys, config.range)
+    }))
+
+    cache.data = {series}
 
     // console.log("generated data", cache.data)
 

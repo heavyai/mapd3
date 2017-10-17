@@ -5,7 +5,6 @@ import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"
 
 export default function DataManager () {
-  console.log(d3)
   /* eslint-disable no-magic-numbers */
   let config = {
     keyType: "number", // number, string, time,

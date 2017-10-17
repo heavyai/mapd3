@@ -190,7 +190,7 @@ export default function Tooltip (_chart, isStatic) {
   function setTitle (_title) {
     let title = _title
     if (config.keyType === "time") {
-      title = d3.timeFormat(config.dateFormat)(key)
+      title = d3.timeFormat(config.dateFormat)(_title)
     }
 
     cache.tooltipTitle.text(title)

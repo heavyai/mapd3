@@ -1,9 +1,9 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
-import {cloneData} from "./helpers/common"
+import {cloneData, override} from "./helpers/common"
 
-export default function Tooltip (_chart, isStatic) {
+export default function Tooltip (_container) {
 
   let config = {
     margin: {
@@ -39,8 +39,12 @@ export default function Tooltip (_chart, isStatic) {
     keyType: "time"
   }
 
+  let scales = {
+    colorScale: null
+  }
+
   const cache = {
-    chart: _chart,
+    container: _container,
     svg: null,
     chartWidth: null,
     chartHeight: null,
@@ -50,32 +54,22 @@ export default function Tooltip (_chart, isStatic) {
     tooltipBackground: null
   }
 
-  let chartCache = null
+  // function init () {
+    // if (!isStatic) {
+    //   cache.chart.on("mouseOver.tooltip", show)
+    //     .on("mouseMove.tooltip", update)
+    //     .on("mouseOut.tooltip", hide)
+    // }
 
-  function init () {
-    if (!isStatic) {
-      cache.chart.on("mouseOver.tooltip", show)
-        .on("mouseMove.tooltip", update)
-        .on("mouseOut.tooltip", hide)
-    }
-
-    render()
-  }
-  init()
-
-  function render () {
-    buildSVG()
-
-    return this
-  }
+  //   render()
+  // }
+  // init()
 
   function buildSVG () {
-    chartCache = cache.chart.getCache()
-    setConfig(cache.chart.getConfig())
 
     if (!cache.svg) {
-      cache.svg = chartCache.svg.append("g")
-          .classed("mapd3 mapd3-tooltip", true)
+      cache.svg = cache.container.append("g")
+          .classed("tooltip-group", true)
 
       cache.tooltipBackground = cache.svg.append("rect")
           .classed("tooltip-text-container", true)
@@ -89,6 +83,9 @@ export default function Tooltip (_chart, isStatic) {
 
       cache.tooltipBody = cache.svg.append("g")
           .classed("tooltip-body", true)
+
+      setSize("auto", "auto")
+      hide()
     }
 
     cache.chartWidth = config.width - config.margin.left - config.margin.right
@@ -99,9 +96,6 @@ export default function Tooltip (_chart, isStatic) {
 
     cache.tooltipTitle.attr("dy", config.padding)
         .attr("dx", config.padding)
-
-    setSize("auto", "auto")
-    hide()
   }
 
   function calculateTooltipPosition (_mouseX) {
@@ -183,7 +177,7 @@ export default function Tooltip (_chart, isStatic) {
       .attr("cx", config.padding + config.dotRadius)
       .attr("cy", (d, i) => i * config.elementHeight + config.titleHeight + config.elementHeight / 2)
       .attr("r", config.dotRadius)
-      .style("fill", (d) => chartCache.colorScale(d[keys.ID]))
+      .style("fill", (d) => scales.colorScale(d[keys.ID]))
     tooltipCircles.exit().remove()
   }
 
@@ -238,12 +232,14 @@ export default function Tooltip (_chart, isStatic) {
   }
 
   function show () {
+    if (!cache.svg) { return null }
     cache.svg.style("display", "block")
 
     return this
   }
 
-  function update (_dataPoint, _xPosition) {
+  function drawTooltip (_dataPoint, _xPosition) {
+    buildSVG()
     setTitle(_dataPoint[keys.DATA])
     setContent(_dataPoint[keys.SERIES])
     setSize(config.tooltipWidth, "auto")
@@ -252,31 +248,38 @@ export default function Tooltip (_chart, isStatic) {
     return this
   }
 
+  function bindEvents (dispatcher) {
+    dispatcher.on("mouseOver.tooltip", show)
+      .on("mouseMove.tooltip", drawTooltip)
+      .on("mouseOut.tooltip", hide)
+  }
+
   function setConfig (_config) {
-    config = Object.assign({}, config, _config)
+    config = override(config, _config)
     return this
   }
 
-  function getCache () {
-    return cache
+  function setScales (_scales) {
+    scales = override(scales, _scales)
+    return this
   }
 
   function destroy () {
-    cache.chart.on(".tooltip", null)
+    cache.container.on(".tooltip", null)
     cache.svg.remove()
   }
 
   return {
+    bindEvents,
     setPosition,
     setSize,
     setContent,
     setTitle,
     hide,
     show,
-    update,
+    drawTooltip,
     setConfig,
-    getCache,
-    render,
+    setScales,
     destroy
   }
 }

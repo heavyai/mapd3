@@ -33,11 +33,6 @@
   fill: #666A73;
   padding: 12px; }
 
-.y-axis-label,
-.x-axis-label {
-  font-size: 1rem;
-  fill: #ADB0B6; }
-
 .y-title, .x-title {
   font-size: 0.8em; }
 
@@ -79,10 +74,10 @@
 .line-chart .masking-rectangle {
   fill: #ffffff; }
 
-.line-chart .x.axis text, .line-chart .y.axis text {
+.line-chart .x.axis text, .line-chart .y.axis text, .line-chart .y2.axis text {
   font-size: 0.8em; }
 
-.line-chart .x.axis path, .line-chart .x.axis .domain, .line-chart .y.axis path, .line-chart .y.axis .domain {
+.line-chart .x.axis path, .line-chart .x.axis .domain, .line-chart .y.axis path, .line-chart .y.axis .domain, .line-chart .y2.axis path, .line-chart .y2.axis .domain {
   display: block;
   stroke: #ADB0B6; }
 

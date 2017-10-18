@@ -37,3 +37,13 @@ export function invertScale (_scale, _mouseX, _keyType) {
     return _scale.domain()[index]
   }
 }
+
+export function override (a, b) {
+  const accum = {}
+  for (const x in a) {
+    if (a.hasOwnProperty(x)) {
+      accum[x] = (x in b) ? b[x] : a[x]
+    }
+  }
+  return accum
+}

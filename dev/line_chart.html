@@ -5,6 +5,9 @@
 .mapd3 {
   user-select: none;
 }
+.domain-lock {
+  background: #999;
+}
 </style>
 </head><body>
 <div class="chart1"></div>
@@ -14,6 +17,12 @@
 <script>
 
 /*
+* titles out of axis? or at least html
+* extract data
+* pipe events
+* remove .line-chart
+* move dom structure to each component
+
 * axes locking
 * domain editor
 * problem with selecting first point
@@ -59,33 +68,9 @@ const chart1 = mapd3.Chart(chartNode1)
     chartType,
     tickSkip: 4
   })
-  .setXTitle("X Title")
-  .setYTitle("Y Title")
+  // .setXTitle("X Title")
+  // .setYTitle("Y Title")
   .setData(data)
-
-mapd3.Tooltip(chart1)
-  .setConfig({
-    tooltipWidth: 160
-  })
-
-
-mapd3.Legend(chart1)
-  .setContent(data.series)
-  .setTitle("Title")
-  .setSize(80, "auto")
-  .setPosition(780)
-  .show()
-
-mapd3.Brush(chart1)
-// .on("brushMove", (...arg) => console.log("brush", ...arg))
-
-mapd3.Hover(chart1)
-  // .on("hover", (...arg) => console.log("hover", ...arg))
-
-mapd3.Binning(chart1)
-  // .on("change", (...arg) => console.log("binning", ...arg))
-
-// mapd3.DomainEditor(chart1)
 
 // const chart2 = mapd3.Chart(".chart2")
 //   .setConfig({

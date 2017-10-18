@@ -3,12 +3,18 @@ import * as d3 from "./helpers/d3-service"
 import {exportChart} from "./helpers/exportChart"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, getUnique, invertScale, sortData} from "./helpers/common"
+import {cloneData, getUnique, invertScale, sortData, override} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
 import Bar from "./bar"
 import Axis from "./axis"
+import Tooltip from "./tooltip"
+import Legend from "./legend"
+import Brush from "./brush"
+import Hover from "./hover"
+import Binning from "./binning"
+import DomainEditor from "./domain-editor"
 
 export default function Chart (_container) {
 
@@ -52,6 +58,14 @@ export default function Chart (_container) {
     chartType: "line" // line, area, stackedLine, stackedArea
   }
 
+  let scales = {
+    xScale: null,
+    yScale: null,
+    yScale2: null,
+    hasSecondAxis: null,
+    colorScale: null
+  }
+
   const cache = {
     container: _container,
     svg: null,
@@ -61,27 +75,17 @@ export default function Chart (_container) {
     grid: null,
     verticalMarkerContainer: null,
     verticalMarkerLine: null,
+    chartWidth: null, chartHeight: null,
+    xAxis: null, yAxis: null, yAxis2: null,
 
     dataBySeries: null,
     dataByKey: null,
     data: null,
-    chartWidth: null, chartHeight: null,
-    xScale: null, yScale: null, yScale2: null, colorScale: null,
-    xAxis: null, yAxis: null, yAxis2: null,
     groupKeys: [],
     hasSecondAxis: false,
-
     stackData: null,
     stack: null,
     flatDataSorted: null
-  }
-
-  const components = {
-    scale: null,
-    axis: null,
-    line: null,
-    bar: null,
-    hover: null
   }
 
   // accessors
@@ -89,13 +93,7 @@ export default function Chart (_container) {
   const getGroup = (d) => d[keys.GROUP]
 
   // events
-  const dispatcher = d3.dispatch("mouseOver", "mouseOut", "mouseMove")
-
-  function init () {
-    render()
-    addMouseEvents()
-  }
-  init()
+  const dispatcher = d3.dispatch("mouseOver", "mouseOut", "mouseMove", "hoverYAxis")
 
   function render () {
     buildSVG()
@@ -114,24 +112,25 @@ export default function Chart (_container) {
     cache.chartHeight = h - config.margin.top - config.margin.bottom
 
     if (!cache.svg) {
-      const template = `<svg class="mapd3 line-chart">
-        <g class="container-group">
-          <g class="grid-lines-group"></g>
-          <g class="x-axis-group">
-            <g class="axis x"></g>
+      const template = `<div class="mapd3-container">
+        <svg class="mapd3 line-chart">
+          <g class="container-group">
+            <g class="chart-group"></g>
           </g>
-          <g class="y-axis-group axis y"></g>
-          <g class="y-axis-group2 axis y"></g>
-          <g class="chart-group"></g>
-        </g>
-        <text class="x-title"></text>
-        <text class="y-title"></text>
-        <rect class="masking-rectangle"></rect>
-      </svg>`
+          <text class="x-title"></text>
+          <text class="y-title"></text>
+          <rect class="masking-rectangle"></rect>
+        </svg>
+      </div>`
 
-      cache.svg = d3.select(cache.container)
+      const base = d3.select(cache.container)
           .html(template)
-          .select("svg")
+
+      base.select(".mapd3-container").style("position", "relative")
+
+      cache.svg = base.select("svg")
+
+      addEvents()
     }
 
     cache.svg.attr("width", config.width)
@@ -143,35 +142,69 @@ export default function Chart (_container) {
   }
 
   function buildChart () {
-    components.scale = Scale(config, cache)
-    components.line = Line(config, cache)
-    components.bar = Bar(config, cache)
-    components.axis = Axis(config, cache)
-
-    if (config.chartType === "stackedLine"
-      || config.chartType === "stackedArea"
-      || config.chartType === "stackedBar") {
-      components.scale.buildStackedScales()
-    } else {
-      components.scale.buildScales()
+    const dataObject = {
+      dataByKey: cache.dataByKey,
+      dataBySeries: cache.dataBySeries,
+      flatDataSorted: cache.flatDataSorted,
+      groupKeys: cache.groupKeys
     }
 
-    components.axis.buildAxis()
-    components.axis.drawGridLines()
-    components.axis.drawAxis()
-    components.axis.drawAxisTitles()
+    const scale = Scale()
+      .setConfig(config)
+      .setData(dataObject)
+    scales = scale.getScales()
+
+    Axis(cache.svg)
+      .setConfig(config)
+      .setScales(scales)
+      .drawAxis()
+      .drawAxisTitles()
+      .drawGridLines()
+
+    const line = Line(cache.svg)
+      .setConfig(Object.assign({}, config, cache, scales))
+      .setData(dataObject)
+
+    // const bar = Bar(config, cache)
 
     if (config.chartType === "area") {
-      components.line.drawAreas()
+      line.drawAreas()
     } else if (config.chartType === "line") {
-      components.line.drawLines()
+      line.drawLines()
     } else if (config.chartType === "stackedArea") {
-      components.line.drawStackedAreas()
-    } else if (config.chartType === "bar") {
-      components.bar.drawBars()
-    } else if (config.chartType === "stackedBar") {
-      components.bar.drawStackedBars()
+      line.drawStackedAreas()
     }
+    // else if (config.chartType === "bar") {
+    //   bar.drawBars()
+    // } else if (config.chartType === "stackedBar") {
+    //   bar.drawStackedBars()
+    // }
+
+    Tooltip(cache.svg)
+      .setConfig(config)
+      .setScales(scales)
+      .bindEvents(dispatcher)
+
+    // const legend = Legend(cache.svg)
+    //   .setContent(data.series)
+    //   .setTitle("Title")
+    //   .setSize(80, "auto")
+    //   .setPosition(780)
+    //   .show()
+
+    Brush(cache.svg)
+      .setConfig(Object.assign({}, config, scales))
+      .setData(dataObject)
+      .drawBrush()
+      .on("brushMove", (...arg) => console.log("brush", ...arg))
+
+    // const hover = Hover(cache.svg)
+    //   .on("hover", (...arg) => console.log("hover", ...arg))
+
+    // const binning = Binning(cache.svg)
+    //   .on("change", (...arg) => console.log("binning", ...arg))
+
+    // const domainEditor = DomainEditor(cache.svg)
 
     triggerIntroAnimation()
 
@@ -250,7 +283,7 @@ export default function Chart (_container) {
   }
 
   function getNearestDataPoint (_mouseX) {
-    const keyFromInvertedX = invertScale(cache.xScale, _mouseX, config.keyType)
+    const keyFromInvertedX = invertScale(scales.xScale, _mouseX, config.keyType)
     const bisectLeft = d3.bisector(getKey).left
     const dataEntryIndex = bisectLeft(cache.dataByKey, keyFromInvertedX)
     const dataEntryForXPosition = cache.dataByKey[dataEntryIndex]
@@ -262,58 +295,40 @@ export default function Chart (_container) {
     return nearestDataPoint
   }
 
-  function addMouseEvents () {
+  function addEvents () {
     cache.svg
-      .on("mouseover.d3.dispatch", function mouseover (d) {
+      .on("mouseover.dispatch", function mouseover (d) {
         if (!cache.data) { return }
         dispatcher.call("mouseOver", this, d, d3.mouse(this))
       })
-      .on("mouseout.d3.dispatch", function mouseout (d) {
+      .on("mouseout.dispatch", function mouseout (d) {
         if (!cache.data) { return }
         dispatcher.call("mouseOut", this, d, d3.mouse(this))
       })
-      .on("mousemove.d3.dispatch", function mousemove () {
+      .on("mousemove.dispatch", function mousemove () {
         if (!cache.data) { return }
         const mouseX = d3.mouse(this)[0]
         const xPosition = mouseX - config.margin.left
         const dataPoint = getNearestDataPoint(xPosition)
 
         if (dataPoint) {
-          const dataPointXPosition = cache.xScale(dataPoint[keys.DATA])
+          const dataPointXPosition = scales.xScale(dataPoint[keys.DATA])
           dispatcher.call("mouseMove", this, dataPoint, dataPointXPosition)
         }
       })
   }
 
-  function save (_filename, _title) {
-    exportChart.call(this, cache.svg, _filename, _title)
-  }
+  // function save (_filename, _title) {
+  //   exportChart.call(this, cache.svg, _filename, _title)
+  // }
 
   function on (...args) {
     return dispatcher.on(...args)
   }
 
   function setConfig (_config) {
-    config = Object.assign({}, config, _config)
+    config = override(config, _config)
     return this
-  }
-
-  function setXTitle (_xTitle) {
-    config = Object.assign({}, config, {xTitle: _xTitle})
-    return this
-  }
-
-  function setYTitle (_yTitle) {
-    config = Object.assign({}, config, {yTitle: _yTitle})
-    return this
-  }
-
-  function getConfig () {
-    return config
-  }
-
-  function getCache () {
-    return cache
   }
 
   function destroy () {
@@ -324,12 +339,8 @@ export default function Chart (_container) {
     render,
     setConfig,
     setData,
-    setXTitle,
-    setYTitle,
-    getCache,
-    getConfig,
     on,
-    save,
+    // save,
     destroy
   }
 }

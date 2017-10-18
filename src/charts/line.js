@@ -1,30 +1,47 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
+import {override} from "./helpers/common"
 
-export default function Line (config, cache) {
+export default function Line () {
 
-  const getColor = (d) => cache.colorScale(d[keys.ID])
+  let config = {
+    colorScale: null,
+    xScale: null,
+    yScale: null,
+    yScale2: null,
+    svg: null,
+    chartHeight: null
+  }
+
+  let data = {
+    dataBySeries: null,
+    groupKeys: null,
+    stack: null,
+    stackData: null
+  }
+
+  const getColor = (d) => config.colorScale(d[keys.ID])
 
   function drawLines () {
     const seriesLine = d3.line()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y((d) => cache.yScale(d[keys.VALUE]))
+        .x((d) => config.xScale(d[keys.DATA]))
+        .y((d) => config.yScale(d[keys.VALUE]))
 
     const seriesLine2 = d3.line()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y((d) => cache.yScale2(d[keys.VALUE]))
+        .x((d) => config.xScale(d[keys.DATA]))
+        .y((d) => config.yScale2(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
 
-    const lines = cache.svg.select(".chart-group").selectAll(".mark")
-        .data(cache.dataBySeries)
+    const lines = config.svg.select(".chart-group").selectAll(".mark")
+        .data(data.dataBySeries)
 
     lines.enter()
       .append("path")
       .attr("class", () => ["mark", "d3.line"].join(" "))
       .merge(lines)
       .attr("d", (d) => {
-        if (d[keys.GROUP] === cache.groupKeys[0]) {
+        if (d[keys.GROUP] === data.groupKeys[0]) {
           return seriesLine(d[keys.VALUES])
         } else {
           return seriesLine2(d[keys.VALUES])
@@ -38,25 +55,25 @@ export default function Line (config, cache) {
 
   function drawAreas () {
     const seriesArea = d3.area()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y0((d) => cache.yScale(d[keys.VALUE]))
-        .y1(() => cache.chartHeight)
+        .x((d) => config.xScale(d[keys.DATA]))
+        .y0((d) => config.yScale(d[keys.VALUE]))
+        .y1(() => config.chartHeight)
 
     const seriesArea2 = d3.area()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y0((d) => cache.yScale2(d[keys.VALUE]))
-        .y1(() => cache.chartHeight)
+        .x((d) => config.xScale(d[keys.DATA]))
+        .y0((d) => config.yScale2(d[keys.VALUE]))
+        .y1(() => config.chartHeight)
         .curve(d3.curveCatmullRom)
 
-    const areas = cache.svg.select(".chart-group").selectAll(".mark")
-        .data(cache.dataBySeries)
+    const areas = config.svg.select(".chart-group").selectAll(".mark")
+        .data(data.dataBySeries)
 
     areas.enter()
       .append("path")
       .attr("class", () => ["mark", "d3.area"].join(" "))
       .merge(areas)
       .attr("d", (d) => {
-        if (d[keys.GROUP] === cache.groupKeys[0]) {
+        if (d[keys.GROUP] === data.groupKeys[0]) {
           return seriesArea(d[keys.VALUES])
         } else {
           return seriesArea2(d[keys.VALUES])
@@ -70,12 +87,12 @@ export default function Line (config, cache) {
 
   function drawStackedAreas () {
     const seriesLine = d3.area()
-        .x((d) => cache.xScale(d.data[keys.DATA]))
-        .y0((d) => cache.yScale(d[0]))
-        .y1((d) => cache.yScale(d[1]))
+        .x((d) => config.xScale(d.data[keys.DATA]))
+        .y0((d) => config.yScale(d[0]))
+        .y1((d) => config.yScale(d[1]))
 
-    const areas = cache.svg.select(".chart-group").selectAll(".mark")
-        .data(cache.stack(cache.stackData))
+    const areas = config.svg.select(".chart-group").selectAll(".mark")
+        .data(data.stack(data.stackData))
 
     areas.enter()
       .append("path")
@@ -83,12 +100,24 @@ export default function Line (config, cache) {
       .merge(areas)
       .attr("d", seriesLine)
       .style("stroke", "none")
-      .style("fill", (d) => cache.colorScale(d.key))
+      .style("fill", (d) => config.colorScale(d.key))
 
     areas.exit().remove()
   }
 
+  function setConfig (_config) {
+    config = override(config, _config)
+    return this
+  }
+
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
+  }
+
   return {
+    setConfig,
+    setData,
     drawLines,
     drawAreas,
     drawStackedAreas

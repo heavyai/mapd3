@@ -1,9 +1,9 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
-import {cloneData, invertScale, sortData} from "./helpers/common"
+import {cloneData, invertScale, sortData, override} from "./helpers/common"
 
-export default function Brush (_chart) {
+export default function Brush (_container) {
 
   let config = {
     margin: {
@@ -13,56 +13,34 @@ export default function Brush (_chart) {
       left: 70
     },
     width: 800,
-    height: 500
+    height: 500,
+    keyType: null,
+    xScale: null
   }
 
   const cache = {
-    chart: _chart,
-    svg: null,
-    chartWidth: null,
-    chartHeight: null,
+    container: _container,
     dateRange: [null, null],
     brush: null,
     chartBrush: null,
     handle: null,
-    data: null,
-    xScale: null
+    chartWidth: null,
+    chartHeight: null
   }
 
-  let chartCache = {
-    xScale: null,
-    dataBySeries: null,
-    svg: null
+  let data = {
+    dataBySeries: null
   }
 
   // events
   const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd")
 
-  function init () {
-    render()
-  }
-  init()
-
-  function render () {
-    buildSVG()
-
-    if (chartCache.dataBySeries) {
-      cache.data = extractBrushDimension(cloneData(chartCache.dataBySeries))
-      buildScales()
-      buildBrush()
-      drawBrush()
-    }
-  }
-
   function buildSVG () {
-    chartCache = cache.chart.getCache()
-    setConfig(cache.chart.getConfig())
-
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
     if (!cache.svg) {
-      cache.svg = chartCache.svg.append("g")
+      cache.svg = cache.container.append("g")
           .classed("brush-group", true)
     }
 
@@ -74,10 +52,6 @@ export default function Brush (_chart) {
     return sortData(merged, config.keyType)
   }
 
-  function buildScales () {
-    cache.xScale = chartCache.xScale
-  }
-
   function buildBrush () {
     cache.brush = cache.brush || d3.brushX()
         .on("start", handleBrushStart)
@@ -85,9 +59,7 @@ export default function Brush (_chart) {
         .on("end", handleBrushEnd)
 
     cache.brush.extent([[0, 0], [cache.chartWidth, cache.chartHeight]])
-  }
 
-  function drawBrush () {
     cache.chartBrush = cache.svg.call(cache.brush)
 
     cache.chartBrush.selectAll(".brush-rect")
@@ -96,7 +68,7 @@ export default function Brush (_chart) {
 
   function getDataExtent () {
     const selection = d3.event.selection
-    const dataExtent = selection.map((d) => invertScale(chartCache.xScale, d, config.keyType))
+    const dataExtent = selection.map((d) => invertScale(config.xScale, d, config.keyType))
     return dataExtent
   }
 
@@ -118,9 +90,20 @@ export default function Brush (_chart) {
 
     d3.select(this)
       .transition()
-      .call(d3.event.target.move, dataExtent.map(cache.xScale))
+      .call(d3.event.target.move, dataExtent.map(config.xScale))
 
     dispatcher.call("brushEnd", this, dataExtent, config)
+  }
+
+  function drawBrush () {
+    buildSVG()
+
+    if (data.dataBySeries) {
+      cache.data = extractBrushDimension(cloneData(data.dataBySeries))
+      buildBrush()
+    }
+
+    return this
   }
 
   // function setBrushByPercentages (_a, _b) {
@@ -173,28 +156,24 @@ export default function Brush (_chart) {
   }
 
   function setConfig (_config) {
-    config = Object.assign({}, config, _config)
+    config = override(config, _config)
     return this
   }
 
-  function getCache () {
-    return cache
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
   }
 
   function destroy () {
     cache.svg.remove()
   }
 
-  function update () {
-    render()
-    return this
-  }
-
   return {
-    getCache,
     on,
     setConfig,
+    setData,
     destroy,
-    update
+    drawBrush
   }
 }

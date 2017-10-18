@@ -6,11 +6,10 @@
         fill: $white;
     }
 
-    .x.axis text, .y.axis text {
-        font-size: 0.8em;
-    }
-    .x.axis, .y.axis {
-        
+    .x.axis, .y.axis, .y2.axis {
+        text {
+            font-size: 0.8em;
+        }
         path, .domain {
             display: block;
             stroke: #ADB0B6;

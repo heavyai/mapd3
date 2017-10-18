@@ -22,7 +22,7 @@ export default function Tooltip (_container) {
 
     // Animations
     mouseChaseDuration: 30,
-    ease: d3.easeQuadInOut,
+    tooltipEase: d3.easeQuadInOut,
 
     titleHeight: 32,
     elementHeight: 24,
@@ -115,7 +115,7 @@ export default function Tooltip (_container) {
 
     cache.svg.transition()
       .duration(config.mouseChaseDuration)
-      .ease(config.ease)
+      .ease(config.tooltipEase)
       .attr("transform", `translate(${tooltipX}, ${tooltipY})`)
 
     return this
@@ -226,6 +226,7 @@ export default function Tooltip (_container) {
   }
 
   function hide () {
+    if (!cache.svg) { return null }
     cache.svg.style("display", "none")
 
     return this
@@ -244,12 +245,13 @@ export default function Tooltip (_container) {
     setContent(_dataPoint[keys.SERIES])
     setSize(config.tooltipWidth, "auto")
     setPosition(_xPosition)
+    show()
 
     return this
   }
 
-  function bindEvents (dispatcher) {
-    dispatcher.on("mouseOver.tooltip", show)
+  function bindEvents (_dispatcher) {
+    _dispatcher.on("mouseOver.tooltip", show)
       .on("mouseMove.tooltip", drawTooltip)
       .on("mouseOut.tooltip", hide)
   }

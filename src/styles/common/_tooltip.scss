@@ -1,24 +1,4 @@
-$marker-width: 1;
 $tooltip-width: 1;
-
-// Tooltip Container
-.vertical-marker-container {
-    .vertical-marker {
-        stroke: $grey-300;
-        stroke-width: $marker-width;
-        fill: none;
-    }
-    .data-point-highlighter {
-        fill: $white;
-        stroke-width: 2;
-        // &:after {
-        //     content: '';
-        //     display: inline-block;
-        //     stroke-width: 8;
-        //     opacity: 0.3;
-        // }
-    }
-}
 
 // Tooltip
 .tooltip-background {

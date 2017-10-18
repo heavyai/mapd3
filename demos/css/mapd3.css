@@ -36,15 +36,6 @@
 .y-title, .x-title {
   font-size: 0.8em; }
 
-.vertical-marker-container .vertical-marker {
-  stroke: #D2D6DF;
-  stroke-width: 1;
-  fill: none; }
-
-.vertical-marker-container .data-point-highlighter {
-  fill: #ffffff;
-  stroke-width: 2; }
-
 .tooltip-background {
   fill: rgba(255, 255, 255, 0.97);
   stroke: #D2D6DF;
@@ -71,31 +62,31 @@
 .mapd3-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.2; }
 
-.line-chart .masking-rectangle {
+.chart .masking-rectangle {
   fill: #ffffff; }
 
-.line-chart .x.axis text, .line-chart .y.axis text, .line-chart .y2.axis text {
+.chart .x.axis text, .chart .y.axis text, .chart .y2.axis text {
   font-size: 0.8em; }
 
-.line-chart .x.axis path, .line-chart .x.axis .domain, .line-chart .y.axis path, .line-chart .y.axis .domain, .line-chart .y2.axis path, .line-chart .y2.axis .domain {
+.chart .x.axis path, .chart .x.axis .domain, .chart .y.axis path, .chart .y.axis .domain, .chart .y2.axis path, .chart .y2.axis .domain {
   display: block;
   stroke: #ADB0B6; }
 
-.line-chart .vertical-grid-line, .line-chart .horizontal-grid-line {
+.chart .vertical-grid-line, .chart .horizontal-grid-line {
   stroke-dasharray: none; }
 
-.line-chart .line, .line-chart .area, .line-chart .stacked-area {
+.chart .line, .chart .area, .chart .stacked-area {
   stroke-width: 1.5px;
   stroke-linecap: round;
   stroke-linejoin: round; }
 
-.line-chart .line {
+.chart .line {
   fill: none; }
 
-.line-chart .area {
+.chart .area {
   fill-opacity: 0.5; }
 
-.line-chart .stacked-area {
+.chart .stacked-area {
   fill-opacity: 0.5; }
 
 .brush-chart .brush-area {
@@ -124,3 +115,8 @@
 
 .binning-group .item.selected {
   text-decoration: underline; }
+
+.vertical-marker {
+  stroke: #D2D6DF;
+  stroke-width: 1;
+  fill: none; }

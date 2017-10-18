@@ -47,3 +47,18 @@ export function override (a, b) {
   }
   return accum
 }
+
+export function throttle (callback, limit) {
+  let wait = false
+  let timer = null
+  return function throttleFn (...args) {
+    if (!wait) {
+      wait = true
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        wait = false
+        callback(...args)
+      }, limit)
+    }
+  }
+}

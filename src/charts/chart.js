@@ -3,7 +3,7 @@ import * as d3 from "./helpers/d3-service"
 import {exportChart} from "./helpers/exportChart"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, getUnique, invertScale, sortData, override} from "./helpers/common"
+import {cloneData, getUnique, invertScale, sortData, override, throttle} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -19,6 +19,7 @@ import DomainEditor from "./domain-editor"
 export default function Chart (_container) {
 
   let config = {
+    // common
     margin: {
       top: 48,
       right: 32,
@@ -27,6 +28,19 @@ export default function Chart (_container) {
     },
     width: 800,
     height: 500,
+    keyType: "time",
+    chartType: "line", // line, area, stackedLine, stackedArea
+    ease: d3.easeLinear,
+
+    // intro animation
+    isAnimated: false,
+    animationDuration: 1500,
+
+    // scale
+    colorSchema: colors.mapdColors.map((d) => ({value: d})),
+    defaultColor: "skyblue",
+
+    // axis
     xAxisPadding: {
       top: 0,
       left: 0,
@@ -34,28 +48,32 @@ export default function Chart (_container) {
       right: 0
     },
     tickPadding: 5,
-    colorSchema: colors.mapdColors.map((d) => ({value: d})),
-    dotRadius: 4,
     xAxisFormat: "%c",
     tickSkip: 1,
     tickSizes: 8,
-    defaultColor: "skyblue",
-
-    isAnimated: false,
-    ease: d3.easeLinear,
-    animationDuration: 1500,
-    axisTransitionDuration: 0,
-
     yTicks: 5,
     yTicks2: 5,
     yAxisFormat: ".2f",
     yAxisFormat2: ".2f",
+    grid: null,
+    axisTransitionDuration: 0,
 
     xTitle: "",
     yTitle: "",
 
-    keyType: "time",
-    chartType: "line" // line, area, stackedLine, stackedArea
+    // hover
+    dotRadius: 4,
+
+    // tooltip
+    valueFormat: ".2f",
+    tooltipMaxTopicLength: 170,
+    tooltipBorderRadius: 3,
+    mouseChaseDuration: 30,
+    tooltipEase: d3.easeQuadInOut,
+    tooltipHeight: 48,
+    tooltipWidth: 160,
+    dateFormat: "%b %d, %Y",
+    seriesOrder: []
   }
 
   let scales = {
@@ -70,11 +88,6 @@ export default function Chart (_container) {
     container: _container,
     svg: null,
     maskingRectangle: null,
-    verticalGridLines: null,
-    horizontalGridLines: null,
-    grid: null,
-    verticalMarkerContainer: null,
-    verticalMarkerLine: null,
     chartWidth: null, chartHeight: null,
     xAxis: null, yAxis: null, yAxis2: null,
 
@@ -113,12 +126,7 @@ export default function Chart (_container) {
 
     if (!cache.svg) {
       const template = `<div class="mapd3-container">
-        <svg class="mapd3 line-chart">
-          <g class="container-group">
-            <g class="chart-group"></g>
-          </g>
-          <text class="x-title"></text>
-          <text class="y-title"></text>
+        <svg class="mapd3 chart">
           <rect class="masking-rectangle"></rect>
         </svg>
       </div>`
@@ -161,20 +169,14 @@ export default function Chart (_container) {
       .drawAxisTitles()
       .drawGridLines()
 
-    const line = Line(cache.svg)
-      .setConfig(Object.assign({}, config, cache, scales))
+    Line(cache.svg)
+      .setConfig(config)
+      .setScales(scales)
       .setData(dataObject)
+      .drawMarks()
 
     // const bar = Bar(config, cache)
-
-    if (config.chartType === "area") {
-      line.drawAreas()
-    } else if (config.chartType === "line") {
-      line.drawLines()
-    } else if (config.chartType === "stackedArea") {
-      line.drawStackedAreas()
-    }
-    // else if (config.chartType === "bar") {
+    // if (config.chartType === "bar") {
     //   bar.drawBars()
     // } else if (config.chartType === "stackedBar") {
     //   bar.drawStackedBars()
@@ -198,8 +200,10 @@ export default function Chart (_container) {
       .drawBrush()
       .on("brushMove", (...arg) => console.log("brush", ...arg))
 
-    // const hover = Hover(cache.svg)
-    //   .on("hover", (...arg) => console.log("hover", ...arg))
+    Hover(cache.svg)
+      .setConfig(config)
+      .setScales(scales)
+      .bindEvents(dispatcher)
 
     // const binning = Binning(cache.svg)
     //   .on("change", (...arg) => console.log("binning", ...arg))
@@ -296,6 +300,11 @@ export default function Chart (_container) {
   }
 
   function addEvents () {
+    const THROTTLE_DELAY = 20
+    const throttledDispatch = throttle((...args) => {
+      dispatcher.call(...args)
+    }, THROTTLE_DELAY)
+
     cache.svg
       .on("mouseover.dispatch", function mouseover (d) {
         if (!cache.data) { return }
@@ -314,6 +323,7 @@ export default function Chart (_container) {
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.DATA])
           dispatcher.call("mouseMove", this, dataPoint, dataPointXPosition)
+          throttledDispatch("mouseMove", this, dataPoint, dataPointXPosition)
         }
       })
   }

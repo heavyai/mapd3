@@ -2,11 +2,12 @@
 <head>
 <link rel="stylesheet" href="../dist/mapd3.css">
 <style>
+.chart1 {
+  margin-top: 80px;
+  margin-left: 40px;
+}
 .mapd3 {
   user-select: none;
-}
-.domain-lock {
-  background: #999;
 }
 </style>
 </head><body>
@@ -17,14 +18,18 @@
 <script>
 
 /*
-* titles out of axis? or at least html
-* extract data
+* brush domain editor
+* titles out of axis? or at least html + editable + events
+* binning in html
+* tooltip in html
+* legend in html
 
-* axes locking
-* domain editor
+* hover data stack
 * problem with selecting first point
+
 * single point line/area chart
 * null data line gap
+* extract data from chart.js?
 */
 
 const keyType = "string" // time, number, string

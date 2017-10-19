@@ -24,7 +24,8 @@ export default function Axis (_container) {
     ease: null,
     yTitle: null,
     xTitle: null,
-    grid: null
+    grid: null,
+    hoverZoneSize: 30
   }
 
   let scales = {
@@ -36,6 +37,7 @@ export default function Axis (_container) {
 
   const cache = {
     container: _container,
+    background: null,
     chartHeight: null,
     chartWidth: null,
     xAxis: null,
@@ -52,14 +54,45 @@ export default function Axis (_container) {
     if (!cache.svg) {
       cache.svg = cache.container.append("g")
           .classed("axis-group", true)
+          .style("pointer-events", "none")
 
+      // cache.background = cache.svg.append("g").attr("class", "background")
+      //   .append("rect")
+      //   .style("opacity", 0)
       cache.svg.append("g").attr("class", "grid-lines-group")
+
+      const HOVER_ZONE_SIZE = 30
       cache.svg.append("g").attr("class", "axis x")
+        // .append("rect")
+        // .attr("class", "x-axis-background")
+        // .attr("width", cache.chartWidth)
+        // .attr("height", HOVER_ZONE_SIZE)
+        // .style("pointer-events", "all")
+        // .on("mouseover.dispatch", () => dispatcher.call("enterXAxis"))
+        // .on("mouseout.dispatch", () => dispatcher.call("exitXAxis"))
+
       cache.svg.append("g").attr("class", "axis y")
+        // .append("rect")
+        // .attr("class", "y-axis-background")
+        // .attr("width", HOVER_ZONE_SIZE)
+        // .attr("height", cache.chartHeight)
+        // .attr("x", -HOVER_ZONE_SIZE)
+        // .style("pointer-events", "all")
+        // .on("mouseover.dispatch", () => dispatcher.call("enterYAxis"))
+        // .on("mouseout.dispatch", () => dispatcher.call("exitYAxis"))
+
       cache.svg.append("g").attr("class", "axis y2")
+        // .append("rect")
+        // .attr("class", "y2-axis-background")
+        // .attr("width", HOVER_ZONE_SIZE)
+        // .attr("height", cache.chartHeight)
+        // .style("pointer-events", "all")
+        // .on("mouseover.dispatch", () => dispatcher.call("enterY2Axis"))
+        // .on("mouseout.dispatch", () => dispatcher.call("exitY2Axis"))
     }
 
     cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
+    // cache.background.attr("width", config.hoverZoneSize)
   }
 
   function buildAxis () {
@@ -190,6 +223,6 @@ export default function Axis (_container) {
     setScales,
     drawAxis,
     drawAxisTitles,
-    drawGridLines
+    drawGridLines,
   }
 }

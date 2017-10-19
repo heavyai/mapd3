@@ -14,7 +14,10 @@ export default function Brush (_container) {
     },
     width: 800,
     height: 500,
-    keyType: null,
+    keyType: null
+  }
+
+  let scales = {
     xScale: null
   }
 
@@ -43,8 +46,6 @@ export default function Brush (_container) {
       cache.svg = cache.container.append("g")
           .classed("brush-group", true)
     }
-
-    cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
   function extractBrushDimension (_data) {
@@ -68,7 +69,7 @@ export default function Brush (_container) {
 
   function getDataExtent () {
     const selection = d3.event.selection
-    const dataExtent = selection.map((d) => invertScale(config.xScale, d, config.keyType))
+    const dataExtent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
     return dataExtent
   }
 
@@ -90,7 +91,7 @@ export default function Brush (_container) {
 
     d3.select(this)
       .transition()
-      .call(d3.event.target.move, dataExtent.map(config.xScale))
+      .call(d3.event.target.move, dataExtent.map(scales.xScale))
 
     dispatcher.call("brushEnd", this, dataExtent, config)
   }
@@ -160,6 +161,11 @@ export default function Brush (_container) {
     return this
   }
 
+  function setScales (_scales) {
+    scales = override(scales, _scales)
+    return this
+  }
+
   function setData (_data) {
     data = Object.assign({}, data, _data)
     return this
@@ -173,6 +179,7 @@ export default function Brush (_container) {
     on,
     setConfig,
     setData,
+    setScales,
     destroy,
     drawBrush
   }

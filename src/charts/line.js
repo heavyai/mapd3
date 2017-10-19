@@ -47,8 +47,6 @@ export default function Line (_container) {
       cache.svg = cache.container.append("g")
           .classed("mark-group", true)
     }
-
-    cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
   function drawLines () {

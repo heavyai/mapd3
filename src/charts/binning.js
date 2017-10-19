@@ -2,7 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {exclusiveToggle, toggleOnOff} from "./interactors"
 
-export default function Binning (_chart) {
+export default function Binning (_container) {
 
   let config = {
     margin: {
@@ -11,13 +11,15 @@ export default function Binning (_chart) {
       bottom: 40,
       left: 70
     },
+    width: 800,
+    height: 500,
     toggle: ["auto"],
     exclusiveToggle: ["1y", "1q", "1mo", "1w"],
     label: "BIN:"
   }
 
   const cache = {
-    chart: _chart,
+    container: _container,
     svg: null
   }
 
@@ -28,17 +30,10 @@ export default function Binning (_chart) {
   // events
   const dispatcher = d3.dispatch("change")
 
-  function render () {
-    buildSVG()
-  }
-  render()
-
   function buildSVG () {
-    chartCache = cache.chart.getCache()
-    setConfig(cache.chart.getConfig())
 
     if (!cache.svg) {
-      cache.svg = chartCache.svg.append("g")
+      cache.svg = cache.container.append("g")
           .classed("binning-group", true)
           .append("text")
 
@@ -81,6 +76,12 @@ export default function Binning (_chart) {
     itemsExclusive.exit().remove()
   }
 
+  function drawBinning () {
+    buildSVG()
+
+    return this
+  }
+
   function on (...args) {
     return dispatcher.on(...args)
   }
@@ -90,24 +91,14 @@ export default function Binning (_chart) {
     return this
   }
 
-  function getCache () {
-    return cache
-  }
-
   function destroy () {
     cache.svg.remove()
   }
 
-  function update () {
-    render()
-    return this
-  }
-
   return {
-    getCache,
     on,
     setConfig,
     destroy,
-    update
+    drawBinning
   }
 }

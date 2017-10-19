@@ -87,6 +87,7 @@ export default function Chart (_container) {
   const cache = {
     container: _container,
     svg: null,
+    panel: null,
     maskingRectangle: null,
     chartWidth: null, chartHeight: null,
     xAxis: null, yAxis: null, yAxis2: null,
@@ -106,7 +107,7 @@ export default function Chart (_container) {
   const getGroup = (d) => d[keys.GROUP]
 
   // events
-  const dispatcher = d3.dispatch("mouseOver", "mouseOut", "mouseMove", "hoverYAxis")
+  const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
 
   function render () {
     buildSVG()
@@ -127,6 +128,9 @@ export default function Chart (_container) {
     if (!cache.svg) {
       const template = `<div class="mapd3-container">
         <svg class="mapd3 chart">
+          <g class="panel-group">
+            <rect class="panel-background"></rect>
+          </g>
           <rect class="masking-rectangle"></rect>
         </svg>
       </div>`
@@ -137,14 +141,22 @@ export default function Chart (_container) {
       base.select(".mapd3-container").style("position", "relative")
 
       cache.svg = base.select("svg")
+      cache.panel = cache.svg.select(".panel-group")
 
       addEvents()
     }
 
-    cache.svg.attr("width", config.width)
+    cache.svg
+      .attr("width", config.width)
       .attr("height", config.height)
-      .select(".container-group")
+
+    cache.panel
       .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
+      .select(".panel-background")
+      .attr("width", cache.chartWidth)
+      .attr("height", cache.chartHeight)
+      .attr("fill", "transparent")
+
 
     return this
   }
@@ -162,14 +174,14 @@ export default function Chart (_container) {
       .setData(dataObject)
     scales = scale.getScales()
 
-    Axis(cache.svg)
+    const axis = Axis(cache.svg)
       .setConfig(config)
       .setScales(scales)
       .drawAxis()
       .drawAxisTitles()
       .drawGridLines()
 
-    Line(cache.svg)
+    Line(cache.panel)
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
@@ -182,7 +194,7 @@ export default function Chart (_container) {
     //   bar.drawStackedBars()
     // }
 
-    Tooltip(cache.svg)
+    Tooltip(cache.panel)
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
@@ -194,21 +206,28 @@ export default function Chart (_container) {
     //   .setPosition(780)
     //   .show()
 
-    Brush(cache.svg)
-      .setConfig(Object.assign({}, config, scales))
+    Brush(cache.panel)
+      .setConfig(config)
+      .setScales(scales)
       .setData(dataObject)
       .drawBrush()
       .on("brushMove", (...arg) => console.log("brush", ...arg))
 
-    Hover(cache.svg)
+    Hover(cache.panel)
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
 
-    // const binning = Binning(cache.svg)
-    //   .on("change", (...arg) => console.log("binning", ...arg))
+    Binning(cache.svg)
+      .setConfig(config)
+      .drawBinning()
+      .on("change", (...arg) => console.log("binning", ...arg))
 
-    // const domainEditor = DomainEditor(cache.svg)
+    DomainEditor(cache.svg)
+      .setConfig(config)
+      .drawDomainEditor()
+      .on("domainChanged", (d) => console.log(d))
+      .on("domainLockToggled", (d) => console.log(d))
 
     triggerIntroAnimation()
 
@@ -305,25 +324,22 @@ export default function Chart (_container) {
       dispatcher.call(...args)
     }, THROTTLE_DELAY)
 
-    cache.svg
-      .on("mouseover.dispatch", function mouseover (d) {
-        if (!cache.data) { return }
-        dispatcher.call("mouseOver", this, d, d3.mouse(this))
+    cache.panel
+      .on("mouseover.dispatch", () => {
+        dispatcher.call("mouseOverPanel", null, d3.mouse(cache.panel.node()))
       })
-      .on("mouseout.dispatch", function mouseout (d) {
-        if (!cache.data) { return }
-        dispatcher.call("mouseOut", this, d, d3.mouse(this))
+      .on("mouseout.dispatch", () => {
+        dispatcher.call("mouseOutPanel", null, d3.mouse(cache.panel.node()))
       })
-      .on("mousemove.dispatch", function mousemove () {
+      .on("mousemove.dispatch", () => {
+        const [mouseX] = d3.mouse(cache.panel.node())
         if (!cache.data) { return }
-        const mouseX = d3.mouse(this)[0]
-        const xPosition = mouseX - config.margin.left
+        const xPosition = mouseX
         const dataPoint = getNearestDataPoint(xPosition)
 
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.DATA])
-          dispatcher.call("mouseMove", this, dataPoint, dataPointXPosition)
-          throttledDispatch("mouseMove", this, dataPoint, dataPointXPosition)
+          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition)
         }
       })
   }

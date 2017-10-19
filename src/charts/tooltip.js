@@ -70,6 +70,7 @@ export default function Tooltip (_container) {
     if (!cache.svg) {
       cache.svg = cache.container.append("g")
           .classed("tooltip-group", true)
+          .attr("pointer-events", "none")
 
       cache.tooltipBackground = cache.svg.append("rect")
           .classed("tooltip-text-container", true)
@@ -85,7 +86,6 @@ export default function Tooltip (_container) {
           .classed("tooltip-body", true)
 
       setSize("auto", "auto")
-      hide()
     }
 
     cache.chartWidth = config.width - config.margin.left - config.margin.right
@@ -99,7 +99,7 @@ export default function Tooltip (_container) {
   }
 
   function calculateTooltipPosition (_mouseX) {
-    const tooltipX = _mouseX + config.margin.left
+    const tooltipX = _mouseX
     let offset = 0
     const tooltipY = config.margin.top
 
@@ -245,15 +245,14 @@ export default function Tooltip (_container) {
     setContent(_dataPoint[keys.SERIES])
     setSize(config.tooltipWidth, "auto")
     setPosition(_xPosition)
-    show()
 
     return this
   }
 
   function bindEvents (_dispatcher) {
-    _dispatcher.on("mouseOver.tooltip", show)
-      .on("mouseMove.tooltip", drawTooltip)
-      .on("mouseOut.tooltip", hide)
+    _dispatcher.on("mouseOverPanel.tooltip", show)
+      .on("mouseMovePanel.tooltip", drawTooltip)
+      .on("mouseOutPanel.tooltip", hide)
   }
 
   function setConfig (_config) {

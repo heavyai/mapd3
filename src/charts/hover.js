@@ -155,14 +155,13 @@ export default function Hover (_container) {
   }
 
   function moveVerticalMarker (_verticalMarkerXPosition) {
-    cache.svg.attr("transform", `translate(${[_verticalMarkerXPosition + config.margin.left, config.margin.top]})`)
+    cache.svg.attr("transform", `translate(${[_verticalMarkerXPosition, 0]})`)
   }
 
   function bindEvents (_dispatcher) {
-    _dispatcher.on("mouseOver.hover", show)
-      .on("mouseMove.hover", drawHover)
-      .on("mouseOut.hover", hide)
-
+    _dispatcher.on("mouseOverPanel.hover", show)
+      .on("mouseMovePanel.hover", drawHover)
+      .on("mouseOutPanel.hover", hide)
   }
 
   function on (...args) {

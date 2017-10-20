@@ -1,6 +1,5 @@
 import * as d3 from "./helpers/d3-service"
 
-import {exportChart} from "./helpers/exportChart"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
 import {cloneData, getUnique, invertScale, sortData, override, throttle} from "./helpers/common"
@@ -15,6 +14,8 @@ import Brush from "./brush"
 import Hover from "./hover"
 import Binning from "./binning"
 import DomainEditor from "./domain-editor"
+import BrushRangeEditor from "./brush-range-editor"
+import Label from "./label"
 
 export default function Chart (_container) {
 
@@ -88,6 +89,7 @@ export default function Chart (_container) {
     container: _container,
     svg: null,
     panel: null,
+    margin: null,
     maskingRectangle: null,
     chartWidth: null, chartHeight: null,
     xAxis: null, yAxis: null, yAxis2: null,
@@ -128,6 +130,7 @@ export default function Chart (_container) {
     if (!cache.svg) {
       const template = `<div class="mapd3-container">
         <svg class="mapd3 chart">
+          <g class="chart-group"></g>
           <g class="panel-group">
             <rect class="panel-background"></rect>
           </g>
@@ -138,10 +141,12 @@ export default function Chart (_container) {
       const base = d3.select(cache.container)
           .html(template)
 
-      base.select(".mapd3-container").style("position", "relative")
+      cache.container = base.select(".mapd3-container")
+          .style("position", "relative")
 
       cache.svg = base.select("svg")
       cache.panel = cache.svg.select(".panel-group")
+      cache.chart = cache.svg.select(".chart-group")
 
       addEvents()
     }
@@ -174,11 +179,10 @@ export default function Chart (_container) {
       .setData(dataObject)
     scales = scale.getScales()
 
-    const axis = Axis(cache.svg)
+    Axis(cache.chart)
       .setConfig(config)
       .setScales(scales)
       .drawAxis()
-      .drawAxisTitles()
       .drawGridLines()
 
     Line(cache.panel)
@@ -187,24 +191,10 @@ export default function Chart (_container) {
       .setData(dataObject)
       .drawMarks()
 
-    // const bar = Bar(config, cache)
-    // if (config.chartType === "bar") {
-    //   bar.drawBars()
-    // } else if (config.chartType === "stackedBar") {
-    //   bar.drawStackedBars()
-    // }
-
     Tooltip(cache.panel)
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
-
-    // const legend = Legend(cache.svg)
-    //   .setContent(data.series)
-    //   .setTitle("Title")
-    //   .setSize(80, "auto")
-    //   .setPosition(780)
-    //   .show()
 
     Brush(cache.panel)
       .setConfig(config)
@@ -218,16 +208,42 @@ export default function Chart (_container) {
       .setScales(scales)
       .bindEvents(dispatcher)
 
-    Binning(cache.svg)
+    Binning(cache.chart)
       .setConfig(config)
       .drawBinning()
       .on("change", (...arg) => console.log("binning", ...arg))
 
-    DomainEditor(cache.svg)
+    DomainEditor(cache.container)
       .setConfig(config)
       .drawDomainEditor()
       .on("domainChanged", (d) => console.log(d))
       .on("domainLockToggled", (d) => console.log(d))
+
+    BrushRangeEditor(cache.container)
+      .setConfig(config)
+      .drawRangeEditor()
+      .on("rangeChanged", (d) => console.log(d))
+      .setRangeMin("Jan 01, 2001")
+      .setRangeMax("Jan 01, 2002")
+
+    Label(cache.container)
+      .setConfig(config)
+      .drawLabels("X Axis Label", "Y Axis Label")
+      .on("axisLabelChanged", (d) => console.log(d))
+
+    // const bar = Bar(config, cache)
+    // if (config.chartType === "bar") {
+    //   bar.drawBars()
+    // } else if (config.chartType === "stackedBar") {
+    //   bar.drawStackedBars()
+    // }
+
+    // const legend = Legend(cache.svg)
+    //   .setContent(data.series)
+    //   .setTitle("Title")
+    //   .setSize(80, "auto")
+    //   .setPosition(780)
+    //   .show()
 
     triggerIntroAnimation()
 
@@ -344,10 +360,6 @@ export default function Chart (_container) {
       })
   }
 
-  // function save (_filename, _title) {
-  //   exportChart.call(this, cache.svg, _filename, _title)
-  // }
-
   function on (...args) {
     return dispatcher.on(...args)
   }
@@ -366,7 +378,6 @@ export default function Chart (_container) {
     setConfig,
     setData,
     on,
-    // save,
     destroy
   }
 }

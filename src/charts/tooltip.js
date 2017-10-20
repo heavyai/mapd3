@@ -265,11 +265,6 @@ export default function Tooltip (_container) {
     return this
   }
 
-  function destroy () {
-    cache.container.on(".tooltip", null)
-    cache.svg.remove()
-  }
-
   return {
     bindEvents,
     setPosition,
@@ -280,7 +275,6 @@ export default function Tooltip (_container) {
     show,
     drawTooltip,
     setConfig,
-    setScales,
-    destroy
+    setScales
   }
 }

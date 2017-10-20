@@ -1,6 +1,5 @@
 import * as d3 from "./helpers/d3-service"
 
-import {toggleOnOff} from "./interactors"
 import {override} from "./helpers/common"
 
 export default function DomainEditor (_container) {
@@ -19,7 +18,9 @@ export default function DomainEditor (_container) {
   const cache = {
     container: _container,
     parentDiv: null,
-    yInputGroup: null,
+    xHitZone: null,
+    yHitZone: null,
+    y2HitZone: null,
     chartWidth: null,
     chartHeight: null
   }
@@ -32,76 +33,74 @@ export default function DomainEditor (_container) {
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
     if (!cache.svg) {
-      cache.parentDiv = d3.select(cache.container.node().parentNode)
-
-      cache.inputGroup = cache.parentDiv
+      cache.inputGroup = cache.container
           .append("div")
           .attr("class", "domain-input-group")
           .style("position", "absolute")
           .style("top", 0)
 
-      const HOVER_ZONE_SIZE = 30
+      const HOVER_ZONE_SIZE = 40
       const LOCK_SIZE = 12
-      const INPUT_HEIGHT = 16
+      const INPUT_HEIGHT = 12
+      const PADDING = 4
+      const INPUT_WIDTH = HOVER_ZONE_SIZE - PADDING
 
       // hit zones
-      const xInputHitZone = cache.inputGroup.append("div")
-        .attr("class", "hit-zone x")
-        .style("pointer-events", "all")
-        .style("position", "absolute")
-        .on("mouseover.dispatch", showXEditor)
-        .on("mouseout.dispatch", hideXEditor)
-        .style("width", `${cache.chartWidth}px`)
-        .style("height", `${HOVER_ZONE_SIZE}px`)
-        .style("top", `${config.margin.top + cache.chartHeight}px`)
-        .style("left", `${config.margin.left}px`)
+      cache.xHitZone = cache.inputGroup.append("div")
+          .attr("class", "hit-zone x")
+          .style("pointer-events", "all")
+          .style("position", "absolute")
+          .on("mouseover.dispatch", showXEditor)
+          .on("mouseout.dispatch", hideXEditor)
+          .style("width", `${cache.chartWidth + HOVER_ZONE_SIZE * 2}px`)
+          .style("height", `${HOVER_ZONE_SIZE}px`)
+          .style("top", `${config.margin.top + cache.chartHeight}px`)
+          .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
-      const yInputHitZone = cache.inputGroup.append("div")
-        .attr("class", "hit-zone y")
-        .style("pointer-events", "all")
-        .style("position", "absolute")
-        .on("mouseover.dispatch", showYEditor)
-        .on("mouseout.dispatch", hideYEditor)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
-        .style("height", `${cache.chartHeight}px`)
-        .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
-        .style("top", `${config.margin.top}px`)
+      cache.yHitZone = cache.inputGroup.append("div")
+          .attr("class", "hit-zone y")
+          .style("pointer-events", "all")
+          .style("position", "absolute")
+          .on("mouseover.dispatch", showYEditor)
+          .on("mouseout.dispatch", hideYEditor)
+          .style("width", `${HOVER_ZONE_SIZE}px`)
+          .style("height", `${cache.chartHeight + HOVER_ZONE_SIZE}px`)
+          .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
+          .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
-      const y2InputHitZone = cache.inputGroup.append("div")
-        .attr("class", "hit-zone y2")
-        .style("pointer-events", "all")
-        .style("position", "absolute")
-        .on("mouseover.dispatch", showY2Editor)
-        .on("mouseout.dispatch", hideY2Editor)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
-        .style("height", `${cache.chartHeight}px`)
-        .style("left", `${config.margin.left + cache.chartWidth}px`)
-        .style("top", `${config.margin.top}px`)
+      cache.y2HitZone = cache.inputGroup.append("div")
+          .attr("class", "hit-zone y2")
+          .style("pointer-events", "all")
+          .style("position", "absolute")
+          .on("mouseover.dispatch", showY2Editor)
+          .on("mouseout.dispatch", hideY2Editor)
+          .style("width", `${HOVER_ZONE_SIZE}px`)
+          .style("height", `${cache.chartHeight + HOVER_ZONE_SIZE}px`)
+          .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
+          .style("left", `${config.margin.left + cache.chartWidth}px`)
 
       // y input group
-      cache.yInputGroup = yInputHitZone.append("div")
-          .attr("class", "y-domain-input-group")
-
-      cache.yInputGroup.append("input")
-        .attr("class", "domain-input y min")
-        .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "y", type: "min"})
-        })
-        .style("top", `${LOCK_SIZE}px`)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
-        .style("height", `${INPUT_HEIGHT}px`)
-
-      cache.yInputGroup.append("input")
+      cache.yHitZone.append("input")
         .attr("class", "domain-input y max")
         .style("position", "absolute")
         .on("change", function change () {
           dispatcher.call("domainChanged", this, {value: this.value, axis: "y", type: "max"})
         })
-        .style("top", `${cache.chartHeight - INPUT_HEIGHT}px`)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
+        .style("width", `${INPUT_WIDTH}px`)
+        .style("height", `${INPUT_HEIGHT}px`)
+        .style("top", `${HOVER_ZONE_SIZE}px`)
 
-      cache.yInputGroup.append("div")
+      cache.yHitZone.append("input")
+        .attr("class", "domain-input y min")
+        .style("position", "absolute")
+        .on("change", function change () {
+          dispatcher.call("domainChanged", this, {value: this.value, axis: "y", type: "min"})
+        })
+        .style("width", `${INPUT_WIDTH}px`)
+        .style("height", `${INPUT_HEIGHT}px`)
+        .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
+
+      cache.yHitZone.append("div")
         .attr("class", "domain-lock y")
         .style("position", "absolute")
         .on("click", function change () {
@@ -112,31 +111,32 @@ export default function DomainEditor (_container) {
         .style("width", `${LOCK_SIZE}px`)
         .style("height", `${LOCK_SIZE}px`)
         .style("left", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
+        .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
 
       // y2 input group
-      cache.y2InputGroup = y2InputHitZone.append("div")
-          .attr("class", "y2-domain-input-group")
-
-      cache.y2InputGroup.append("input")
-        .attr("class", "domain-input y2 min")
-        .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "y2", type: "min"})
-        })
-        .style("top", `${LOCK_SIZE}px`)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
-        .style("height", `${INPUT_HEIGHT}px`)
-
-      cache.y2InputGroup.append("input")
+      cache.y2HitZone.append("input")
         .attr("class", "domain-input y2 max")
         .style("position", "absolute")
         .on("change", function change () {
           dispatcher.call("domainChanged", this, {value: this.value, axis: "y2", type: "max"})
         })
-        .style("top", `${cache.chartHeight - INPUT_HEIGHT}px`)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
+        .style("width", `${INPUT_WIDTH}px`)
+        .style("height", `${INPUT_HEIGHT}px`)
+        .style("top", `${HOVER_ZONE_SIZE}px`)
+        .style("left", `${PADDING}px`)
 
-      cache.y2InputGroup.append("div")
+      cache.y2HitZone.append("input")
+        .attr("class", "domain-input y2 min")
+        .style("position", "absolute")
+        .on("change", function change () {
+          dispatcher.call("domainChanged", this, {value: this.value, axis: "y2", type: "min"})
+        })
+        .style("width", `${INPUT_WIDTH}px`)
+        .style("height", `${INPUT_HEIGHT}px`)
+        .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
+        .style("left", `${PADDING}px`)
+
+      cache.y2HitZone.append("div")
         .attr("class", "domain-lock y2")
         .style("position", "absolute")
         .on("click", function change () {
@@ -146,31 +146,32 @@ export default function DomainEditor (_container) {
         })
         .style("width", `${LOCK_SIZE}px`)
         .style("height", `${LOCK_SIZE}px`)
+        .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
 
       // x input group
-      cache.xInputGroup = xInputHitZone.append("div")
-          .attr("class", "x-domain-input-group")
-
-      cache.xInputGroup.append("input")
+      cache.xHitZone.append("input")
         .attr("class", "domain-input x min")
         .style("position", "absolute")
         .on("change", function change () {
           dispatcher.call("domainChanged", this, {value: this.value, axis: "x", type: "min"})
         })
-        .style("left", `${LOCK_SIZE}px`)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
+        .style("width", `${INPUT_WIDTH}px`)
         .style("height", `${INPUT_HEIGHT}px`)
+        .style("top", `${PADDING}px`)
+        .style("left", `${HOVER_ZONE_SIZE}px`)
 
-      cache.xInputGroup.append("input")
+      cache.xHitZone.append("input")
         .attr("class", "domain-input x max")
         .style("position", "absolute")
         .on("change", function change () {
           dispatcher.call("domainChanged", this, {value: this.value, axis: "x", type: "max"})
         })
-        .style("left", `${cache.chartWidth - HOVER_ZONE_SIZE}px`)
-        .style("width", `${HOVER_ZONE_SIZE}px`)
+        .style("width", `${INPUT_WIDTH}px`)
+        .style("height", `${INPUT_HEIGHT}px`)
+        .style("top", `${PADDING}px`)
+        .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth - INPUT_WIDTH}px`)
 
-      cache.xInputGroup.append("div")
+      cache.xHitZone.append("div")
         .attr("class", "domain-lock x")
         .style("position", "absolute")
         .on("click", function change () {
@@ -180,6 +181,7 @@ export default function DomainEditor (_container) {
         })
         .style("width", `${LOCK_SIZE}px`)
         .style("height", `${LOCK_SIZE}px`)
+        .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth}px`)
 
       hideYEditor()
       hideY2Editor()
@@ -188,27 +190,27 @@ export default function DomainEditor (_container) {
   }
 
   function showYEditor () {
-    cache.yInputGroup.style("visibility", "visible")
+    cache.yHitZone.style("opacity", "1")
   }
 
   function hideYEditor () {
-    cache.yInputGroup.style("visibility", "hidden")
+    cache.yHitZone.style("opacity", "0")
   }
 
   function showY2Editor () {
-    cache.y2InputGroup.style("visibility", "visible")
+    cache.y2HitZone.style("opacity", "1")
   }
 
   function hideY2Editor () {
-    cache.y2InputGroup.style("visibility", "hidden")
+    cache.y2HitZone.style("opacity", "0")
   }
 
   function showXEditor () {
-    cache.xInputGroup.style("visibility", "visible")
+    cache.xHitZone.style("opacity", "1")
   }
 
   function hideXEditor () {
-    cache.xInputGroup.style("visibility", "hidden")
+    cache.xHitZone.style("opacity", "0")
   }
 
   function drawDomainEditor () {
@@ -225,20 +227,9 @@ export default function DomainEditor (_container) {
     return this
   }
 
-  function destroy () {
-    cache.parentDiv.remove()
-  }
-
-  function update () {
-    render()
-    return this
-  }
-
   return {
     on,
     setConfig,
-    drawDomainEditor,
-    destroy,
-    update
+    drawDomainEditor
   }
 }

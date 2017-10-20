@@ -178,10 +178,6 @@ export default function Hover (_container) {
     return this
   }
 
-  function destroy () {
-    cache.svg.remove()
-  }
-
   return {
     setConfig,
     setScales,
@@ -190,7 +186,6 @@ export default function Hover (_container) {
     highlightStackedDataPoints,
     drawVerticalMarker,
     moveVerticalMarker,
-    on,
-    destroy
+    on
   }
 }

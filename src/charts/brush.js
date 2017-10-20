@@ -171,16 +171,11 @@ export default function Brush (_container) {
     return this
   }
 
-  function destroy () {
-    cache.svg.remove()
-  }
-
   return {
     on,
     setConfig,
     setData,
     setScales,
-    destroy,
     drawBrush
   }
 }

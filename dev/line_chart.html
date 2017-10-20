@@ -1,5 +1,6 @@
 <html>
 <head>
+  <meta charset="utf-8">
 <link rel="stylesheet" href="../dist/mapd3.css">
 <style>
 .chart1 {
@@ -8,6 +9,18 @@
 }
 .mapd3 {
   user-select: none;
+}
+.hit-zone {
+  /*background: red;*/
+}
+[contenteditable]:focus {
+    outline: 1px solid transparent;
+}
+.axis-label {
+    border: 1px solid transparent;
+}
+.axis-label:hover, .axis-label:focus {
+    border: 1px solid #ddd;
 }
 </style>
 </head><body>
@@ -18,11 +31,13 @@
 <script>
 
 /*
-* brush domain editor
-* titles out of axis? or at least html + editable + events
-* binning in html
-* tooltip in html
+* set domain from data and from API
+* set brush from API
 * legend in html
+* binning in html, float?
+* tooltip in html
+* brush range in contenteditable
+* check everything with update, stack, keyType, etc.
 
 * hover data stack
 * problem with selecting first point
@@ -58,7 +73,7 @@ const chart1 = mapd3.Chart(chartNode1)
     margin: {
       top: 16,
       right: 32,
-      bottom: 40,
+      bottom: 64,
       left: 64
     },
     grid: "horizontal",

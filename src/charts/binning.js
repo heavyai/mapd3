@@ -20,7 +20,7 @@ export default function Binning (_container) {
 
   const cache = {
     container: _container,
-    svg: null
+    root: null
   }
 
   // events
@@ -28,25 +28,26 @@ export default function Binning (_container) {
 
   function buildSVG () {
 
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
-          .classed("binning-group", true)
-          .append("text")
+    if (!cache.root) {
+      cache.root = cache.container.append("div")
+          .attr("class", "binning-group")
+          .style("position", "absolute")
 
-      cache.svg.append("tspan")
-        .text(config.label)
-        .attr("y", "1em")
-        .attr("class", "item")
+      cache.label = cache.root.append("div")
+          .attr("class", "label")
     }
 
-    cache.svg.attr("transform", `translate(${[config.margin.left, 0]})`)
+    const LINE_HEIGHT = 20
+    cache.root
+      .style("top", config.margin.top - LINE_HEIGHT)
+      .style("left", config.margin.left)
 
-    const items = cache.svg.selectAll(".toggleOnOff")
+    cache.label.text(config.label)
+
+    const items = cache.root.selectAll(".toggleOnOff")
         .data(config.toggle)
-    items.enter().append("tspan")
+    items.enter().append("div")
       .attr("class", (d) => `item ${d} toggleOnOff`)
-      .attr("dx", "0.8em")
-      .attr("y", "1em")
       .on("click.select", toggleOnOff(".binning-group .item.toggleOnOff"))
       .on("click.d3.dispatch", function click (d) {
         const isSelected = this.classList.contains("selected")
@@ -56,12 +57,10 @@ export default function Binning (_container) {
       .text((d) => d)
     items.exit().remove()
 
-    const itemsExclusive = cache.svg.selectAll(".toggleExclusive")
+    const itemsExclusive = cache.root.selectAll(".toggleExclusive")
         .data(config.exclusiveToggle)
-    itemsExclusive.enter().append("tspan")
+    itemsExclusive.enter().append("div")
       .attr("class", (d) => `item ${d} toggleExclusive`)
-      .attr("dx", "0.8em")
-      .attr("y", "1em")
       .on("click.select", exclusiveToggle(".binning-group .item.toggleExclusive"))
       .on("click.d3.dispatch", function click (d) {
         const isSelected = this.classList.contains("selected")
@@ -88,7 +87,7 @@ export default function Binning (_container) {
   }
 
   function destroy () {
-    cache.svg.remove()
+    cache.root.remove()
   }
 
   return {

@@ -11,6 +11,16 @@
   user-select: none;
   font-family: sans-serif;
 }
+.binning-group {
+  font-size: 0.7em;
+}
+.binning-group .item, .binning-group .label {
+  float: left;
+  padding-right: 4px;
+}
+.axis-label {
+  font-weight: lighter;
+}
 </style>
 </head><body>
 <div class="chart1"></div>
@@ -20,16 +30,17 @@
 <script>
 
 /*
+* brush range in contenteditable, and float
+* legend in html
+
+* binning setter from API
 * set domain from data and from API
 * set brush from API
-* legend in html
-* binning in html, float?
-* tooltip in html
-* brush range in contenteditable
-* check everything with update, stack, keyType, etc.
 
 * hover data stack
 * problem with selecting first point
+
+* check everything with update, stack, keyType, etc.
 
 * single point line/area chart
 * null data line gap

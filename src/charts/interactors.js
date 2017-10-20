@@ -22,7 +22,7 @@ export function exclusiveToggle (selector, options = {toggleOffIsEnabled: false,
     /* eslint-disable consistent-this */
     const that = this
     let hasSelection = false
-    const selection = d3.select(this.farthestViewportElement)
+    const selection = d3.select(this.ownerDocument)
         .selectAll(selector)
 
     selection.classed("selected", function selectedClass () {

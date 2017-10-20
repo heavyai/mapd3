@@ -208,7 +208,7 @@ export default function Chart (_container) {
       .setScales(scales)
       .bindEvents(dispatcher)
 
-    Binning(cache.chart)
+    Binning(cache.container)
       .setConfig(config)
       .drawBinning()
       .on("change", (...arg) => console.log("binning", ...arg))

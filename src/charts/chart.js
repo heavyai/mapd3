@@ -69,7 +69,7 @@ export default function Chart (_container) {
     valueFormat: ".2f",
     tooltipMaxTopicLength: 170,
     tooltipBorderRadius: 3,
-    mouseChaseDuration: 30,
+    mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
     tooltipHeight: 48,
     tooltipWidth: 160,
@@ -203,6 +203,23 @@ export default function Chart (_container) {
       .setScales(scales)
       .bindEvents(dispatcher)
 
+    const legendContent = dataObject.dataBySeries
+        .map((d) => ({
+          id: d.id,
+          key: d.key,
+          label: d.label
+        }))
+
+    Legend(cache.container)
+      .setConfig(config)
+      .setScales(scales)
+      .setTitle("Title")
+      .setContent(legendContent)
+      .setXPosition(cache.chartWidth - 80)
+      .setYPosition(20)
+      .drawTooltip()
+      .show()
+
     Brush(cache.panel)
       .setConfig(config)
       .setScales(scales)
@@ -247,13 +264,6 @@ export default function Chart (_container) {
     // } else if (config.chartType === "stackedBar") {
     //   bar.drawStackedBars()
     // }
-
-    // const legend = Legend(cache.svg)
-    //   .setContent(data.series)
-    //   .setTitle("Title")
-    //   .setSize(80, "auto")
-    //   .setPosition(780)
-    //   .show()
 
     triggerIntroAnimation()
 

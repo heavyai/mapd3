@@ -21,7 +21,7 @@ export default function Tooltip (_container) {
     tooltipBorderRadius: 3,
 
     // Animations
-    mouseChaseDuration: 30,
+    mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
 
     titleHeight: 32,
@@ -51,7 +51,11 @@ export default function Tooltip (_container) {
     tooltipDivider: null,
     tooltipBody: null,
     tooltipTitle: null,
-    tooltipBackground: null
+    tooltipBackground: null,
+    xPosition: null,
+    yPosition: null,
+    content: null,
+    title: null
   }
 
   function buildSVG () {
@@ -86,33 +90,37 @@ export default function Tooltip (_container) {
     return [tooltipX + avoidanceOffset, tooltipY]
   }
 
-  function setPosition (_xPosition, _yPosition) {
-    const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
-
+  function move () {
     cache.root.transition()
       .duration(config.mouseChaseDuration)
       .ease(config.tooltipEase)
-      .style("top", `${tooltipY}px`)
-      .style("left", `${tooltipX + config.margin.left}px`)
+      .style("top", `${cache.yPosition}px`)
+      .style("left", `${cache.xPosition + config.margin.left}px`)
     return this
   }
 
-  function setSeriesContent (_series) {
+  function drawContent () {
+    const content = cache.content
     const formatter = d3.format(config.valueFormat)
 
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
-        .data(_series)
+        .data(content)
     const tooltipItemsUpdate = tooltipItems.enter().append("div")
       .attr("class", "tooltip-item")
       .merge(tooltipItems)
     tooltipItems.exit().remove()
 
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d) => [
-        {key: "color", value: scales.colorScale(d[keys.ID])},
-        {key: "label", value: d[keys.LABEL]},
-        {key: "value", value: d[keys.VALUE]}
-      ])
+      .data((d) => {
+        const legendData = [
+          {key: "color", value: scales.colorScale(d[keys.ID])},
+          {key: "label", value: d[keys.LABEL]}
+        ]
+        if (typeof d[keys.VALUE] !== "undefined") {
+          legendData.push({key: "value", value: d[keys.VALUE]})
+        }
+        return legendData
+      })
     tooltipItem.enter().append("div")
       .merge(tooltipItem)
       .attr("class", (d) => ["section", d.key].join(" "))
@@ -127,10 +135,11 @@ export default function Tooltip (_container) {
         }
       })
     tooltipItem.exit().remove()
+    return this
   }
 
-  function setTitle (_title) {
-    let title = _title
+  function drawTitle () {
+    let title = cache.title
     if (config.keyType === "time") {
       title = d3.timeFormat(config.dateFormat)(_title)
     }
@@ -139,7 +148,15 @@ export default function Tooltip (_container) {
     return this
   }
 
-  function setContent (_series) {
+  function drawTooltip () {
+    buildSVG()
+    drawTitle()
+    drawContent()
+    move()
+    return this
+  }
+
+  function setupContent (_series) {
     let series = _series
 
     if (config.seriesOrder.length) {
@@ -148,7 +165,7 @@ export default function Tooltip (_container) {
       series = sortByAlpha(_series)
     }
 
-    setSeriesContent(series)
+    cache.content = series
     return this
   }
 
@@ -173,17 +190,21 @@ export default function Tooltip (_container) {
     return this
   }
 
-  function drawTooltip (_dataPoint, _xPosition, _yPosition) {
+  function setupTooltip (_dataPoint, _xPosition, _yPosition) {
     buildSVG()
+    const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
+    setXPosition(tooltipX)
+    setYPosition(tooltipY)
     setTitle(_dataPoint[keys.DATA])
-    setContent(_dataPoint[keys.SERIES])
-    setPosition(_xPosition, _yPosition)
+    setupContent(_dataPoint[keys.SERIES])
+
+    drawTooltip()
     return this
   }
 
   function bindEvents (_dispatcher) {
     _dispatcher.on("mouseOverPanel.tooltip", show)
-      .on("mouseMovePanel.tooltip", drawTooltip)
+      .on("mouseMovePanel.tooltip", setupTooltip)
       .on("mouseOutPanel.tooltip", hide)
   }
 
@@ -197,9 +218,30 @@ export default function Tooltip (_container) {
     return this
   }
 
+  function setTitle (_title) {
+    cache.title = _title
+    return this
+  }
+
+  function setXPosition (_xPosition) {
+    cache.xPosition = _xPosition
+    return this
+  }
+
+  function setYPosition (_yPosition) {
+    cache.yPosition = _yPosition
+    return this
+  }
+
+  function setContent (_content) {
+    cache.content = _content
+    return this
+  }
+
   return {
     bindEvents,
-    setPosition,
+    setXPosition,
+    setYPosition,
     setContent,
     setTitle,
     hide,

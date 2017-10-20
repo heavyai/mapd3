@@ -1,6 +1,14 @@
 .binning-group {
-    // font-size: 11px;
-}
-.binning-group .item.selected {
-    text-decoration: underline;
+    font-size: 0.7em;
+
+    .item, .label {
+      float: left;
+      padding-right: 4px;
+    }
+    .item {
+      cursor: pointer;
+    }
+    .item.selected {
+        text-decoration: underline;
+    }
 }

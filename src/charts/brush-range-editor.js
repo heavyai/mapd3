@@ -36,7 +36,6 @@ export default function BrushRangeEditor (_container) {
       cache.root = cache.container
           .append("div")
           .attr("class", "brush-range-input-group")
-          .style("float", "right")
           .style("top", 0)
 
       cache.inputMin = cache.root.append("div")
@@ -45,10 +44,12 @@ export default function BrushRangeEditor (_container) {
         .on("change", function change () {
           dispatcher.call("rangeChanged", this, {value: this.value, type: "min"})
         })
+        .style("float", "right")
 
       cache.root.append("div")
         .attr("class", "separator")
         .text("-")
+        .style("float", "right")
 
       cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")
@@ -56,6 +57,7 @@ export default function BrushRangeEditor (_container) {
         .on("change", function change () {
           dispatcher.call("rangeChanged", this, {value: this.value, type: "max"})
         })
+        .style("float", "right")
     }
   }
 

@@ -17,7 +17,7 @@ export default function BrushRangeEditor (_container) {
 
   const cache = {
     container: _container,
-    parentDiv: null,
+    root: null,
     inputGroup: null,
     inputMax: null,
     inputMin: null,
@@ -32,8 +32,8 @@ export default function BrushRangeEditor (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.inputGroup = cache.container
+    if (!cache.root) {
+      cache.root = cache.container
           .append("div")
           .attr("class", "brush-range-input-group")
           .style("position", "absolute")
@@ -43,7 +43,7 @@ export default function BrushRangeEditor (_container) {
       const INPUT_WIDTH = 74
       const SEPARATOR_WIDTH = 8
 
-      cache.inputMin = cache.inputGroup.append("input")
+      cache.inputMin = cache.root.append("input")
         .attr("class", "brush-range-input min")
         .style("position", "absolute")
         .on("change", function change () {
@@ -53,7 +53,7 @@ export default function BrushRangeEditor (_container) {
         .style("height", `${INPUT_HEIGHT}px`)
         .style("left", `${config.margin.left + cache.chartWidth - INPUT_WIDTH * 2 - SEPARATOR_WIDTH}px`)
 
-      cache.inputGroup.append("div")
+      cache.root.append("div")
         .attr("class", "separator")
         .style("position", "absolute")
         .style("width", `${SEPARATOR_WIDTH}px`)
@@ -61,7 +61,7 @@ export default function BrushRangeEditor (_container) {
         .style("left", `${config.margin.left + cache.chartWidth - INPUT_WIDTH - SEPARATOR_WIDTH + 2}px`)
         .text("-")
 
-      cache.inputMax = cache.inputGroup.append("input")
+      cache.inputMax = cache.root.append("input")
         .attr("class", "brush-range-input max")
         .style("position", "absolute")
         .on("change", function change () {

@@ -17,12 +17,13 @@ export default function Label (_container) {
 
   const cache = {
     container: _container,
-    parentDiv: null,
+    root: null,
     xAxisLabel: null,
     yAxisLabel: null,
+    y2AxisLabel: null,
     xLabel: null,
     yLabel: null,
-    y2AxisLabel: null,
+    y2Label: null,
     chartWidth: null,
     chartHeight: null
   }
@@ -34,15 +35,15 @@ export default function Label (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.inputGroup = cache.container
+    if (!cache.root) {
+      cache.root = cache.container
           .append("div")
           .attr("class", "label-group")
           .style("position", "absolute")
           .style("top", 0)
           .style("white-space", "nowrap")
 
-      cache.xAxisLabel = cache.inputGroup.append("div")
+      cache.xAxisLabel = cache.root.append("div")
         .attr("class", "axis-label x")
         .style("position", "absolute")
         .attr("contentEditable", true)
@@ -56,7 +57,7 @@ export default function Label (_container) {
         })
         .style("transform", "translate(-50%)")
 
-      cache.yAxisLabel = cache.inputGroup.append("div")
+      cache.yAxisLabel = cache.root.append("div")
         .attr("class", "axis-label y")
         .style("position", "absolute")
         .attr("contentEditable", true)
@@ -70,6 +71,20 @@ export default function Label (_container) {
         })
         .style("left", 0)
         .style("transform", "translate(-50%) rotate(-90deg)")
+
+      cache.y2AxisLabel = cache.root.append("div")
+        .attr("class", "axis-label y2")
+        .style("position", "absolute")
+        .attr("contentEditable", true)
+        .on("blur", function blur () {
+          dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "y2"})
+        })
+        .on("keypress", function keypress (d) {
+          if (d3.event.key === "Enter") {
+            this.blur()
+          }
+        })
+        .style("transform", "translate(-50%) rotate(90deg)")
     }
 
     cache.xAxisLabel
@@ -78,23 +93,42 @@ export default function Label (_container) {
           const textHeight = this.getBoundingClientRect().height
           return `${config.height - textHeight}px`
         })
-        .style("left", function left () {
-          const textWidth = this.getBoundingClientRect().width
-          return `${config.margin.left + cache.chartWidth / 2}px`
-        })
+        .style("left", `${config.margin.left + cache.chartWidth / 2}px`)
 
-      cache.yAxisLabel
-        .text(config.yLabel)
-        .style("top", function top () {
-          const textHeight = this.getBoundingClientRect().height
-          return `${config.margin.top + cache.chartHeight / 2}px`
-        })
+    cache.yAxisLabel
+      .text(config.yLabel)
+      .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
+      .style("left", function top () {
+        const textWidth = this.getBoundingClientRect().width
+        return `${textWidth / 2}px`
+      })
+
+    cache.y2AxisLabel
+      .text(config.y2Label)
+      .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
+      .style("left", function top () {
+        const textWidth = this.getBoundingClientRect().width
+        return `${config.width - textWidth / 2}px`
+      })
   }
 
-  function drawLabels (_xLabel, _yLabel) {
-    config.xLabel = _xLabel
-    config.yLabel = _yLabel
+  function drawLabels () {
     buildSVG()
+    return this
+  }
+
+  function setXLabels (_xLabel) {
+    config.xLabel = _xLabel
+    return this
+  }
+
+  function setYLabels (_yLabel) {
+    config.yLabel = _yLabel
+    return this
+  }
+
+  function setY2Labels (_y2Label) {
+    config.y2Label = _y2Label
     return this
   }
 
@@ -108,11 +142,6 @@ export default function Label (_container) {
     return this
   }
 
-  function setRangeMin (_range) {
-    cache.inputMin.property("value", _range)
-    return this
-  }
-
   function setlabels (_labels) {
 
     return this
@@ -121,6 +150,9 @@ export default function Label (_container) {
   return {
     on,
     setConfig,
+    setXLabels,
+    setYLabels,
+    setY2Labels,
     drawLabels
   }
 }

@@ -1,18 +1,30 @@
-$tooltip-width: 1;
-
-// Tooltip
-.tooltip-background {
-    fill: rgba($white, 0.97);
-    stroke: $grey-300;
-    stroke-width: $tooltip-width;
-    border-radius: 2px;
+// Tooltip 
+.tooltip-group {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  opacity: 0.9;
 }
-
-.tooltip-text-container, .tooltip-divider {
-    fill: white;
-    fill-opacity: 0.8;
-    stroke: #eee;
-    stroke-width: 1;
-    pointer-events: none;
+.tooltip-title {
+  border-bottom: 1px solid #ddd;
+  padding: 0 5px;
 }
-
+.tooltip-body {
+  display: table;
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tooltip-item {
+  display: table-row;
+}
+.section {
+  display: table-cell;
+  margin-right: 16px;
+}
+.section.color {
+  width: 8px;
+  height: 8px;
+}
+.section.label, .section.value {
+  padding: 0 5px;
+}

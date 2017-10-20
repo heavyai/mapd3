@@ -23,10 +23,6 @@ export default function Binning (_container) {
     svg: null
   }
 
-  let chartCache = {
-    svg: null
-  }
-
   // events
   const dispatcher = d3.dispatch("change")
 

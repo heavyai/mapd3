@@ -45,7 +45,7 @@ export default function Tooltip (_container) {
 
   const cache = {
     container: _container,
-    svg: null,
+    root: null,
     chartWidth: null,
     chartHeight: null,
     tooltipDivider: null,
@@ -54,131 +54,79 @@ export default function Tooltip (_container) {
     tooltipBackground: null
   }
 
-  // function init () {
-    // if (!isStatic) {
-    //   cache.chart.on("mouseOver.tooltip", show)
-    //     .on("mouseMove.tooltip", update)
-    //     .on("mouseOut.tooltip", hide)
-    // }
-
-  //   render()
-  // }
-  // init()
-
   function buildSVG () {
-
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
-          .classed("tooltip-group", true)
-          .attr("pointer-events", "none")
-
-      cache.tooltipBackground = cache.svg.append("rect")
-          .classed("tooltip-text-container", true)
-
-      cache.tooltipTitle = cache.svg.append("text")
-          .classed("tooltip-title", true)
-          .attr("dominant-baseline", "hanging")
-
-      cache.tooltipDivider = cache.svg.append("line")
-          .classed("tooltip-divider", true)
-
-      cache.tooltipBody = cache.svg.append("g")
-          .classed("tooltip-body", true)
-
-      setSize("auto", "auto")
-    }
-
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    cache.tooltipBackground.attr("rx", config.tooltipBorderRadius)
-        .attr("ry", config.tooltipBorderRadius)
+    if (!cache.root) {
+      cache.root = cache.container.append("div")
+          .attr("class", "tooltip-group")
+          .style("position", "absolute")
+          .style("pointer-events", "none")
 
-    cache.tooltipTitle.attr("dy", config.padding)
-        .attr("dx", config.padding)
+      cache.tooltipTitle = cache.root.append("div")
+          .attr("class", "tooltip-title")
+
+      cache.tooltipBody = cache.root.append("div")
+          .attr("class", "tooltip-body")
+    }
   }
 
-  function calculateTooltipPosition (_mouseX) {
+  function calculateTooltipPosition (_mouseX, _mouseY) {
+    const OFFSET = 4
+    const tooltipSize = cache.root.node().getBoundingClientRect()
     const tooltipX = _mouseX
-    let offset = 0
-    const tooltipY = config.margin.top
+    let avoidanceOffset = OFFSET
+    const tooltipY = _mouseY + config.margin.top - tooltipSize.height / 2
 
     if (_mouseX > (cache.chartWidth / 2)) {
-      offset = -config.tooltipWidth
+      avoidanceOffset = -tooltipSize.width - OFFSET
     }
 
-    return [tooltipX + offset, tooltipY]
+    return [tooltipX + avoidanceOffset, tooltipY]
   }
 
-  function setPosition (_xPosition) {
-    const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition)
+  function setPosition (_xPosition, _yPosition) {
+    const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
 
-    cache.svg.transition()
+    cache.root.transition()
       .duration(config.mouseChaseDuration)
       .ease(config.tooltipEase)
-      .attr("transform", `translate(${tooltipX}, ${tooltipY})`)
-
-    return this
-  }
-
-  function setSize (_width, _height) {
-    let height = _height
-    if (_height === "auto") {
-      height = cache.tooltipBody.node().getBoundingClientRect().height + config.titleHeight + config.padding
-    }
-    let width = _width
-    if (_width === "auto") {
-      width = cache.tooltipBody.node().getBoundingClientRect().width + config.padding * 2
-    }
-
-    cache.tooltipBackground.attr("width", width)
-      .attr("height", height)
-
-    cache.tooltipDivider.attr("x2", width)
-      .attr("y1", config.titleHeight)
-      .attr("y2", config.titleHeight)
-
+      .style("top", `${tooltipY}px`)
+      .style("left", `${tooltipX + config.margin.left}px`)
     return this
   }
 
   function setSeriesContent (_series) {
-    const tooltipLeft = cache.tooltipBody.selectAll(".tooltip-left-text")
-        .data(_series)
-    tooltipLeft.enter().append("text")
-      .classed("tooltip-left-text", true)
-      .attr("dominant-baseline", "hanging")
-      .attr("dy", config.padding)
-      .attr("dx", config.padding * 2 + config.dotRadius)
-      .merge(tooltipLeft)
-      .attr("y", (d, i) => i * config.elementHeight + config.titleHeight)
-      .text((d) => d[keys.LABEL])
-    tooltipLeft.exit().remove()
+    const formatter = d3.format(config.valueFormat)
 
-    const values = _series.map(getValueText)
-    const tooltipRight = cache.tooltipBody.selectAll(".tooltip-right-text")
-        .data(values)
-    tooltipRight.enter().append("text")
-      .classed("tooltip-right-text", true)
-      .attr("text-anchor", "end")
-      .attr("dominant-baseline", "hanging")
-      .attr("dy", config.padding)
-      .attr("dx", -config.padding)
-      .merge(tooltipRight)
-      .attr("x", config.tooltipWidth)
-      .attr("y", (d, i) => i * config.elementHeight + config.titleHeight)
-      .text((d) => d)
-    tooltipRight.exit().remove()
-
-    const tooltipCircles = cache.tooltipBody.selectAll(".tooltip-circle")
+    const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
         .data(_series)
-    tooltipCircles.enter().append("circle")
-      .classed("tooltip-circle", true)
-      .merge(tooltipCircles)
-      .attr("cx", config.padding + config.dotRadius)
-      .attr("cy", (d, i) => i * config.elementHeight + config.titleHeight + config.elementHeight / 2)
-      .attr("r", config.dotRadius)
-      .style("fill", (d) => scales.colorScale(d[keys.ID]))
-    tooltipCircles.exit().remove()
+    const tooltipItemsUpdate = tooltipItems.enter().append("div")
+      .attr("class", "tooltip-item")
+      .merge(tooltipItems)
+    tooltipItems.exit().remove()
+
+    const tooltipItem = tooltipItemsUpdate.selectAll(".section")
+      .data((d) => [
+        {key: "color", value: scales.colorScale(d[keys.ID])},
+        {key: "label", value: d[keys.LABEL]},
+        {key: "value", value: d[keys.VALUE]}
+      ])
+    tooltipItem.enter().append("div")
+      .merge(tooltipItem)
+      .attr("class", (d) => ["section", d.key].join(" "))
+      .each(function each (d) {
+        const selection = d3.select(this)
+        if (d.key === "color") {
+          selection.style("background", d.value)
+        } else if (d.key === "value") {
+          selection.html(formatter(d.value))
+        } else {
+          selection.html(d.value)
+        }
+      })
+    tooltipItem.exit().remove()
   }
 
   function setTitle (_title) {
@@ -187,19 +135,8 @@ export default function Tooltip (_container) {
       title = d3.timeFormat(config.dateFormat)(_title)
     }
 
-    cache.tooltipTitle.text(title)
-
+    cache.tooltipTitle.html(title)
     return this
-  }
-
-  function getValueText (_data) {
-    const value = _data[keys.VALUE]
-    if (value) {
-      const formatter = d3.format(config.valueFormat)
-      return formatter(_data[keys.VALUE])
-    } else {
-      return null
-    }
   }
 
   function setContent (_series) {
@@ -212,7 +149,6 @@ export default function Tooltip (_container) {
     }
 
     setSeriesContent(series)
-
     return this
   }
 
@@ -226,26 +162,22 @@ export default function Tooltip (_container) {
   }
 
   function hide () {
-    if (!cache.svg) { return null }
-    cache.svg.style("display", "none")
-
+    if (!cache.root) { return null }
+    cache.root.style("display", "none")
     return this
   }
 
   function show () {
-    if (!cache.svg) { return null }
-    cache.svg.style("display", "block")
-
+    if (!cache.root) { return null }
+    cache.root.style("display", "block")
     return this
   }
 
-  function drawTooltip (_dataPoint, _xPosition) {
+  function drawTooltip (_dataPoint, _xPosition, _yPosition) {
     buildSVG()
     setTitle(_dataPoint[keys.DATA])
     setContent(_dataPoint[keys.SERIES])
-    setSize(config.tooltipWidth, "auto")
-    setPosition(_xPosition)
-
+    setPosition(_xPosition, _yPosition)
     return this
   }
 
@@ -268,7 +200,6 @@ export default function Tooltip (_container) {
   return {
     bindEvents,
     setPosition,
-    setSize,
     setContent,
     setTitle,
     hide,

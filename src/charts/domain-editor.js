@@ -17,7 +17,7 @@ export default function DomainEditor (_container) {
 
   const cache = {
     container: _container,
-    parentDiv: null,
+    root: null,
     xHitZone: null,
     yHitZone: null,
     y2HitZone: null,
@@ -32,8 +32,8 @@ export default function DomainEditor (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.inputGroup = cache.container
+    if (!cache.root) {
+      cache.root = cache.container
           .append("div")
           .attr("class", "domain-input-group")
           .style("position", "absolute")
@@ -46,7 +46,7 @@ export default function DomainEditor (_container) {
       const INPUT_WIDTH = HOVER_ZONE_SIZE - PADDING
 
       // hit zones
-      cache.xHitZone = cache.inputGroup.append("div")
+      cache.xHitZone = cache.root.append("div")
           .attr("class", "hit-zone x")
           .style("pointer-events", "all")
           .style("position", "absolute")
@@ -57,7 +57,7 @@ export default function DomainEditor (_container) {
           .style("top", `${config.margin.top + cache.chartHeight}px`)
           .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
-      cache.yHitZone = cache.inputGroup.append("div")
+      cache.yHitZone = cache.root.append("div")
           .attr("class", "hit-zone y")
           .style("pointer-events", "all")
           .style("position", "absolute")
@@ -68,7 +68,7 @@ export default function DomainEditor (_container) {
           .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
           .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
-      cache.y2HitZone = cache.inputGroup.append("div")
+      cache.y2HitZone = cache.root.append("div")
           .attr("class", "hit-zone y2")
           .style("pointer-events", "all")
           .style("position", "absolute")

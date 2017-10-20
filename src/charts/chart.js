@@ -128,8 +128,8 @@ export default function Chart (_container) {
     cache.chartHeight = h - config.margin.top - config.margin.bottom
 
     if (!cache.svg) {
-      const template = `<div class="mapd3-container">
-        <svg class="mapd3 chart">
+      const template = `<div class="mapd3 mapd3-container">
+        <svg class="chart">
           <g class="chart-group"></g>
           <g class="panel-group">
             <rect class="panel-background"></rect>
@@ -191,7 +191,7 @@ export default function Chart (_container) {
       .setData(dataObject)
       .drawMarks()
 
-    Tooltip(cache.panel)
+    Tooltip(cache.container)
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
@@ -228,7 +228,10 @@ export default function Chart (_container) {
 
     Label(cache.container)
       .setConfig(config)
-      .drawLabels("X Axis Label", "Y Axis Label")
+      .setXLabels("X Axis Label")
+      .setYLabels("Y Axis Label")
+      .setY2Labels("Y2 Axis Label")
+      .drawLabels()
       .on("axisLabelChanged", (d) => console.log(d))
 
     // const bar = Bar(config, cache)
@@ -348,14 +351,14 @@ export default function Chart (_container) {
         dispatcher.call("mouseOutPanel", null, d3.mouse(cache.panel.node()))
       })
       .on("mousemove.dispatch", () => {
-        const [mouseX] = d3.mouse(cache.panel.node())
+        const [mouseX, mouseY] = d3.mouse(cache.panel.node())
         if (!cache.data) { return }
         const xPosition = mouseX
         const dataPoint = getNearestDataPoint(xPosition)
 
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.DATA])
-          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition)
+          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY)
         }
       })
   }

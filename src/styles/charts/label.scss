@@ -1,0 +1,9 @@
+[contenteditable]:focus {
+    outline: 1px solid transparent;
+}
+.axis-label {
+    border: 1px solid transparent;
+}
+.axis-label:hover, .axis-label:focus {
+    border: 1px solid #ddd;
+}

@@ -36,40 +36,26 @@ export default function BrushRangeEditor (_container) {
       cache.root = cache.container
           .append("div")
           .attr("class", "brush-range-input-group")
-          .style("position", "absolute")
+          .style("float", "right")
           .style("top", 0)
 
-      const INPUT_HEIGHT = 16
-      const INPUT_WIDTH = 74
-      const SEPARATOR_WIDTH = 8
-
-      cache.inputMin = cache.root.append("input")
+      cache.inputMin = cache.root.append("div")
         .attr("class", "brush-range-input min")
-        .style("position", "absolute")
+        .attr("contentEditable", true)
         .on("change", function change () {
           dispatcher.call("rangeChanged", this, {value: this.value, type: "min"})
         })
-        .style("width", `${INPUT_WIDTH}px`)
-        .style("height", `${INPUT_HEIGHT}px`)
-        .style("left", `${config.margin.left + cache.chartWidth - INPUT_WIDTH * 2 - SEPARATOR_WIDTH}px`)
 
       cache.root.append("div")
         .attr("class", "separator")
-        .style("position", "absolute")
-        .style("width", `${SEPARATOR_WIDTH}px`)
-        .style("height", `${INPUT_HEIGHT}px`)
-        .style("left", `${config.margin.left + cache.chartWidth - INPUT_WIDTH - SEPARATOR_WIDTH + 2}px`)
         .text("-")
 
-      cache.inputMax = cache.root.append("input")
+      cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")
-        .style("position", "absolute")
+        .attr("contentEditable", true)
         .on("change", function change () {
           dispatcher.call("rangeChanged", this, {value: this.value, type: "max"})
         })
-        .style("width", `${INPUT_WIDTH}px`)
-        .style("height", `${INPUT_HEIGHT}px`)
-        .style("left", `${config.margin.left + cache.chartWidth - INPUT_WIDTH}px`)
     }
   }
 
@@ -89,12 +75,12 @@ export default function BrushRangeEditor (_container) {
   }
 
   function setRangeMin (_range) {
-    cache.inputMin.property("value", _range)
+    cache.inputMin.text(_range)
     return this
   }
 
   function setRangeMax (_range) {
-    cache.inputMax.property("value", _range)
+    cache.inputMax.text(_range)
     return this
   }
 

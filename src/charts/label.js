@@ -50,7 +50,7 @@ export default function Label (_container) {
         .on("blur", function blur () {
           dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "x"})
         })
-        .on("keypress", function keypress (d) {
+        .on("keypress", function keypress () {
           if (d3.event.key === "Enter") {
             this.blur()
           }
@@ -64,7 +64,7 @@ export default function Label (_container) {
         .on("blur", function blur () {
           dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "y"})
         })
-        .on("keypress", function keypress (d) {
+        .on("keypress", function keypress () {
           if (d3.event.key === "Enter") {
             this.blur()
           }
@@ -79,7 +79,7 @@ export default function Label (_container) {
         .on("blur", function blur () {
           dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "y2"})
         })
-        .on("keypress", function keypress (d) {
+        .on("keypress", function keypress () {
           if (d3.event.key === "Enter") {
             this.blur()
           }

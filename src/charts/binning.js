@@ -31,7 +31,7 @@ export default function Binning (_container) {
     if (!cache.root) {
       cache.root = cache.container.append("div")
           .attr("class", "binning-group")
-          .style("position", "absolute")
+          .style("float", "left")
 
       cache.label = cache.root.append("div")
           .attr("class", "label")

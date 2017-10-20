@@ -129,6 +129,7 @@ export default function Chart (_container) {
 
     if (!cache.svg) {
       const template = `<div class="mapd3 mapd3-container">
+        <div class="header-group"></div>
         <svg class="chart">
           <g class="chart-group"></g>
           <g class="panel-group">
@@ -145,6 +146,8 @@ export default function Chart (_container) {
           .style("position", "relative")
 
       cache.svg = base.select("svg")
+      cache.headerGroup = base.select(".header-group")
+          .style("position", "absolute")
       cache.panel = cache.svg.select(".panel-group")
       cache.chart = cache.svg.select(".chart-group")
 
@@ -154,6 +157,10 @@ export default function Chart (_container) {
     cache.svg
       .attr("width", config.width)
       .attr("height", config.height)
+
+    cache.headerGroup
+      .style("width", cache.chartWidth)
+      .style("left", config.margin.left)
 
     cache.panel
       .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
@@ -208,7 +215,7 @@ export default function Chart (_container) {
       .setScales(scales)
       .bindEvents(dispatcher)
 
-    Binning(cache.container)
+    Binning(cache.headerGroup)
       .setConfig(config)
       .drawBinning()
       .on("change", (...arg) => console.log("binning", ...arg))
@@ -219,7 +226,7 @@ export default function Chart (_container) {
       .on("domainChanged", (d) => console.log(d))
       .on("domainLockToggled", (d) => console.log(d))
 
-    BrushRangeEditor(cache.container)
+    BrushRangeEditor(cache.headerGroup)
       .setConfig(config)
       .drawRangeEditor()
       .on("rangeChanged", (d) => console.log(d))

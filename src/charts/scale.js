@@ -33,18 +33,21 @@ export default function Scale () {
 
   function buildXScale (_allKeys) {
     const chartWidth = config.width - config.margin.left - config.margin.right
-    let datesExtent = null
+    let domain = null
     let xScale = null
     if (config.keyType === "time") {
-      datesExtent = d3.extent(_allKeys)
+      domain = d3.extent(_allKeys)
       xScale = d3.scaleTime()
+    } else if (config.keyType === "number") {
+      domain = d3.extent(_allKeys)
+      xScale = d3.scaleLinear()
     } else {
-      datesExtent = _allKeys
+      domain = _allKeys
       xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? d3.scaleBand() : d3.scalePoint()
       xScale.padding(0)
     }
 
-    xScale.domain(datesExtent)
+    xScale.domain(domain)
       .range([0, chartWidth])
 
     return xScale
@@ -90,22 +93,6 @@ export default function Scale () {
   function getStackedScales () {
     const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
 
-    const stackData = data.dataByKey.map((d) => {
-      const points = {
-        key: d[keys.DATA]
-      }
-      d.series.forEach((dB) => {
-        points[dB[keys.ID]] = dB[keys.VALUE]
-      })
-
-      return points
-    })
-
-    const stack = d3.stack()
-      .keys(data.dataBySeries.map(getID))
-      .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetNone)
-
     const valuesExtent = d3.extent(allStackHeights)
 
     const allKeys = data.flatDataSorted.map(getKey)
@@ -116,8 +103,6 @@ export default function Scale () {
     const yScale = buildYScale([0, valuesExtent[1]])
 
     return {
-      stackData,
-      stack,
       xScale,
       yScale,
       colorScale
@@ -150,8 +135,8 @@ export default function Scale () {
       hasSecondAxis,
       xScale,
       yScale,
-      colorScale,
-      yScale2
+      yScale2,
+      colorScale
     }
   }
 

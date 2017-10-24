@@ -43,12 +43,12 @@ export default function Binning (_container) {
 
       cache.autoItem = cache.root.append("div")
           .attr("class", "item item-auto toggleOnOff")
-          .on("click.select", function click (d) {
+          .on("click.select", function click () {
             const isSelected = this.classList.contains("selected")
             const toggled = !isSelected
             setAuto(toggled)
             drawBinning()
-            dispatcher.call("change", this, d, {isSelected: toggled})
+            dispatcher.call("change", this, {name: config.autoLabel, isSelected: toggled})
           })
           .text(config.autoLabel)
 
@@ -60,7 +60,7 @@ export default function Binning (_container) {
             setBinning(d)
             drawBinning()
             const isSelected = this.classList.contains("selected")
-            dispatcher.call("change", this, d, {isSelected})
+            dispatcher.call("change", this, {name: d, isSelected})
           })
           .text((d) => d)
     }

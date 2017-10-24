@@ -48,6 +48,7 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
+          config.xLabel = this.innerText
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "x"})
         })
         .on("keypress", function keypress () {
@@ -62,6 +63,7 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
+          config.yLabel = this.innerText
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y"})
         })
         .on("keypress", function keypress () {
@@ -77,6 +79,7 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
+          config.y2Label = this.innerText
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y2"})
         })
         .on("keypress", function keypress () {

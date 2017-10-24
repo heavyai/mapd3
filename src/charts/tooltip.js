@@ -17,17 +17,9 @@ export default function Tooltip (_container) {
 
     valueFormat: ".2f",
 
-    tooltipMaxTopicLength: 170,
-    tooltipBorderRadius: 3,
-
     // Animations
     mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
-
-    titleHeight: 32,
-    elementHeight: 24,
-    padding: 8,
-    dotRadius: 4,
 
     tooltipHeight: 48,
     tooltipWidth: 160,
@@ -86,16 +78,26 @@ export default function Tooltip (_container) {
     if (_mouseX > (cache.chartWidth / 2)) {
       avoidanceOffset = -tooltipSize.width - OFFSET
     }
-
     return [tooltipX + avoidanceOffset, tooltipY]
   }
 
   function move () {
+    const xPosition = cache.xPosition === "auto"
+        ? cache.chartWidth
+        : cache.xPosition
+
+    const yPosition = cache.yPosition === "auto"
+        ? config.margin.top
+        : cache.yPosition
+
     cache.root.transition()
       .duration(config.mouseChaseDuration)
       .ease(config.tooltipEase)
-      .style("top", `${cache.yPosition}px`)
-      .style("left", `${cache.xPosition + config.margin.left}px`)
+      .style("top", `${yPosition}px`)
+      .style("left", function left () {
+        const width = cache.yPosition === "auto" ? this.getBoundingClientRect().width : 0
+        return `${xPosition + config.margin.left - width}px`
+      })
     return this
   }
 
@@ -140,8 +142,9 @@ export default function Tooltip (_container) {
 
   function drawTitle () {
     let title = cache.title
-    if (config.keyType === "time") {
-      title = d3.timeFormat(config.dateFormat)(_title)
+
+    if (typeof title === "object") {
+      title = d3.timeFormat(config.dateFormat)(title)
     }
 
     cache.tooltipTitle.html(title)

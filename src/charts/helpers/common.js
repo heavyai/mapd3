@@ -29,7 +29,7 @@ export function getUnique (arr) {
 }
 
 export function invertScale (_scale, _mouseX, _keyType) {
-  if (_keyType === "time") {
+  if (_keyType === "time" || _keyType === "number") {
     return _scale.invert(_mouseX)
   } else {
     const bandStep = _scale.step()

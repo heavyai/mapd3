@@ -16,10 +16,12 @@ export default function Axis (_container) {
     tickSizes: null,
     tickPadding: null,
     xAxisFormat: null,
+    yAxisFormat: null,
+    y2AxisFormat: null,
     keyType: null,
     yTicks: null,
-    yAxisFormat: null,
-    xAxisPadding: null,
+    y2Ticks: null,
+    xTickSkip: null,
     axisTransitionDuration: null,
     ease: null,
     grid: null,
@@ -72,10 +74,12 @@ export default function Axis (_container) {
         .tickPadding(config.tickPadding)
 
     if (config.keyType === "time") {
-      const formatter = d3.timeFormat(config.xAxisFormat)
-      cache.xAxis.tickFormat(formatter)
+      if (config.xAxisFormat && config.xAxisFormat !== "auto") {
+        const formatter = d3.timeFormat(config.xAxisFormat)
+        cache.xAxis.tickFormat(formatter)
+      }
     } else {
-      cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.tickSkip)))
+      cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.xTickSkip)))
     }
 
     cache.yAxis = d3.axisLeft(scales.yScale)
@@ -86,10 +90,10 @@ export default function Axis (_container) {
 
     if (scales.hasSecondAxis) {
       cache.yAxis2 = d3.axisRight(scales.yScale2)
-          .ticks(config.yTicks)
+          .ticks(config.y2Ticks)
           .tickSize([config.tickSizes])
           .tickPadding(config.tickPadding)
-          .tickFormat(d3.format(config.yAxisFormat))
+          .tickFormat(d3.format(config.y2AxisFormat))
     }
   }
 
@@ -102,7 +106,6 @@ export default function Axis (_container) {
         .call(cache.xAxis)
 
     cache.svg.select(".axis.y")
-        .attr("transform", `translate(${-config.xAxisPadding.left}, 0)`)
         .transition()
         .duration(config.axisTransitionDuration)
         .ease(config.ease)
@@ -110,7 +113,7 @@ export default function Axis (_container) {
 
     if (scales.hasSecondAxis) {
       cache.svg.select(".axis.y2")
-          .attr("transform", `translate(${cache.chartWidth - config.xAxisPadding.right}, 0)`)
+          .attr("transform", `translate(${cache.chartWidth}, 0)`)
           .transition()
           .duration(config.axisTransitionDuration)
           .ease(config.ease)
@@ -132,7 +135,6 @@ export default function Axis (_container) {
         .merge(cache.horizontalGridLines)
         .transition()
         .duration(config.axisTransitionDuration)
-        .attr("x1", (-config.xAxisPadding.left))
         .attr("x2", cache.chartWidth)
         .attr("y1", scales.yScale)
         .attr("y2", scales.yScale)

@@ -42,20 +42,14 @@ export default function Chart (_container) {
     defaultColor: "skyblue",
 
     // axis
-    xAxisPadding: {
-      top: 0,
-      left: 0,
-      bottom: 0,
-      right: 0
-    },
     tickPadding: 5,
-    xAxisFormat: "%c",
-    tickSkip: 1,
+    xAxisFormat: "auto",
+    yAxisFormat: ".2f",
+    y2AxisFormat: ".2f",
     tickSizes: 8,
     yTicks: 5,
-    yTicks2: 5,
-    yAxisFormat: ".2f",
-    yAxisFormat2: ".2f",
+    y2Ticks: 5,
+    xTickSkip: 0,
     grid: null,
     axisTransitionDuration: 0,
 
@@ -67,14 +61,35 @@ export default function Chart (_container) {
 
     // tooltip
     valueFormat: ".2f",
-    tooltipMaxTopicLength: 170,
-    tooltipBorderRadius: 3,
     mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
     tooltipHeight: 48,
     tooltipWidth: 160,
     dateFormat: "%b %d, %Y",
-    seriesOrder: []
+    seriesOrder: [],
+
+    // legend
+    legendXPosition: "auto",
+    legendYPosition: "auto",
+    legendTitle: "",
+
+    // binning
+    binningReolution: "1mo",
+    binningIsAuto: true,
+
+    // domain
+    xDomain: null,
+    yDomain: null,
+    y2Domain: null,
+
+    // brush range
+    brushRangeMin: null,
+    brushRangeMax: null,
+
+    // label
+    xLabel: "",
+    yLabel: "",
+    y2Label: ""
   }
 
   let scales = {
@@ -92,8 +107,10 @@ export default function Chart (_container) {
     margin: null,
     maskingRectangle: null,
     chartWidth: null, chartHeight: null,
-    xAxis: null, yAxis: null, yAxis2: null,
+    xAxis: null, yAxis: null, yAxis2: null
+  }
 
+  const dataObject = {
     dataBySeries: null,
     dataByKey: null,
     data: null,
@@ -104,18 +121,21 @@ export default function Chart (_container) {
     flatDataSorted: null
   }
 
+  let components = {}
+  let eventCollector = {}
+
   // accessors
   const getKey = (d) => d[keys.DATA]
   const getGroup = (d) => d[keys.GROUP]
+  const getID = (d) => d[keys.ID]
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
-  const eventCollector = {}
 
   function render () {
     buildSVG()
 
-    if (cache.dataBySeries) {
+    if (dataObject.dataBySeries) {
       buildChart()
     }
 
@@ -153,6 +173,30 @@ export default function Chart (_container) {
       cache.chart = cache.svg.select(".chart-group")
 
       addEvents()
+
+      Object.assign(components, {
+        scale: Scale(),
+        axis: Axis(cache.chart),
+        line: Line(cache.panel),
+        tooltip: Tooltip(cache.container),
+        legend: Legend(cache.container),
+        brush: Brush(cache.panel),
+        hover: Hover(cache.panel),
+        binning: Binning(cache.headerGroup),
+        domainEditor: DomainEditor(cache.container),
+        brushRangeEditor: BrushRangeEditor(cache.headerGroup),
+        label: Label(cache.container)
+      })
+
+      Object.assign(eventCollector, {
+        onBrush: rebind(components.brush),
+        onHover: rebind(components.hover),
+        onBinning: rebind(components.binning),
+        onDomainEditor: rebind(components.domainEditor),
+        onBrushRangeEditor: rebind(components.brushRangeEditor),
+        onLabel: rebind(components.label),
+        onPanel: rebind(dispatcher)
+      })
     }
 
     cache.svg
@@ -175,31 +219,24 @@ export default function Chart (_container) {
   }
 
   function buildChart () {
-    const dataObject = {
-      dataByKey: cache.dataByKey,
-      dataBySeries: cache.dataBySeries,
-      flatDataSorted: cache.flatDataSorted,
-      groupKeys: cache.groupKeys
-    }
-
-    const scale = Scale()
+    components.scale
       .setConfig(config)
       .setData(dataObject)
-    scales = scale.getScales()
+    scales = components.scale.getScales()
 
-    Axis(cache.chart)
+    components.axis
       .setConfig(config)
       .setScales(scales)
       .drawAxis()
       .drawGridLines()
 
-    Line(cache.panel)
+    components.line
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
       .drawMarks()
 
-    Tooltip(cache.container)
+    components.tooltip
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
@@ -211,79 +248,63 @@ export default function Chart (_container) {
           label: d.label
         }))
 
-    Legend(cache.container)
+    components.legend
       .setConfig(config)
       .setScales(scales)
-      .setTitle("Title")
+      .setTitle(config.legendTitle)
       .setContent(legendContent)
-      .setXPosition(cache.chartWidth - 80)
-      .setYPosition(20)
+      .setXPosition(config.legendXPosition)
+      .setYPosition(config.legendYPosition)
       .drawTooltip()
       .show()
 
-    const brush = Brush(cache.panel)
+    components.brush
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
       .drawBrush()
-    eventCollector.onBrush = rebind(brush)
 
-    const hover = Hover(cache.panel)
+    components.hover
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
-    eventCollector.onHover = rebind(hover)
 
-    const binning = Binning(cache.headerGroup)
+    components.binning
       .setConfig(config)
-      .setBinning("1mo")
-      .setAuto(true)
+      .setBinning(config.binningReolution)
+      .setAuto(config.binningIsAuto)
       .drawBinning()
-    eventCollector.onBinning = rebind(binning)
 
-    const domainEditor = DomainEditor(cache.container)
+    components.domainEditor
       .setConfig(config)
-      .setXDomain(["a", "b"])
-      .setYDomain([0, 200])
-      .setY2Domain([0, 300])
+      .setXDomain(config.xDomain)
+      .setYDomain(config.yDomain)
+      .setY2Domain(config.y2Domain)
       .drawDomainEditor()
-    eventCollector.onDomainEditor = rebind(domainEditor)
 
-    const brushRangeEditor = BrushRangeEditor(cache.headerGroup)
+    components.brushRangeEditor
       .setConfig(config)
-      .setRangeMin("Jan 01, 2001")
-      .setRangeMax("Jan 01, 2002")
+      .setRangeMin(config.brushRangeMin)
+      .setRangeMax(config.brushRangeMax)
       .drawRangeEditor()
-    eventCollector.onBrushRangeEditor = rebind(brushRangeEditor)
 
-    const label = Label(cache.container)
+    components.label
       .setConfig(config)
-      .setXLabels("X Axis Label")
-      .setYLabels("Y Axis Label")
-      .setY2Labels("Y2 Axis Label")
+      .setXLabels(config.xLabel)
+      .setYLabels(config.yLabel)
+      .setY2Labels(config.y2Label)
       .drawLabels()
-    eventCollector.onLabel = rebind(label)
-
-    // const bar = Bar(config, cache)
-    // if (config.chartType === "bar") {
-    //   bar.drawBars()
-    // } else if (config.chartType === "stackedBar") {
-    //   bar.drawStackedBars()
-    // }
 
     triggerIntroAnimation()
-
     return this
   }
 
   function setData (_data) {
-    cache.data = cloneData(_data[keys.SERIES])
+    dataObject.data = cloneData(_data[keys.SERIES])
     const cleanedData = cleanData(_data)
-    cache.dataBySeries = cleanedData.dataBySeries
-    cache.dataByKey = cleanedData.dataByKey
+    Object.assign(dataObject, cleanedData)
 
     render()
-
     return this
   }
 
@@ -312,11 +333,11 @@ export default function Chart (_container) {
       })
     })
 
-    cache.flatDataSorted = sortData(flatData, config.keyType)
+    const flatDataSorted = sortData(flatData, config.keyType)
 
     const dataByKey = d3.nest()
       .key(getKey)
-      .entries(cache.flatDataSorted)
+      .entries(flatDataSorted)
       .map((d) => {
         const dataPoint = {}
         dataPoint[keys.DATA] = config.keyType === "time" ? new Date(d.key) : d.key
@@ -325,14 +346,36 @@ export default function Chart (_container) {
       })
 
     const allGroupKeys = dataBySeries.map(getGroup)
-    cache.groupKeys = getUnique(allGroupKeys)
+    const groupKeys = getUnique(allGroupKeys)
 
-    return {dataBySeries, dataByKey}
+    let stackData = null
+    let stack = null
+
+    if (config.chartType === "stackedBar" || config.chartType === "stackedArea") {
+      stackData = dataByKey
+          .map((d) => {
+            const points = {
+              key: d[keys.DATA]
+            }
+            d.series.forEach((dB) => {
+              points[dB[keys.ID]] = dB[keys.VALUE]
+            })
+
+            return points
+          })
+
+      stack = d3.stack()
+          .keys(dataBySeries.map(getID))
+          .order(d3.stackOrderNone)
+          .offset(d3.stackOffsetNone)
+    }
+
+    return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys}
   }
 
   function triggerIntroAnimation () {
     if (config.isAnimated) {
-      cache.maskingRectangle = cache.svg.d3.select(".masking-rectangle")
+      cache.maskingRectangle = cache.svg.select(".masking-rectangle")
         .attr("width", cache.chartWidth - 2)
         .attr("height", cache.chartHeight)
         .attr("x", config.margin.left + 1)
@@ -350,8 +393,8 @@ export default function Chart (_container) {
   function getNearestDataPoint (_mouseX) {
     const keyFromInvertedX = invertScale(scales.xScale, _mouseX, config.keyType)
     const bisectLeft = d3.bisector(getKey).left
-    const dataEntryIndex = bisectLeft(cache.dataByKey, keyFromInvertedX)
-    const dataEntryForXPosition = cache.dataByKey[dataEntryIndex]
+    const dataEntryIndex = bisectLeft(dataObject.dataByKey, keyFromInvertedX)
+    const dataEntryForXPosition = dataObject.dataByKey[dataEntryIndex]
     let nearestDataPoint = null
 
     if (keyFromInvertedX) {
@@ -375,7 +418,7 @@ export default function Chart (_container) {
       })
       .on("mousemove.dispatch", () => {
         const [mouseX, mouseY] = d3.mouse(cache.panel.node())
-        if (!cache.data) { return }
+        if (!dataObject.data) { return }
         const xPosition = mouseX
         const dataPoint = getNearestDataPoint(xPosition)
 

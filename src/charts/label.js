@@ -29,7 +29,7 @@ export default function Label (_container) {
   }
 
   // events
-  const dispatcher = d3.dispatch("axisLabelChanged")
+  const dispatcher = d3.dispatch("axisLabelChange")
 
   function buildSVG () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
@@ -48,7 +48,7 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
-          dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "x"})
+          dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "x"})
         })
         .on("keypress", function keypress () {
           if (d3.event.key === "Enter") {
@@ -62,7 +62,7 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
-          dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "y"})
+          dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y"})
         })
         .on("keypress", function keypress () {
           if (d3.event.key === "Enter") {
@@ -77,7 +77,7 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
-          dispatcher.call("axisLabelChanged", this, {value: this.innerText, type: "y2"})
+          dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y2"})
         })
         .on("keypress", function keypress () {
           if (d3.event.key === "Enter") {
@@ -139,11 +139,6 @@ export default function Label (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
-    return this
-  }
-
-  function setlabels (_labels) {
-
     return this
   }
 

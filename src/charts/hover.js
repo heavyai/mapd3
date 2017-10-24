@@ -39,15 +39,6 @@ export default function Hover (_container) {
   // events
   const dispatcher = d3.dispatch("hover")
 
-  // function init () {
-  //   cache.chart.on("mouseOver.hover", show)
-  //     .on("mouseMove.hover", update)
-  //     .on("mouseOut.hover", hide)
-
-  //   render()
-  //   hide()
-  // }
-  // init()
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
   function buildSVG () {
@@ -162,10 +153,12 @@ export default function Hover (_container) {
     _dispatcher.on("mouseOverPanel.hover", show)
       .on("mouseMovePanel.hover", drawHover)
       .on("mouseOutPanel.hover", hide)
+    return this
   }
 
   function on (...args) {
-    return dispatcher.on(...args)
+    dispatcher.on(...args)
+    return this
   }
 
   function setConfig (_config) {

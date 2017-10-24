@@ -206,6 +206,7 @@ export default function Tooltip (_container) {
     _dispatcher.on("mouseOverPanel.tooltip", show)
       .on("mouseMovePanel.tooltip", setupTooltip)
       .on("mouseOutPanel.tooltip", hide)
+    return this
   }
 
   function setConfig (_config) {

@@ -2,7 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, getUnique, invertScale, sortData, override, throttle} from "./helpers/common"
+import {cloneData, getUnique, invertScale, sortData, override, throttle, rebind} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -110,6 +110,7 @@ export default function Chart (_container) {
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
+  const eventCollector = {}
 
   function render () {
     buildSVG()
@@ -220,48 +221,48 @@ export default function Chart (_container) {
       .drawTooltip()
       .show()
 
-    Brush(cache.panel)
+    const brush = Brush(cache.panel)
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
       .drawBrush()
-      .on("brushMove", (...arg) => console.log("brush", ...arg))
+    eventCollector.onBrush = rebind(brush)
 
-    Hover(cache.panel)
+    const hover = Hover(cache.panel)
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
+    eventCollector.onHover = rebind(hover)
 
-    Binning(cache.headerGroup)
+    const binning = Binning(cache.headerGroup)
       .setConfig(config)
       .setBinning("1mo")
       .setAuto(true)
       .drawBinning()
-      .on("change", (...arg) => console.log("binning", ...arg))
+    eventCollector.onBinning = rebind(binning)
 
-    DomainEditor(cache.container)
+    const domainEditor = DomainEditor(cache.container)
       .setConfig(config)
       .setXDomain(["a", "b"])
       .setYDomain([0, 200])
       .setY2Domain([0, 300])
       .drawDomainEditor()
-      .on("domainChanged", (d) => console.log(d))
-      .on("domainLockToggled", (d) => console.log(d))
+    eventCollector.onDomainEditor = rebind(domainEditor)
 
-    BrushRangeEditor(cache.headerGroup)
+    const brushRangeEditor = BrushRangeEditor(cache.headerGroup)
       .setConfig(config)
       .setRangeMin("Jan 01, 2001")
       .setRangeMax("Jan 01, 2002")
       .drawRangeEditor()
-      .on("rangeChanged", (d) => console.log(d))
+    eventCollector.onBrushRangeEditor = rebind(brushRangeEditor)
 
-    Label(cache.container)
+    const label = Label(cache.container)
       .setConfig(config)
       .setXLabels("X Axis Label")
       .setYLabels("Y Axis Label")
       .setY2Labels("Y2 Axis Label")
       .drawLabels()
-      .on("axisLabelChanged", (d) => console.log(d))
+    eventCollector.onLabel = rebind(label)
 
     // const bar = Bar(config, cache)
     // if (config.chartType === "bar") {
@@ -386,7 +387,8 @@ export default function Chart (_container) {
   }
 
   function on (...args) {
-    return dispatcher.on(...args)
+    dispatcher.on(...args)
+    return this
   }
 
   function setConfig (_config) {
@@ -403,6 +405,7 @@ export default function Chart (_container) {
     setConfig,
     setData,
     on,
-    destroy
+    destroy,
+    events: eventCollector
   }
 }

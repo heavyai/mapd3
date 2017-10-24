@@ -62,3 +62,10 @@ export function throttle (callback, limit) {
     }
   }
 }
+
+export function rebind (target) {
+  return function reapply (...args) {
+    target.on(`${args[0]}.rebind`, ...args.slice(1))
+    return this
+  }
+}

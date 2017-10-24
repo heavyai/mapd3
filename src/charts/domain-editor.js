@@ -39,7 +39,7 @@ export default function DomainEditor (_container) {
   }
 
   // events
-  const dispatcher = d3.dispatch("domainChanged", "domainLockToggled")
+  const dispatcher = d3.dispatch("domainChange", "domainLockToggle")
 
   function buildSVG () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
@@ -80,7 +80,7 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y", type: "max"})
+          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y", type: "max"})
         })
         .call(blurOnEnter)
 
@@ -89,7 +89,7 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y", type: "min"})
+          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y", type: "min"})
         })
         .call(blurOnEnter)
 
@@ -99,7 +99,7 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          dispatcher.call("domainLockToggled", this, {isLocked: !isLocked, axis: "y"})
+          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y"})
         })
 
       // y2 input group
@@ -108,7 +108,7 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y2", type: "max"})
+          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y2", type: "max"})
         })
         .call(blurOnEnter)
 
@@ -117,7 +117,7 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y2", type: "min"})
+          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y2", type: "min"})
         })
         .call(blurOnEnter)
 
@@ -127,7 +127,7 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          dispatcher.call("domainLockToggled", this, {isLocked: !isLocked, axis: "y2"})
+          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y2"})
         })
 
       // x input group
@@ -136,7 +136,7 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "x", type: "min"})
+          dispatcher.call("domainChange", this, {value: this.innerText, axis: "x", type: "min"})
         })
         .call(blurOnEnter)
 
@@ -145,7 +145,7 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "x", type: "max"})
+          dispatcher.call("domainChange", this, {value: this.innerText, axis: "x", type: "max"})
         })
         .call(blurOnEnter)
 
@@ -155,7 +155,7 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          dispatcher.call("domainLockToggled", this, {isLocked: !isLocked, axis: "x"})
+          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "x"})
         })
 
       hideYEditor()
@@ -274,7 +274,8 @@ export default function DomainEditor (_container) {
   }
 
   function on (...args) {
-    return dispatcher.on(...args)
+    dispatcher.on(...args)
+    return this
   }
 
   function setXDomain (_xDomain) {

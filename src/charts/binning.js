@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {exclusiveToggle, toggleOnOff} from "./interactors"
+import {exclusiveToggle} from "./interactors"
 
 export default function Binning (_container) {
 
@@ -102,7 +102,8 @@ export default function Binning (_container) {
   }
 
   function on (...args) {
-    return dispatcher.on(...args)
+    dispatcher.on(...args)
+    return this
   }
 
   function setConfig (_config) {

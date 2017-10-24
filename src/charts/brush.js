@@ -153,7 +153,8 @@ export default function Brush (_container) {
   // }
 
   function on (...args) {
-    return dispatcher.on(...args)
+    dispatcher.on(...args)
+    return this
   }
 
   function setConfig (_config) {

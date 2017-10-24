@@ -28,7 +28,7 @@ export default function BrushRangeEditor (_container) {
   }
 
   // events
-  const dispatcher = d3.dispatch("rangeChanged")
+  const dispatcher = d3.dispatch("rangeChange")
 
   function buildSVG () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
@@ -45,7 +45,7 @@ export default function BrushRangeEditor (_container) {
         .attr("contentEditable", true)
         .on("blur", function change () {
           cache.rangeMax = cache.inputMax.text()
-          dispatcher.call("rangeChanged", this, {value: cache.rangeMax, type: "max"})
+          dispatcher.call("rangeChange", this, {value: cache.rangeMax, type: "max"})
         })
         .call(blurOnEnter)
         .style("float", "right")
@@ -60,7 +60,7 @@ export default function BrushRangeEditor (_container) {
         .attr("contentEditable", true)
         .on("blur", function change () {
           cache.rangeMin = cache.inputMin.text()
-          dispatcher.call("rangeChanged", this, {value: cache.rangeMin, type: "min"})
+          dispatcher.call("rangeChange", this, {value: cache.rangeMin, type: "min"})
         })
         .call(blurOnEnter)
         .style("float", "right")

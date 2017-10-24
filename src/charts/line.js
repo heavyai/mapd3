@@ -1,30 +1,73 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
+import {override} from "./helpers/common"
 
-export default function Line (config, cache) {
+export default function Line (_container) {
 
-  const getColor = (d) => cache.colorScale(d[keys.ID])
+  let config = {
+    margin: {
+      top: 60,
+      right: 30,
+      bottom: 40,
+      left: 70
+    },
+    width: 800,
+    height: 500,
+    chartType: null
+  }
+
+  let scales = {
+    colorScale: null,
+    xScale: null,
+    yScale: null,
+    yScale2: null
+  }
+
+  const cache = {
+    container: _container,
+    svg: null,
+    chartHeight: null
+  }
+
+  let data = {
+    dataBySeries: null,
+    groupKeys: null,
+    stack: null,
+    stackData: null
+  }
+
+  const getColor = (d) => scales.colorScale(d[keys.ID])
+
+  function buildSVG () {
+    cache.chartWidth = config.width - config.margin.left - config.margin.right
+    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
+
+    if (!cache.svg) {
+      cache.svg = cache.container.append("g")
+          .classed("mark-group", true)
+    }
+  }
 
   function drawLines () {
     const seriesLine = d3.line()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y((d) => cache.yScale(d[keys.VALUE]))
+        .x((d) => scales.xScale(d[keys.DATA]))
+        .y((d) => scales.yScale(d[keys.VALUE]))
 
     const seriesLine2 = d3.line()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y((d) => cache.yScale2(d[keys.VALUE]))
+        .x((d) => scales.xScale(d[keys.DATA]))
+        .y((d) => scales.yScale2(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
 
-    const lines = cache.svg.select(".chart-group").selectAll(".mark")
-        .data(cache.dataBySeries)
+    const lines = cache.svg.selectAll(".mark.line")
+        .data(data.dataBySeries)
 
     lines.enter()
       .append("path")
-      .attr("class", () => ["mark", "d3.line"].join(" "))
+      .attr("class", () => ["mark", "line"].join(" "))
       .merge(lines)
       .attr("d", (d) => {
-        if (d[keys.GROUP] === cache.groupKeys[0]) {
+        if (d[keys.GROUP] === data.groupKeys[0]) {
           return seriesLine(d[keys.VALUES])
         } else {
           return seriesLine2(d[keys.VALUES])
@@ -38,25 +81,25 @@ export default function Line (config, cache) {
 
   function drawAreas () {
     const seriesArea = d3.area()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y0((d) => cache.yScale(d[keys.VALUE]))
-        .y1(() => cache.chartHeight)
+        .x((d) => scales.xScale(d[keys.DATA]))
+        .y0((d) => scales.yScale(d[keys.VALUE]))
+        .y1(() => config.chartHeight)
 
     const seriesArea2 = d3.area()
-        .x((d) => cache.xScale(d[keys.DATA]))
-        .y0((d) => cache.yScale2(d[keys.VALUE]))
-        .y1(() => cache.chartHeight)
+        .x((d) => scales.xScale(d[keys.DATA]))
+        .y0((d) => scales.yScale2(d[keys.VALUE]))
+        .y1(() => config.chartHeight)
         .curve(d3.curveCatmullRom)
 
-    const areas = cache.svg.select(".chart-group").selectAll(".mark")
-        .data(cache.dataBySeries)
+    const areas = cache.svg.selectAll(".mark.area")
+        .data(data.dataBySeries)
 
     areas.enter()
       .append("path")
-      .attr("class", () => ["mark", "d3.area"].join(" "))
+      .attr("class", () => ["mark", "area"].join(" "))
       .merge(areas)
       .attr("d", (d) => {
-        if (d[keys.GROUP] === cache.groupKeys[0]) {
+        if (d[keys.GROUP] === data.groupKeys[0]) {
           return seriesArea(d[keys.VALUES])
         } else {
           return seriesArea2(d[keys.VALUES])
@@ -70,27 +113,55 @@ export default function Line (config, cache) {
 
   function drawStackedAreas () {
     const seriesLine = d3.area()
-        .x((d) => cache.xScale(d.data[keys.DATA]))
-        .y0((d) => cache.yScale(d[0]))
-        .y1((d) => cache.yScale(d[1]))
+        .x((d) => scales.xScale(d.data[keys.DATA]))
+        .y0((d) => scales.yScale(d[0]))
+        .y1((d) => scales.yScale(d[1]))
 
-    const areas = cache.svg.select(".chart-group").selectAll(".mark")
-        .data(cache.stack(cache.stackData))
+    const areas = cache.svg.selectAll(".mark.stacked-area")
+        .data(data.stack(data.stackData))
 
     areas.enter()
       .append("path")
-      .attr("class", () => ["mark", "stacked-d3.area"].join(" "))
+      .attr("class", () => ["mark", "stacked-area"].join(" "))
       .merge(areas)
       .attr("d", seriesLine)
       .style("stroke", "none")
-      .style("fill", (d) => cache.colorScale(d.key))
+      .style("fill", (d) => scales.colorScale(d.key))
 
     areas.exit().remove()
   }
 
+  function drawMarks () {
+    buildSVG()
+
+    if (config.chartType === "area") {
+      drawAreas()
+    } else if (config.chartType === "line") {
+      drawLines()
+    } else if (config.chartType === "stackedArea") {
+      drawStackedAreas()
+    }
+  }
+
+  function setConfig (_config) {
+    config = override(config, _config)
+    return this
+  }
+
+  function setScales (_scales) {
+    scales = override(scales, _scales)
+    return this
+  }
+
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
+  }
+
   return {
-    drawLines,
-    drawAreas,
-    drawStackedAreas
+    setConfig,
+    setScales,
+    setData,
+    drawMarks
   }
 }

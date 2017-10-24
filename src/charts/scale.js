@@ -1,76 +1,81 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
-import {getUnique} from "./helpers/common"
+import {getUnique, override} from "./helpers/common"
 
-export default function Scale (config, cache) {
+export default function Scale () {
+
+  let config = {
+    margin: {
+      top: 60,
+      right: 30,
+      bottom: 40,
+      left: 70
+    },
+    height: null,
+    width: null,
+    keyType: null,
+    chartType: null,
+    colorSchema: null,
+    defaultColor: null
+  }
+
+  let data = {
+    dataByKey: null,
+    dataBySeries: null,
+    flatDataSorted: null,
+    groupKeys: null
+  }
 
   const getID = (d) => d[keys.ID]
   const getKey = (d) => d[keys.DATA]
   const getValue = (d) => d[keys.VALUE]
 
-  function buildStackedScales () {
-    const allStackHeights = cache.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
-
-    cache.stackData = cache.dataByKey.map((d) => {
-      const points = {
-        key: d[keys.DATA]
-      }
-      d.series.forEach((dB) => {
-        points[dB[keys.ID]] = dB[keys.VALUE]
-      })
-
-      return points
-    })
-
-    cache.d3.stack = d3.stack()
-      .keys(cache.dataBySeries.map(getID))
-      .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetNone)
-
-    const valuesExtent = d3.extent(allStackHeights)
-
-    const allKeys = cache.flatDataSorted.map(getKey)
-    const allUniqueKeys = getUnique(allKeys)
-
-    buildXScale(allUniqueKeys)
-    buildColorScale()
-    buildYScale([0, valuesExtent[1]])
-  }
-
   function buildXScale (_allKeys) {
-    let datesExtent = null
+    const chartWidth = config.width - config.margin.left - config.margin.right
+    let domain = null
+    let xScale = null
     if (config.keyType === "time") {
-      datesExtent = d3.extent(_allKeys)
-      cache.xScale = d3.scaleTime()
+      domain = d3.extent(_allKeys)
+      xScale = d3.scaleTime()
+    } else if (config.keyType === "number") {
+      domain = d3.extent(_allKeys)
+      xScale = d3.scaleLinear()
     } else {
-      datesExtent = _allKeys
-      cache.xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? d3.scaleBand() : d3.scalePoint()
-      cache.xScale.padding(0)
+      domain = _allKeys
+      xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? d3.scaleBand() : d3.scalePoint()
+      xScale.padding(0)
     }
 
-    cache.xScale.domain(datesExtent)
-      .range([0, cache.chartWidth])
-  }
+    xScale.domain(domain)
+      .range([0, chartWidth])
 
-  function buildColorScale () {
-    const ids = cache.dataBySeries.map(getID)
-    cache.colorScale = d3.scaleOrdinal()
-        .range(config.colorSchema.map((d) => d.value))
-        .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
-        .unknown(config.defaultColor)
+    return xScale
   }
 
   function buildYScale (_extent) {
-    cache.yScale = d3.scaleLinear()
+    const chartHeight = config.height - config.margin.top - config.margin.bottom
+    const yScale = d3.scaleLinear()
         .domain(_extent)
-        .rangeRound([cache.chartHeight, 0])
+        .rangeRound([chartHeight, 0])
         .nice()
+
+    return yScale
+  }
+
+  function buildColorScale () {
+    const ids = data.dataBySeries.map(getID)
+    const colorScale = d3.scaleOrdinal()
+        .range(config.colorSchema.map((d) => d.value))
+        .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
+        .unknown(config.defaultColor)
+
+    return colorScale
   }
 
   function splitByGroups () {
     const groups = {}
-    cache.dataBySeries.forEach((d) => {
+    data.dataBySeries.forEach((d) => {
       const key = d[keys.GROUP]
       if (!groups[key]) {
         groups[key] = {
@@ -85,30 +90,78 @@ export default function Scale (config, cache) {
     return groups
   }
 
-  function buildScales () {
-    const groups = splitByGroups()
+  function getStackedScales () {
+    const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
 
-    cache.hasSecondAxis = cache.groupKeys.length > 1
+    const valuesExtent = d3.extent(allStackHeights)
 
-    const groupAxis1 = groups[cache.groupKeys[0]]
-    const allUniqueKeys = groupAxis1.allKeys
-    const valuesExtent = d3.extent(groupAxis1.allValues)
+    const allKeys = data.flatDataSorted.map(getKey)
+    const allUniqueKeys = getUnique(allKeys)
 
-    buildXScale(allUniqueKeys)
-    buildColorScale()
-    buildYScale(valuesExtent)
+    const xScale = buildXScale(allUniqueKeys)
+    const colorScale = buildColorScale()
+    const yScale = buildYScale([0, valuesExtent[1]])
 
-    if (cache.hasSecondAxis) {
-      const groupAxis2 = groups[cache.groupKeys[1]]
-      const valuesExtent2 = d3.extent(groupAxis2.allValues)
-
-      cache.yScale2 = cache.yScale.copy()
-        .domain(valuesExtent2)
+    return {
+      xScale,
+      yScale,
+      colorScale
     }
   }
 
+  function getHorizontalScales () {
+    const groups = splitByGroups()
+
+    const hasSecondAxis = data.groupKeys.length > 1
+
+    const groupAxis1 = groups[data.groupKeys[0]]
+    const allUniqueKeys = groupAxis1.allKeys
+    const valuesExtent = d3.extent(groupAxis1.allValues)
+
+    const xScale = buildXScale(allUniqueKeys)
+    const colorScale = buildColorScale()
+    const yScale = buildYScale(valuesExtent)
+
+    let yScale2 = null
+    if (hasSecondAxis) {
+      const groupAxis2 = groups[data.groupKeys[1]]
+      const valuesExtent2 = d3.extent(groupAxis2.allValues)
+
+      yScale2 = yScale.copy()
+        .domain(valuesExtent2)
+    }
+
+    return {
+      hasSecondAxis,
+      xScale,
+      yScale,
+      yScale2,
+      colorScale
+    }
+  }
+
+  function getScales () {
+    if (config.chartType === "stackedBar"
+      || config.chartType === "stackedArea") {
+      return getStackedScales()
+    } else {
+      return getHorizontalScales()
+    }
+  }
+
+  function setConfig (_config) {
+    config = override(config, _config)
+    return this
+  }
+
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
+  }
+
   return {
-    buildStackedScales,
-    buildScales
+    setConfig,
+    setData,
+    getScales
   }
 }

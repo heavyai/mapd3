@@ -1,6 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {override} from "./helpers/common"
+import {blurOnEnter} from "./interactors"
 
 export default function BrushRangeEditor (_container) {
 
@@ -46,9 +47,7 @@ export default function BrushRangeEditor (_container) {
           cache.rangeMax = cache.inputMax.text()
           dispatcher.call("rangeChanged", this, {value: cache.rangeMax, type: "max"})
         })
-        .on("keypress", function keypress () {
-          if (d3.event.key === "Enter") { this.blur() }
-        })
+        .call(blurOnEnter)
         .style("float", "right")
 
       cache.root.append("div")
@@ -63,9 +62,7 @@ export default function BrushRangeEditor (_container) {
           cache.rangeMin = cache.inputMin.text()
           dispatcher.call("rangeChanged", this, {value: cache.rangeMin, type: "min"})
         })
-        .on("keypress", function keypress () {
-          if (d3.event.key === "Enter") { this.blur() }
-        })
+        .call(blurOnEnter)
         .style("float", "right")
     }
 

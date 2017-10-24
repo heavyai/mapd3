@@ -48,3 +48,9 @@ export function toggle (othersSelection, selector, options = {toggleOffIsEnabled
   })
   /* eslint-enable consistent-this */
 }
+
+export function blurOnEnter (selection) {
+  selection.on("keypress.enter", function keypress () {
+    if (d3.event.key === "Enter") { this.blur() }
+  })
+}

@@ -1,6 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {override} from "./helpers/common"
+import {blurOnEnter} from "./interactors"
 
 export default function DomainEditor (_container) {
 
@@ -74,19 +75,23 @@ export default function DomainEditor (_container) {
           .on("mouseout.dispatch", hideY2Editor)
 
       // y input group
-      cache.yMaxInput = cache.yHitZone.append("input")
+      cache.yMaxInput = cache.yHitZone.append("div")
         .attr("class", "domain-input y max")
         .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "y", type: "max"})
+        .attr("contentEditable", true)
+        .on("blur", function change () {
+          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y", type: "max"})
         })
+        .call(blurOnEnter)
 
-      cache.yMinInput = cache.yHitZone.append("input")
+      cache.yMinInput = cache.yHitZone.append("div")
         .attr("class", "domain-input y min")
         .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "y", type: "min"})
+        .attr("contentEditable", true)
+        .on("blur", function change () {
+          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y", type: "min"})
         })
+        .call(blurOnEnter)
 
       cache.yLockIcon = cache.yHitZone.append("div")
         .attr("class", "domain-lock y")
@@ -98,19 +103,23 @@ export default function DomainEditor (_container) {
         })
 
       // y2 input group
-      cache.y2MaxInput = cache.y2HitZone.append("input")
+      cache.y2MaxInput = cache.y2HitZone.append("div")
         .attr("class", "domain-input y2 max")
         .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "y2", type: "max"})
+        .attr("contentEditable", true)
+        .on("blur", function change () {
+          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y2", type: "max"})
         })
+        .call(blurOnEnter)
 
-      cache.y2MinInput = cache.y2HitZone.append("input")
+      cache.y2MinInput = cache.y2HitZone.append("div")
         .attr("class", "domain-input y2 min")
         .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "y2", type: "min"})
+        .attr("contentEditable", true)
+        .on("blur", function change () {
+          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "y2", type: "min"})
         })
+        .call(blurOnEnter)
 
       cache.y2LockIcon = cache.y2HitZone.append("div")
         .attr("class", "domain-lock y2")
@@ -122,19 +131,23 @@ export default function DomainEditor (_container) {
         })
 
       // x input group
-      cache.xMinInput = cache.xHitZone.append("input")
+      cache.xMinInput = cache.xHitZone.append("div")
         .attr("class", "domain-input x min")
         .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "x", type: "min"})
+        .attr("contentEditable", true)
+        .on("blur", function change () {
+          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "x", type: "min"})
         })
+        .call(blurOnEnter)
 
-      cache.xMaxInput = cache.xHitZone.append("input")
+      cache.xMaxInput = cache.xHitZone.append("div")
         .attr("class", "domain-input x max")
         .style("position", "absolute")
-        .on("change", function change () {
-          dispatcher.call("domainChanged", this, {value: this.value, axis: "x", type: "max"})
+        .attr("contentEditable", true)
+        .on("blur", function change () {
+          dispatcher.call("domainChanged", this, {value: this.innerText, axis: "x", type: "max"})
         })
+        .call(blurOnEnter)
 
       cache.xLockIcon = cache.xHitZone.append("div")
         .attr("class", "domain-lock x")
@@ -156,71 +169,77 @@ export default function DomainEditor (_container) {
     const PADDING = 4
     const INPUT_WIDTH = HOVER_ZONE_SIZE - PADDING
 
-    cache.xHitZone.style("width", `${cache.chartWidth + HOVER_ZONE_SIZE * 2}px`)
+    cache.xHitZone
+      .style("width", `${cache.chartWidth + HOVER_ZONE_SIZE * 2}px`)
       .style("height", `${HOVER_ZONE_SIZE}px`)
       .style("top", `${config.margin.top + cache.chartHeight}px`)
       .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
-    cache.yHitZone.style("width", `${HOVER_ZONE_SIZE}px`)
+    cache.yHitZone
+      .style("width", `${HOVER_ZONE_SIZE}px`)
       .style("height", `${cache.chartHeight + HOVER_ZONE_SIZE}px`)
       .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
       .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
-    cache.y2HitZone.style("width", `${HOVER_ZONE_SIZE}px`)
+    cache.y2HitZone
+      .style("width", `${HOVER_ZONE_SIZE}px`)
       .style("height", `${cache.chartHeight + HOVER_ZONE_SIZE}px`)
       .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
       .style("left", `${config.margin.left + cache.chartWidth}px`)
 
-    cache.yMaxInput.style("width", `${INPUT_WIDTH}px`)
-      .style("height", `${INPUT_HEIGHT}px`)
+    cache.yMaxInput
+      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
-      .property("value", Array.isArray(cache.yDomain)
+      .text(Array.isArray(cache.yDomain)
           && !isNaN(cache.yDomain[1]) ? cache.yDomain[1] : "")
 
-    cache.yMinInput.style("width", `${INPUT_WIDTH}px`)
-      .style("height", `${INPUT_HEIGHT}px`)
+    cache.yMinInput
+      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
-      .property("value", Array.isArray(cache.yDomain)
+      .text(Array.isArray(cache.yDomain)
             && !isNaN(cache.yDomain[0]) ? cache.yDomain[0] : "")
 
-    cache.yLockIcon.style("width", `${LOCK_SIZE}px`)
+    cache.yLockIcon
+      .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("left", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
       .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
 
-    cache.y2MaxInput.style("width", `${INPUT_WIDTH}px`)
-      .style("height", `${INPUT_HEIGHT}px`)
+    cache.y2MaxInput
+      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
       .style("left", `${PADDING}px`)
-      .property("value", Array.isArray(cache.y2Domain)
+      .text(Array.isArray(cache.y2Domain)
           && !isNaN(cache.y2Domain[1]) ? cache.y2Domain[1] : "")
 
-    cache.y2MinInput.style("width", `${INPUT_WIDTH}px`)
-      .style("height", `${INPUT_HEIGHT}px`)
+    cache.y2MinInput
+      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
       .style("left", `${PADDING}px`)
-      .property("value", Array.isArray(cache.y2Domain)
+      .text(Array.isArray(cache.y2Domain)
           && !isNaN(cache.y2Domain[0]) ? cache.y2Domain[0] : "")
 
-    cache.y2LockIcon.style("width", `${LOCK_SIZE}px`)
+    cache.y2LockIcon
+      .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
 
-    cache.xMinInput.style("width", `${INPUT_WIDTH}px`)
-      .style("height", `${INPUT_HEIGHT}px`)
+    cache.xMinInput
+      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${PADDING}px`)
       .style("left", `${HOVER_ZONE_SIZE}px`)
-      .property("value", Array.isArray(cache.xDomain)
+      .text(Array.isArray(cache.xDomain)
           && typeof (cache.xDomain[0]) !== "undefined" ? cache.xDomain[0] : "")
 
-    cache.xMaxInput.style("width", `${INPUT_WIDTH}px`)
-      .style("height", `${INPUT_HEIGHT}px`)
+    cache.xMaxInput
+      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${PADDING}px`)
       .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth - INPUT_WIDTH}px`)
-      .property("value", Array.isArray(cache.xDomain)
+      .text(Array.isArray(cache.xDomain)
           && typeof (cache.xDomain[1]) !== "undefined" ? cache.xDomain[1] : "")
 
-    cache.xLockIcon.style("width", `${LOCK_SIZE}px`)
+    cache.xLockIcon
+      .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth}px`)
   }

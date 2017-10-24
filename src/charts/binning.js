@@ -13,14 +13,18 @@ export default function Binning (_container) {
     },
     width: 800,
     height: 500,
-    toggle: ["auto"],
+    autoLabel: "auto",
     exclusiveToggle: ["1y", "1q", "1mo", "1w"],
     label: "BIN:"
   }
 
   const cache = {
     container: _container,
-    root: null
+    root: null,
+    autoItem: null,
+    binningItems: null,
+    selectedBin: null,
+    isAuto: true
   }
 
   // events
@@ -35,6 +39,30 @@ export default function Binning (_container) {
 
       cache.label = cache.root.append("div")
           .attr("class", "label")
+          .text(config.label)
+
+      cache.autoItem = cache.root.append("div")
+          .attr("class", "item item-auto toggleOnOff")
+          .on("click.select", function click (d) {
+            const isSelected = this.classList.contains("selected")
+            const toggled = !isSelected
+            setAuto(toggled)
+            drawBinning()
+            dispatcher.call("change", this, d, {isSelected: toggled})
+          })
+          .text(config.autoLabel)
+
+      cache.binningItems = cache.root.selectAll(".toggleExclusive")
+          .data(config.exclusiveToggle)
+          .enter().append("div")
+          .attr("class", (d) => `item item-${d} toggleExclusive`)
+          .on("click.select", function click (d) {
+            setBinning(d)
+            drawBinning()
+            const isSelected = this.classList.contains("selected")
+            dispatcher.call("change", this, d, {isSelected})
+          })
+          .text((d) => d)
     }
 
     const LINE_HEIGHT = 20
@@ -42,38 +70,34 @@ export default function Binning (_container) {
       .style("top", config.margin.top - LINE_HEIGHT)
       .style("left", config.margin.left)
 
-    cache.label.text(config.label)
+    changeBinning(cache.selectedBin)
+    toggleAuto(cache.isAuto)
+  }
 
-    const items = cache.root.selectAll(".toggleOnOff")
-        .data(config.toggle)
-    items.enter().append("div")
-      .attr("class", (d) => `item ${d} toggleOnOff`)
-      .on("click.select", toggleOnOff(".binning-group .item.toggleOnOff"))
-      .on("click.d3.dispatch", function click (d) {
-        const isSelected = this.classList.contains("selected")
-        dispatcher.call("change", this, d, {isSelected})
-      })
-      .merge(items)
-      .text((d) => d)
-    items.exit().remove()
+  function changeBinning (_selectedItemName) {
+    if (_selectedItemName) {
+      exclusiveToggle(cache.binningItems, `.item-${_selectedItemName}`)
+    }
+  }
 
-    const itemsExclusive = cache.root.selectAll(".toggleExclusive")
-        .data(config.exclusiveToggle)
-    itemsExclusive.enter().append("div")
-      .attr("class", (d) => `item ${d} toggleExclusive`)
-      .on("click.select", exclusiveToggle(".binning-group .item.toggleExclusive"))
-      .on("click.d3.dispatch", function click (d) {
-        const isSelected = this.classList.contains("selected")
-        dispatcher.call("change", this, d, {isSelected})
-      })
-      .merge(itemsExclusive)
-      .text((d) => d)
-    itemsExclusive.exit().remove()
+  function toggleAuto (_shouldBeSelected) {
+    cache.autoItem
+      .classed("selected", _shouldBeSelected)
+      .classed("dimmed", !_shouldBeSelected)
   }
 
   function drawBinning () {
     buildSVG()
+    return this
+  }
 
+  function setBinning (_selectedBin) {
+    cache.selectedBin = _selectedBin
+    return this
+  }
+
+  function setAuto (_isAuto) {
+    cache.isAuto = _isAuto
     return this
   }
 
@@ -94,6 +118,8 @@ export default function Binning (_container) {
     on,
     setConfig,
     destroy,
-    drawBinning
+    drawBinning,
+    setBinning,
+    setAuto
   }
 }

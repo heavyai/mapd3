@@ -1,11 +1,11 @@
-@font-face {
-  font-family: 'Karla', sans-serif;
-  src: url("https://fonts.googleapis.com/css?family=Karla") format("opentype");
-  font-weight: 300; }
+[contenteditable]:focus {
+  outline: 1px solid #ddd; }
 
-.mapd3 {
-  font-family: 'Karla', sans-serif;
-  -webkit-font-smoothing: antialiased; }
+[contenteditable] {
+  border: 1px solid transparent; }
+
+[contenteditable]:hover, .axis-label:focus {
+  border: 1px solid #ddd; }
 
 .vertical-grid-line,
 .horizontal-grid-line {
@@ -155,15 +155,6 @@
   font-size: 0.8em; }
   .brush-range-input-group .brush-range-input, .brush-range-input-group .separator {
     padding: 0 2px; }
-
-[contenteditable]:focus {
-  outline: 1px solid transparent; }
-
-.label-group .axis-label {
-  border: 1px solid transparent; }
-
-.label-group .axis-label:hover, .label-group .axis-label:focus {
-  border: 1px solid #ddd; }
 
 .label-group .axis-label {
   font-weight: lighter; }

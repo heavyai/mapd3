@@ -1,9 +1,6 @@
-// Base Styles
-@import "base/_reset.scss";
-@import "base/_typography.scss";
-
 // Helpers
 @import "helpers/_variables.scss";
+@import "common/general.scss";
 
 // Common Elements
 @import "common/_grid.scss";

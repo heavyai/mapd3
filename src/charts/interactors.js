@@ -9,39 +9,42 @@ import * as d3 from "./helpers/d3-service"
  * @return {void}
  */
 
-export function toggleOnOff (selector) {
-  return exclusiveToggle(selector, {
-    toggleOffIsEnabled: true,
+export function toggleOnOff (selector, bool) {
+  const shouldBeSelected = typeof bool === "undefined" ? !d3.select(selector).classed("selected") : bool
+  d3.select(selector)
+    .classed("selected", shouldBeSelected)
+    .classed("dimmed", !shouldBeSelected)
+}
+
+export function exclusiveToggle (othersSelection, selector) {
+  return toggle(othersSelection, selector, {
+    toggleOffIsEnabled: false,
     toggleMultipleIsEnabled: false
   })
 }
 
-export function exclusiveToggle (selector, options = {toggleOffIsEnabled: false, toggleMultipleIsEnabled: false}) {
+export function toggle (othersSelection, selector, options = {toggleOffIsEnabled: false, toggleMultipleIsEnabled: false}) {
+  /* eslint-disable consistent-this */
+  let hasSelection = false
+  const selectionNode = document.querySelector(selector)
 
-  return function toggle () {
-    /* eslint-disable consistent-this */
-    const that = this
-    let hasSelection = false
-    const selection = d3.select(this.ownerDocument)
-        .selectAll(selector)
+  othersSelection.classed("selected", function selectedClass () {
+    const isSelected = this.classList.contains("selected")
+    const hasJustBeenClicked = this === selectionNode
+    let shouldBeSelected = false
 
-    selection.classed("selected", function selectedClass () {
-      const isSelected = this.classList.contains("selected")
-      const hasJustBeenClicked = this === that
-      let shouldBeSelected = false
+    if (hasJustBeenClicked) {
+      shouldBeSelected = options.toggleOffIsEnabled ? !isSelected : true
+    } else {
+      shouldBeSelected = options.toggleMultipleIsEnabled ? isSelected : false
+    }
 
-      if (hasJustBeenClicked) {
-        shouldBeSelected = options.toggleOffIsEnabled ? !isSelected : true
-      } else {
-        shouldBeSelected = options.toggleMultipleIsEnabled ? isSelected : false
-      }
+    hasSelection = hasSelection || shouldBeSelected
+    return shouldBeSelected
+  })
 
-      hasSelection = hasSelection || shouldBeSelected
-      return shouldBeSelected
-    })
-    selection.classed("dimmed", function dimmedClass () {
-      return hasSelection && !this.classList.contains("selected")
-    })
-    /* eslint-enable consistent-this */
-  }
+  othersSelection.classed("dimmed", function dimmedClass () {
+    return hasSelection && !this.classList.contains("selected")
+  })
+  /* eslint-enable consistent-this */
 }

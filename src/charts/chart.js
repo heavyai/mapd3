@@ -234,21 +234,26 @@ export default function Chart (_container) {
 
     Binning(cache.headerGroup)
       .setConfig(config)
+      .setBinning("1mo")
+      .setAuto(true)
       .drawBinning()
       .on("change", (...arg) => console.log("binning", ...arg))
 
     DomainEditor(cache.container)
       .setConfig(config)
+      .setXDomain(["a", "b"])
+      .setYDomain([0, 200])
+      .setY2Domain([0, 300])
       .drawDomainEditor()
       .on("domainChanged", (d) => console.log(d))
       .on("domainLockToggled", (d) => console.log(d))
 
     BrushRangeEditor(cache.headerGroup)
       .setConfig(config)
-      .drawRangeEditor()
-      .on("rangeChanged", (d) => console.log(d))
       .setRangeMin("Jan 01, 2001")
       .setRangeMax("Jan 01, 2002")
+      .drawRangeEditor()
+      .on("rangeChanged", (d) => console.log(d))
 
     Label(cache.container)
       .setConfig(config)

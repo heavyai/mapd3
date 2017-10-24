@@ -18,9 +18,10 @@ export default function BrushRangeEditor (_container) {
   const cache = {
     container: _container,
     root: null,
-    inputGroup: null,
-    inputMax: null,
     inputMin: null,
+    inputMax: null,
+    rangeMin: null,
+    rangeMax: null,
     chartWidth: null,
     chartHeight: null
   }
@@ -38,11 +39,15 @@ export default function BrushRangeEditor (_container) {
           .attr("class", "brush-range-input-group")
           .style("top", 0)
 
-      cache.inputMin = cache.root.append("div")
-        .attr("class", "brush-range-input min")
+      cache.inputMax = cache.root.append("div")
+        .attr("class", "brush-range-input max")
         .attr("contentEditable", true)
-        .on("change", function change () {
-          dispatcher.call("rangeChanged", this, {value: this.value, type: "min"})
+        .on("blur", function change () {
+          cache.rangeMax = cache.inputMax.text()
+          dispatcher.call("rangeChanged", this, {value: cache.rangeMax, type: "max"})
+        })
+        .on("keypress", function keypress () {
+          if (d3.event.key === "Enter") { this.blur() }
         })
         .style("float", "right")
 
@@ -51,14 +56,21 @@ export default function BrushRangeEditor (_container) {
         .text("-")
         .style("float", "right")
 
-      cache.inputMax = cache.root.append("div")
-        .attr("class", "brush-range-input max")
+      cache.inputMin = cache.root.append("div")
+        .attr("class", "brush-range-input min")
         .attr("contentEditable", true)
-        .on("change", function change () {
-          dispatcher.call("rangeChanged", this, {value: this.value, type: "max"})
+        .on("blur", function change () {
+          cache.rangeMin = cache.inputMin.text()
+          dispatcher.call("rangeChanged", this, {value: cache.rangeMin, type: "min"})
+        })
+        .on("keypress", function keypress () {
+          if (d3.event.key === "Enter") { this.blur() }
         })
         .style("float", "right")
     }
+
+    cache.inputMin.text(cache.rangeMin || "")
+    cache.inputMax.text(cache.rangeMax || "")
   }
 
   function drawRangeEditor () {
@@ -76,13 +88,13 @@ export default function BrushRangeEditor (_container) {
     return this
   }
 
-  function setRangeMin (_range) {
-    cache.inputMin.text(_range)
+  function setRangeMin (_rangeMin) {
+    cache.rangeMin = _rangeMin
     return this
   }
 
-  function setRangeMax (_range) {
-    cache.inputMax.text(_range)
+  function setRangeMax (_rangeMax) {
+    cache.rangeMax = _rangeMax
     return this
   }
 

@@ -78,7 +78,7 @@ export default function Axis (_container) {
         const formatter = d3.timeFormat(config.xAxisFormat)
         cache.xAxis.tickFormat(formatter)
       }
-    } else {
+    } else if (config.keyType === "string") {
       cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.xTickSkip)))
     }
 

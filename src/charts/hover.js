@@ -14,7 +14,8 @@ export default function Hover (_container) {
     },
     width: 800,
     height: 500,
-    dotRadius: null
+    dotRadius: null,
+    chartType: null
   }
 
   let scales = {
@@ -36,6 +37,11 @@ export default function Hover (_container) {
     data: null
   }
 
+  let data = {
+    stack: null,
+    groupKeys: null
+  }
+
   // events
   const dispatcher = d3.dispatch("hover")
 
@@ -50,14 +56,12 @@ export default function Hover (_container) {
           .classed("hover-group", true)
           .style("pointer-events", "none")
     }
-
-    // cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
   function drawHover (_dataPoint, _dataPointXPosition) {
     buildSVG()
 
-    if (_dataPointXPosition) {
+    if (!isNaN(_dataPointXPosition)) {
       moveVerticalMarker(_dataPointXPosition)
       drawVerticalMarker()
       if (config.chartType === "stackedLine"
@@ -74,14 +78,12 @@ export default function Hover (_container) {
   function show () {
     if (!cache.svg) { return null }
     cache.svg.style("display", "block")
-
     return this
   }
 
   function hide () {
     if (!cache.svg) { return null }
     cache.svg.style("display", "none")
-
     return this
   }
 
@@ -100,8 +102,7 @@ export default function Hover (_container) {
       .attr("class", "dot")
       .merge(dots)
       .attr("cy", (d) => {
-        // if (d[keys.GROUP] === chartCache.groupKeys[0]) {
-        if (d[keys.GROUP] === 0) {
+        if (config.chartType === "stackedArea" || data.groupKeys[0].indexOf(d[keys.ID]) > -1) {
           return scales.yScale(d[keys.VALUE])
         } else {
           return scales.yScale2(d[keys.VALUE])
@@ -121,14 +122,14 @@ export default function Hover (_container) {
       stackedDataPoint[id] = d[keys.VALUE]
     })
 
-    // const dotsStack = data.stack([stackedDataPoint])
-    // const dotsData = dotsStack.map((d) => {
-    //   const dot = {value: d[0][1]}
-    //   dot[keys.ID] = d.key
-    //   return dot
-    // })
+    const dotsStack = data.stack([stackedDataPoint])
+    const dotsData = dotsStack.map((d) => {
+      const dot = {value: d[0][1]}
+      dot[keys.ID] = d.key
+      return dot
+    })
 
-    // drawHighlightDataPoints(dotsData)
+    drawHighlightDataPoints(dotsData)
   }
 
   function drawVerticalMarker () {
@@ -171,9 +172,15 @@ export default function Hover (_container) {
     return this
   }
 
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
+  }
+
   return {
     setConfig,
     setScales,
+    setData,
     bindEvents,
     highlightDataPoints,
     highlightStackedDataPoints,

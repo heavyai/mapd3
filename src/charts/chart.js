@@ -2,11 +2,10 @@ import * as d3 from "./helpers/d3-service"
 
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, getUnique, invertScale, sortData, override, throttle, rebind} from "./helpers/common"
+import {cloneData, invertScale, sortData, override, throttle, rebind} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
-import Bar from "./bar"
 import Axis from "./axis"
 import Tooltip from "./tooltip"
 import Legend from "./legend"
@@ -114,19 +113,18 @@ export default function Chart (_container) {
     dataBySeries: null,
     dataByKey: null,
     data: null,
-    groupKeys: [],
+    groupKeys: {},
     hasSecondAxis: false,
     stackData: null,
     stack: null,
     flatDataSorted: null
   }
 
-  let components = {}
-  let eventCollector = {}
+  const components = {}
+  const eventCollector = {}
 
   // accessors
   const getKey = (d) => d[keys.DATA]
-  const getGroup = (d) => d[keys.GROUP]
   const getID = (d) => d[keys.ID]
 
   // events
@@ -267,6 +265,7 @@ export default function Chart (_container) {
     components.hover
       .setConfig(config)
       .setScales(scales)
+      .setData(dataObject)
       .bindEvents(dispatcher)
 
     components.binning
@@ -345,8 +344,13 @@ export default function Chart (_container) {
         return dataPoint
       })
 
-    const allGroupKeys = dataBySeries.map(getGroup)
-    const groupKeys = getUnique(allGroupKeys)
+    const groupKeys = {}
+    dataBySeries.forEach((d) => {
+      if (!groupKeys[d[keys.GROUP]]) {
+        groupKeys[d[keys.GROUP]] = []
+      }
+      groupKeys[d[keys.GROUP]].push(d[keys.ID])
+    })
 
     let stackData = null
     let stack = null
@@ -395,10 +399,17 @@ export default function Chart (_container) {
     const bisectLeft = d3.bisector(getKey).left
     const dataEntryIndex = bisectLeft(dataObject.dataByKey, keyFromInvertedX)
     const dataEntryForXPosition = dataObject.dataByKey[dataEntryIndex]
+    const dataEntryForXPositionPrev = dataObject.dataByKey[Math.max(dataEntryIndex - 1, 0)]
+
     let nearestDataPoint = null
 
     if (keyFromInvertedX) {
-      nearestDataPoint = dataEntryForXPosition
+      if ((keyFromInvertedX - dataEntryForXPositionPrev.key)
+          < (dataEntryForXPosition.key - keyFromInvertedX)) {
+        nearestDataPoint = dataEntryForXPositionPrev
+      } else {
+        nearestDataPoint = dataEntryForXPosition
+      }
     }
     return nearestDataPoint
   }

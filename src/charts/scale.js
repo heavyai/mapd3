@@ -112,9 +112,9 @@ export default function Scale () {
   function getHorizontalScales () {
     const groups = splitByGroups()
 
-    const hasSecondAxis = data.groupKeys.length > 1
+    const hasSecondAxis = Object.keys(data.groupKeys).length > 1
 
-    const groupAxis1 = groups[data.groupKeys[0]]
+    const groupAxis1 = groups[0]
     const allUniqueKeys = groupAxis1.allKeys
     const valuesExtent = d3.extent(groupAxis1.allValues)
 
@@ -124,7 +124,7 @@ export default function Scale () {
 
     let yScale2 = null
     if (hasSecondAxis) {
-      const groupAxis2 = groups[data.groupKeys[1]]
+      const groupAxis2 = groups[1]
       const valuesExtent2 = d3.extent(groupAxis2.allValues)
 
       yScale2 = yScale.copy()

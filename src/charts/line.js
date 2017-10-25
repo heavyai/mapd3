@@ -67,7 +67,7 @@ export default function Line (_container) {
       .attr("class", () => ["mark", "line"].join(" "))
       .merge(lines)
       .attr("d", (d) => {
-        if (d[keys.GROUP] === data.groupKeys[0]) {
+        if (d[keys.GROUP] === 0) {
           return seriesLine(d[keys.VALUES])
         } else {
           return seriesLine2(d[keys.VALUES])
@@ -99,7 +99,7 @@ export default function Line (_container) {
       .attr("class", () => ["mark", "area"].join(" "))
       .merge(areas)
       .attr("d", (d) => {
-        if (d[keys.GROUP] === data.groupKeys[0]) {
+        if (d[keys.GROUP] === 0) {
           return seriesArea(d[keys.VALUES])
         } else {
           return seriesArea2(d[keys.VALUES])

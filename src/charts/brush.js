@@ -28,7 +28,8 @@ export default function Brush (_container) {
     chartBrush: null,
     handle: null,
     chartWidth: null,
-    chartHeight: null
+    chartHeight: null,
+    isEnabled: true
   }
 
   let data = {
@@ -39,8 +40,8 @@ export default function Brush (_container) {
   const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd")
 
   function buildSVG () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
+    cache.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
+    cache.chartHeight = Math.max(config.height - config.margin.top - config.margin.bottom, 0)
 
     if (!cache.svg) {
       cache.svg = cache.container.append("g")
@@ -97,6 +98,10 @@ export default function Brush (_container) {
   }
 
   function drawBrush () {
+    if (!cache.isEnabled) {
+      destroy()
+    }
+
     buildSVG()
 
     if (data.dataBySeries) {
@@ -157,6 +162,12 @@ export default function Brush (_container) {
     return this
   }
 
+  function setVisibility (_isEnabled) {
+    cache.isEnabled = _isEnabled
+    drawBrush()
+    return this
+  }
+
   function setConfig (_config) {
     config = override(config, _config)
     return this
@@ -172,11 +183,18 @@ export default function Brush (_container) {
     return this
   }
 
+  function destroy (_data) {
+    cache.svg.remove()
+    return this
+  }
+
   return {
     on,
     setConfig,
     setData,
     setScales,
-    drawBrush
+    drawBrush,
+    setVisibility,
+    destroy
   }
 }

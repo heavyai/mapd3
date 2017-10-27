@@ -14,7 +14,7 @@ export default function Binning (_container) {
     width: 800,
     height: 500,
     autoLabel: "auto",
-    exclusiveToggle: ["1y", "1q", "1mo", "1w"],
+    binningToggles: [],
     label: "BIN:"
   }
 
@@ -24,7 +24,8 @@ export default function Binning (_container) {
     autoItem: null,
     binningItems: null,
     selectedBin: null,
-    isAuto: true
+    isAuto: true,
+    isEnabled: true
   }
 
   // events
@@ -38,7 +39,7 @@ export default function Binning (_container) {
           .style("float", "left")
 
       cache.label = cache.root.append("div")
-          .attr("class", "label")
+          .attr("class", "bin-label")
           .text(config.label)
 
       cache.autoItem = cache.root.append("div")
@@ -53,7 +54,7 @@ export default function Binning (_container) {
           .text(config.autoLabel)
 
       cache.binningItems = cache.root.selectAll(".toggleExclusive")
-          .data(config.exclusiveToggle)
+          .data(config.binningToggles)
           .enter().append("div")
           .attr("class", (d) => `item item-${d} toggleExclusive`)
           .on("click.select", function click (d) {
@@ -67,8 +68,8 @@ export default function Binning (_container) {
 
     const LINE_HEIGHT = 20
     cache.root
-      .style("top", config.margin.top - LINE_HEIGHT)
-      .style("left", config.margin.left)
+      .style("top", `${config.margin.top - LINE_HEIGHT}px`)
+      .style("left", `${config.margin.left}px`)
 
     changeBinning(cache.selectedBin)
     toggleAuto(cache.isAuto)
@@ -87,7 +88,17 @@ export default function Binning (_container) {
   }
 
   function drawBinning () {
-    buildSVG()
+    if (cache.isEnabled) {
+      buildSVG()
+    } else {
+      destroy()
+    }
+    return this
+  }
+
+  function setVisibility (_shouldBeVisible) {
+    cache.isEnabled = _shouldBeVisible
+    drawBinning()
     return this
   }
 
@@ -121,6 +132,7 @@ export default function Binning (_container) {
     destroy,
     drawBinning,
     setBinning,
-    setAuto
+    setAuto,
+    setVisibility
   }
 }

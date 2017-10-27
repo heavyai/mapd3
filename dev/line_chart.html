@@ -57,9 +57,9 @@ const chart1 = mapd3.Chart(chartNode1)
     height: 400,
     margin: {
       top: 32,
-      right: 64,
+      right: 70,
       bottom: 64,
-      left: 64
+      left: 70
     },
     keyType, // time, number, string
     chartType, // line, area, stackedArea, bar, stackedBar
@@ -76,18 +76,13 @@ const chart1 = mapd3.Chart(chartNode1)
     tickPadding: 5,
     xAxisFormat: "auto",
     tickSizes: 8,
-    yTicks: 5,
-    y2Ticks: 5,
+    yTicks: "auto",
+    y2Ticks: "auto",
     xTickSkip: "auto",
     yAxisFormat: ".2f",
     y2AxisFormat: ".2f",
     grid: "horizontal",
     axisTransitionDuration: 0,
-
-    // label
-    xTitle: "",
-    yTitle: "",
-    y2Title: "",
 
     // hover
     dotRadius: 4,
@@ -103,19 +98,27 @@ const chart1 = mapd3.Chart(chartNode1)
     legendXPosition: "auto",
     legendYPosition: "auto",
     legendTitle: "Dataset",
+    legendIsEnabled: true,
 
     // binning
-    binningReolution: "1mo",
+    binningResolution: "1mo",
     binningIsAuto: true,
+    binningToggles: ["10y", "1y", "1q", "1mo"],
+    binningIsEnabled: true,
 
     // domain
     xDomain: ["a", "b"],
     yDomain: [0, 200],
     y2Domain: [0, 300],
+    domainEditorIsEnabled: true,
 
     // brush range
     brushRangeMin: "Jan 01, 2001",
     brushRangeMax: "Jan 02, 2002",
+    brushRangeIsEnabled: true,
+
+    // brush
+    brushIsEnabled: true,
 
     // label
     xLabel: "X Axis Label",
@@ -123,9 +126,9 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Label: "Y2 Axis Label"
   })
   .setData(data)
-// chart1.events
-//   .onBrush("brushStart", (d) => console.log(d))
-//   .onBrush("brushMove", (d) => console.log(d))
+chart1.events
+  .onBrush("brushStart", (d) => console.log(d))
+  .onBrush("brushMove", (d) => console.log(d))
 //   .onBrush("brushEnd", (d) => console.log(d))
 //   .onBinning("change", (d) => console.log(d))
 //   .onDomainEditor("domainChange", (d) => console.log(d))
@@ -139,6 +142,9 @@ const chart1 = mapd3.Chart(chartNode1)
 
 // const newData = dataManager.generateTestDataset()
 // chart1.setData(data)
+// chart1
+//   .setConfig({height: 400})
+//   .render()
 
 </script>
 </body>

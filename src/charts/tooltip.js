@@ -47,7 +47,8 @@ export default function Tooltip (_container) {
     xPosition: null,
     yPosition: null,
     content: null,
-    title: null
+    title: null,
+    isEnabled: true
   }
 
   function buildSVG () {
@@ -193,6 +194,17 @@ export default function Tooltip (_container) {
     return this
   }
 
+  function setVisibility (_shouldBeVisible) {
+    cache.isEnabled = _shouldBeVisible
+    if (!cache.root) { return null }
+    if (cache.isEnabled) {
+      show()
+    } else {
+      hide()
+    }
+    return this
+  }
+
   function setupTooltip (_dataPoint, _xPosition, _yPosition) {
     buildSVG()
     const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
@@ -252,6 +264,7 @@ export default function Tooltip (_container) {
     show,
     drawTooltip,
     setConfig,
-    setScales
+    setScales,
+    setVisibility
   }
 }

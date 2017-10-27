@@ -35,7 +35,8 @@ export default function DomainEditor (_container) {
     chartHeight: null,
     xDomain: null,
     yDomain: null,
-    y2Domain: null
+    y2Domain: null,
+    isEnabled: true
   }
 
   // events
@@ -269,7 +270,11 @@ export default function DomainEditor (_container) {
   }
 
   function drawDomainEditor () {
-    buildSVG()
+    if (cache.isEnabled) {
+      buildSVG()
+    } else {
+      destroy()
+    }
     return this
   }
 
@@ -308,9 +313,21 @@ export default function DomainEditor (_container) {
     return this
   }
 
+  function setVisibility (_shouldBeVisible) {
+    cache.isEnabled = _shouldBeVisible
+    drawDomainEditor()
+    return this
+  }
+
   function setConfig (_config) {
     config = override(config, _config)
     return this
+  }
+
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+    }
   }
 
   return {
@@ -322,6 +339,8 @@ export default function DomainEditor (_container) {
     setXLock,
     setYLock,
     setY2Lock,
-    drawDomainEditor
+    drawDomainEditor,
+    setVisibility,
+    destroy
   }
 }

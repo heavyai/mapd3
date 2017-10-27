@@ -34,7 +34,8 @@ export default function Hover (_container) {
     brush: null,
     chartBrush: null,
     handle: null,
-    data: null
+    data: null,
+    isEnabled: true
   }
 
   let data = {

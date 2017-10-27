@@ -13,7 +13,8 @@ export default function BrushRangeEditor (_container) {
       left: 70
     },
     width: 800,
-    height: 500
+    height: 500,
+    rangeFormat: "%b %d, %Y"
   }
 
   const cache = {
@@ -24,7 +25,8 @@ export default function BrushRangeEditor (_container) {
     rangeMin: null,
     rangeMax: null,
     chartWidth: null,
-    chartHeight: null
+    chartHeight: null,
+    isEnabled: true
   }
 
   // events
@@ -66,12 +68,33 @@ export default function BrushRangeEditor (_container) {
         .style("float", "right")
     }
 
-    cache.inputMin.text(cache.rangeMin || "")
-    cache.inputMax.text(cache.rangeMax || "")
+    const format = d3.utcFormat(config.rangeFormat)
+    cache.inputMin.text(format(new Date(cache.rangeMin)) || "")
+    cache.inputMax.text(format(new Date(cache.rangeMax)) || "")
   }
 
   function drawRangeEditor () {
-    buildSVG()
+    if (cache.isEnabled) {
+      buildSVG()
+    } else {
+      destroy()
+    }
+    return this
+  }
+
+  function setRangeMin (_rangeMin) {
+    cache.rangeMin = _rangeMin
+    return this
+  }
+
+  function setVisibility (_shouldBeVisible) {
+    cache.isEnabled = _shouldBeVisible
+    drawRangeEditor()
+    return this
+  }
+
+  function setRangeMax (_rangeMax) {
+    cache.rangeMax = _rangeMax
     return this
   }
 
@@ -85,14 +108,10 @@ export default function BrushRangeEditor (_container) {
     return this
   }
 
-  function setRangeMin (_rangeMin) {
-    cache.rangeMin = _rangeMin
-    return this
-  }
-
-  function setRangeMax (_rangeMax) {
-    cache.rangeMax = _rangeMax
-    return this
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+    }
   }
 
   return {
@@ -100,6 +119,7 @@ export default function BrushRangeEditor (_container) {
     setConfig,
     drawRangeEditor,
     setRangeMin,
-    setRangeMax
+    setRangeMax,
+    setVisibility
   }
 }

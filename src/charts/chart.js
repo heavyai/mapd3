@@ -46,8 +46,8 @@ export default function Chart (_container) {
     yAxisFormat: ".2f",
     y2AxisFormat: ".2f",
     tickSizes: 8,
-    yTicks: 5,
-    y2Ticks: 5,
+    yTicks: "auto",
+    y2Ticks: "auto",
     xTickSkip: 0,
     grid: null,
     axisTransitionDuration: 0,
@@ -71,19 +71,27 @@ export default function Chart (_container) {
     legendXPosition: "auto",
     legendYPosition: "auto",
     legendTitle: "",
+    legendIsEnabled: true,
 
     // binning
-    binningReolution: "1mo",
+    binningResolution: "1mo",
     binningIsAuto: true,
+    binningToggles: ["10y", "1y", "1q", "1mo"],
+    binningIsEnabled: true,
 
     // domain
     xDomain: null,
     yDomain: null,
     y2Domain: null,
+    domainEditorIsEnabled: true,
 
     // brush range
     brushRangeMin: null,
     brushRangeMax: null,
+    brushRangeIsEnabled: true,
+
+    // brush
+    brushIsEnabled: true,
 
     // label
     xLabel: "",
@@ -141,10 +149,12 @@ export default function Chart (_container) {
   }
 
   function buildSVG () {
-    const w = config.width || cache.container.clientWidth
-    const h = config.height || cache.container.clientHeight
-    cache.chartWidth = w - config.margin.left - config.margin.right
-    cache.chartHeight = h - config.margin.top - config.margin.bottom
+    const w = config.width === "auto" ? cache.container.clientWidth : config.width
+    const h = config.height === "auto" ? cache.container.clientHeight : config.height
+    cache.chartWidth = Math.max(w - config.margin.left - config.margin.right, 0)
+    cache.chartHeight = Math.max(h - config.margin.top - config.margin.bottom, 0)
+
+    console.log("cache.chartWidth", cache.chartWidth, w, config.width)
 
     if (!cache.svg) {
       const template = `<div class="mapd3 mapd3-container">
@@ -202,8 +212,8 @@ export default function Chart (_container) {
       .attr("height", config.height)
 
     cache.headerGroup
-      .style("width", cache.chartWidth)
-      .style("left", config.margin.left)
+      .style("width", `${cache.chartWidth}px`)
+      .style("left", `${config.margin.left}px`)
 
     cache.panel
       .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
@@ -238,6 +248,7 @@ export default function Chart (_container) {
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
+      .setVisibility(config.tooltipIsEnabled)
 
     const legendContent = dataObject.dataBySeries
         .map((d) => ({
@@ -254,13 +265,14 @@ export default function Chart (_container) {
       .setXPosition(config.legendXPosition)
       .setYPosition(config.legendYPosition)
       .drawTooltip()
-      .show()
+      .setVisibility(config.legendIsEnabled)
 
     components.brush
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
       .drawBrush()
+      .setVisibility(config.brushIsEnabled)
 
     components.hover
       .setConfig(config)
@@ -270,9 +282,10 @@ export default function Chart (_container) {
 
     components.binning
       .setConfig(config)
-      .setBinning(config.binningReolution)
+      .setBinning(config.binningResolution)
       .setAuto(config.binningIsAuto)
       .drawBinning()
+      .setVisibility(config.binningIsEnabled)
 
     components.domainEditor
       .setConfig(config)
@@ -280,12 +293,14 @@ export default function Chart (_container) {
       .setYDomain(config.yDomain)
       .setY2Domain(config.y2Domain)
       .drawDomainEditor()
+      .setVisibility(config.domainEditorIsEnabled)
 
     components.brushRangeEditor
       .setConfig(config)
       .setRangeMin(config.brushRangeMin)
       .setRangeMax(config.brushRangeMax)
       .drawRangeEditor()
+      .setVisibility(config.brushRangeIsEnabled)
 
     components.label
       .setConfig(config)
@@ -352,27 +367,22 @@ export default function Chart (_container) {
       groupKeys[d[keys.GROUP]].push(d[keys.ID])
     })
 
-    let stackData = null
-    let stack = null
-
-    if (config.chartType === "stackedBar" || config.chartType === "stackedArea") {
-      stackData = dataByKey
-          .map((d) => {
-            const points = {
-              key: d[keys.DATA]
-            }
-            d.series.forEach((dB) => {
-              points[dB[keys.ID]] = dB[keys.VALUE]
-            })
-
-            return points
+    const stackData = dataByKey
+        .map((d) => {
+          const points = {
+            key: d[keys.DATA]
+          }
+          d.series.forEach((dB) => {
+            points[dB[keys.ID]] = dB[keys.VALUE]
           })
 
-      stack = d3.stack()
-          .keys(dataBySeries.map(getID))
-          .order(d3.stackOrderNone)
-          .offset(d3.stackOffsetNone)
-    }
+          return points
+        })
+
+    const stack = d3.stack()
+        .keys(dataBySeries.map(getID))
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone)
 
     return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys}
   }

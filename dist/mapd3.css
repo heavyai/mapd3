@@ -128,7 +128,7 @@
 
 .binning-group {
   font-size: 0.7em; }
-  .binning-group .item, .binning-group .label {
+  .binning-group .item, .binning-group .bin-label {
     float: left;
     padding-right: 4px; }
   .binning-group .item {

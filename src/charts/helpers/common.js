@@ -29,11 +29,43 @@ export function getUnique (arr) {
 }
 
 export function invertScale (_scale, _mouseX, _keyType) {
-  if (_keyType === "time") {
+  if (_keyType === "time" || _keyType === "number") {
     return _scale.invert(_mouseX)
   } else {
     const bandStep = _scale.step()
     const index = Math.round((_mouseX) / bandStep)
     return _scale.domain()[index]
+  }
+}
+
+export function override (a, b) {
+  const accum = {}
+  for (const x in a) {
+    if (a.hasOwnProperty(x)) {
+      accum[x] = (x in b) ? b[x] : a[x]
+    }
+  }
+  return accum
+}
+
+export function throttle (callback, limit) {
+  let wait = false
+  let timer = null
+  return function throttleFn (...args) {
+    if (!wait) {
+      wait = true
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        wait = false
+        callback(...args)
+      }, limit)
+    }
+  }
+}
+
+export function rebind (target) {
+  return function reapply (...args) {
+    target.on(`${args[0]}.rebind`, ...args.slice(1))
+    return this
   }
 }

@@ -15,11 +15,6 @@ $tick-size: 1;
         padding: $text-padding;
     }
 }
-.y-axis-label,
-.x-axis-label {
-    font-size: $text-size;
-    fill: $grey-500;
-}
 
 .y-title, .x-title {
     font-size: 0.8em;

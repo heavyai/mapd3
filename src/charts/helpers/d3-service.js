@@ -3,6 +3,7 @@ export {
 	axisLeft,
 	axisRight,
 	timeFormat,
+	utcFormat,
 	format,
 	bisector,
 	extent,

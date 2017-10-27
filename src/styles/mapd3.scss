@@ -1,9 +1,6 @@
-// Base Styles
-@import "base/_reset.scss";
-@import "base/_typography.scss";
-
 // Helpers
 @import "helpers/_variables.scss";
+@import "common/general.scss";
 
 // Common Elements
 @import "common/_grid.scss";
@@ -15,3 +12,7 @@
 @import "charts/line.scss";
 @import "charts/brush.scss";
 @import "charts/binning.scss";
+@import "charts/hover.scss";
+@import "charts/domain-editor.scss";
+@import "charts/brush-range-editor.scss";
+@import "charts/label.scss";

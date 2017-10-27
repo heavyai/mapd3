@@ -1,5 +1,4 @@
 import * as d3 from "./helpers/d3-service"
-export {bisector, extent, sum, range, merge} from "d3-array"
 
 import {keys} from "./helpers/constants"
 import {cloneData} from "./helpers/common"

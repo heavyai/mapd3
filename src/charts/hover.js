@@ -1,8 +1,9 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
+import {override} from "./helpers/common"
 
-export default function Hover (_chart) {
+export default function Hover (_container) {
 
   let config = {
     margin: {
@@ -12,11 +13,20 @@ export default function Hover (_chart) {
       left: 70
     },
     width: 800,
-    height: 500
+    height: 500,
+    dotRadius: null,
+    chartType: null
+  }
+
+  let scales = {
+    yScale: null,
+    yScale2: null,
+    hasSecondAxis: null,
+    colorScale: null
   }
 
   const cache = {
-    chart: _chart,
+    container: _container,
     svg: null,
     chartWidth: null,
     chartHeight: null,
@@ -25,65 +35,36 @@ export default function Hover (_chart) {
     chartBrush: null,
     handle: null,
     data: null,
-    xScale: null,
-    yScale: null,
-    yScale2: null,
-    colorScale: null
+    isEnabled: true
   }
 
-  let chartCache = {
-    xScale: null,
-    yScale: null,
-    yScale2: null,
-    colorScale: null,
-    dataBySeries: null,
-    svg: null
+  let data = {
+    stack: null,
+    groupKeys: null
   }
 
   // events
   const dispatcher = d3.dispatch("hover")
 
-  function init () {
-    cache.chart.on("mouseOver.hover", show)
-      .on("mouseMove.hover", update)
-      .on("mouseOut.hover", hide)
-
-    render()
-    hide()
-  }
-  init()
-
-  function render () {
-    buildSVG()
-    buildScales()
-    drawVerticalMarker()
-  }
+  const getColor = (d) => scales.colorScale(d[keys.ID])
 
   function buildSVG () {
-    chartCache = cache.chart.getCache()
-    setConfig(cache.chart.getConfig())
-
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
     if (!cache.svg) {
-      cache.svg = chartCache.svg.append("g")
+      cache.svg = cache.container.append("g")
           .classed("hover-group", true)
+          .style("pointer-events", "none")
     }
-
-    cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
-  function buildScales () {
-    cache.xScale = chartCache.xScale
-    cache.yScale = chartCache.yScale
-    cache.yScale2 = chartCache.yScale2
-    cache.colorScale = chartCache.colorScale
-  }
+  function drawHover (_dataPoint, _dataPointXPosition) {
+    buildSVG()
 
-  function update (_dataPoint, _dataPointXPosition) {
-    if (_dataPointXPosition) {
+    if (!isNaN(_dataPointXPosition)) {
       moveVerticalMarker(_dataPointXPosition)
+      drawVerticalMarker()
       if (config.chartType === "stackedLine"
         || config.chartType === "stackedArea"
         || config.chartType === "stackedBar") {
@@ -96,14 +77,16 @@ export default function Hover (_chart) {
   }
 
   function show () {
+    if (!cache.svg) { return null }
     cache.svg.style("display", "block")
+    return this
   }
 
   function hide () {
+    if (!cache.svg) { return null }
     cache.svg.style("display", "none")
+    return this
   }
-
-  const getColor = (d) => cache.colorScale(d[keys.ID])
 
   function highlightDataPoints (_dataPoint) {
     const dotsData = _dataPoint[keys.SERIES]
@@ -119,12 +102,11 @@ export default function Hover (_chart) {
       .append("circle")
       .attr("class", "dot")
       .merge(dots)
-      // .attr("cy", (d) => cache.yScale2(d[keys.VALUE]))
       .attr("cy", (d) => {
-        if (d[keys.GROUP] === chartCache.groupKeys[0]) {
-          return cache.yScale(d[keys.VALUE])
+        if (config.chartType === "stackedArea" || data.groupKeys[0].indexOf(d[keys.ID]) > -1) {
+          return scales.yScale(d[keys.VALUE])
         } else {
-          return cache.yScale2(d[keys.VALUE])
+          return scales.yScale2(d[keys.VALUE])
         }
       })
       .attr("r", config.dotRadius)
@@ -141,7 +123,7 @@ export default function Hover (_chart) {
       stackedDataPoint[id] = d[keys.VALUE]
     })
 
-    const dotsStack = cache.stack([stackedDataPoint])
+    const dotsStack = data.stack([stackedDataPoint])
     const dotsData = dotsStack.map((d) => {
       const dot = {value: d[0][1]}
       dot[keys.ID] = d.key
@@ -166,34 +148,45 @@ export default function Hover (_chart) {
   }
 
   function moveVerticalMarker (_verticalMarkerXPosition) {
-    cache.svg.attr("transform", `translate(${[_verticalMarkerXPosition + config.margin.left, config.margin.top]})`)
+    cache.svg.attr("transform", `translate(${[_verticalMarkerXPosition, 0]})`)
   }
 
-  function on (...args) {
-    return dispatcher.on(...args)
-  }
-
-  function setConfig (_config) {
-    config = Object.assign({}, config, _config)
+  function bindEvents (_dispatcher) {
+    _dispatcher.on("mouseOverPanel.hover", show)
+      .on("mouseMovePanel.hover", drawHover)
+      .on("mouseOutPanel.hover", hide)
     return this
   }
 
-  function getCache () {
-    return cache
+  function on (...args) {
+    dispatcher.on(...args)
+    return this
   }
 
-  function destroy () {
-    cache.svg.remove()
+  function setConfig (_config) {
+    config = override(config, _config)
+    return this
+  }
+
+  function setScales (_scales) {
+    scales = override(scales, _scales)
+    return this
+  }
+
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
   }
 
   return {
+    setConfig,
+    setScales,
+    setData,
+    bindEvents,
     highlightDataPoints,
     highlightStackedDataPoints,
     drawVerticalMarker,
     moveVerticalMarker,
-    getCache,
-    on,
-    setConfig,
-    destroy
+    on
   }
 }

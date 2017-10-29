@@ -1,7 +1,8 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
-import {cloneData} from "./helpers/common"
+import {invertScale, sortData, cloneData} from "./helpers/common"
+
 
 export default function DataManager () {
   /* eslint-disable no-magic-numbers */
@@ -16,6 +17,10 @@ export default function DataManager () {
     data: null,
     baseDate: null
   }
+
+  // accessors
+  const getKey = (d) => d[keys.DATA]
+  const getID = (d) => d[keys.ID]
 
   function generateRandomString (_length) {
     return Math.random().toString(36).replace(/[^a-z0-9]+/g, "").substr(0, _length || 5)
@@ -64,6 +69,91 @@ export default function DataManager () {
     return cache.data
   }
 
+  function cleanData (_data, _keyType) {
+    const dataBySeries = cloneData(_data[keys.SERIES])
+    const flatData = []
+
+    // Normalize dataBySeries
+    dataBySeries.forEach((serie) => {
+      serie[keys.VALUES] = sortData(serie[keys.VALUES], _keyType)
+      serie[keys.VALUES].forEach((d) => {
+        d[keys.DATA] = _keyType === "time" ? new Date(d[keys.DATA]) : d[keys.DATA]
+        d[keys.VALUE] = Number(d[keys.VALUE])
+      })
+    })
+
+    dataBySeries.forEach((serie) => {
+      serie[keys.VALUES].forEach((d) => {
+        const dataPoint = {}
+        dataPoint[keys.LABEL] = serie[keys.LABEL]
+        dataPoint[keys.GROUP] = serie[keys.GROUP]
+        dataPoint[keys.ID] = serie[keys.ID]
+        dataPoint[keys.DATA] = _keyType === "time" ? new Date(d[keys.DATA]) : d[keys.DATA]
+        dataPoint[keys.VALUE] = d[keys.VALUE]
+        flatData.push(dataPoint)
+      })
+    })
+
+    const flatDataSorted = sortData(flatData, config.keyType)
+
+    const dataByKey = d3.nest()
+      .key(getKey)
+      .entries(flatDataSorted)
+      .map((d) => {
+        const dataPoint = {}
+        dataPoint[keys.DATA] = _keyType === "time" ? new Date(d.key) : d.key
+        dataPoint[keys.SERIES] = d.values
+        return dataPoint
+      })
+
+    const groupKeys = {}
+    dataBySeries.forEach((d) => {
+      if (!groupKeys[d[keys.GROUP]]) {
+        groupKeys[d[keys.GROUP]] = []
+      }
+      groupKeys[d[keys.GROUP]].push(d[keys.ID])
+    })
+
+    const stackData = dataByKey
+        .map((d) => {
+          const points = {
+            key: d[keys.DATA]
+          }
+          d.series.forEach((dB) => {
+            points[dB[keys.ID]] = dB[keys.VALUE]
+          })
+
+          return points
+        })
+
+    const stack = d3.stack()
+        .keys(dataBySeries.map(getID))
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone)
+
+    return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys}
+  }
+
+  function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
+    const keyFromInvertedX = invertScale(_scales.xScale, _mouseX, _keyType)
+    const bisectLeft = d3.bisector(getKey).left
+    const dataEntryIndex = bisectLeft(_dataObject.dataByKey, keyFromInvertedX)
+    const dataEntryForXPosition = _dataObject.dataByKey[dataEntryIndex]
+    const dataEntryForXPositionPrev = _dataObject.dataByKey[Math.max(dataEntryIndex - 1, 0)]
+
+    let nearestDataPoint = null
+
+    if (keyFromInvertedX) {
+      if ((keyFromInvertedX - dataEntryForXPositionPrev.key)
+          < (dataEntryForXPosition.key - keyFromInvertedX)) {
+        nearestDataPoint = dataEntryForXPositionPrev
+      } else {
+        nearestDataPoint = dataEntryForXPosition
+      }
+    }
+    return nearestDataPoint
+  }
+
   function filterByKey (_extent) {
     const data = cloneData(cache.data)
 
@@ -100,6 +190,8 @@ export default function DataManager () {
   return {
     generateTestDataset,
     generateSeries,
+    cleanData,
+    getNearestDataPoint,
     filterByDate,
     filterByKey,
     setConfig

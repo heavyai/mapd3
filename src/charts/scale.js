@@ -17,7 +17,10 @@ export default function Scale () {
     keyType: null,
     chartType: null,
     colorSchema: null,
-    defaultColor: null
+    defaultColor: null,
+    xDomain: "auto",
+    yDomain: "auto",
+    y2Domain: "auto"
   }
 
   let data = {
@@ -33,18 +36,26 @@ export default function Scale () {
 
   function buildXScale (_allKeys) {
     const chartWidth = config.width - config.margin.left - config.margin.right
-    let domain = null
     let xScale = null
+    let domain = null
+
     if (config.keyType === "time") {
-      domain = d3.extent(_allKeys)
       xScale = d3.scaleTime()
     } else if (config.keyType === "number") {
-      domain = d3.extent(_allKeys)
       xScale = d3.scaleLinear()
     } else {
-      domain = _allKeys
       xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? d3.scaleBand() : d3.scalePoint()
       xScale.padding(0)
+    }
+
+    if (config.xDomain === "auto") {
+      if (config.keyType === "string") {
+        domain = _allKeys
+      } else {
+        domain = d3.extent(_allKeys)
+      }
+    } else {
+      domain = config.xDomain
     }
 
     xScale.domain(domain)
@@ -93,14 +104,20 @@ export default function Scale () {
   function getStackedScales () {
     const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
 
-    const valuesExtent = d3.extent(allStackHeights)
-
     const allKeys = data.flatDataSorted.map(getKey)
     const allUniqueKeys = getUnique(allKeys)
 
     const xScale = buildXScale(allUniqueKeys)
     const colorScale = buildColorScale()
-    const yScale = buildYScale([0, valuesExtent[1]])
+
+    let yDomain = null
+    if (config.yDomain === "auto") {
+      const valuesExtent = d3.extent(allStackHeights)
+      yDomain = [0, valuesExtent[1]]
+    } else {
+      yDomain = config.yDomain
+    }
+    const yScale = buildYScale(yDomain)
 
     return {
       xScale,
@@ -116,19 +133,30 @@ export default function Scale () {
 
     const groupAxis1 = groups[0]
     const allUniqueKeys = groupAxis1.allKeys
-    const valuesExtent = d3.extent(groupAxis1.allValues)
 
     const xScale = buildXScale(allUniqueKeys)
     const colorScale = buildColorScale()
-    const yScale = buildYScale(valuesExtent)
+
+    let yDomain = null
+    if (config.yDomain === "auto") {
+      yDomain = d3.extent(groupAxis1.allValues)
+    } else {
+      yDomain = config.yDomain
+    }
+    const yScale = buildYScale(yDomain)
 
     let yScale2 = null
     if (hasSecondAxis) {
-      const groupAxis2 = groups[1]
-      const valuesExtent2 = d3.extent(groupAxis2.allValues)
+      let y2Domain = null
+      if (config.y2Domain === "auto") {
+        const groupAxis2 = groups[1]
+        y2Domain = d3.extent(groupAxis2.allValues)
+      } else {
+        y2Domain = config.y2Domain
+      }
 
       yScale2 = yScale.copy()
-        .domain(valuesExtent2)
+        .domain(y2Domain)
     }
 
     return {

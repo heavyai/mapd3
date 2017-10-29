@@ -28,7 +28,6 @@
 
 * single point line/area chart
 * null data line gap
-* extract data from chart.js?
 */
 
 const keyType = "time" // time, number, string
@@ -71,6 +70,9 @@ const chart1 = mapd3.Chart(chartNode1)
     // scale
     colorSchema: palette,
     defaultColor: "skyblue",
+    xDomain: "auto",
+    yDomain: [0, 200],
+    y2Domain: "auto",
 
     // axis
     tickPadding: 5,
@@ -107,9 +109,6 @@ const chart1 = mapd3.Chart(chartNode1)
     binningIsEnabled: true,
 
     // domain
-    xDomain: ["a", "b"],
-    yDomain: [0, 200],
-    y2Domain: [0, 300],
     domainEditorIsEnabled: true,
 
     // brush range

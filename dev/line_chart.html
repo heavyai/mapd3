@@ -11,8 +11,11 @@
   user-select: none;
   font-family: sans-serif;
 }
-.hit-zone {
-  /*background: yellow;*/
+.y2-line {
+  stroke-dasharray: 8 4;
+}
+.mark.area {
+  fill-opacity: 0.8;
 }
 </style>
 </head><body>
@@ -30,15 +33,15 @@
 * null data line gap
 */
 
-const keyType = "time" // time, number, string
-const chartType = "line" // line, stackedArea
+const keyType = "string" // time, number, string
+const chartType = "stackedArea" // line, area, stackedArea, bar, stackedBar
 
 const dataManager = mapd3.DataManager()
     .setConfig({
       keyType,
       range: [0, 100],
       pointCount: 20,
-      groupCount: 2,
+      groupCount: 1,
       lineCount: 4
     })
 const data = dataManager.generateTestDataset()
@@ -71,7 +74,7 @@ const chart1 = mapd3.Chart(chartNode1)
     colorSchema: palette,
     defaultColor: "skyblue",
     xDomain: "auto",
-    yDomain: [0, 200],
+    yDomain: "auto",
     y2Domain: "auto",
 
     // axis

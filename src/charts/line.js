@@ -65,7 +65,8 @@ export default function Line (_container) {
     lines.enter()
       .append("path")
       .merge(lines)
-      .attr("class", () => ["mark", "line"].join(" "))
+      .attr("class", "mark line")
+      .classed("y2-line", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
           return seriesLine(d[keys.VALUES])
@@ -83,12 +84,12 @@ export default function Line (_container) {
     const seriesArea = d3.area()
         .x((d) => scales.xScale(d[keys.DATA]))
         .y0((d) => scales.yScale(d[keys.VALUE]))
-        .y1(() => config.chartHeight)
+        .y1(() => cache.chartHeight)
 
     const seriesArea2 = d3.area()
         .x((d) => scales.xScale(d[keys.DATA]))
         .y0((d) => scales.yScale2(d[keys.VALUE]))
-        .y1(() => config.chartHeight)
+        .y1(() => cache.chartHeight)
         .curve(d3.curveCatmullRom)
 
     const areas = cache.svg.selectAll(".mark")
@@ -97,7 +98,8 @@ export default function Line (_container) {
     areas.enter()
       .append("path")
       .merge(areas)
-      .attr("class", () => ["mark", "area"].join(" "))
+      .attr("class", "mark area")
+      .classed("y2-area", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
           return seriesArea(d[keys.VALUES])
@@ -123,7 +125,7 @@ export default function Line (_container) {
     areas.enter()
       .append("path")
       .merge(areas)
-      .attr("class", () => ["mark", "stacked-area"].join(" "))
+      .attr("class", "mark stacked-area")
       .attr("d", seriesLine)
       .style("stroke", "none")
       .style("fill", (d) => scales.colorScale(d.key))

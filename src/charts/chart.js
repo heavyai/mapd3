@@ -6,6 +6,7 @@ import {cloneData, override, throttle, rebind} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
+import Bar from "./bar"
 import Axis from "./axis"
 import Tooltip from "./tooltip"
 import Legend from "./legend"
@@ -182,6 +183,7 @@ export default function Chart (_container) {
         scale: Scale(),
         axis: Axis(cache.chart),
         line: Line(cache.panel),
+        bar: Bar(cache.panel),
         tooltip: Tooltip(cache.container),
         legend: Legend(cache.container),
         brush: Brush(cache.panel),
@@ -235,6 +237,12 @@ export default function Chart (_container) {
       .drawGridLines()
 
     components.line
+      .setConfig(config)
+      .setScales(scales)
+      .setData(dataObject)
+      .drawMarks()
+
+    components.bar
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)

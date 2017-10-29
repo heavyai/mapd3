@@ -22,6 +22,8 @@ export default function DataManager () {
   const getKey = (d) => d[keys.DATA]
   const getID = (d) => d[keys.ID]
 
+  const DAY_IN_MS = 1000 * 60 * 60 * 24
+
   function generateRandomString (_length) {
     return Math.random().toString(36).replace(/[^a-z0-9]+/g, "").substr(0, _length || 5)
   }
@@ -47,7 +49,8 @@ export default function DataManager () {
     let dataKeys = null
     if (config.keyType === "time") {
       cache.baseDate = new Date()
-      dataKeys = d3.timeDay.range(d3.timeMonth.floor(cache.baseDate), d3.timeMonth.ceil(cache.baseDate))
+      const previousDate = new Date(cache.baseDate.getTime() - DAY_IN_MS * config.pointCount)
+      dataKeys = d3.timeDay.range(previousDate, cache.baseDate)
     } else if (config.keyType === "string") {
       dataKeys = d3.range(0, config.pointCount).map(() => generateRandomString())
       dataKeys.sort((a, b) => a.localeCompare(b, "en", {numeric: false}))
@@ -94,7 +97,7 @@ export default function DataManager () {
       })
     })
 
-    const flatDataSorted = sortData(flatData, config.keyType)
+    const flatDataSorted = sortData(flatData, _keyType)
 
     const dataByKey = d3.nest()
       .key(getKey)
@@ -142,7 +145,6 @@ export default function DataManager () {
     const dataEntryForXPositionPrev = _dataObject.dataByKey[Math.max(dataEntryIndex - 1, 0)]
 
     let nearestDataPoint = null
-
     if (keyFromInvertedX) {
       if ((keyFromInvertedX - dataEntryForXPositionPrev.key)
           < (dataEntryForXPosition.key - keyFromInvertedX)) {

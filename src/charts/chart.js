@@ -86,6 +86,9 @@ export default function Chart (_container) {
 
     // domain
     domainEditorIsEnabled: true,
+    xDomainEditorFormat: "%b %d, %Y",
+    yDomainEditorFormat: ".2f",
+    y2DomainEditorFormat: ".2f",
 
     // brush range
     brushRangeMin: null,
@@ -293,6 +296,7 @@ export default function Chart (_container) {
 
     components.domainEditor
       .setConfig(config)
+      .setScales(scales)
       .setXDomain(config.xDomain)
       .setYDomain(config.yDomain)
       .setY2Domain(config.y2Domain)

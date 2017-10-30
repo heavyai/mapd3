@@ -13,7 +13,11 @@ export default function DomainEditor (_container) {
       left: 70
     },
     width: 800,
-    height: 500
+    height: 500,
+    keyType: null,
+    xDomainEditorFormat: "%b %d, %Y",
+    yDomainEditorFormat: ".2f",
+    y2DomainEditorFormat: ".2f"
   }
 
   const cache = {
@@ -33,10 +37,14 @@ export default function DomainEditor (_container) {
     xLockIcon: null,
     chartWidth: null,
     chartHeight: null,
-    xDomain: null,
-    yDomain: null,
-    y2Domain: null,
     isEnabled: true
+  }
+
+  let scales = {
+    xScale: null,
+    yScale: null,
+    yScale2: null,
+    hasSecondAxis: null
   }
 
   // events
@@ -45,6 +53,21 @@ export default function DomainEditor (_container) {
   function buildSVG () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
+    const xDomain = cache.xDomain === "auto" ? scales.xScale.domain() : cache.xDomain
+    const yDomain = cache.yDomain === "auto" ? scales.yScale.domain() : cache.yDomain
+    const y2Domain = (cache.y2Domain === "auto" && scales.y2Scale) ? scales.y2Scale.domain() : cache.y2Domain
+
+    let xFormatter = (d) => d
+    if (config.xDomainEditorFormat) {
+      if (config.keyType === "time") {
+        xFormatter = d3.timeFormat(config.xDomainEditorFormat)
+      }
+    } else if (config.keyType === "number") {
+      xFormatter = d3.format(config.xDomainEditorFormat)
+    }
+
+    const yFormatter = d3.format(config.yDomainEditorFormat)
+    const y2Formatter = d3.format(config.y2DomainEditorFormat)
 
     if (!cache.root) {
       cache.root = cache.container
@@ -72,8 +95,11 @@ export default function DomainEditor (_container) {
           .attr("class", "hit-zone y2")
           .style("pointer-events", "all")
           .style("position", "absolute")
+      if (scales.hasSecondAxis) {
+        cache.y2HitZone
           .on("mouseover.dispatch", showY2Editor)
           .on("mouseout.dispatch", hideY2Editor)
+      }
 
       // y input group
       cache.yMaxInput = cache.yHitZone.append("div")
@@ -191,14 +217,12 @@ export default function DomainEditor (_container) {
     cache.yMaxInput
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
-      .text(Array.isArray(cache.yDomain)
-          && !isNaN(cache.yDomain[1]) ? cache.yDomain[1] : "")
+      .text(yFormatter(yDomain[1]))
 
     cache.yMinInput
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
-      .text(Array.isArray(cache.yDomain)
-            && !isNaN(cache.yDomain[0]) ? cache.yDomain[0] : "")
+      .text(yFormatter(yDomain[0]))
 
     cache.yLockIcon
       .style("width", `${LOCK_SIZE}px`)
@@ -210,15 +234,13 @@ export default function DomainEditor (_container) {
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
       .style("left", `${PADDING}px`)
-      .text(Array.isArray(cache.y2Domain)
-          && !isNaN(cache.y2Domain[1]) ? cache.y2Domain[1] : "")
+      .text(yFormatter(y2Domain[1]))
 
     cache.y2MinInput
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
       .style("left", `${PADDING}px`)
-      .text(Array.isArray(cache.y2Domain)
-          && !isNaN(cache.y2Domain[0]) ? cache.y2Domain[0] : "")
+      .text(yFormatter(y2Domain[0]))
 
     cache.y2LockIcon
       .style("width", `${LOCK_SIZE}px`)
@@ -229,15 +251,13 @@ export default function DomainEditor (_container) {
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${PADDING}px`)
       .style("left", `${HOVER_ZONE_SIZE}px`)
-      .text(Array.isArray(cache.xDomain)
-          && typeof (cache.xDomain[0]) !== "undefined" ? cache.xDomain[0] : "")
+      .text(xFormatter(xDomain[0]))
 
     cache.xMaxInput
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${PADDING}px`)
       .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth - INPUT_WIDTH}px`)
-      .text(Array.isArray(cache.xDomain)
-          && typeof (cache.xDomain[1]) !== "undefined" ? cache.xDomain[1] : "")
+      .text(xFormatter(xDomain[1]))
 
     cache.xLockIcon
       .style("width", `${LOCK_SIZE}px`)
@@ -319,6 +339,11 @@ export default function DomainEditor (_container) {
     return this
   }
 
+  function setScales (_scales) {
+    scales = override(scales, _scales)
+    return this
+  }
+
   function setConfig (_config) {
     config = override(config, _config)
     return this
@@ -332,6 +357,7 @@ export default function DomainEditor (_container) {
 
   return {
     on,
+    setScales,
     setConfig,
     setXDomain,
     setYDomain,

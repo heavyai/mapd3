@@ -81,6 +81,11 @@ export default function Axis (_container) {
       }
     } else if (config.keyType === "string") {
       cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.xTickSkip)))
+    } else if (config.keyType === "number") {
+      if (config.xAxisFormat && config.xAxisFormat !== "auto") {
+        const formatter = d3.format(config.xAxisFormat)
+        cache.xAxis.tickFormat(formatter)
+      }
     }
 
     cache.yAxis = d3.axisLeft(scales.yScale)

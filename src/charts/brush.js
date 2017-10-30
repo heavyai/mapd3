@@ -183,7 +183,7 @@ export default function Brush (_container) {
     return this
   }
 
-  function destroy (_data) {
+  function destroy () {
     cache.svg.remove()
     return this
   }

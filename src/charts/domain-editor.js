@@ -234,13 +234,13 @@ export default function DomainEditor (_container) {
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
       .style("left", `${PADDING}px`)
-      .text(yFormatter(y2Domain[1]))
+      .text(y2Formatter(y2Domain[1]))
 
     cache.y2MinInput
       .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
       .style("left", `${PADDING}px`)
-      .text(yFormatter(y2Domain[0]))
+      .text(y2Formatter(y2Domain[0]))
 
     cache.y2LockIcon
       .style("width", `${LOCK_SIZE}px`)

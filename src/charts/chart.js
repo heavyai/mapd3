@@ -93,6 +93,7 @@ export default function Chart (_container) {
     // brush range
     brushRangeMin: null,
     brushRangeMax: null,
+    rangeFormat: "%b %d, %Y",
     brushRangeIsEnabled: true,
 
     // brush
@@ -278,8 +279,9 @@ export default function Chart (_container) {
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
-      .drawBrush()
+      .setBrushExtent([config.brushRangeMin, config.brushRangeMax])
       .setVisibility(config.brushIsEnabled)
+      .drawBrush()
 
     components.hover
       .setConfig(config)
@@ -305,6 +307,7 @@ export default function Chart (_container) {
 
     components.brushRangeEditor
       .setConfig(config)
+      .setScales(scales)
       .setRangeMin(config.brushRangeMin)
       .setRangeMax(config.brushRangeMax)
       .drawRangeEditor()
@@ -373,6 +376,13 @@ export default function Chart (_container) {
       })
   }
 
+  function getEvents () {
+    if (!cache.svg) {
+      render()
+    }
+    return eventCollector
+  }
+
   function on (...args) {
     dispatcher.on(...args)
     return this
@@ -393,6 +403,6 @@ export default function Chart (_container) {
     setData,
     on,
     destroy,
-    events: eventCollector
+    getEvents
   }
 }

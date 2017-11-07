@@ -14,6 +14,7 @@ export default function BrushRangeEditor (_container) {
     },
     width: 800,
     height: 500,
+    keyType: "time",
     rangeFormat: "%b %d, %Y"
   }
 
@@ -27,6 +28,10 @@ export default function BrushRangeEditor (_container) {
     chartWidth: null,
     chartHeight: null,
     isEnabled: true
+  }
+
+  let scales = {
+    xScale: null
   }
 
   // events
@@ -68,9 +73,21 @@ export default function BrushRangeEditor (_container) {
         .style("float", "right")
     }
 
-    const format = d3.utcFormat(config.rangeFormat)
-    cache.inputMin.text(format(new Date(cache.rangeMin)) || "")
-    cache.inputMax.text(format(new Date(cache.rangeMax)) || "")
+    const domain = scales.xScale.domain()
+    let rangeMin = cache.rangeMin === null ? domain[0] : cache.rangeMin
+    let rangeMax = cache.rangeMax === null ? domain[1] : cache.rangeMax
+    if (config.keyType === "time") {
+      const format = d3.utcFormat(config.rangeFormat)
+      rangeMin = format(new Date(rangeMin))
+      rangeMax = format(new Date(rangeMax))
+    } else {
+      const format = d3.format(config.rangeFormat)
+      rangeMin = format(rangeMin)
+      rangeMax = format(rangeMax)
+    }
+
+    cache.inputMin.text(rangeMin)
+    cache.inputMax.text(rangeMax)
   }
 
   function drawRangeEditor () {
@@ -87,14 +104,14 @@ export default function BrushRangeEditor (_container) {
     return this
   }
 
-  function setVisibility (_shouldBeVisible) {
-    cache.isEnabled = _shouldBeVisible
-    drawRangeEditor()
+  function setRangeMax (_rangeMax) {
+    cache.rangeMax = _rangeMax
     return this
   }
 
-  function setRangeMax (_rangeMax) {
-    cache.rangeMax = _rangeMax
+  function setVisibility (_shouldBeVisible) {
+    cache.isEnabled = _shouldBeVisible
+    drawRangeEditor()
     return this
   }
 
@@ -105,6 +122,11 @@ export default function BrushRangeEditor (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
+    return this
+  }
+
+  function setScales (_scales) {
+    scales = override(scales, _scales)
     return this
   }
 
@@ -120,6 +142,7 @@ export default function BrushRangeEditor (_container) {
     drawRangeEditor,
     setRangeMin,
     setRangeMax,
+    setScales,
     setVisibility
   }
 }

@@ -36,6 +36,8 @@ export default function Brush (_container) {
     dataBySeries: null
   }
 
+  let brushExtent = null
+
   // events
   const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd")
 
@@ -47,11 +49,6 @@ export default function Brush (_container) {
       cache.svg = cache.container.append("g")
           .classed("brush-group", true)
     }
-  }
-
-  function extractBrushDimension (_data) {
-    const merged = d3.merge(_data.map((d) => d[keys.VALUES]))
-    return sortData(merged, config.keyType)
   }
 
   function buildBrush () {
@@ -66,6 +63,8 @@ export default function Brush (_container) {
 
     cache.chartBrush.selectAll(".brush-rect")
       .attr("height", cache.chartHeight)
+
+    moveBrush()
   }
 
   function getDataExtent () {
@@ -74,26 +73,51 @@ export default function Brush (_container) {
     return dataExtent
   }
 
+  function validateExtent (_brushExtent) {
+    return (Array.isArray(_brushExtent)
+      && _brushExtent[0] !== null
+      && typeof _brushExtent[0] !== "undefined"
+      && _brushExtent[1] !== null
+      && typeof _brushExtent[1] !== "undefined")
+  }
+
+  function clampBrush (_dataExtent, _brushExtent) {
+    return [Math.max(_dataExtent[0], _brushExtent[0]), Math.min(_dataExtent[1], _brushExtent[1])]
+  }
+
+  function moveBrush () {
+    if (brushExtent === null) {
+      return this
+    }
+    const dataExtent = scales.xScale.domain()
+    const extent = clampBrush(dataExtent, brushExtent)
+    if (extent) {
+      cache.svg.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
+    }
+    return this
+  }
+
   function handleBrushStart () {
+    if (!d3.event.sourceEvent || !d3.event.selection) {
+      return
+    }
     dispatcher.call("brushStart", this, getDataExtent(), config)
   }
 
   function handleBrushMove () {
+    if (!d3.event.sourceEvent || !d3.event.selection) {
+      return
+    }
     dispatcher.call("brushMove", this, getDataExtent(), config)
   }
 
   function handleBrushEnd () {
-    // Only transition after input, ignore empty selections.
+    // Skip programatic setting and empty selection
     if (!d3.event.sourceEvent || !d3.event.selection) {
       return
     }
 
     const dataExtent = getDataExtent()
-
-    d3.select(this)
-      .transition()
-      .call(d3.event.target.move, dataExtent.map(scales.xScale))
-
     dispatcher.call("brushEnd", this, dataExtent, config)
   }
 
@@ -105,57 +129,10 @@ export default function Brush (_container) {
     buildSVG()
 
     if (data.dataBySeries) {
-      cache.data = extractBrushDimension(cloneData(data.dataBySeries))
       buildBrush()
     }
-
     return this
   }
-
-  // function setBrushByPercentages (_a, _b) {
-  //   const x0 = _a * cache.chartWidth
-  //   const x1 = _b * cache.chartWidth
-
-  //   brush.move(chartBrush, [x0, x1])
-  // }
-
-  // function setBrushByDates (_dateA, _dateB) {
-  //   const x0 = cache.xScale(new Date(_dateA))
-  //   const x1 = cache.xScale(new Date(_dateB))
-
-  //   cache.brush.move(cache.chartBrush, [x0, x1])
-  // }
-
-  // function updateHandlers (_dateExtent) {
-  //   if (_dateExtent === null) {
-  //     cache.handle.attr("display", "none")
-  //   } else {
-  //     cache.handle
-  //       .attr("display", null)
-  //       .attr("transform", (d, i) => `translate(${_dateExtent[i]},${cache.chartHeight / 2})`)
-  //   }
-  // }
-
-  // API
-
-  /**
-   * Gets or Sets the dateRange for the selected part of the brush
-   * @param  {String[]} _x Desired dateRange for the graph
-   * @return { dateRange | module} Current dateRange or Chart module to chain calls
-   * @public
-   */
-  // function dateRange (_x) {
-  //   if (!arguments.length) {
-  //     return dateRange
-  //   }
-  //   dateRange = _x
-
-  //   if (Array.isArray(dateRange)) {
-  //     setBrushByDates(...dateRange)
-  //   }
-
-  //   return this
-  // }
 
   function on (...args) {
     dispatcher.on(...args)
@@ -164,12 +141,20 @@ export default function Brush (_container) {
 
   function setVisibility (_isEnabled) {
     cache.isEnabled = _isEnabled
-    drawBrush()
     return this
   }
 
   function setConfig (_config) {
     config = override(config, _config)
+    return this
+  }
+
+  function setBrushExtent (_brushExtent) {
+    if (validateExtent(_brushExtent)) {
+      brushExtent = _brushExtent
+    } else {
+      brushExtent = null
+    }
     return this
   }
 
@@ -193,6 +178,7 @@ export default function Brush (_container) {
     setConfig,
     setData,
     setScales,
+    setBrushExtent,
     drawBrush,
     setVisibility,
     destroy

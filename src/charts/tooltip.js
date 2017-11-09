@@ -3,7 +3,7 @@ import * as d3 from "./helpers/d3-service"
 import {keys} from "./helpers/constants"
 import {cloneData, override} from "./helpers/common"
 
-export default function Tooltip (_container) {
+export default function Tooltip (_container, isLegend = false) {
 
   let config = {
     margin: {
@@ -57,7 +57,7 @@ export default function Tooltip (_container) {
 
     if (!cache.root) {
       cache.root = cache.container.append("div")
-          .attr("class", "tooltip-group")
+          .attr("class", isLegend ? "legend-group" : "tooltip-group")
           .style("position", "absolute")
           .style("pointer-events", "none")
 
@@ -116,8 +116,8 @@ export default function Tooltip (_container) {
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
       .data((d) => {
         const legendData = [
-          {key: "color", value: scales.colorScale(d[keys.ID])},
-          {key: "label", value: d[keys.LABEL]}
+          {key: "tooltip-color", value: scales.colorScale(d[keys.ID])},
+          {key: "tooltip-label", value: d[keys.LABEL]}
         ]
         if (typeof d[keys.VALUE] !== "undefined") {
           legendData.push({key: "value", value: d[keys.VALUE]})
@@ -129,7 +129,7 @@ export default function Tooltip (_container) {
       .attr("class", (d) => ["section", d.key].join(" "))
       .each(function each (d) {
         const selection = d3.select(this)
-        if (d.key === "color") {
+        if (d.key === "tooltip-color") {
           selection.style("background", d.value)
         } else if (d.key === "value") {
           selection.html(formatter(d.value))

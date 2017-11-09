@@ -145,7 +145,7 @@ export default function DataManager () {
     const dataEntryForXPositionPrev = _dataObject.dataByKey[Math.max(dataEntryIndex - 1, 0)]
 
     let nearestDataPoint = null
-    if (keyFromInvertedX) {
+    if (keyFromInvertedX && dataEntryForXPosition && dataEntryForXPositionPrev) {
       if ((keyFromInvertedX - dataEntryForXPositionPrev.key)
           < (dataEntryForXPosition.key - keyFromInvertedX)) {
         nearestDataPoint = dataEntryForXPositionPrev

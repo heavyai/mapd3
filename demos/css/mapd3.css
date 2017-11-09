@@ -36,34 +36,32 @@
 .y-title, .x-title {
   font-size: 0.8em; }
 
-.tooltip-group {
+.tooltip-group, .legend-group {
   border: 1px solid #ddd;
   border-radius: 4px;
   background: white;
   opacity: 0.9; }
+  .tooltip-group .tooltip-title, .legend-group .tooltip-title {
+    border-bottom: 1px solid #ddd;
+    padding: 0 5px;
+    font-size: 11px; }
+  .tooltip-group .tooltip-body, .legend-group .tooltip-body {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 0 5px; }
+  .tooltip-group .tooltip-item, .legend-group .tooltip-item {
+    display: table-row; }
+  .tooltip-group .section, .legend-group .section {
+    display: table-cell;
+    margin-right: 16px; }
+  .tooltip-group .section.tooltip-color, .legend-group .section.tooltip-color {
+    width: 8px;
+    height: 8px; }
+  .tooltip-group .section.tooltip-label, .tooltip-group .section.value, .legend-group .section.tooltip-label, .legend-group .section.value {
+    padding: 0 5px; }
 
-.tooltip-title {
-  border-bottom: 1px solid #ddd;
-  padding: 0 5px; }
-
-.tooltip-body {
-  display: table;
-  border-collapse: separate;
-  border-spacing: 0 5px; }
-
-.tooltip-item {
-  display: table-row; }
-
-.section {
-  display: table-cell;
-  margin-right: 16px; }
-
-.section.color {
-  width: 8px;
-  height: 8px; }
-
-.section.label, .section.value {
-  padding: 0 5px; }
+.legend-group {
+  font-size: 11px; }
 
 .mapd3-legend .legend-entry.is-faded .legend-entry-name,
 .mapd3-legend .legend-entry.is-faded .legend-entry-value,

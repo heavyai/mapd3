@@ -25,14 +25,6 @@
 <script src="../dist/mapd3.js"></script>
 <script>
 
-/*
-* set domain from data and from API, auto
-* set brush from API
-
-* single point line/area chart
-* null data line gap
-*/
-
 const keyType = "time" // time, number, string
 const chartType = "stackedArea" // line, area, stackedArea, bar, stackedBar
 
@@ -133,18 +125,18 @@ const chart1 = mapd3.Chart(chartNode1)
   .setData(data)
 
 chart1.events
-  // .onBrush("brushStart", (d) => console.log(d))
-  // .onBrush("brushMove", (d) => console.log(d))
-//   .onBrush("brushEnd", (d) => console.log(d))
-//   .onBinning("change", (d) => console.log(d))
-//   .onDomainEditor("domainChange", (d) => console.log(d))
-//   .onDomainEditor("domainLockToggle", (d) => console.log(d))
-//   .onBrushRangeEditor("rangeChange", (d) => console.log(d))
-//   .onLabel("axisLabelChange", (d) => console.log(d))
-//   .onHover("hover", (d) => console.log(d))
-//   .onPanel("mouseOverPanel", (d) => console.log(d))
-//   .onPanel("mouseOutPanel", (d) => console.log(d))
-//   .onPanel("mouseMovePanel", (d) => console.log(d))
+  .onBrush("brushStart", (d) => console.log(d))
+  .onBrush("brushMove", (d) => console.log(d))
+  .onBrush("brushEnd", (d) => console.log(d))
+  .onBinning("change", (d) => console.log(d))
+  .onDomainEditor("domainChange", (d) => console.log(d))
+  .onDomainEditor("domainLockToggle", (d) => console.log(d))
+  .onBrushRangeEditor("rangeChange", (d) => console.log(d))
+  .onLabel("axisLabelChange", (d) => console.log(d))
+  .onHover("hover", (d) => console.log(d))
+  .onPanel("mouseOverPanel", (d) => console.log(d))
+  .onPanel("mouseOutPanel", (d) => console.log(d))
+  .onPanel("mouseMovePanel", (d) => console.log(d))
 
 // const newData = dataManager.generateTestDataset()
 // chart1.setData(data)

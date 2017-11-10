@@ -10,24 +10,9 @@ module.exports = function (grunt) {
                 dest: './dist',
                 ext: '.css'
             }
-        ],
-        devFiles = [
-            {
-                expand: true,
-                cwd: 'src/styles/',
-                src: ['mapd3.scss'],
-                dest: './demos/css',
-                ext: '.css'
-            }
         ];
 
     grunt.config.set('sass', {
-        dev: {
-            options: {
-                style: 'expanded'
-            },
-            files: devFiles
-        },
         dist: {
             options: {
                 style: 'expanded'

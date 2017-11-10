@@ -39,7 +39,7 @@ export default function DataManager () {
         value = value + randomWalkStepSize
       }
       return {
-        value,
+        value: value.toFixed(2),
         key: config.keyType === "time" ? d.toISOString() : d
       }
     })

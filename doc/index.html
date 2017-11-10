@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>mapd3 0.3.0 | Documentation</title>
+  <title>mapd3 0.7.0 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>mapd3</h3>
-          <div class='mb1'><code>0.3.0</code></div>
+          <div class='mb1'><code>0.7.0</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -22,6 +22,40 @@
             type='text' />
           <div id='toc'>
             <ul class='list-reset h5 py1-ul'>
+              
+                
+                <li><a
+                  href='#datamanager'
+                  class=" toggle-sibling">
+                  DataManager
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#DataManager#setConfig'
+                        class='regular pre-open'>
+                        #setConfig
+                      </a></li>
+                      
+                      <li><a
+                        href='#DataManager#generateTestDataset'
+                        class='regular pre-open'>
+                        #generateTestDataset
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                  
+                </div>
+                
+                </li>
               
                 
                 <li><a
@@ -44,18 +78,6 @@
                       </a></li>
                       
                       <li><a
-                        href='#Chart#setXTitle'
-                        class='regular pre-open'>
-                        #setXTitle
-                      </a></li>
-                      
-                      <li><a
-                        href='#Chart#setYTitle'
-                        class='regular pre-open'>
-                        #setYTitle
-                      </a></li>
-                      
-                      <li><a
                         href='#Chart#setData'
                         class='regular pre-open'>
                         #setData
@@ -75,84 +97,6 @@
                 
                 </li>
               
-                
-                <li><a
-                  href='#tooltip'
-                  class="">
-                  Tooltip
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#legend'
-                  class=" toggle-sibling">
-                  Legend
-                  <span class='icon'>▸</span>
-                </a>
-                
-                <div class='toggle-target display-none'>
-                  
-                  
-                    <ul class='list-reset py1-ul pl1'>
-                      <li class='h5'><span>Instance members</span></li>
-                      
-                      <li><a
-                        href='#Legend#setContent'
-                        class='regular pre-open'>
-                        #setContent
-                      </a></li>
-                      
-                      <li><a
-                        href='#Legend#setTitle'
-                        class='regular pre-open'>
-                        #setTitle
-                      </a></li>
-                      
-                      <li><a
-                        href='#Legend#setSize'
-                        class='regular pre-open'>
-                        #setSize
-                      </a></li>
-                      
-                      <li><a
-                        href='#Legend#setPosition'
-                        class='regular pre-open'>
-                        #setPosition
-                      </a></li>
-                      
-                      <li><a
-                        href='#Legend#show'
-                        class='regular pre-open'>
-                        #show
-                      </a></li>
-                      
-                      <li><a
-                        href='#Legend#hide'
-                        class='regular pre-open'>
-                        #hide
-                      </a></li>
-                      
-                    </ul>
-                  
-                  
-                  
-                </div>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#hover'
-                  class="">
-                  Hover
-                  
-                </a>
-                
-                </li>
-              
             </ul>
           </div>
           <div class='mt1 h6 quiet'>
@@ -168,6 +112,329 @@
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='datamanager'>
+      DataManager
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A data generator for MapD3 charts</p>
+
+
+  <div class='pre p1 fill-light mt0'>DataManager</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The dataManager instance.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>mapd3.DataManager()
+  .setConfig({
+    <span class="hljs-attr">keyType</span>: <span class="hljs-string">"time"</span>,
+    <span class="hljs-attr">range</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">100</span>],
+    <span class="hljs-attr">pointCount</span>: <span class="hljs-number">200</span>,
+    <span class="hljs-attr">groupCount</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">lineCount</span>: <span class="hljs-number">4</span>
+  })
+  .generateTestDataset()</pre>
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='DataManager#setConfig'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>setConfig</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Configure the data manager</p>
+
+
+  <div class='pre p1 fill-light mt0'>setConfig</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+	    A config object.
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;number&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>The x axis type: number, string, time
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.range</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>
+                  
+                    (default <code>[0,100]</code>)
+                  </td>
+                  <td class='break-word'><span>The value range
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.pointCount</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>200</code>)
+                  </td>
+                  <td class='break-word'><span>The number of points
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.groupCount</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>2</code>)
+                  </td>
+                  <td class='break-word'><span>The number of groups, 2 for adding a y2 axis
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.lineCount</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>4</code>)
+                  </td>
+                  <td class='break-word'><span>The number of lines
+</span></td>
+                </tr>
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The dataManager instance.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>mapd3.DataManager()
+  .setConfig({
+    keyType,
+    <span class="hljs-attr">range</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">100</span>],
+    <span class="hljs-attr">pointCount</span>: <span class="hljs-number">200</span>,
+    <span class="hljs-attr">groupCount</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">lineCount</span>: <span class="hljs-number">4</span>
+  })</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='DataManager#generateTestDataset'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>generateTestDataset</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Generate some test data</p>
+
+
+  <div class='pre p1 fill-light mt0'>generateTestDataset</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        A data object
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>mapd3.DataManager()
+  .setConfig({
+    <span class="hljs-attr">keyType</span>: <span class="hljs-string">"time"</span>,
+    <span class="hljs-attr">range</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">100</span>],
+    <span class="hljs-attr">pointCount</span>: <span class="hljs-number">200</span>,
+    <span class="hljs-attr">groupCount</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">lineCount</span>: <span class="hljs-number">4</span>
+  })
+  .generateTestDataset()
+
+{
+  <span class="hljs-string">"series"</span>: [{
+      <span class="hljs-string">"label"</span>: <span class="hljs-string">"Label 0"</span>,
+      <span class="hljs-string">"id"</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-string">"group"</span>: <span class="hljs-number">0</span>,
+      <span class="hljs-string">"values"</span>: [{
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">16.85</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-07T05:00:00.000Z"</span>
+      }, {
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">17.94</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-08T05:00:00.000Z"</span>
+      }, {
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">19.03</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-09T05:00:00.000Z"</span>
+      }, {
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">18.97</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-10T05:00:00.000Z"</span>
+      }]
+  }, {
+      <span class="hljs-string">"label"</span>: <span class="hljs-string">"Label 1"</span>,
+      <span class="hljs-string">"id"</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-string">"group"</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-string">"values"</span>: [{
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">13.31</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-07T05:00:00.000Z"</span>
+      }, {
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">13.15</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-08T05:00:00.000Z"</span>
+      }, {
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">15.76</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-09T05:00:00.000Z"</span>
+      }, {
+          <span class="hljs-string">"value"</span>: <span class="hljs-number">17.74</span>,
+          <span class="hljs-string">"key"</span>: <span class="hljs-string">"2017-11-10T05:00:00.000Z"</span>
+      }]
+  }]
+}</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='chart'>
       Chart
     </h3>
@@ -176,7 +443,7 @@
   </div>
   
 
-  <p>A base chart for line/area/stacked charts.</p>
+  <p>A base chart for line/area/stacked area/bar/stacked bar charts.</p>
 
 
   <div class='pre p1 fill-light mt0'>Chart</div>
@@ -224,7 +491,14 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))</pre>
+      <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
+   .setConfig({
+     <span class="hljs-attr">width</span>: <span class="hljs-number">800</span>,
+     <span class="hljs-attr">height</span>: <span class="hljs-number">400</span>,
+     <span class="hljs-attr">keyType</span>: <span class="hljs-string">"time"</span>,
+     <span class="hljs-attr">chartType</span>: <span class="hljs-string">"line"</span>
+   })
+   .setData(data)</pre>
     
   
 
@@ -285,21 +559,9 @@
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-                  </td>
-                  <td class='break-word'><span>Data type of x values: time, number, string
-</span></td>
-                </tr>
-              
-                <tr>
-                  <td class='break-word'><span class='code bold'>config.chartType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-                  </td>
-                  <td class='break-word'><span>The type of marks: line, area, stackedArea
-</span></td>
-                </tr>
-              
-                <tr>
                   <td class='break-word'><span class='code bold'>config.width</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>800</code>)
                   </td>
                   <td class='break-word'><span>Outer chart width, including margins
 </span></td>
@@ -307,62 +569,400 @@
               
                 <tr>
                   <td class='break-word'><span class='code bold'>config.height</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>500</code>)
                   </td>
                   <td class='break-word'><span>Outer chart height, including margins
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.margin</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>
+                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;time&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Margin object {top, right, bottom, left}
+                  <td class='break-word'><span>Data type of x values: time, number, string
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.grid</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.chartType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;line&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Grid visibility: horizontal, vertical, full
+                  <td class='break-word'><span>The type of marks: line, area, stackedArea, bar, stacked bar
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.xAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.isAnimated</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>false</code>)
                   </td>
-                  <td class='break-word'><span>d3-format string for x axis
+                  <td class='break-word'><span>If using animated opening
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.animationDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>1500</code>)
                   </td>
-                  <td class='break-word'><span>d3-format string for y axis
+                  <td class='break-word'><span>Animated opening duration
+<scale>
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yTicks</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-                  </td>
-                  <td class='break-word'><span>Suggestion for the number of y ticks
-</span></td>
-                </tr>
-              
-                <tr>
-                  <td class='break-word'><span class='code bold'>config.colorSchema</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>
+                  <td class='break-word'><span class='code bold'>config.colorSchema</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?</code>
                   </td>
                   <td class='break-word'><span>List of {key, value} colors to use on marks
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.tickSkip</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.defaultColor</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;skyblue&quot;</code>)
                   </td>
-                  <td class='break-word'><span>The number of ticks to skip to simplify the x axis
+                  <td class='break-word'><span>Color for marks that doesn't match anything on the colorSchema
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.xDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Set X axis domain or "auto" for using data extent
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Set Y axis domain or "auto" for using data extent
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Set 2nd Y axis domain or "auto" for using data extent
+<axis>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.tickPadding</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>5</code>)
+                  </td>
+                  <td class='break-word'><span>Padding between tick and tick label
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.tickSizes</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>5</code>)
+                  </td>
+                  <td class='break-word'><span>Tick length
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.xTickSkip</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Indication for number of X ticks or "auto"
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yTicks</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Indication for number of Y ticks or "auto"
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.y2Ticks</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Indication for number of Y2 ticks or "auto"
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.xAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for the X axis or "auto"
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;.2f&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for the Y axis
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.y2AxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;.2f&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for the Y2 axis
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.grid</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;horizontal&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Background grid: horizontal, vertical, full
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.axisTransitionDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>0</code>)
+                  </td>
+                  <td class='break-word'><span>Animated transition duration
+<hover>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.dotRadius</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>4</code>)
+                  </td>
+                  <td class='break-word'><span>Radius of hover dots
+<tooltip>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.valueFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;.2f&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for values in tooltip/legend
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.mouseChaseDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>0</code>)
+                  </td>
+                  <td class='break-word'><span>Duration of lag between cursor and tooltip
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.dateFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;%b %d, %Y&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for title when it's a date
+<legend>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.legendXPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Legend x position or "auto" to dock right
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.legendYPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+                  
+                    (default <code>&quot;auto&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Legend y position or "auto" to dock top
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.legendTitle</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;Dataset&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Legend title
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.legendIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable legend
+<binning>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.binningResolution</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;1mo&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Selected resolution
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.binningIsAuto</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>If "Auto" is selected
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.binningIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable binning
+<domain>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.xDomainEditorFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;%b %d, %Y&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for x domain editor
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yDomainEditorFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;.2f&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for y domain editor
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.y2DomainEditorFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;.2f&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for y domain editor
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.domainEditorIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable domain editing
+<brush range>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.brushRangeMin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+                  
+                    (default <code>&quot;Jan 01, 2001&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Brush min range to display and to set brush
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.brushRangeMax</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+                  
+                    (default <code>&quot;Jan 02, 2002&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Brush max range to display and to set brush
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.brushRangeIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable brush range editor
+<brush>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.brushIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable brush
+<label>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.xLabel</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;X Axis Label&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>X axis label
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yLabel</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;Y Axis Label&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Y axis label
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.y2Label</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;Y2 Axis Label&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Y2 axis label
 </span></td>
                 </tr>
               
             </tbody>
           </table>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>string</span> <code class='quiet'>(any)</code>
+	    
+          </div>
           
         </div>
       
@@ -404,156 +1004,6 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='Chart#setXTitle'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setXTitle</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Set the X title</p>
-
-
-  <div class='pre p1 fill-light mt0'>setXTitle</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The new x title.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The chart instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setXTitle(<span class="hljs-string">"X Title"</span>)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='Chart#setYTitle'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setYTitle</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Set the Y title</p>
-
-
-  <div class='pre p1 fill-light mt0'>setYTitle</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The new y title.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The chart instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setYTitle(<span class="hljs-string">"Y Title"</span>)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
     <div class='border-bottom' id='Chart#setData'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -566,7 +1016,7 @@
 
   
 
-  <p>Set the data</p>
+  <p>Set data and render</p>
 
 
   <div class='pre p1 fill-light mt0'>setData</div>
@@ -581,20 +1031,6 @@
   
 
   
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The data object.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
 
   
 
@@ -615,33 +1051,7 @@
     
       
       <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setData({
-  <span class="hljs-string">"series"</span>: [{
-    <span class="hljs-string">"label"</span>: <span class="hljs-string">"line A"</span>,
-    <span class="hljs-string">"id"</span>: <span class="hljs-number">1</span>,
-     <span class="hljs-string">"group"</span>: <span class="hljs-number">1</span>,
-     <span class="hljs-string">"values"</span>: [{
-         <span class="hljs-string">"value"</span>: <span class="hljs-number">3.7868887622782648</span>,
-         <span class="hljs-string">"key"</span>: <span class="hljs-number">0</span>
-     }]
- }, {
-     <span class="hljs-string">"label"</span>: <span class="hljs-string">"line B"</span>,
-     <span class="hljs-string">"id"</span>: <span class="hljs-number">2</span>,
-     <span class="hljs-string">"group"</span>: <span class="hljs-number">1</span>,
-     <span class="hljs-string">"values"</span>: [{
-         <span class="hljs-string">"value"</span>: <span class="hljs-number">56.994525844854344</span>,
-         <span class="hljs-string">"key"</span>: <span class="hljs-number">0</span>
-     }]
- }, {
-     <span class="hljs-string">"label"</span>: <span class="hljs-string">"line C"</span>,
-     <span class="hljs-string">"id"</span>: <span class="hljs-number">3</span>,
-     <span class="hljs-string">"group"</span>: <span class="hljs-number">2</span>,
-     <span class="hljs-string">"values"</span>: [{
-         <span class="hljs-string">"value"</span>: <span class="hljs-number">10.118456503844255</span>,
-         <span class="hljs-string">"key"</span>: <span class="hljs-number">0</span>
-     }]
- }]
-})</pre>
+.setData(data)</pre>
     
   
 
@@ -719,671 +1129,6 @@ Automatically called by setData, Uses cached data.</p>
     </div>
   
 </div>
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tooltip'>
-      Tooltip
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>A simple tooltip.</p>
-
-
-  <div class='pre p1 fill-light mt0'>Tooltip</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>chart</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The chart object to apply the tooltip to
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The tooltip instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> chart = mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-mapd3.Tooltip(chart)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='legend'>
-      Legend
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>A simple Legend.</p>
-
-
-  <div class='pre p1 fill-light mt0'>Legend</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>chart</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The chart object to apply the legend to
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> chart = mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-mapd3.Legend(chart)</pre>
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
-    <div class="clearfix">
-  
-    <div class='border-bottom' id='Legend#setContent'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setContent</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Set the content</p>
-
-
-  <div class='pre p1 fill-light mt0'>setContent</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>series</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The data series.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Legend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setContent(data.series)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='Legend#setTitle'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setTitle</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Set the title</p>
-
-
-  <div class='pre p1 fill-light mt0'>setTitle</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    The new title.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Legend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setTitle(<span class="hljs-string">"title"</span>)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='Legend#setSize'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setSize</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Set size</p>
-
-
-  <div class='pre p1 fill-light mt0'>setSize</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>width</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    Can be a number or "auto".
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>height</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    Can be a number or "auto".
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Legend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setSize(<span class="hljs-number">100</span>, <span class="hljs-string">"auto"</span>)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='Legend#setPosition'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>setPosition</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Set position</p>
-
-
-  <div class='pre p1 fill-light mt0'>setPosition</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>xPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    X position.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Legend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.setPosition(<span class="hljs-number">100</span>)</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='Legend#show'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>show</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Show</p>
-
-
-  <div class='pre p1 fill-light mt0'>show</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Legend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.show()</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='Legend#hide'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>hide</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Hide</p>
-
-
-  <div class='pre p1 fill-light mt0'>hide</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The legend instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'>mapd3.Legend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-.hide()</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-</div>
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='hover'>
-      Hover
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Some hover marks.</p>
-
-
-  <div class='pre p1 fill-light mt0'>Hover</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>chart</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    The chart object to apply the hover to
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
-        The hover instance.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> chart = mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
-mapd3.Hover(chart)</pre>
-    
-  
-
-  
 
   
 

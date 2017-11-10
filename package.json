@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "styles": "grunt lint && grunt sass && grunt cssmin",
-    "docs": "documentation build -f \"html\" examples/examples.js -o doc",
+    "docs:build": "documentation build -f \"html\" examples/examples.js -o doc",
+    "docs:serve": "documentation serve --watch examples/examples.js -o doc",
     "prod": "webpack --mode=prod --watch",
     "dev": "webpack --mode=dev --watch",
     "release": "npm run prod && grunt release:patch",

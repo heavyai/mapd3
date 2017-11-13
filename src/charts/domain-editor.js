@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override} from "./helpers/common"
+import {override, stringToType} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function DomainEditor (_container) {
@@ -15,9 +15,14 @@ export default function DomainEditor (_container) {
     width: 800,
     height: 500,
     keyType: null,
-    xDomainEditorFormat: "%b %d, %Y",
-    yDomainEditorFormat: ".2f",
-    y2DomainEditorFormat: ".2f"
+    dateFormat: "%b %d, %Y",
+    numberFormat: ".2f",
+    xDomain: "auto",
+    yDomain: "auto",
+    y2Domain: "auto",
+    xLock: false,
+    yLock: false,
+    y2Lock: false
   }
 
   const cache = {
@@ -43,7 +48,7 @@ export default function DomainEditor (_container) {
   let scales = {
     xScale: null,
     yScale: null,
-    yScale2: null,
+    y2Scale: null,
     hasSecondAxis: null
   }
 
@@ -53,21 +58,19 @@ export default function DomainEditor (_container) {
   function buildSVG () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-    const xDomain = cache.xDomain === "auto" ? scales.xScale.domain() : cache.xDomain
-    const yDomain = cache.yDomain === "auto" ? scales.yScale.domain() : cache.yDomain
-    const y2Domain = (cache.y2Domain === "auto" && scales.y2Scale) ? scales.y2Scale.domain() : cache.y2Domain
+    const xDomain = config.xDomain === "auto" ? scales.xScale.domain() : config.xDomain
+    const yDomain = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
+    const y2Domain = (config.y2Domain === "auto" && scales.y2Scale) ? scales.y2Scale.domain() : config.y2Domain
 
     let xFormatter = (d) => d
-    if (config.xDomainEditorFormat) {
-      if (config.keyType === "time") {
-        xFormatter = d3.timeFormat(config.xDomainEditorFormat)
-      }
+    if (config.keyType === "time") {
+      xFormatter = d3.utcFormat(config.dateFormat)
     } else if (config.keyType === "number") {
-      xFormatter = d3.format(config.xDomainEditorFormat)
+      xFormatter = d3.format(config.numberFormat)
     }
 
-    const yFormatter = d3.format(config.yDomainEditorFormat)
-    const y2Formatter = d3.format(config.y2DomainEditorFormat)
+    const yFormatter = d3.format(config.numberFormat)
+    const y2Formatter = d3.format(config.numberFormat)
 
     if (!cache.root) {
       cache.root = cache.container
@@ -107,7 +110,8 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y", type: "max"})
+          const domain = scales.yScale.domain()
+          dispatcher.call("domainChange", this, {axis: "y", extent: [domain[0], Number(this.innerText)]})
         })
         .call(blurOnEnter)
 
@@ -116,7 +120,8 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y", type: "min"})
+          const domain = scales.yScale.domain()
+          dispatcher.call("domainChange", this, {axis: "y", extent: [Number(this.innerText), domain[1]]})
         })
         .call(blurOnEnter)
 
@@ -135,7 +140,8 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y2", type: "max"})
+          const domain = scales.y2Scale.domain()
+          dispatcher.call("domainChange", this, {axis: "y2", extent: [domain[0], Number(this.innerText)]})
         })
         .call(blurOnEnter)
 
@@ -144,7 +150,8 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChange", this, {value: this.innerText, axis: "y2", type: "min"})
+          const domain = scales.y2Scale.domain()
+          dispatcher.call("domainChange", this, {axis: "y2", extent: [Number(this.innerText), domain[1]]})
         })
         .call(blurOnEnter)
 
@@ -163,7 +170,9 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChange", this, {value: this.innerText, axis: "x", type: "min"})
+          const domain = scales.xScale.domain()
+          const min = stringToType(this.innerText, config.keyType)
+          dispatcher.call("domainChange", this, {axis: "x", extent: [min, domain[1]]})
         })
         .call(blurOnEnter)
 
@@ -172,7 +181,9 @@ export default function DomainEditor (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          dispatcher.call("domainChange", this, {value: this.innerText, axis: "x", type: "max"})
+          const domain = scales.xScale.domain()
+          const max = stringToType(this.innerText, config.keyType)
+          dispatcher.call("domainChange", this, {axis: "x", extent: [domain[0], max]})
         })
         .call(blurOnEnter)
 
@@ -225,6 +236,7 @@ export default function DomainEditor (_container) {
       .text(yFormatter(yDomain[0]))
 
     cache.yLockIcon
+      .classed("locked", config.yLock)
       .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("left", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
@@ -243,6 +255,7 @@ export default function DomainEditor (_container) {
       .text(y2Formatter(y2Domain[0]))
 
     cache.y2LockIcon
+      .classed("locked", config.y2Lock)
       .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
@@ -260,6 +273,7 @@ export default function DomainEditor (_container) {
       .text(xFormatter(xDomain[1]))
 
     cache.xLockIcon
+      .classed("locked", config.xLock)
       .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth}px`)
@@ -303,36 +317,6 @@ export default function DomainEditor (_container) {
     return this
   }
 
-  function setXDomain (_xDomain) {
-    cache.xDomain = _xDomain
-    return this
-  }
-
-  function setYDomain (_yDomain) {
-    cache.yDomain = _yDomain
-    return this
-  }
-
-  function setY2Domain (_y2Domain) {
-    cache.y2Domain = _y2Domain
-    return this
-  }
-
-  function setXLock (_xLock) {
-    cache.xLock = _xLock
-    return this
-  }
-
-  function setYLock (_yLock) {
-    cache.yLock = _yLock
-    return this
-  }
-
-  function setY2Lock (_y2Lock) {
-    cache.y2Lock = _y2Lock
-    return this
-  }
-
   function setVisibility (_shouldBeVisible) {
     cache.isEnabled = _shouldBeVisible
     drawDomainEditor()
@@ -359,12 +343,6 @@ export default function DomainEditor (_container) {
     on,
     setScales,
     setConfig,
-    setXDomain,
-    setYDomain,
-    setY2Domain,
-    setXLock,
-    setYLock,
-    setY2Lock,
     drawDomainEditor,
     setVisibility,
     destroy

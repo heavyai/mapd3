@@ -145,7 +145,7 @@ export default function Scale () {
     }
     const yScale = buildYScale(yDomain)
 
-    let yScale2 = null
+    let y2Scale = null
     if (hasSecondAxis) {
       let y2Domain = null
       if (config.y2Domain === "auto") {
@@ -155,7 +155,7 @@ export default function Scale () {
         y2Domain = config.y2Domain
       }
 
-      yScale2 = yScale.copy()
+      y2Scale = yScale.copy()
         .domain(y2Domain)
     }
 
@@ -163,7 +163,7 @@ export default function Scale () {
       hasSecondAxis,
       xScale,
       yScale,
-      yScale2,
+      y2Scale,
       colorScale
     }
   }

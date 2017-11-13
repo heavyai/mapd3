@@ -15,7 +15,8 @@ export default function BrushRangeEditor (_container) {
     width: 800,
     height: 500,
     keyType: "time",
-    rangeFormat: "%b %d, %Y"
+    dateFormat: "%b %d, %Y",
+    numberFormat: ".2f"
   }
 
   const cache = {
@@ -77,11 +78,11 @@ export default function BrushRangeEditor (_container) {
     let rangeMin = cache.rangeMin === null ? domain[0] : cache.rangeMin
     let rangeMax = cache.rangeMax === null ? domain[1] : cache.rangeMax
     if (config.keyType === "time") {
-      const format = d3.utcFormat(config.rangeFormat)
+      const format = d3.utcFormat(config.dateFormat)
       rangeMin = format(new Date(rangeMin))
       rangeMax = format(new Date(rangeMax))
     } else {
-      const format = d3.format(config.rangeFormat)
+      const format = d3.format(config.numberFormat)
       rangeMin = format(rangeMin)
       rangeMax = format(rangeMax)
     }

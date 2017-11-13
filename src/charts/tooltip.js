@@ -15,8 +15,6 @@ export default function Tooltip (_container, isLegend = false) {
     width: 250,
     height: 45,
 
-    valueFormat: ".2f",
-
     // Animations
     mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
@@ -25,6 +23,7 @@ export default function Tooltip (_container, isLegend = false) {
     tooltipWidth: 160,
 
     dateFormat: "%b %d, %Y",
+    numberFormat: ".2f",
     seriesOrder: [],
 
     // from chart
@@ -104,7 +103,7 @@ export default function Tooltip (_container, isLegend = false) {
 
   function drawContent () {
     const content = cache.content
-    const formatter = d3.format(config.valueFormat)
+    const formatter = d3.format(config.numberFormat)
 
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
         .data(content)

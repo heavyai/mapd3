@@ -21,7 +21,7 @@ export default function Line (_container) {
     colorScale: null,
     xScale: null,
     yScale: null,
-    yScale2: null
+    y2Scale: null
   }
 
   const cache = {
@@ -56,7 +56,7 @@ export default function Line (_container) {
 
     const seriesLine2 = d3.line()
         .x((d) => scales.xScale(d[keys.DATA]))
-        .y((d) => scales.yScale2(d[keys.VALUE]))
+        .y((d) => scales.y2Scale(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
 
     const lines = cache.svg.selectAll(".mark")
@@ -88,7 +88,7 @@ export default function Line (_container) {
 
     const seriesArea2 = d3.area()
         .x((d) => scales.xScale(d[keys.DATA]))
-        .y0((d) => scales.yScale2(d[keys.VALUE]))
+        .y0((d) => scales.y2Scale(d[keys.VALUE]))
         .y1(() => cache.chartHeight)
         .curve(d3.curveCatmullRom)
 

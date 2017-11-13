@@ -69,3 +69,13 @@ export function rebind (target) {
     return this
   }
 }
+
+export function stringToType (str, type) {
+  let converted = str
+  if (type === "time") {
+    converted = new Date(str)
+  } else if (type === "number") {
+    converted = Number(str)
+  }
+  return converted
+}

@@ -20,7 +20,7 @@ export default function Hover (_container) {
 
   let scales = {
     yScale: null,
-    yScale2: null,
+    y2Scale: null,
     hasSecondAxis: null,
     colorScale: null
   }
@@ -106,7 +106,7 @@ export default function Hover (_container) {
         if (config.chartType === "stackedArea" || data.groupKeys[0].indexOf(d[keys.ID]) > -1) {
           return scales.yScale(d[keys.VALUE])
         } else {
-          return scales.yScale2(d[keys.VALUE])
+          return scales.y2Scale(d[keys.VALUE])
         }
       })
       .attr("r", config.dotRadius)

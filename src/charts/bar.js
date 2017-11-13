@@ -19,7 +19,7 @@ export default function Bar (_container) {
     colorScale: null,
     xScale: null,
     yScale: null,
-    yScale2: null
+    y2Scale: null
   }
 
   const cache = {

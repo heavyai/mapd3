@@ -26,14 +26,14 @@
 <script>
 
 const keyType = "time" // time, number, string
-const chartType = "stackedArea" // line, area, stackedArea, bar, stackedBar
+const chartType = "line" // line, area, stackedArea, bar, stackedBar
 
 const dataManager = mapd3.DataManager()
     .setConfig({
       keyType,
-      range: [0, 100],
-      pointCount: 2000,
-      groupCount: 1,
+      range: [-100, 1000],
+      pointCount: 200,
+      groupCount: 2,
       lineCount: 4
     })
 const data = dataManager.generateTestDataset()
@@ -76,7 +76,7 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Ticks: "auto",
     xTickSkip: "auto",
     xAxisFormat: "auto",
-    yAxisFormat: ".2f",
+    yAxisFormat: "auto",
     y2AxisFormat: ".2f",
     grid: "horizontal",
     axisTransitionDuration: 0,
@@ -85,11 +85,13 @@ const chart1 = mapd3.Chart(chartNode1)
     dotRadius: 4,
 
     // tooltip
-    valueFormat: ".2f",
     mouseChaseDuration: 0,
     tooltipHeight: 48,
     tooltipWidth: 160,
+
+    // format
     dateFormat: "%b %d, %Y",
+    numberFormat: ".2f",
 
     // legend
     legendXPosition: "auto",
@@ -104,14 +106,14 @@ const chart1 = mapd3.Chart(chartNode1)
     binningIsEnabled: true,
 
     // domain
+    xLock: false,
+    yLock: false,
+    y2Lock: false,
     domainEditorIsEnabled: true,
-    xDomainEditorFormat: "%b %d, %Y",
-    yDomainEditorFormat: ".2f",
-    y2DomainEditorFormat: ".2f",
 
     // brush range
-    brushRangeMin: "Jan 01, 2001",
-    brushRangeMax: "Jan 02, 2002",
+    // brushRangeMin: "Jan 01, 2001",
+    // brushRangeMax: "Jan 02, 2002",
     brushRangeIsEnabled: true,
 
     // brush
@@ -124,19 +126,19 @@ const chart1 = mapd3.Chart(chartNode1)
   })
   .setData(data)
 
-chart1.events
-  .onBrush("brushStart", (d) => console.log(d))
-  .onBrush("brushMove", (d) => console.log(d))
-  .onBrush("brushEnd", (d) => console.log(d))
-  .onBinning("change", (d) => console.log(d))
+chart1.getEvents()
+  // .onBrush("brushStart", (d) => console.log(d))
+  // .onBrush("brushMove", (d) => console.log(d))
+  // .onBrush("brushEnd", (d) => console.log(d))
+  // .onBinning("change", (d) => console.log(d))
   .onDomainEditor("domainChange", (d) => console.log(d))
-  .onDomainEditor("domainLockToggle", (d) => console.log(d))
-  .onBrushRangeEditor("rangeChange", (d) => console.log(d))
-  .onLabel("axisLabelChange", (d) => console.log(d))
-  .onHover("hover", (d) => console.log(d))
-  .onPanel("mouseOverPanel", (d) => console.log(d))
-  .onPanel("mouseOutPanel", (d) => console.log(d))
-  .onPanel("mouseMovePanel", (d) => console.log(d))
+  // .onDomainEditor("domainLockToggle", (d) => console.log(d))
+  // .onBrushRangeEditor("rangeChange", (d) => console.log(d))
+  // .onLabel("axisLabelChange", (d) => console.log(d))
+  // .onHover("hover", (d) => console.log(d))
+  // .onPanel("mouseOverPanel", (d) => console.log(d))
+  // .onPanel("mouseOutPanel", (d) => console.log(d))
+  // .onPanel("mouseMovePanel", (d) => console.log(d))
 
 // const newData = dataManager.generateTestDataset()
 // chart1.setData(data)

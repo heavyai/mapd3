@@ -26,13 +26,15 @@ export default function Axis (_container) {
     ease: null,
     grid: null,
     hoverZoneSize: 30,
-    tickSpacing: 40
+    tickSpacing: 40,
+    dateFormat: "%b %d, %Y",
+    numberFormat: ".2f"
   }
 
   let scales = {
     xScale: null,
     yScale: null,
-    yScale2: null,
+    y2Scale: null,
     hasSecondAxis: null
   }
 
@@ -43,7 +45,7 @@ export default function Axis (_container) {
     chartWidth: null,
     xAxis: null,
     yAxis: null,
-    yAxis2: null,
+    y2Axis: null,
     horizontalGridLines: null,
     verticalGridLines: null
   }
@@ -69,11 +71,7 @@ export default function Axis (_container) {
     cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
-  function buildAxis () {
-    cache.xAxis = d3.axisBottom(scales.xScale)
-        .tickSize(config.tickSizes, 0)
-        .tickPadding(config.tickPadding)
-
+  function formatXAxis () {
     if (config.keyType === "time") {
       if (config.xAxisFormat && config.xAxisFormat !== "auto") {
         const formatter = d3.timeFormat(config.xAxisFormat)
@@ -87,11 +85,35 @@ export default function Axis (_container) {
         cache.xAxis.tickFormat(formatter)
       }
     }
+  }
+
+  function formatYAxis (axis) {
+    if (config.yAxisFormat === "auto") {
+      let yFormat = config.numberFormat
+      const yExtent = scales.yScale.domain()
+      if ((yExtent[1] - yExtent[0]) > 10000) {
+        yFormat = ".0s"
+      } else if ((yExtent[1] - yExtent[0]) > 1000) {
+        yFormat = ".2s"
+      }
+      axis.tickFormat(d3.format(yFormat))
+    } else if (typeof config.yAxisFormat === "string") {
+      axis.tickFormat(d3.format(config.yAxisFormat))
+    }
+  }
+
+  function buildAxis () {
+    cache.xAxis = d3.axisBottom(scales.xScale)
+        .tickSize(config.tickSizes, 0)
+        .tickPadding(config.tickPadding)
+
+    formatXAxis()
 
     cache.yAxis = d3.axisLeft(scales.yScale)
         .tickSize([config.tickSizes])
         .tickPadding(config.tickPadding)
-        .tickFormat(d3.format(config.yAxisFormat))
+
+    formatYAxis(cache.yAxis)
 
     if (Number.isInteger(config.yTicks)) {
       cache.yAxis.ticks(config.yTicks)
@@ -100,13 +122,14 @@ export default function Axis (_container) {
     }
 
     if (scales.hasSecondAxis) {
-      cache.yAxis2 = d3.axisRight(scales.yScale2)
+      cache.y2Axis = d3.axisRight(scales.y2Scale)
           .tickSize([config.tickSizes])
           .tickPadding(config.tickPadding)
-          .tickFormat(d3.format(config.y2AxisFormat))
+
+      formatYAxis(cache.y2Axis)
 
       if (!isNaN(config.y2Ticks)) {
-        cache.yAxis2.ticks(config.y2Ticks)
+        cache.y2Axis.ticks(config.y2Ticks)
       }
     }
   }
@@ -131,7 +154,7 @@ export default function Axis (_container) {
           .transition()
           .duration(config.axisTransitionDuration)
           .ease(config.ease)
-          .call(cache.yAxis2)
+          .call(cache.y2Axis)
     }
 
     return this

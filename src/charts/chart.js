@@ -64,13 +64,15 @@ export default function Chart (_container) {
     dotRadius: 4,
 
     // tooltip
-    valueFormat: ".2f",
     mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
     tooltipHeight: 48,
     tooltipWidth: 160,
-    dateFormat: "%b %d, %Y",
     seriesOrder: [],
+
+    // format
+    dateFormat: "%b %d, %Y",
+    numberFormat: ".2f",
 
     // legend
     legendXPosition: "auto",
@@ -86,14 +88,10 @@ export default function Chart (_container) {
 
     // domain
     domainEditorIsEnabled: true,
-    xDomainEditorFormat: "%b %d, %Y",
-    yDomainEditorFormat: ".2f",
-    y2DomainEditorFormat: ".2f",
 
     // brush range
     brushRangeMin: null,
     brushRangeMax: null,
-    rangeFormat: "%b %d, %Y",
     brushRangeIsEnabled: true,
 
     // brush
@@ -108,7 +106,7 @@ export default function Chart (_container) {
   let scales = {
     xScale: null,
     yScale: null,
-    yScale2: null,
+    y2Scale: null,
     hasSecondAxis: null,
     colorScale: null
   }
@@ -299,9 +297,6 @@ export default function Chart (_container) {
     components.domainEditor
       .setConfig(config)
       .setScales(scales)
-      .setXDomain(config.xDomain)
-      .setYDomain(config.yDomain)
-      .setY2Domain(config.y2Domain)
       .drawDomainEditor()
       .setVisibility(config.domainEditorIsEnabled)
 

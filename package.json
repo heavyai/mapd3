@@ -1,6 +1,6 @@
 {
   "name": "mapd3",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A fast chart library for the fastest DB",
   "main": "dist/mapd3.js",
   "contributors": [

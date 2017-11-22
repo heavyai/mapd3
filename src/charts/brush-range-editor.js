@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override} from "./helpers/common"
+import {override, stringToType} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function BrushRangeEditor (_container) {
@@ -52,8 +52,9 @@ export default function BrushRangeEditor (_container) {
         .attr("class", "brush-range-input max")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          cache.rangeMax = cache.inputMax.text()
-          dispatcher.call("rangeChange", this, {value: cache.rangeMax, type: "max"})
+          const domain = scales.xScale.domain()
+          cache.rangeMax = stringToType(cache.inputMax.text(), config.keyType)
+          dispatcher.call("rangeChange", this, {extent: [domain[0], cache.rangeMax]})
         })
         .call(blurOnEnter)
         .style("float", "right")
@@ -67,8 +68,9 @@ export default function BrushRangeEditor (_container) {
         .attr("class", "brush-range-input min")
         .attr("contentEditable", true)
         .on("blur", function change () {
-          cache.rangeMin = cache.inputMin.text()
-          dispatcher.call("rangeChange", this, {value: cache.rangeMin, type: "min"})
+          const domain = scales.xScale.domain()
+          cache.rangeMin = stringToType(cache.inputMin.text(), config.keyType)
+          dispatcher.call("rangeChange", this, {extent: [cache.rangeMin, domain[1]]})
         })
         .call(blurOnEnter)
         .style("float", "right")

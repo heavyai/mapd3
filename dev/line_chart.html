@@ -38,8 +38,6 @@ const dataManager = mapd3.DataManager()
     })
 const data = dataManager.generateTestDataset()
 
-// const observer = mapd3.Observer(dataManager)
-
 const colors = mapd3.colors.mapdColors
 const palette = data.series.map((d, i) => ({key: d.id, value: colors[i]}))
 
@@ -127,24 +125,18 @@ const chart1 = mapd3.Chart(chartNode1)
   .setData(data)
 
 chart1.getEvents()
-  // .onBrush("brushStart", (d) => console.log(d))
-  // .onBrush("brushMove", (d) => console.log(d))
-  // .onBrush("brushEnd", (d) => console.log(d))
-  // .onBinning("change", (d) => console.log(d))
+  .onBrush("brushStart", (d) => console.log(d))
+  .onBrush("brushMove", (d) => console.log(d))
+  .onBrush("brushEnd", (d) => console.log(d))
+  .onBinning("change", (d) => console.log(d))
   .onDomainEditor("domainChange", (d) => console.log(d))
-  // .onDomainEditor("domainLockToggle", (d) => console.log(d))
-  // .onBrushRangeEditor("rangeChange", (d) => console.log(d))
-  // .onLabel("axisLabelChange", (d) => console.log(d))
-  // .onHover("hover", (d) => console.log(d))
-  // .onPanel("mouseOverPanel", (d) => console.log(d))
-  // .onPanel("mouseOutPanel", (d) => console.log(d))
-  // .onPanel("mouseMovePanel", (d) => console.log(d))
-
-// const newData = dataManager.generateTestDataset()
-// chart1.setData(data)
-// chart1
-//   .setConfig({height: 400})
-//   .render()
+  .onDomainEditor("domainLockToggle", (d) => console.log(d))
+  .onBrushRangeEditor("rangeChange", (d) => console.log(d))
+  .onLabel("axisLabelChange", (d) => console.log(d))
+  .onHover("hover", (d) => console.log(d))
+  .onPanel("mouseOverPanel", (d) => console.log(d))
+  .onPanel("mouseOutPanel", (d) => console.log(d))
+  .onPanel("mouseMovePanel", (d) => console.log(d))
 
 </script>
 </body>

@@ -91,9 +91,15 @@ export default function Axis (_container) {
     if (config.yAxisFormat === "auto") {
       let yFormat = config.numberFormat
       const yExtent = scales.yScale.domain()
-      if ((yExtent[1] - yExtent[0]) > 10000) {
-        yFormat = ".0s"
-      } else if ((yExtent[1] - yExtent[0]) > 1000) {
+      if ((yExtent[1] - yExtent[0]) < 1) {
+        yFormat = ".2f"
+      } else if ((yExtent[1] - yExtent[0]) < 100) {
+        yFormat = ".1f"
+      } else if ((yExtent[1] - yExtent[0]) < 1000) {
+        yFormat = ".0f"
+      } else if ((yExtent[1] - yExtent[0]) < 100000) {
+        yFormat = ".2s"
+      } else {
         yFormat = ".2s"
       }
       axis.tickFormat(d3.format(yFormat))

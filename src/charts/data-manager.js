@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys} from "./helpers/constants"
-import {invertScale, sortData, cloneData} from "./helpers/common"
+import {invertScale, sortData, cloneData, getUnique} from "./helpers/common"
 
 
 export default function DataManager () {
@@ -39,7 +39,7 @@ export default function DataManager () {
         value = value + randomWalkStepSize
       }
       return {
-        value: value.toFixed(2),
+        value,
         key: config.keyType === "time" ? d.toISOString() : d
       }
     })
@@ -76,15 +76,35 @@ export default function DataManager () {
     const dataBySeries = cloneData(_data[keys.SERIES])
     const flatData = []
 
+    // get all unique keys
+    let allKeys = []
+    dataBySeries.forEach(d => { allKeys = allKeys.concat(d.values) })
+    allKeys = allKeys.map(d => d.key)
+    allKeys = getUnique(allKeys)
+
     // Normalize dataBySeries
     dataBySeries.forEach((serie) => {
-      serie[keys.VALUES] = sortData(serie[keys.VALUES], _keyType)
+      const keyValues = {}
+      serie[keys.VALUES].forEach(d => {
+        keyValues[d.key] = d.value
+      })
+      // fill data
+      const filled = allKeys.map(d => ({
+        key: d,
+        value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
+      }))
+      // sort
+      serie[keys.VALUES] = sortData(filled, _keyType)
+      // convert type
       serie[keys.VALUES].forEach((d) => {
-        d[keys.DATA] = _keyType === "time" ? new Date(d[keys.DATA]) : d[keys.DATA]
+        if (_keyType === "time") {
+          d[keys.DATA] = new Date(d[keys.DATA])
+        }
         d[keys.VALUE] = Number(d[keys.VALUE])
       })
     })
 
+    // flatten data
     dataBySeries.forEach((serie) => {
       serie[keys.VALUES].forEach((d) => {
         const dataPoint = {}
@@ -96,7 +116,7 @@ export default function DataManager () {
         flatData.push(dataPoint)
       })
     })
-
+    // sort flat data
     const flatDataSorted = sortData(flatData, _keyType)
 
     const dataByKey = d3.nest()
@@ -109,6 +129,7 @@ export default function DataManager () {
         return dataPoint
       })
 
+    // get group keys
     const groupKeys = {}
     dataBySeries.forEach((d) => {
       if (!groupKeys[d[keys.GROUP]]) {
@@ -117,6 +138,7 @@ export default function DataManager () {
       groupKeys[d[keys.GROUP]].push(d[keys.ID])
     })
 
+    // stack data
     const stackData = dataByKey
         .map((d) => {
           const points = {
@@ -125,10 +147,10 @@ export default function DataManager () {
           d.series.forEach((dB) => {
             points[dB[keys.ID]] = dB[keys.VALUE]
           })
-
           return points
         })
 
+    // d3 stack
     const stack = d3.stack()
         .keys(dataBySeries.map(getID))
         .order(d3.stackOrderNone)

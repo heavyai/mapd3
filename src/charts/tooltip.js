@@ -253,6 +253,14 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+    return this
+  }
+
   return {
     bindEvents,
     setXPosition,
@@ -264,6 +272,6 @@ export default function Tooltip (_container, isLegend = false) {
     drawTooltip,
     setConfig,
     setScales,
-    setVisibility
+    destroy
   }
 }

@@ -123,7 +123,11 @@ export default function Binning (_container) {
   }
 
   function destroy () {
-    cache.root.remove()
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+    return this
   }
 
   return {

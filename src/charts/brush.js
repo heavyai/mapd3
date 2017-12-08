@@ -45,8 +45,8 @@ export default function Brush (_container) {
     cache.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
     cache.chartHeight = Math.max(config.height - config.margin.top - config.margin.bottom, 0)
 
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
+    if (!cache.root) {
+      cache.root = cache.container.append("g")
           .classed("brush-group", true)
     }
   }
@@ -59,7 +59,7 @@ export default function Brush (_container) {
 
     cache.brush.extent([[0, 0], [cache.chartWidth, cache.chartHeight]])
 
-    cache.chartBrush = cache.svg.call(cache.brush)
+    cache.chartBrush = cache.root.call(cache.brush)
 
     cache.chartBrush.selectAll(".brush-rect")
       .attr("height", cache.chartHeight)
@@ -92,7 +92,7 @@ export default function Brush (_container) {
     const dataExtent = scales.xScale.domain()
     const extent = clampBrush(dataExtent, brushExtent)
     if (extent) {
-      cache.svg.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
+      cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
     }
     return this
   }
@@ -169,7 +169,10 @@ export default function Brush (_container) {
   }
 
   function destroy () {
-    cache.svg.remove()
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
     return this
   }
 

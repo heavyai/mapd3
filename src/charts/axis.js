@@ -54,21 +54,21 @@ export default function Axis (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
+    if (!cache.root) {
+      cache.root = cache.container.append("g")
           .classed("axis-group", true)
           .style("pointer-events", "none")
 
-      cache.svg.append("g").attr("class", "grid-lines-group")
+      cache.root.append("g").attr("class", "grid-lines-group")
 
-      cache.svg.append("g").attr("class", "axis x")
+      cache.root.append("g").attr("class", "axis x")
 
-      cache.svg.append("g").attr("class", "axis y")
+      cache.root.append("g").attr("class", "axis y")
 
-      cache.svg.append("g").attr("class", "axis y2")
+      cache.root.append("g").attr("class", "axis y2")
     }
 
-    cache.svg.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
+    cache.root.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
   function formatXAxis () {
@@ -144,18 +144,18 @@ export default function Axis (_container) {
     buildSVG()
     buildAxis()
 
-    cache.svg.select(".axis.x")
+    cache.root.select(".axis.x")
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
 
-    cache.svg.select(".axis.y")
+    cache.root.select(".axis.y")
         .transition()
         .duration(config.axisTransitionDuration)
         .ease(config.ease)
         .call(cache.yAxis)
 
     if (scales.hasSecondAxis) {
-      cache.svg.select(".axis.y2")
+      cache.root.select(".axis.y2")
           .attr("transform", `translate(${cache.chartWidth}, 0)`)
           .transition()
           .duration(config.axisTransitionDuration)
@@ -175,7 +175,7 @@ export default function Axis (_container) {
         ticks = Math.ceil(cache.chartHeight / config.tickSpacing)
       }
 
-      cache.horizontalGridLines = cache.svg.select(".grid-lines-group")
+      cache.horizontalGridLines = cache.root.select(".grid-lines-group")
           .selectAll("line.horizontal-grid-line")
           .data(scales.yScale.ticks(ticks))
 
@@ -193,7 +193,7 @@ export default function Axis (_container) {
     }
 
     if (config.grid === "vertical" || config.grid === "full") {
-      cache.verticalGridLines = cache.svg.select(".grid-lines-group")
+      cache.verticalGridLines = cache.root.select(".grid-lines-group")
           .selectAll("line.vertical-grid-line")
           .data(cache.xAxis.tickValues())
 
@@ -224,10 +224,18 @@ export default function Axis (_container) {
     return this
   }
 
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+  }
+
   return {
     setConfig,
     setScales,
     drawAxis,
-    drawGridLines
+    drawGridLines,
+    destroy
   }
 }

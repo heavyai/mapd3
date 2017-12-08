@@ -336,7 +336,9 @@ export default function DomainEditor (_container) {
   function destroy () {
     if (cache.root) {
       cache.root.remove()
+      cache.root = null
     }
+    return this
   }
 
   return {

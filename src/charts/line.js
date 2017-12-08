@@ -43,8 +43,8 @@ export default function Line (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
+    if (!cache.root) {
+      cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
   }
@@ -59,7 +59,7 @@ export default function Line (_container) {
         .y((d) => scales.y2Scale(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
 
-    const lines = cache.svg.selectAll(".mark")
+    const lines = cache.root.selectAll(".mark")
         .data(data.dataBySeries)
 
     lines.enter()
@@ -92,7 +92,7 @@ export default function Line (_container) {
         .y1(() => cache.chartHeight)
         .curve(d3.curveCatmullRom)
 
-    const areas = cache.svg.selectAll(".mark")
+    const areas = cache.root.selectAll(".mark")
         .data(data.dataBySeries)
 
     areas.enter()
@@ -119,7 +119,7 @@ export default function Line (_container) {
         .y0((d) => scales.yScale(d[0]))
         .y1((d) => scales.yScale(d[1]))
 
-    const areas = cache.svg.selectAll(".mark")
+    const areas = cache.root.selectAll(".mark")
         .data(data.stack(data.stackData))
 
     areas.enter()
@@ -160,10 +160,19 @@ export default function Line (_container) {
     return this
   }
 
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+    return this
+  }
+
   return {
     setConfig,
     setScales,
     setData,
-    drawMarks
+    drawMarks,
+    destroy
   }
 }

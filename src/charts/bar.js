@@ -41,14 +41,14 @@ export default function Bar (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
+    if (!cache.root) {
+      cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
   }
 
   function drawBars () {
-    const bars = cache.svg.selectAll(".mark")
+    const bars = cache.root.selectAll(".mark")
         .data(data.dataBySeries[0].values)
 
     bars.enter()
@@ -67,7 +67,7 @@ export default function Bar (_container) {
 
   function drawStackedBars () {
 
-    const stackedBarGroups = cache.svg.selectAll(".bar-group")
+    const stackedBarGroups = cache.root.selectAll(".bar-group")
         .data(data.stack(data.stackData))
 
     const stackedUpdate = stackedBarGroups.enter()
@@ -119,10 +119,18 @@ export default function Bar (_container) {
     return this
   }
 
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+  }
+
   return {
     setConfig,
     setScales,
     setData,
-    drawMarks
+    drawMarks,
+    destroy
   }
 }

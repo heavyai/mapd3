@@ -52,8 +52,8 @@ export default function Hover (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
-    if (!cache.svg) {
-      cache.svg = cache.container.append("g")
+    if (!cache.root) {
+      cache.root = cache.container.append("g")
           .classed("hover-group", true)
           .style("pointer-events", "none")
     }
@@ -77,14 +77,14 @@ export default function Hover (_container) {
   }
 
   function show () {
-    if (!cache.svg) { return null }
-    cache.svg.style("display", "block")
+    if (!cache.root) { return null }
+    cache.root.style("display", "block")
     return this
   }
 
   function hide () {
-    if (!cache.svg) { return null }
-    cache.svg.style("display", "none")
+    if (!cache.root) { return null }
+    cache.root.style("display", "none")
     return this
   }
 
@@ -95,7 +95,7 @@ export default function Hover (_container) {
   }
 
   function drawHighlightDataPoints (_dotsData) {
-    const dots = cache.svg.selectAll(".dot")
+    const dots = cache.root.selectAll(".dot")
         .data(_dotsData)
 
     dots.enter()
@@ -134,7 +134,7 @@ export default function Hover (_container) {
   }
 
   function drawVerticalMarker () {
-    const verticalMarkerLine = cache.svg.selectAll("line")
+    const verticalMarkerLine = cache.root.selectAll("line")
         .data([0])
 
     verticalMarkerLine.enter()
@@ -148,7 +148,7 @@ export default function Hover (_container) {
   }
 
   function moveVerticalMarker (_verticalMarkerXPosition) {
-    cache.svg.attr("transform", `translate(${[_verticalMarkerXPosition, 0]})`)
+    cache.root.attr("transform", `translate(${[_verticalMarkerXPosition, 0]})`)
   }
 
   function bindEvents (_dispatcher) {
@@ -178,6 +178,14 @@ export default function Hover (_container) {
     return this
   }
 
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+    return this
+  }
+
   return {
     setConfig,
     setScales,
@@ -187,6 +195,7 @@ export default function Hover (_container) {
     highlightStackedDataPoints,
     drawVerticalMarker,
     moveVerticalMarker,
-    on
+    on,
+    destroy
   }
 }

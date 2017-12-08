@@ -136,7 +136,9 @@ export default function BrushRangeEditor (_container) {
   function destroy () {
     if (cache.root) {
       cache.root.remove()
+      cache.root = null
     }
+    return this
   }
 
   return {

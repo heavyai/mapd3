@@ -145,12 +145,21 @@ export default function Label (_container) {
     return this
   }
 
+  function destroy () {
+    if (cache.root) {
+      cache.root.remove()
+      cache.root = null
+    }
+    return this
+  }
+
   return {
     on,
     setConfig,
     setXLabels,
     setYLabels,
     setY2Labels,
-    drawLabels
+    drawLabels,
+    destroy
   }
 }

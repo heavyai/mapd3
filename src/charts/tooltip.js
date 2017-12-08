@@ -25,6 +25,7 @@ export default function Tooltip (_container, isLegend = false) {
     dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
     seriesOrder: [],
+    tooltipIsEnabled: true,
 
     // from chart
     keyType: "time"
@@ -46,8 +47,7 @@ export default function Tooltip (_container, isLegend = false) {
     xPosition: null,
     yPosition: null,
     content: null,
-    title: null,
-    isEnabled: true
+    title: null
   }
 
   function buildSVG () {
@@ -65,6 +65,10 @@ export default function Tooltip (_container, isLegend = false) {
 
       cache.tooltipBody = cache.root.append("div")
           .attr("class", "tooltip-body")
+
+      if (!config.tooltipIsEnabled) {
+        hide()
+      }
     }
   }
 
@@ -188,19 +192,8 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function show () {
-    if (!cache.root) { return null }
+    if (!cache.root || !config.tooltipIsEnabled) { return null }
     cache.root.style("display", "block")
-    return this
-  }
-
-  function setVisibility (_shouldBeVisible) {
-    cache.isEnabled = _shouldBeVisible
-    if (!cache.root) { return null }
-    if (cache.isEnabled) {
-      show()
-    } else {
-      hide()
-    }
     return this
   }
 

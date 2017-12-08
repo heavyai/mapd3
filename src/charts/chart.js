@@ -69,6 +69,7 @@ export default function Chart (_container) {
     tooltipHeight: 48,
     tooltipWidth: 160,
     seriesOrder: [],
+    tooltipIsEnabled: true,
 
     // format
     dateFormat: "%b %d, %Y",
@@ -254,7 +255,6 @@ export default function Chart (_container) {
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
-      .setVisibility(config.tooltipIsEnabled)
 
     const legendContent = dataObject.dataBySeries
         .map((d) => ({
@@ -265,13 +265,13 @@ export default function Chart (_container) {
 
     components.legend
       .setConfig(config)
+      .setConfig({tooltipIsEnabled: config.legendIsEnabled})
       .setScales(scales)
       .setTitle(config.legendTitle)
       .setContent(legendContent)
       .setXPosition(config.legendXPosition)
       .setYPosition(config.legendYPosition)
       .drawTooltip()
-      .setVisibility(config.legendIsEnabled)
 
     components.brush
       .setConfig(config)
@@ -289,10 +289,7 @@ export default function Chart (_container) {
 
     components.binning
       .setConfig(config)
-      .setBinning(config.binningResolution)
-      .setAuto(config.binningIsAuto)
       .drawBinning()
-      .setVisibility(config.binningIsEnabled)
 
     components.domainEditor
       .setConfig(config)

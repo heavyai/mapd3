@@ -15,7 +15,9 @@ export default function Binning (_container) {
     height: 500,
     autoLabel: "auto",
     binningToggles: [],
-    label: "BIN:"
+    label: "BIN:",
+    binningIsAuto: false,
+    binningResolution: "1mo"
   }
 
   const cache = {
@@ -23,8 +25,6 @@ export default function Binning (_container) {
     root: null,
     autoItem: null,
     binningItems: null,
-    selectedBin: null,
-    isAuto: true,
     isEnabled: true
   }
 
@@ -71,8 +71,8 @@ export default function Binning (_container) {
       .style("top", `${config.margin.top - LINE_HEIGHT}px`)
       .style("left", `${config.margin.left}px`)
 
-    changeBinning(cache.selectedBin)
-    toggleAuto(cache.isAuto)
+    changeBinning(config.binningResolution)
+    toggleAuto(config.binningIsAuto)
   }
 
   function changeBinning (_selectedItemName) {
@@ -93,22 +93,6 @@ export default function Binning (_container) {
     } else {
       destroy()
     }
-    return this
-  }
-
-  function setVisibility (_shouldBeVisible) {
-    cache.isEnabled = _shouldBeVisible
-    drawBinning()
-    return this
-  }
-
-  function setBinning (_selectedBin) {
-    cache.selectedBin = _selectedBin
-    return this
-  }
-
-  function setAuto (_isAuto) {
-    cache.isAuto = _isAuto
     return this
   }
 
@@ -134,9 +118,6 @@ export default function Binning (_container) {
     on,
     setConfig,
     destroy,
-    drawBinning,
-    setBinning,
-    setAuto,
-    setVisibility
+    drawBinning
   }
 }

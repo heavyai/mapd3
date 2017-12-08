@@ -47,8 +47,6 @@ export default function Binning (_container) {
           .on("click.select", function click () {
             const isSelected = this.classList.contains("selected")
             const toggled = !isSelected
-            setAuto(toggled)
-            drawBinning()
             dispatcher.call("change", this, {name: config.autoLabel, isSelected: toggled})
           })
           .text(config.autoLabel)
@@ -58,8 +56,6 @@ export default function Binning (_container) {
           .enter().append("div")
           .attr("class", (d) => `item item-${d} toggleExclusive`)
           .on("click.select", function click (d) {
-            setBinning(d)
-            drawBinning()
             const isSelected = this.classList.contains("selected")
             dispatcher.call("change", this, {name: d, isSelected})
           })

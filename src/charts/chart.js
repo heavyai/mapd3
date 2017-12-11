@@ -73,6 +73,7 @@ export default function Chart (_container) {
 
     // format
     dateFormat: "%b %d, %Y",
+    inputDateFormat: "%m-%d-%Y",
     numberFormat: ".2f",
 
     // legend
@@ -295,7 +296,6 @@ export default function Chart (_container) {
       .setConfig(config)
       .setScales(scales)
       .drawDomainEditor()
-      .setVisibility(config.domainEditorIsEnabled)
 
     components.brushRangeEditor
       .setConfig(config)

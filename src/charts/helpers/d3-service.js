@@ -2,6 +2,7 @@ export {
 	axisBottom,
 	axisLeft,
 	axisRight,
+	timeParse,
 	timeFormat,
 	utcFormat,
 	format,

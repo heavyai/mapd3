@@ -15,14 +15,15 @@ export default function DomainEditor (_container) {
     width: 800,
     height: 500,
     keyType: null,
-    dateFormat: "%b %d, %Y",
+    inputDateFormat: "%m-%d-%Y",
     numberFormat: ".2f",
     xDomain: "auto",
     yDomain: "auto",
     y2Domain: "auto",
     xLock: false,
     yLock: false,
-    y2Lock: false
+    y2Lock: false,
+    domainEditorIsEnabled: true
   }
 
   const cache = {
@@ -41,8 +42,7 @@ export default function DomainEditor (_container) {
     xMaxInput: null,
     xLockIcon: null,
     chartWidth: null,
-    chartHeight: null,
-    isEnabled: true
+    chartHeight: null
   }
 
   let scales = {
@@ -62,9 +62,21 @@ export default function DomainEditor (_container) {
     const yDomain = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
     const y2Domain = (config.y2Domain === "auto" && scales.y2Scale) ? scales.y2Scale.domain() : config.y2Domain
 
+    let yMinText = null
+    let yMaxText = null
+    let xMinText = null
+    let xMaxText = null
+    let y2MinText = null
+    let y2MaxText = null
+
+    const HOVER_ZONE_SIZE = 40
+    const LOCK_SIZE = 12
+    const INPUT_HEIGHT = 12
+    const PADDING = 4
+
     let xFormatter = (d) => d
     if (config.keyType === "time") {
-      xFormatter = d3.utcFormat(config.dateFormat)
+      xFormatter = d3.utcFormat(config.inputDateFormat)
     } else if (config.keyType === "number") {
       xFormatter = d3.format(config.numberFormat)
     }
@@ -109,9 +121,18 @@ export default function DomainEditor (_container) {
         .attr("class", "domain-input y max")
         .style("position", "absolute")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          yMaxText = this.innerText
+        })
         .on("blur", function change () {
+          const input = this.innerText
           const domain = scales.yScale.domain()
-          dispatcher.call("domainChange", this, {axis: "y", extent: [domain[0], Number(this.innerText)]})
+          if (validateType(input, "number")) {
+            yMaxText = input
+            dispatcher.call("domainChange", this, {axis: "y", extent: [domain[0], Number(input)]})
+          } else {
+            this.innerText = yMaxText
+          }
         })
         .call(blurOnEnter)
 
@@ -119,9 +140,18 @@ export default function DomainEditor (_container) {
         .attr("class", "domain-input y min")
         .style("position", "absolute")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          yMinText = this.innerText
+        })
         .on("blur", function change () {
+          const input = this.innerText
           const domain = scales.yScale.domain()
-          dispatcher.call("domainChange", this, {axis: "y", extent: [Number(this.innerText), domain[1]]})
+          if (validateType(input, "number")) {
+            yMinText = input
+            dispatcher.call("domainChange", this, {axis: "y", extent: [Number(input), domain[1]]})
+          } else {
+            this.innerText = yMinText
+          }
         })
         .call(blurOnEnter)
 
@@ -139,9 +169,18 @@ export default function DomainEditor (_container) {
         .attr("class", "domain-input y2 max")
         .style("position", "absolute")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          y2MaxText = this.innerText
+        })
         .on("blur", function change () {
+          const input = this.innerText
           const domain = scales.y2Scale.domain()
-          dispatcher.call("domainChange", this, {axis: "y2", extent: [domain[0], Number(this.innerText)]})
+          if (validateType(input, "number")) {
+            y2MaxText = input
+            dispatcher.call("domainChange", this, {axis: "y2", extent: [domain[0], Number(input)]})
+          } else {
+            this.innerText = y2MaxText
+          }
         })
         .call(blurOnEnter)
 
@@ -149,9 +188,18 @@ export default function DomainEditor (_container) {
         .attr("class", "domain-input y2 min")
         .style("position", "absolute")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          y2MinText = this.innerText
+        })
         .on("blur", function change () {
+          const input = this.innerText
           const domain = scales.y2Scale.domain()
-          dispatcher.call("domainChange", this, {axis: "y2", extent: [Number(this.innerText), domain[1]]})
+          if (validateType(input, "number")) {
+            y2MinText = input
+            dispatcher.call("domainChange", this, {axis: "y2", extent: [Number(input), domain[1]]})
+          } else {
+            this.innerText = y2MinText
+          }
         })
         .call(blurOnEnter)
 
@@ -169,10 +217,19 @@ export default function DomainEditor (_container) {
         .attr("class", "domain-input x min")
         .style("position", "absolute")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          xMinText = this.innerText
+        })
         .on("blur", function change () {
+          const input = this.innerText
           const domain = scales.xScale.domain()
-          const min = stringToType(this.innerText, config.keyType)
-          dispatcher.call("domainChange", this, {axis: "x", extent: [min, domain[1]]})
+          if (validateType(input, config.keyType)) {
+            const min = stringToType(input, config.keyType)
+            xMinText = input
+            dispatcher.call("domainChange", this, {axis: "x", extent: [min, domain[1]]})
+          } else {
+            this.innerText = xMinText
+          }
         })
         .call(blurOnEnter)
 
@@ -180,10 +237,19 @@ export default function DomainEditor (_container) {
         .attr("class", "domain-input x max")
         .style("position", "absolute")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          xMaxText = this.innerText
+        })
         .on("blur", function change () {
+          const input = this.innerText
           const domain = scales.xScale.domain()
-          const max = stringToType(this.innerText, config.keyType)
-          dispatcher.call("domainChange", this, {axis: "x", extent: [domain[0], max]})
+          if (validateType(input, config.keyType)) {
+            const max = stringToType(this.innerText, config.keyType)
+            xMaxText = input
+            dispatcher.call("domainChange", this, {axis: "x", extent: [domain[0], max]})
+          } else {
+            this.innerText = xMaxText
+          }
         })
         .call(blurOnEnter)
 
@@ -200,12 +266,6 @@ export default function DomainEditor (_container) {
       hideY2Editor()
       hideXEditor()
     }
-
-    const HOVER_ZONE_SIZE = 40
-    const LOCK_SIZE = 12
-    const INPUT_HEIGHT = 12
-    const PADDING = 4
-    const INPUT_WIDTH = HOVER_ZONE_SIZE - PADDING
 
     cache.xHitZone
       .style("width", `${cache.chartWidth + HOVER_ZONE_SIZE * 2}px`)
@@ -226,13 +286,13 @@ export default function DomainEditor (_container) {
       .style("left", `${config.margin.left + cache.chartWidth}px`)
 
     cache.yMaxInput
-      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
+      .style("right", "0px")
       .text(yFormatter(yDomain[1]))
 
     cache.yMinInput
-      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
+      .style("right", "0px")
       .text(yFormatter(yDomain[0]))
 
     cache.yLockIcon
@@ -243,13 +303,11 @@ export default function DomainEditor (_container) {
       .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
 
     cache.y2MaxInput
-      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${HOVER_ZONE_SIZE}px`)
       .style("left", `${PADDING}px`)
       .text(y2Formatter(y2Domain[1]))
 
     cache.y2MinInput
-      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
       .style("left", `${PADDING}px`)
       .text(y2Formatter(y2Domain[0]))
@@ -261,15 +319,13 @@ export default function DomainEditor (_container) {
       .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
 
     cache.xMinInput
-      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${PADDING}px`)
       .style("left", `${HOVER_ZONE_SIZE}px`)
       .text(xFormatter(xDomain[0]))
 
     cache.xMaxInput
-      .style("width", `${INPUT_WIDTH}px`)
       .style("top", `${PADDING}px`)
-      .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth - INPUT_WIDTH}px`)
+      .style("right", `${HOVER_ZONE_SIZE}px`)
       .text(xFormatter(xDomain[1]))
 
     cache.xLockIcon
@@ -277,6 +333,20 @@ export default function DomainEditor (_container) {
       .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth}px`)
+  }
+
+  function validateType (_input, _type) {
+    if (_type === "time") {
+      const date = d3.timeParse(config.inputDateFormat)(_input)
+      return Boolean(date)
+    } else {
+      return !isNaN(_input)
+    }
+  }
+
+  function validateRange (_input, _domain) {
+    const date = d3.timeParse(config.inputDateFormat)(_input)
+    return date >= _domain[0] && date <= _domain[1]
   }
 
   function showYEditor () {
@@ -304,7 +374,7 @@ export default function DomainEditor (_container) {
   }
 
   function drawDomainEditor () {
-    if (cache.isEnabled) {
+    if (config.domainEditorIsEnabled) {
       buildSVG()
     } else {
       destroy()
@@ -314,12 +384,6 @@ export default function DomainEditor (_container) {
 
   function on (...args) {
     dispatcher.on(...args)
-    return this
-  }
-
-  function setVisibility (_shouldBeVisible) {
-    cache.isEnabled = _shouldBeVisible
-    drawDomainEditor()
     return this
   }
 
@@ -346,7 +410,6 @@ export default function DomainEditor (_container) {
     setScales,
     setConfig,
     drawDomainEditor,
-    setVisibility,
     destroy
   }
 }

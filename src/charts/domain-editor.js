@@ -127,7 +127,7 @@ export default function DomainEditor (_container) {
         .on("blur", function change () {
           const input = this.innerText
           const domain = scales.yScale.domain()
-          if (validateType(input, "number")) {
+          if (validateType(input, "number") && validateRange(input, domain, "max")) {
             yMaxText = input
             dispatcher.call("domainChange", this, {axis: "y", extent: [domain[0], Number(input)]})
           } else {
@@ -146,7 +146,7 @@ export default function DomainEditor (_container) {
         .on("blur", function change () {
           const input = this.innerText
           const domain = scales.yScale.domain()
-          if (validateType(input, "number")) {
+          if (validateType(input, "number") && validateRange(input, domain, "min")) {
             yMinText = input
             dispatcher.call("domainChange", this, {axis: "y", extent: [Number(input), domain[1]]})
           } else {
@@ -175,7 +175,7 @@ export default function DomainEditor (_container) {
         .on("blur", function change () {
           const input = this.innerText
           const domain = scales.y2Scale.domain()
-          if (validateType(input, "number")) {
+          if (validateType(input, "number") && validateRange(input, domain, "max")) {
             y2MaxText = input
             dispatcher.call("domainChange", this, {axis: "y2", extent: [domain[0], Number(input)]})
           } else {
@@ -194,7 +194,7 @@ export default function DomainEditor (_container) {
         .on("blur", function change () {
           const input = this.innerText
           const domain = scales.y2Scale.domain()
-          if (validateType(input, "number")) {
+          if (validateType(input, "number") && validateRange(input, domain, "min")) {
             y2MinText = input
             dispatcher.call("domainChange", this, {axis: "y2", extent: [Number(input), domain[1]]})
           } else {
@@ -223,7 +223,7 @@ export default function DomainEditor (_container) {
         .on("blur", function change () {
           const input = this.innerText
           const domain = scales.xScale.domain()
-          if (validateType(input, config.keyType)) {
+          if (validateType(input, config.keyType) && validateRange(input, domain, "min", config.keyType)) {
             const min = stringToType(input, config.keyType)
             xMinText = input
             dispatcher.call("domainChange", this, {axis: "x", extent: [min, domain[1]]})
@@ -243,7 +243,7 @@ export default function DomainEditor (_container) {
         .on("blur", function change () {
           const input = this.innerText
           const domain = scales.xScale.domain()
-          if (validateType(input, config.keyType)) {
+          if (validateType(input, config.keyType) && validateRange(input, domain, "max", config.keyType)) {
             const max = stringToType(this.innerText, config.keyType)
             xMaxText = input
             dispatcher.call("domainChange", this, {axis: "x", extent: [domain[0], max]})
@@ -344,9 +344,17 @@ export default function DomainEditor (_container) {
     }
   }
 
-  function validateRange (_input, _domain) {
-    const date = d3.timeParse(config.inputDateFormat)(_input)
-    return date >= _domain[0] && date <= _domain[1]
+  function validateRange (_input, _domain, _minOrMax, _type) {
+    // TO DO: range; ordinal
+    let input = _input
+    if (_type === "time") {
+      input = d3.timeParse(config.inputDateFormat)(_input)
+    }
+    if (_minOrMax === "min") {
+      return input <= _domain[1]
+    } else {
+      return input >= _domain[0]
+    }
   }
 
   function showYEditor () {

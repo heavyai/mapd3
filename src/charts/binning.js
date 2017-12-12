@@ -17,7 +17,8 @@ export default function Binning (_container) {
     binningToggles: [],
     label: "BIN:",
     binningIsAuto: false,
-    binningResolution: "1mo"
+    binningResolution: "1mo",
+    binningIsEnabled: true
   }
 
   const cache = {
@@ -84,7 +85,7 @@ export default function Binning (_container) {
   }
 
   function drawBinning () {
-    if (cache.isEnabled) {
+    if (config.binningIsEnabled) {
       buildSVG()
     } else {
       destroy()

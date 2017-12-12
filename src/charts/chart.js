@@ -278,8 +278,6 @@ export default function Chart (_container) {
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
-      .setBrushExtent([config.brushRangeMin, config.brushRangeMax])
-      .setVisibility(config.brushIsEnabled)
       .drawBrush()
 
     components.hover

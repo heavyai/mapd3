@@ -1,7 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-
-import {keys} from "./helpers/constants"
-import {cloneData, invertScale, sortData, override} from "./helpers/common"
+import {invertScale, override} from "./helpers/common"
 
 export default function Brush (_container) {
 
@@ -14,7 +12,10 @@ export default function Brush (_container) {
     },
     width: 800,
     height: 500,
-    keyType: null
+    keyType: null,
+    brushRangeMin: null,
+    brushRangeMax: null,
+    brushIsEnabled: true
   }
 
   let scales = {
@@ -28,15 +29,12 @@ export default function Brush (_container) {
     chartBrush: null,
     handle: null,
     chartWidth: null,
-    chartHeight: null,
-    isEnabled: true
+    chartHeight: null
   }
 
   let data = {
     dataBySeries: null
   }
-
-  let brushExtent = null
 
   // events
   const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd")
@@ -48,15 +46,15 @@ export default function Brush (_container) {
     if (!cache.root) {
       cache.root = cache.container.append("g")
           .classed("brush-group", true)
+
+      cache.brush = d3.brushX()
+        .on("start", handleBrushStart)
+        .on("brush", handleBrushMove)
+        .on("end", handleBrushEnd)
     }
   }
 
   function buildBrush () {
-    cache.brush = cache.brush || d3.brushX()
-        .on("start", handleBrushStart)
-        .on("brush", handleBrushMove)
-        .on("end", handleBrushEnd)
-
     cache.brush.extent([[0, 0], [cache.chartWidth, cache.chartHeight]])
 
     cache.chartBrush = cache.root.call(cache.brush)
@@ -73,24 +71,27 @@ export default function Brush (_container) {
     return dataExtent
   }
 
-  function validateExtent (_brushExtent) {
-    return (Array.isArray(_brushExtent)
-      && _brushExtent[0] !== null
-      && typeof _brushExtent[0] !== "undefined"
-      && _brushExtent[1] !== null
-      && typeof _brushExtent[1] !== "undefined")
+  function clamp (value, _dataExtent) {
+    return Math.min(Math.max(_dataExtent[0], value), _dataExtent[1])
   }
 
-  function clampBrush (_dataExtent, _brushExtent) {
-    return [Math.max(_dataExtent[0], _brushExtent[0]), Math.min(_dataExtent[1], _brushExtent[1])]
+  function clampBrush (_dataExtent) {
+    if (config.keyType === "time") {
+      return [
+        new Date(clamp(new Date(config.brushRangeMin), _dataExtent)),
+        new Date(clamp(new Date(config.brushRangeMax), _dataExtent))
+      ]
+    } else {
+      return [
+        clamp(config.brushRangeMin, _dataExtent),
+        clamp(config.brushRangeMax, _dataExtent)
+      ]
+    }
   }
 
   function moveBrush () {
-    if (brushExtent === null) {
-      return this
-    }
     const dataExtent = scales.xScale.domain()
-    const extent = clampBrush(dataExtent, brushExtent)
+    const extent = clampBrush(dataExtent)
     if (extent) {
       cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
     }
@@ -122,7 +123,7 @@ export default function Brush (_container) {
   }
 
   function drawBrush () {
-    if (!cache.isEnabled) {
+    if (!config.brushIsEnabled) {
       destroy()
     }
 
@@ -139,22 +140,8 @@ export default function Brush (_container) {
     return this
   }
 
-  function setVisibility (_isEnabled) {
-    cache.isEnabled = _isEnabled
-    return this
-  }
-
   function setConfig (_config) {
     config = override(config, _config)
-    return this
-  }
-
-  function setBrushExtent (_brushExtent) {
-    if (validateExtent(_brushExtent)) {
-      brushExtent = _brushExtent
-    } else {
-      brushExtent = null
-    }
     return this
   }
 
@@ -181,9 +168,7 @@ export default function Brush (_container) {
     setConfig,
     setData,
     setScales,
-    setBrushExtent,
     drawBrush,
-    setVisibility,
     destroy
   }
 }

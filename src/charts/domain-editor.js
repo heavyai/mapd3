@@ -161,7 +161,8 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y"})
+          const domain = scales.yScale.domain()
+          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y", extent: domain})
         })
 
       // y2 input group
@@ -209,7 +210,8 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y2"})
+          const domain = scales.yScale.domain()
+          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y2", extent: domain})
         })
 
       // x input group
@@ -259,7 +261,8 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "x"})
+          const domain = scales.yScale.domain()
+          dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "x", extent: domain})
         })
 
       hideYEditor()

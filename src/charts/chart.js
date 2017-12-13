@@ -90,6 +90,9 @@ export default function Chart (_container) {
 
     // domain
     domainEditorIsEnabled: true,
+    xLock: false,
+    yLock: false,
+    y2Lock: false,
 
     // brush range
     brushRangeMin: null,

@@ -1,5 +1,6 @@
 .binning-group {
-    font-size: 0.7em;
+    font-size: 11px;
+    color: #868686;
 
     .item, .bin-label {
       float: left;
@@ -9,6 +10,17 @@
       cursor: pointer;
     }
     .item.selected {
-        text-decoration: underline;
+      color: #22A7F0;
+      font-weight: bold;
+      border-bottom: #22A7F0 2px solid;
+      text-decoration: none;
+    }
+
+    .dimmed {
+        font-weight: normal;
+    }
+
+    .bin-label {
+        font-weight: bold;
     }
 }

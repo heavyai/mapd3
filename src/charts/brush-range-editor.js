@@ -47,6 +47,7 @@ export default function BrushRangeEditor (_container) {
           .append("div")
           .attr("class", "brush-range-input-group")
           .style("top", 0)
+          .style("padding-top", "12px")
 
       cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")

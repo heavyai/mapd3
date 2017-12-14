@@ -69,7 +69,6 @@ export default function Scale () {
     const yScale = d3.scaleLinear()
         .domain(_extent)
         .rangeRound([chartHeight, 0])
-        .nice()
 
     return yScale
   }

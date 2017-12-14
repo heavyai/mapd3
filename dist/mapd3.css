@@ -24,12 +24,12 @@
 
 .tick line {
   fill: none;
-  stroke: #ADB0B6;
+  stroke: #c7c7c7;
   stroke-width: 1;
   shape-rendering: crispEdges; }
 
 .tick text {
-  font-size: 1rem;
+  font-size: 10px;
   fill: #666A73;
   padding: 12px; }
 
@@ -125,14 +125,22 @@
   fill: #eee; }
 
 .binning-group {
-  font-size: 0.7em; }
+  font-size: 11px;
+  color: #868686; }
   .binning-group .item, .binning-group .bin-label {
     float: left;
     padding-right: 4px; }
   .binning-group .item {
     cursor: pointer; }
   .binning-group .item.selected {
-    text-decoration: underline; }
+    color: #22A7F0;
+    font-weight: bold;
+    border-bottom: #22A7F0 2px solid;
+    text-decoration: none; }
+  .binning-group .dimmed {
+    font-weight: normal; }
+  .binning-group .bin-label {
+    font-weight: bold; }
 
 .vertical-marker {
   stroke: #D2D6DF;
@@ -154,9 +162,12 @@
 
 .brush-range-input-group {
   white-space: nowrap;
-  font-size: 0.8em; }
+  color: #868686;
+  font-weight: bold; }
   .brush-range-input-group .brush-range-input, .brush-range-input-group .separator {
     padding: 0 2px; }
 
 .label-group .axis-label {
-  font-weight: lighter; }
+  color: #a7a7a7;
+  font-weight: bold;
+  font-size: 13px; }

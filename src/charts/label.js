@@ -93,8 +93,9 @@ export default function Label (_container) {
     cache.xAxisLabel
         .text(config.xLabel)
         .style("top", function top () {
+          const LABEL_PADDING = 18
           const textHeight = this.getBoundingClientRect().height
-          return `${config.height - textHeight}px`
+          return `${config.height - textHeight - LABEL_PADDING}px`
         })
         .style("left", `${config.margin.left + cache.chartWidth / 2}px`)
 
@@ -102,16 +103,18 @@ export default function Label (_container) {
       .text(config.yLabel)
       .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
       .style("left", function top () {
+        const LABEL_PADDING = 4
         const textWidth = this.getBoundingClientRect().width
-        return `${textWidth / 2}px`
+        return `${textWidth / 2 + LABEL_PADDING}px`
       })
 
     cache.y2AxisLabel
       .text(config.y2Label)
       .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
       .style("left", function top () {
+        const LABEL_PADDING = 4
         const textWidth = this.getBoundingClientRect().width
-        return `${config.width - textWidth / 2}px`
+        return `${config.width - textWidth / 2 - LABEL_PADDING}px`
       })
   }
 

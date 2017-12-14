@@ -38,6 +38,8 @@ export default function Binning (_container) {
       cache.root = cache.container.append("div")
           .attr("class", "binning-group")
           .style("float", "left")
+          .style("padding-top", "12px")
+          .style("padding-left", "12px")
 
       cache.label = cache.root.append("div")
           .attr("class", "bin-label")

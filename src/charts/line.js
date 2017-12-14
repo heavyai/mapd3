@@ -14,7 +14,8 @@ export default function Line (_container) {
     },
     width: 800,
     height: 500,
-    chartType: null
+    chartType: null,
+    colorSchema: ["skyblue"]
   }
 
   let scales = {
@@ -50,6 +51,15 @@ export default function Line (_container) {
   }
 
   function drawLines () {
+    const styleLookup = {}
+    config.colorSchema.forEach(d => {
+      styleLookup[d.key] = d.style
+    })
+    const stylesTranslation = {
+      dashes: "5, 4",
+      solid: null,
+      dotted: "1 4"
+    }
     const seriesLine = d3.line()
         .x((d) => scales.xScale(d[keys.DATA]))
         .y((d) => scales.yScale(d[keys.VALUE]))
@@ -76,6 +86,11 @@ export default function Line (_container) {
       })
       .style("stroke", getColor)
       .style("fill", "none")
+      .attr("stroke-dasharray", d => {
+        const style = styleLookup[d[keys.ID]]
+        return stylesTranslation[style]
+      })
+
 
     lines.exit().remove()
   }

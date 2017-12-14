@@ -2,20 +2,22 @@ $text-padding: 12px;
 $text-size: 1rem;
 $tick-size: 1;
 
-.tick {
-    line {
-        fill: none;
-        stroke: #c7c7c7;
-        stroke-width: $tick-size;
-        shape-rendering: crispEdges;
+.axis-group {
+    .axis .tick {
+        line {
+            fill: none;
+            stroke: #c7c7c7;
+            stroke-width: $tick-size;
+            shape-rendering: crispEdges;
+        }
+        text {
+            font-size: 10px;
+            fill: #a7a7a7;
+            padding: $text-padding;
+        }
     }
-    text {
-        font-size: 10px;
-        fill: $grey-600;
-        padding: $text-padding;
-    }
-}
 
-.y-title, .x-title {
-    font-size: 0.8em;
+    .y-title, .x-title {
+        font-size: 0.8em;
+    }
 }

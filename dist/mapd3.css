@@ -22,18 +22,18 @@
   stroke: #D2D6DF;
   stroke-width: 1; }
 
-.tick line {
+.axis-group .axis .tick line {
   fill: none;
   stroke: #c7c7c7;
   stroke-width: 1;
   shape-rendering: crispEdges; }
 
-.tick text {
+.axis-group .axis .tick text {
   font-size: 10px;
-  fill: #666A73;
+  fill: #a7a7a7;
   padding: 12px; }
 
-.y-title, .x-title {
+.axis-group .y-title, .axis-group .x-title {
   font-size: 0.8em; }
 
 .tooltip-group, .legend-group {
@@ -78,9 +78,6 @@
 
 .chart .masking-rectangle {
   fill: #ffffff; }
-
-.chart .x.axis text, .chart .y.axis text, .chart .y2.axis text {
-  font-size: 0.8em; }
 
 .chart .x.axis path, .chart .x.axis .domain, .chart .y.axis path, .chart .y.axis .domain, .chart .y2.axis path, .chart .y2.axis .domain {
   display: block;
@@ -148,7 +145,7 @@
   fill: none; }
 
 .domain-input-group .domain-input {
-  font-size: 0.6em;
+  font-size: 10px;
   background: white; }
 
 .domain-input-group .domain-lock.locked {

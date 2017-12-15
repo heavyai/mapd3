@@ -134,6 +134,8 @@
     font-weight: bold;
     border-bottom: #22A7F0 2px solid;
     text-decoration: none; }
+  .binning-group .item.selected.item-auto {
+    border-bottom: none; }
   .binning-group .dimmed {
     font-weight: normal; }
   .binning-group .bin-label {

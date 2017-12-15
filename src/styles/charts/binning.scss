@@ -6,14 +6,20 @@
       float: left;
       padding-right: 4px;
     }
+
     .item {
       cursor: pointer;
     }
+
     .item.selected {
       color: #22A7F0;
       font-weight: bold;
       border-bottom: #22A7F0 2px solid;
       text-decoration: none;
+    }
+
+    .item.selected.item-auto {
+      border-bottom: none;
     }
 
     .dimmed {

@@ -37,7 +37,7 @@ export default function Brush (_container) {
   }
 
   // events
-  const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd")
+  const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd", "brushClear")
 
   function buildSVG () {
     cache.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
@@ -113,8 +113,14 @@ export default function Brush (_container) {
   }
 
   function handleBrushEnd () {
-    // Skip programatic setting and empty selection
-    if (!d3.event.sourceEvent || !d3.event.selection) {
+    // Skip programatic setting
+    if (!d3.event.sourceEvent) {
+      return
+    }
+
+    // dispatch empty selection
+    if (!d3.event.selection) {
+      dispatcher.call("brushClear", this, config)
       return
     }
 

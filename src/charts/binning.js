@@ -76,7 +76,7 @@ export default function Binning (_container) {
 
   function changeBinning (_selectedItemName) {
     if (_selectedItemName) {
-      exclusiveToggle(cache.binningItems, `.item-${_selectedItemName}`)
+      exclusiveToggle(cache.binningItems, cache.root.select(`.item-${_selectedItemName}`))
     }
   }
 

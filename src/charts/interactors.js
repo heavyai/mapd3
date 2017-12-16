@@ -9,28 +9,27 @@ import * as d3 from "./helpers/d3-service"
  * @return {void}
  */
 
-export function toggleOnOff (selector, bool) {
-  const shouldBeSelected = typeof bool === "undefined" ? !d3.select(selector).classed("selected") : bool
-  d3.select(selector)
+export function toggleOnOff (selection, bool) {
+  const shouldBeSelected = typeof bool === "undefined" ? !selection.classed("selected") : bool
+  selection
     .classed("selected", shouldBeSelected)
     .classed("dimmed", !shouldBeSelected)
 }
 
-export function exclusiveToggle (othersSelection, selector) {
-  return toggle(othersSelection, selector, {
+export function exclusiveToggle (othersSelection, selection) {
+  return toggle(othersSelection, selection, {
     toggleOffIsEnabled: false,
     toggleMultipleIsEnabled: false
   })
 }
 
-export function toggle (othersSelection, selector, options = {toggleOffIsEnabled: false, toggleMultipleIsEnabled: false}) {
+export function toggle (othersSelection, selection, options = {toggleOffIsEnabled: false, toggleMultipleIsEnabled: false}) {
   /* eslint-disable consistent-this */
   let hasSelection = false
-  const selectionNode = document.querySelector(selector)
 
   othersSelection.classed("selected", function selectedClass () {
     const isSelected = this.classList.contains("selected")
-    const hasJustBeenClicked = this === selectionNode
+    const hasJustBeenClicked = this === selection.node()
     let shouldBeSelected = false
 
     if (hasJustBeenClicked) {

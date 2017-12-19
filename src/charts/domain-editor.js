@@ -271,30 +271,30 @@ export default function DomainEditor (_container) {
     }
 
     cache.xHitZone
-      .style("width", `${cache.chartWidth + HOVER_ZONE_SIZE * 2}px`)
+      .style("width", `${cache.chartWidth + LOCK_SIZE}px`)
       .style("height", `${HOVER_ZONE_SIZE}px`)
       .style("top", `${config.margin.top + cache.chartHeight}px`)
-      .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
+      .style("left", `${config.margin.left}px`)
 
     cache.yHitZone
       .style("width", `${HOVER_ZONE_SIZE}px`)
-      .style("height", `${cache.chartHeight + HOVER_ZONE_SIZE}px`)
-      .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
+      .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
+      .style("top", `${config.margin.top - LOCK_SIZE}px`)
       .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
 
     cache.y2HitZone
       .style("width", `${HOVER_ZONE_SIZE}px`)
-      .style("height", `${cache.chartHeight + HOVER_ZONE_SIZE}px`)
-      .style("top", `${config.margin.top - HOVER_ZONE_SIZE}px`)
+      .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
+      .style("top", `${config.margin.top - LOCK_SIZE}px`)
       .style("left", `${config.margin.left + cache.chartWidth}px`)
 
     cache.yMaxInput
-      .style("top", `${HOVER_ZONE_SIZE}px`)
+      .style("top", `${LOCK_SIZE}px`)
       .style("right", "0px")
       .text(yFormatter(yDomain[1]))
 
     cache.yMinInput
-      .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
+      .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
       .style("right", "0px")
       .text(yFormatter(yDomain[0]))
 
@@ -303,15 +303,15 @@ export default function DomainEditor (_container) {
       .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
       .style("left", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
-      .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
+      .style("top", `${LOCK_SIZE - LOCK_SIZE}px`)
 
     cache.y2MaxInput
-      .style("top", `${HOVER_ZONE_SIZE}px`)
+      .style("top", "0px")
       .style("left", `${PADDING}px`)
       .text(y2Formatter(y2Domain[1]))
 
     cache.y2MinInput
-      .style("top", `${cache.chartHeight + HOVER_ZONE_SIZE - INPUT_HEIGHT}px`)
+      .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
       .style("left", `${PADDING}px`)
       .text(y2Formatter(y2Domain[0]))
 
@@ -323,19 +323,19 @@ export default function DomainEditor (_container) {
 
     cache.xMinInput
       .style("top", `${PADDING}px`)
-      .style("left", `${HOVER_ZONE_SIZE}px`)
+      .style("left", "0px")
       .text(xFormatter(xDomain[0]))
 
     cache.xMaxInput
       .style("top", `${PADDING}px`)
-      .style("right", `${HOVER_ZONE_SIZE}px`)
+      .style("right", `${LOCK_SIZE}px`)
       .text(xFormatter(xDomain[1]))
 
     cache.xLockIcon
       .classed("locked", config.xLock)
       .style("width", `${LOCK_SIZE}px`)
       .style("height", `${LOCK_SIZE}px`)
-      .style("left", `${HOVER_ZONE_SIZE + cache.chartWidth}px`)
+      .style("right", "0px")
   }
 
   function validateType (_input, _type) {

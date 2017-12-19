@@ -15,7 +15,8 @@ export default function Line (_container) {
     width: 800,
     height: 500,
     chartType: null,
-    colorSchema: ["skyblue"]
+    colorSchema: ["skyblue"],
+    xDomain: "auto"
   }
 
   let scales = {
@@ -68,6 +69,11 @@ export default function Line (_container) {
         .x((d) => scales.xScale(d[keys.DATA]))
         .y((d) => scales.y2Scale(d[keys.VALUE]))
         .curve(d3.curveCatmullRom)
+
+    if (Array.isArray(config.xDomain)) {
+      seriesLine.defined((d) => d[keys.DATA] >= config.xDomain[0] && d[keys.DATA] <= config.xDomain[1])
+      seriesLine2.defined((d) => d[keys.DATA] >= config.xDomain[0] && d[keys.DATA] <= config.xDomain[1])
+    }
 
     const lines = cache.root.selectAll(".mark")
         .data(data.dataBySeries)

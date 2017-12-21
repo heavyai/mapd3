@@ -23,7 +23,9 @@ export default function DomainEditor (_container) {
     xLock: false,
     yLock: false,
     y2Lock: false,
-    domainEditorIsEnabled: true
+    xDomainEditorIsEnabled: true,
+    yDomainEditorIsEnabled: true,
+    y2DomainEditorIsEnabled: true
   }
 
   const cache = {
@@ -110,11 +112,8 @@ export default function DomainEditor (_container) {
           .attr("class", "hit-zone y2")
           .style("pointer-events", "all")
           .style("position", "absolute")
-      if (scales.hasSecondAxis) {
-        cache.y2HitZone
           .on("mouseover.dispatch", showY2Editor)
           .on("mouseout.dispatch", hideY2Editor)
-      }
 
       // y input group
       cache.yMaxInput = cache.yHitZone.append("div")
@@ -270,72 +269,86 @@ export default function DomainEditor (_container) {
       hideXEditor()
     }
 
-    cache.xHitZone
-      .style("width", `${cache.chartWidth + LOCK_SIZE}px`)
-      .style("height", `${HOVER_ZONE_SIZE}px`)
-      .style("top", `${config.margin.top + cache.chartHeight}px`)
-      .style("left", `${config.margin.left}px`)
+    if (config.xDomainEditorIsEnabled) {
+      cache.xHitZone
+        .style("width", `${cache.chartWidth + LOCK_SIZE}px`)
+        .style("height", `${HOVER_ZONE_SIZE}px`)
+        .style("top", `${config.margin.top + cache.chartHeight}px`)
+        .style("left", `${config.margin.left}px`)
+        .style("display", "block")
 
-    cache.yHitZone
-      .style("width", `${HOVER_ZONE_SIZE}px`)
-      .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
-      .style("top", `${config.margin.top - LOCK_SIZE}px`)
-      .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
-
-    cache.y2HitZone
-      .style("width", `${HOVER_ZONE_SIZE}px`)
-      .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
-      .style("top", `${config.margin.top - LOCK_SIZE}px`)
-      .style("left", `${config.margin.left + cache.chartWidth}px`)
-
-    cache.yMaxInput
-      .style("top", `${LOCK_SIZE}px`)
-      .style("right", "0px")
-      .text(yFormatter(yDomain[1]))
-
-    cache.yMinInput
-      .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
-      .style("right", "0px")
-      .text(yFormatter(yDomain[0]))
-
-    cache.yLockIcon
-      .classed("locked", config.yLock)
-      .style("width", `${LOCK_SIZE}px`)
-      .style("height", `${LOCK_SIZE}px`)
-      .style("left", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
-      .style("top", `${LOCK_SIZE - LOCK_SIZE}px`)
-
-    cache.y2MaxInput
-      .style("top", "0px")
-      .style("left", `${PADDING}px`)
-      .text(y2Formatter(y2Domain[1]))
-
-    cache.y2MinInput
-      .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
-      .style("left", `${PADDING}px`)
-      .text(y2Formatter(y2Domain[0]))
-
-    cache.y2LockIcon
-      .classed("locked", config.y2Lock)
-      .style("width", `${LOCK_SIZE}px`)
-      .style("height", `${LOCK_SIZE}px`)
-      .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
-
-    cache.xMinInput
+      cache.xMinInput
       .style("top", `${PADDING}px`)
       .style("left", "0px")
       .text(xFormatter(xDomain[0]))
 
-    cache.xMaxInput
-      .style("top", `${PADDING}px`)
-      .style("right", `${LOCK_SIZE}px`)
-      .text(xFormatter(xDomain[1]))
+      cache.xMaxInput
+        .style("top", `${PADDING}px`)
+        .style("right", `${LOCK_SIZE}px`)
+        .text(xFormatter(xDomain[1]))
 
-    cache.xLockIcon
-      .classed("locked", config.xLock)
-      .style("width", `${LOCK_SIZE}px`)
-      .style("height", `${LOCK_SIZE}px`)
-      .style("right", "0px")
+      cache.xLockIcon
+        .classed("locked", config.xLock)
+        .style("width", `${LOCK_SIZE}px`)
+        .style("height", `${LOCK_SIZE}px`)
+        .style("right", "0px")
+    } else {
+      cache.xHitZone.style("display", "none")
+    }
+
+    if (config.yDomainEditorIsEnabled) {
+      cache.yHitZone
+        .style("width", `${HOVER_ZONE_SIZE}px`)
+        .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
+        .style("top", `${config.margin.top - LOCK_SIZE}px`)
+        .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
+        .style("display", "block")
+
+      cache.yMaxInput
+        .style("top", `${LOCK_SIZE}px`)
+        .style("right", "0px")
+        .text(yFormatter(yDomain[1]))
+
+      cache.yMinInput
+        .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
+        .style("right", "0px")
+        .text(yFormatter(yDomain[0]))
+
+      cache.yLockIcon
+        .classed("locked", config.yLock)
+        .style("width", `${LOCK_SIZE}px`)
+        .style("height", `${LOCK_SIZE}px`)
+        .style("left", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
+        .style("top", `${LOCK_SIZE - LOCK_SIZE}px`)
+    } else {
+      cache.yHitZone.style("display", "none")
+    }
+
+    if (config.y2DomainEditorIsEnabled) {
+      cache.y2HitZone
+        .style("width", `${HOVER_ZONE_SIZE}px`)
+        .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
+        .style("top", `${config.margin.top - LOCK_SIZE}px`)
+        .style("left", `${config.margin.left + cache.chartWidth}px`)
+
+      cache.y2MaxInput
+        .style("top", "0px")
+        .style("left", `${PADDING}px`)
+        .text(y2Formatter(y2Domain[1]))
+
+      cache.y2MinInput
+        .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
+        .style("left", `${PADDING}px`)
+        .text(y2Formatter(y2Domain[0]))
+
+      cache.y2LockIcon
+        .classed("locked", config.y2Lock)
+        .style("width", `${LOCK_SIZE}px`)
+        .style("height", `${LOCK_SIZE}px`)
+        .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
+    } else {
+      cache.y2HitZone.style("display", "none")
+    }
   }
 
   function validateType (_input, _type) {
@@ -385,7 +398,9 @@ export default function DomainEditor (_container) {
   }
 
   function drawDomainEditor () {
-    if (config.domainEditorIsEnabled) {
+    if (config.xDomainEditorIsEnabled
+        || config.yDomainEditorIsEnabled
+        || config.y2DomainEditorIsEnabled) {
       buildSVG()
     } else {
       destroy()

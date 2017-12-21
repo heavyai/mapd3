@@ -89,10 +89,12 @@ export default function Chart (_container) {
     binningIsEnabled: true,
 
     // domain
-    domainEditorIsEnabled: true,
     xLock: false,
     yLock: false,
     y2Lock: false,
+    xDomainEditorIsEnabled: true,
+    yDomainEditorIsEnabled: true,
+    y2DomainEditorIsEnabled: true,
 
     // brush range
     brushRangeMin: null,

@@ -70,6 +70,7 @@ export default function Chart (_container) {
     tooltipWidth: 160,
     seriesOrder: [],
     tooltipIsEnabled: true,
+    tooltipTitle: null,
 
     // format
     dateFormat: "%b %d, %Y",

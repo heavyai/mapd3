@@ -26,6 +26,7 @@ export default function Tooltip (_container, isLegend = false) {
     numberFormat: ".2f",
     seriesOrder: [],
     tooltipIsEnabled: true,
+    tooltipTitle: null,
 
     // from chart
     keyType: "time"
@@ -145,7 +146,7 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function drawTitle () {
-    let title = cache.title
+    let title = config.tooltipTitle || cache.title
 
     if (typeof title === "object") {
       title = d3.timeFormat(config.dateFormat)(title)

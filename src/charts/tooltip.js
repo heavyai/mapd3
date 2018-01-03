@@ -1,4 +1,5 @@
 import * as d3 from "./helpers/d3-service"
+import {legendSymbol} from "d3-svg-legend"
 
 import {keys} from "./helpers/constants"
 import {cloneData, override} from "./helpers/common"
@@ -19,8 +20,9 @@ export default function Tooltip (_container, isLegend = false) {
     mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
 
-    tooltipHeight: 48,
-    tooltipWidth: 160,
+    tooltipMaxHeight: 48,
+    tooltipMaxWidth: 160,
+    tooltipTitleHeight: 12,
 
     dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
@@ -39,6 +41,10 @@ export default function Tooltip (_container, isLegend = false) {
   const cache = {
     container: _container,
     root: null,
+    legend: null,
+    legendScale: null,
+    symbol: null,
+    legendBBox: null,
     chartWidth: null,
     chartHeight: null,
     tooltipDivider: null,
@@ -56,24 +62,56 @@ export default function Tooltip (_container, isLegend = false) {
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
     if (!cache.root) {
-      cache.root = cache.container.append("div")
-          .attr("class", isLegend ? "legend-group" : "tooltip-group")
-          .style("position", "absolute")
-          .style("pointer-events", "none")
+      cache.symbol = d3.symbol().type(d3.symbolTriangle)()
 
-      cache.tooltipTitle = cache.root.append("div")
-          .attr("class", "tooltip-title")
+      cache.legendScale = d3.scaleOrdinal()
 
-      cache.tooltipBody = cache.root.append("div")
-          .attr("class", "tooltip-body")
+      cache.legend = legendSymbol()
+        .scale(cache.legendScale)
+        .labelWrap(64)
+        .labelOffset(0)
+        .title("Symbol Legend Title")
+        .on("cellclick", (d) => console.log("clicked", d))
 
-      if (!config.tooltipIsEnabled) {
-        hide()
-      }
+      cache.root = cache.container
+        .append("div")
+        .classed(isLegend ? "legend-group" : "tooltip-group", true)
+        .style("position", "absolute")
+        .style("pointer-events", "none")
+
+      cache.svg = cache.root.append("svg")
+      cache.legendRoot = cache.svg
+        .append("g")
+        .attr("transform", `translate(${[0, config.tooltipTitleHeight]})`)
+
+      cache.legendRoot.call(cache.legend)
+
+      // cache.legendRoot
+        // .classed(isLegend ? "legend-group" : "tooltip-group", true)
+        // .attr("transform", "translate(0, 20)")
+        // .call(cache.legend)
+
+      // cache.root = cache.container.append("div")
+      //     .attr("class", isLegend ? "legend-group" : "tooltip-group")
+      //     .style("position", "absolute")
+      //     .style("pointer-events", "none")
+
+      // cache.tooltipTitle = cache.root.append("div")
+      //     .attr("class", "tooltip-title")
+
+      // cache.tooltipBody = cache.root.append("div")
+      //     .attr("class", "tooltip-body")
+
+      // if (!config.tooltipIsEnabled) {
+      //   hide()
+      // }
     }
   }
 
   function calculateTooltipPosition (_mouseX, _mouseY) {
+    if (!cache.root) {
+      return null
+    }
     const OFFSET = 4
     const tooltipSize = cache.root.node().getBoundingClientRect()
     const tooltipX = _mouseX
@@ -87,6 +125,9 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function move () {
+    if (!cache.root) {
+      return null
+    }
     const xPosition = cache.xPosition === "auto"
         ? cache.chartWidth
         : cache.xPosition
@@ -103,45 +144,79 @@ export default function Tooltip (_container, isLegend = false) {
         const width = cache.yPosition === "auto" ? this.getBoundingClientRect().width : 0
         return `${xPosition + config.margin.left - width}px`
       })
+
+      // .attr("transform", () => {
+      //   const width = cache.yPosition === "auto" ? cache.root.node().getBoundingClientRect().width : 0
+      //   const xPositionOffset = xPosition + config.margin.left - width
+      //   return `translate(${[xPositionOffset, yPosition]})`
+      // })
     return this
   }
 
   function drawContent () {
-    const content = cache.content
     const formatter = d3.format(config.numberFormat)
 
-    const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
-        .data(content)
-    const tooltipItemsUpdate = tooltipItems.enter().append("div")
-      .attr("class", "tooltip-item")
-      .merge(tooltipItems)
-    tooltipItems.exit().remove()
+    const content = cache.content.map(d => {
+      const label = []
+      if (d.label) {
+        label.push(d.label)
+      }
+      if (d.value) {
+        label.push(formatter(d.value))
+      }
+      return label.join(" ")
+    })
+    // cache.legendScale.domain(content.map(d => formatter(d.value)))
+    cache.legendScale.domain(content)
+      .range(content.map(() => cache.symbol))
 
-    const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d) => {
-        const legendData = [
-          {key: "tooltip-color", value: scales.colorScale(d[keys.ID])},
-          {key: "tooltip-label", value: d[keys.LABEL]}
-        ]
-        if (typeof d[keys.VALUE] !== "undefined") {
-          legendData.push({key: "value", value: d[keys.VALUE]})
-        }
-        return legendData
-      })
-    tooltipItem.enter().append("div")
-      .merge(tooltipItem)
-      .attr("class", (d) => ["section", d.key].join(" "))
-      .each(function each (d) {
-        const selection = d3.select(this)
-        if (d.key === "tooltip-color") {
-          selection.style("background", d.value)
-        } else if (d.key === "value") {
-          selection.html(formatter(d.value))
-        } else {
-          selection.html(d.value)
-        }
-      })
-    tooltipItem.exit().remove()
+    cache.root.call(cache.legend)
+
+    // const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
+    //     .data(content)
+    // const tooltipItemsUpdate = tooltipItems.enter().append("div")
+    //   .attr("class", "tooltip-item")
+    //   .merge(tooltipItems)
+    // tooltipItems.exit().remove()
+
+    // const tooltipItem = tooltipItemsUpdate.selectAll(".section")
+    //   .data((d) => {
+    //     const legendData = [
+    //       {key: "tooltip-color", value: scales.colorScale(d[keys.ID])},
+    //       {key: "tooltip-label", value: d[keys.LABEL]}
+    //     ]
+    //     if (typeof d[keys.VALUE] !== "undefined") {
+    //       legendData.push({key: "value", value: d[keys.VALUE]})
+    //     }
+    //     return legendData
+    //   })
+    // tooltipItem.enter().append("div")
+    //   .merge(tooltipItem)
+    //   .attr("class", (d) => ["section", d.key].join(" "))
+    //   .each(function each (d) {
+    //     const selection = d3.select(this)
+    //     if (d.key === "tooltip-color") {
+    //       selection.style("background", d.value)
+    //     } else if (d.key === "value") {
+    //       selection.html(formatter(d.value))
+    //     } else {
+    //       selection.html(d.value)
+    //     }
+    //   })
+    // tooltipItem.exit().remove()
+    return this
+  }
+
+  function resizeToContent () {
+    cache.legendBBox = cache.svg.node().getBBox()
+    const w = cache.legendBBox.width
+    const h = cache.legendBBox.height
+    cache.svg
+      .attr("width", w)
+      .attr("height", h)
+    cache.root
+      .attr("width", w)
+      .attr("height", h)
     return this
   }
 
@@ -152,7 +227,7 @@ export default function Tooltip (_container, isLegend = false) {
       title = d3.timeFormat(config.dateFormat)(title)
     }
 
-    cache.tooltipTitle.html(title)
+    cache.legend.title(title)
     return this
   }
 
@@ -160,6 +235,7 @@ export default function Tooltip (_container, isLegend = false) {
     buildSVG()
     drawTitle()
     drawContent()
+    resizeToContent()
     move()
     return this
   }

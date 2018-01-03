@@ -2,111 +2,108 @@ const webpack = require("webpack")
 const path = require("path")
 const LiveReloadPlugin = require("webpack-livereload-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-const env = require("yargs").argv.mode
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const chartModulesPath = path.resolve("./src/charts")
 const fixturesPath = path.resolve("./test/fixtures")
 const vendorsPath = path.resolve("./node_modules")
 const bundleIndexPath = path.resolve("./src/bundle.js")
+const scssIndexPath = path.resolve("./src/styles/mapd3.scss")
 
-const isProduction = env === "prod"
+
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 const projectName = "mapd3"
 
 const defaultJSLoader = {
   test: /\.js$/,
-  loader: "babel",
-  exclude: /(node_modules)/,
-  query: {
-    presets: ["es2015", "stage-0"]
-  }
-}
-const babelLoader = {
-  test: /\.js$/,
   include: /src/,
   exclude: /(node_modules)/,
-  loader: "babel",
-  query: {
-    presets: ["es2015", "stage-0"],
-    cacheDirectory: true
+  use: {
+    loader: 'babel-loader',
+    options: {
+      presets: ["@babel/preset-env"],
+      cacheDirectory: false
+    }
   }
 }
 const plugins = [
       // Uncomment this line to see bundle composition analysis
       // new BundleAnalyzerPlugin()
 ]
-
-
-// Set up minification for production
-if (isProduction) {
-  plugins.push(new UglifyJsPlugin({minimize: false}))
-}
-
-const config = {
-
-  // Test configuration for Karma runner
-  test: {
-    resolve: {
-      root: [chartModulesPath, fixturesPath],
-      alias: {
-        d3: `${vendorsPath}/d3`
-      }
-    },
-    module: {
-      preLoaders: [babelLoader],
-      loaders: [defaultJSLoader]
-    },
-
-    plugins
-  },
-
+const config = function (env) {
   // Creates a bundle with all mapd3
-  prod: {
-    entry: {
-      mapd3: bundleIndexPath
-    },
+  // if (env.prod) {
+  //   plugins.push(new UglifyJsPlugin({minimize: false}))
 
-    devtool: "source-map",
+  //   return {
+  //     entry: {
+  //       mapd3: bundleIndexPath
+  //     },
 
-    output: {
-      path: "dist",
-      filename: `${projectName}.min.js`,
-      library: ["mapd3"],
-      libraryTarget: "umd"
-    },
+  //     devtool: "source-map",
 
-    externals: {
-      // "d3/build/d3": "d3/build/d3"
-    },
+  //     output: {
+  //       path: path.resolve(__dirname, "dist"),
+  //       filename: "mapd3.min.js",
+  //       library: ["mapd3"],
+  //       libraryTarget: "umd-module",
+  //       libraryExport: "default"
+  //     },
 
-    module: {
-      loaders: [defaultJSLoader]
-    },
+  //     externals: {
+  //       // "d3/build/d3": "d3/build/d3"
+  //     },
 
-    plugins
-  },
+  //     module: {
+  //       loaders: [defaultJSLoader]
+  //     },
 
-  dev: {
-    entry: {
-      mapd3: bundleIndexPath
-    },
+  //     plugins
+  //   }
+  // }
 
-    devtool: "eval",
+  if (env.dev) {
+    return {
+      entry: {
+        mapd3: bundleIndexPath,
+        style: scssIndexPath
+      },
 
-    output: {
-      path: "dist",
-      filename: `${projectName}.js`,
-      library: ["mapd3"],
-      libraryTarget: "umd"
-    },
+      devtool: "hidden-source-map",
 
-    externals: {
-      // "d3/build/d3": "d3/build/d3"
-    },
+      output: {
+        path: path.resolve(__dirname, "dist"),
+        filename: '[name].js',
+        library: "[name]",
+        libraryTarget: "umd",
+      },
 
-    module: {
-      loaders: [defaultJSLoader]
+      externals: {
+        // "d3/build/d3": "d3/build/d3"
+      },
+
+      module: {
+        loaders: [defaultJSLoader],
+        rules: [
+          { // regular css files
+            test: /\.css$/,
+            use: ExtractTextPlugin.extract({
+              use: "css-loader?importLoaders=1"
+            })
+          },
+          { // sass / scss loader for webpack
+            test: /\.(sass|scss)$/,
+            use: ExtractTextPlugin.extract(["css-loader", "sass-loader"])
+          }
+        ]
+      },
+      plugins: [
+        new ExtractTextPlugin({ // define where to save the file
+          filename: "[name].css",
+          allChunks: true
+        })
+      ]
     }
   }
 }
 
-module.exports = config[env]
+module.exports = config

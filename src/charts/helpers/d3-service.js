@@ -34,5 +34,7 @@ export {
 	scaleBand,
 	scaleLinear,
 	scaleOrdinal,
+	symbol,
+	symbolTriangle,
 	brushX
 } from "d3/build/d3"

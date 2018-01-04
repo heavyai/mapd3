@@ -56,10 +56,6 @@ export default function Tooltip (_container, isLegend = false) {
       cache.root = cache.container.append("div")
           .attr("class", isLegend ? "legend-group" : "tooltip-group")
           .style("position", "absolute")
-      
-      if (!isLegend) {
-        cache.root.style("pointer-events", "none")
-      }
 
       const panel = cache.root.append("div")
         .attr("class", "tooltip-panel")
@@ -70,13 +66,18 @@ export default function Tooltip (_container, isLegend = false) {
       cache.tooltipBody = panel.append("div")
           .attr("class", "tooltip-body")
 
-      if (!config.tooltipIsEnabled) {
-        hide()
+      if (!isLegend) {
+        cache.root.style("pointer-events", "none")
       }
     }
 
     if (isLegend) {
       cache.root.style("max-height", cache.chartHeight)
+      if (config.tooltipIsEnabled) {
+        show()
+      } else {
+        hide()
+      }
     }
   }
 

@@ -11,6 +11,7 @@ import Brush from "./charts/brush.js"
 import Hover from "./charts/hover.js"
 import Interactors from "./charts/interactors.js"
 import {colors} from "./charts/helpers/colors.js"
+require("./styles/mapd3.scss")
 
 export {
   Chart,

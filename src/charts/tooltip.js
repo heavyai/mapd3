@@ -15,10 +15,6 @@ export default function Tooltip (_container, isLegend = false) {
     width: 250,
     height: 45,
 
-    // Animations
-    mouseChaseDuration: 0,
-    tooltipEase: d3.easeQuadInOut,
-
     dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
     seriesOrder: [],
@@ -60,14 +56,30 @@ export default function Tooltip (_container, isLegend = false) {
       const panel = cache.root.append("div")
         .attr("class", "tooltip-panel")
 
-      cache.tooltipTitle = panel.append("div")
+      cache.tooltipTitleSection = panel.append("div")
+          .attr("class", "tooltip-title-section")
+
+      cache.tooltipTitle = cache.tooltipTitleSection.append("div")
           .attr("class", "tooltip-title")
 
       cache.tooltipBody = panel.append("div")
           .attr("class", "tooltip-body")
 
-      if (!isLegend) {
+      if (isLegend) {
+        cache.tooltipTitleSection.append("div")
+          .attr("class", "tooltip-collapse")
+          .html("↗")
+
+        cache.tooltipTitleSection.on("click", function () {
+          const isCollapsed = this.classList.toggle("collapsed")
+          toggleCollapse(isCollapsed)
+        })
+      } else {
         cache.root.style("pointer-events", "none")
+      }
+
+      if (!config.tooltipIsEnabled) {
+        hide()
       }
     }
 
@@ -103,12 +115,10 @@ export default function Tooltip (_container, isLegend = false) {
         ? config.margin.top
         : cache.yPosition
 
-    cache.root.transition()
-      .duration(config.mouseChaseDuration)
-      .ease(config.tooltipEase)
+    cache.root
       .style("top", `${yPosition}px`)
       .style("left", function left () {
-        const width = cache.yPosition === "auto" ? this.getBoundingClientRect().width : 0
+        const width = cache.xPosition === "auto" ? this.getBoundingClientRect().width : 0
         return `${xPosition + config.margin.left - width}px`
       })
     return this
@@ -153,6 +163,19 @@ export default function Tooltip (_container, isLegend = false) {
       })
     tooltipItem.exit().remove()
 
+    return this
+  }
+
+  function toggleCollapse (isCollapsed) {
+    if (isCollapsed) {
+      cache.tooltipTitle.html("Legend")
+      cache.tooltipBody.style("display", "none")
+      move()
+    } else {
+      drawTitle()
+      cache.tooltipBody.style("display", "block")
+      move()
+    }
     return this
   }
 

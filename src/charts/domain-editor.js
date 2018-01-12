@@ -332,7 +332,7 @@ export default function DomainEditor (_container) {
         .style("left", `${config.margin.left + cache.chartWidth}px`)
 
       cache.y2MaxInput
-        .style("top", "0px")
+        .style("top", `${LOCK_SIZE}px`)
         .style("left", `${PADDING}px`)
         .text(y2Formatter(y2Domain[1]))
 
@@ -345,7 +345,7 @@ export default function DomainEditor (_container) {
         .classed("locked", config.y2Lock)
         .style("width", `${LOCK_SIZE}px`)
         .style("height", `${LOCK_SIZE}px`)
-        .style("top", `${HOVER_ZONE_SIZE - LOCK_SIZE}px`)
+        .style("top", `${LOCK_SIZE - LOCK_SIZE}px`)
     } else {
       cache.y2HitZone.style("display", "none")
     }

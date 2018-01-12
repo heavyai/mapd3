@@ -87,24 +87,45 @@ export default function Axis (_container) {
     }
   }
 
-  function formatYAxis (axis) {
-    if (config.yAxisFormat === "auto") {
-      let yFormat = config.numberFormat
-      const yExtent = scales.yScale.domain()
-      if ((yExtent[1] - yExtent[0]) < 1) {
+  function autoFormat (_yExtent) {
+    let yFormat = config.numberFormat
+      if ((_yExtent[1] - _yExtent[0]) < 1) {
         yFormat = ".2f"
-      } else if ((yExtent[1] - yExtent[0]) < 100) {
+      } else if ((_yExtent[1] - _yExtent[0]) < 100) {
         yFormat = ".1f"
-      } else if ((yExtent[1] - yExtent[0]) < 1000) {
+      } else if ((_yExtent[1] - _yExtent[0]) < 1000) {
         yFormat = ".0f"
-      } else if ((yExtent[1] - yExtent[0]) < 100000) {
+      } else if ((_yExtent[1] - _yExtent[0]) < 100000) {
         yFormat = ".2s"
       } else {
         yFormat = ".2s"
       }
+    return yFormat
+  }
+
+  function formatYAxis (axis, domain) {
+    if (!scales.yScale) {
+      return
+    }
+    if (config.yAxisFormat === "auto") {
+      const yExtent = scales.yScale.domain()
+      let yFormat = autoFormat(yExtent)
       axis.tickFormat(d3.format(yFormat))
     } else if (typeof config.yAxisFormat === "string") {
       axis.tickFormat(d3.format(config.yAxisFormat))
+    }
+  }
+
+  function formatY2Axis (axis, domain) {
+    if (!scales.y2Scale) {
+      return
+    }
+    if (config.y2AxisFormat === "auto") {
+      const y2Extent = scales.y2Scale.domain()
+      let y2Format = autoFormat(y2Extent)
+      axis.tickFormat(d3.format(y2Format))
+    } else if (typeof config.y2AxisFormat === "string") {
+      axis.tickFormat(d3.format(config.y2AxisFormat))
     }
   }
 
@@ -115,16 +136,18 @@ export default function Axis (_container) {
 
     formatXAxis()
 
-    cache.yAxis = d3.axisLeft(scales.yScale)
-        .tickSize([config.tickSizes])
-        .tickPadding(config.tickPadding)
+    if (scales.yScale) {
+      cache.yAxis = d3.axisLeft(scales.yScale)
+          .tickSize([config.tickSizes])
+          .tickPadding(config.tickPadding)
 
-    formatYAxis(cache.yAxis)
+      formatYAxis(cache.yAxis)
 
-    if (Number.isInteger(config.yTicks)) {
-      cache.yAxis.ticks(config.yTicks)
-    } else {
-      cache.yAxis.ticks(Math.ceil(cache.chartHeight / config.tickSpacing))
+      if (Number.isInteger(config.yTicks)) {
+        cache.yAxis.ticks(config.yTicks)
+      } else {
+        cache.yAxis.ticks(Math.ceil(cache.chartHeight / config.tickSpacing))
+      }
     }
 
     if (scales.hasSecondAxis) {
@@ -132,7 +155,7 @@ export default function Axis (_container) {
           .tickSize([config.tickSizes])
           .tickPadding(config.tickPadding)
 
-      formatYAxis(cache.y2Axis)
+      formatY2Axis(cache.y2Axis)
 
       if (!isNaN(config.y2Ticks)) {
         cache.y2Axis.ticks(config.y2Ticks)
@@ -148,19 +171,25 @@ export default function Axis (_container) {
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
 
-    cache.root.select(".axis.y")
-        .transition()
-        .duration(config.axisTransitionDuration)
-        .ease(config.ease)
-        .call(cache.yAxis)
+    if (scales.yScale) {
+      cache.root.select(".axis.y")
+          .transition()
+          .duration(config.axisTransitionDuration)
+          .ease(config.ease)
+          .call(cache.yAxis)
+    } else {
+      cache.root.select(".axis.y").selectAll("*").remove()
+    }
 
-    if (scales.hasSecondAxis) {
+    if (scales.y2Scale) {
       cache.root.select(".axis.y2")
           .attr("transform", `translate(${cache.chartWidth}, 0)`)
           .transition()
           .duration(config.axisTransitionDuration)
           .ease(config.ease)
           .call(cache.y2Axis)
+    } else {
+      cache.root.select(".axis.y2").selectAll("*").remove()
     }
 
     return this
@@ -175,21 +204,25 @@ export default function Axis (_container) {
         ticks = Math.ceil(cache.chartHeight / config.tickSpacing)
       }
 
-      cache.horizontalGridLines = cache.root.select(".grid-lines-group")
-          .selectAll("line.horizontal-grid-line")
-          .data(scales.yScale.ticks(ticks))
+      if (scales.yScale) {
+        cache.horizontalGridLines = cache.root.select(".grid-lines-group")
+            .selectAll("line.horizontal-grid-line")
+            .data(scales.yScale.ticks(ticks))
 
-      cache.horizontalGridLines.enter()
-        .append("line")
-        .attr("class", "horizontal-grid-line")
-        .merge(cache.horizontalGridLines)
-        .transition()
-        .duration(config.axisTransitionDuration)
-        .attr("x2", cache.chartWidth)
-        .attr("y1", scales.yScale)
-        .attr("y2", scales.yScale)
+        cache.horizontalGridLines.enter()
+          .append("line")
+          .attr("class", "horizontal-grid-line")
+          .merge(cache.horizontalGridLines)
+          .transition()
+          .duration(config.axisTransitionDuration)
+          .attr("x2", cache.chartWidth)
+          .attr("y1", scales.yScale)
+          .attr("y2", scales.yScale)
 
-      cache.horizontalGridLines.exit().remove()
+        cache.horizontalGridLines.exit().remove()
+      } else {
+        cache.horizontalGridLines.selectAll("*").remove()
+      }
     }
 
     if (config.grid === "vertical" || config.grid === "full") {

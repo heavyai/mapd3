@@ -59,7 +59,7 @@ export default function DataManager () {
     }
 
     const series = d3.range(config.lineCount).map((d) => ({
-      label: `Label-------------- ${d}`,
+      label: `Label ${d}`,
       id: d,
       group: d < config.groupCount ? d : 0,
       values: generateSeries(dataKeys, config.range)

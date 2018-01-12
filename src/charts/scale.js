@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys} from "./helpers/constants"
+import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
 import {getUnique, override} from "./helpers/common"
 
 export default function Scale () {
@@ -127,39 +127,43 @@ export default function Scale () {
 
   function getHorizontalScales () {
     const groups = splitByGroups()
+    const groupKeys = Object.keys(groups) || []
 
-    const hasSecondAxis = Object.keys(data.groupKeys).length > 1
+    const hasLeftAxis = groupKeys.indexOf(LEFT_AXIS_GROUP_INDEX) > -1
+    const hasRightAxis = groupKeys.indexOf(RIGHT_AXIS_GROUP_INDEX) > -1
 
-    const groupAxis1 = groups[0]
-    const allUniqueKeys = groupAxis1.allKeys
-
+    const allUniqueKeys = data.dataByKey.map(d => d.key)
     const xScale = buildXScale(allUniqueKeys)
+
     const colorScale = buildColorScale()
 
-    let yDomain = null
-    if (config.yDomain === "auto") {
-      yDomain = d3.extent(groupAxis1.allValues)
-    } else {
-      yDomain = config.yDomain
+    let yScale = null
+    if (hasLeftAxis) {
+      let yDomain = null
+      if (config.yDomain === "auto") {
+        const groupLeftAxis = groups[LEFT_AXIS_GROUP_INDEX]
+        yDomain = d3.extent(groupLeftAxis.allValues)
+      } else {
+        yDomain = config.yDomain
+      }
+      yScale = buildYScale(yDomain)
     }
-    const yScale = buildYScale(yDomain)
 
     let y2Scale = null
-    if (hasSecondAxis) {
+    if (hasRightAxis) {
       let y2Domain = null
       if (config.y2Domain === "auto") {
-        const groupAxis2 = groups[1]
-        y2Domain = d3.extent(groupAxis2.allValues)
+        const groupRightAxis = groups[RIGHT_AXIS_GROUP_INDEX]
+        y2Domain = d3.extent(groupRightAxis.allValues)
       } else {
         y2Domain = config.y2Domain
       }
 
-      y2Scale = yScale.copy()
-        .domain(y2Domain)
+      y2Scale = buildYScale(y2Domain)
     }
 
     return {
-      hasSecondAxis,
+      hasSecondAxis: hasRightAxis,
       xScale,
       yScale,
       y2Scale,

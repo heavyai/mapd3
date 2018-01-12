@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys} from "./helpers/constants"
+import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
 import {override} from "./helpers/common"
 
 export default function Hover (_container) {
@@ -103,7 +103,8 @@ export default function Hover (_container) {
       .attr("class", "dot")
       .merge(dots)
       .attr("cy", (d) => {
-        if (config.chartType === "stackedArea" || data.groupKeys[0].indexOf(d[keys.ID]) > -1) {
+        const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
+        if (leftAxisGroup && leftAxisGroup.indexOf(d[keys.ID]) > -1) {
           return scales.yScale(d[keys.VALUE])
         } else {
           return scales.y2Scale(d[keys.VALUE])

@@ -89,17 +89,17 @@ export default function Axis (_container) {
 
   function autoFormat (_yExtent) {
     let yFormat = config.numberFormat
-      if ((_yExtent[1] - _yExtent[0]) < 1) {
-        yFormat = ".2f"
-      } else if ((_yExtent[1] - _yExtent[0]) < 100) {
-        yFormat = ".1f"
-      } else if ((_yExtent[1] - _yExtent[0]) < 1000) {
-        yFormat = ".0f"
-      } else if ((_yExtent[1] - _yExtent[0]) < 100000) {
-        yFormat = ".2s"
-      } else {
-        yFormat = ".2s"
-      }
+    if ((_yExtent[1] - _yExtent[0]) < 1) {
+      yFormat = ".2f"
+    } else if ((_yExtent[1] - _yExtent[0]) < 100) {
+      yFormat = ".1f"
+    } else if ((_yExtent[1] - _yExtent[0]) < 1000) {
+      yFormat = ".0f"
+    } else if ((_yExtent[1] - _yExtent[0]) < 100000) {
+      yFormat = ".2s"
+    } else {
+      yFormat = ".2s"
+    }
     return yFormat
   }
 

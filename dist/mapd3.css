@@ -118,7 +118,7 @@
   opacity: 0.2; }
 
 .chart .masking-rectangle {
-  fill: none; }
+  fill: #ffffff; }
 
 .chart .x.axis path, .chart .x.axis .domain, .chart .y.axis path, .chart .y.axis .domain, .chart .y2.axis path, .chart .y2.axis .domain {
   display: block;

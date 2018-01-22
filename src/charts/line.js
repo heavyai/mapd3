@@ -29,7 +29,8 @@ export default function Line (_container) {
   const cache = {
     container: _container,
     svg: null,
-    chartHeight: null
+    clipPath: null,
+    chartHeight: null,
   }
 
   let data = {
@@ -50,22 +51,20 @@ export default function Line (_container) {
           .classed("mark-group", true)
     }
 
-    cache.container.select(function () {
-      const svg = d3.select(this.parentNode)
-      cache.clipPath = svg
-        .append('defs')
-        .append('clipPath')
-        .attr('id', 'line-clip')
-      cache.clipPath.append('rect')
-        .attr('width', cache.chartWidth)
-        .attr('height', cache.chartHeight)
-        .attr('transform', `translate(${config.margin.left}, ${config.margin.top})`)
-      svg.select('.masking-rectangle')
-        .attr('clip-path', 'url(#line-clip)')
-        .attr('width', cache.chartWidth)
-        .attr('height', cache.chartHeight)
-        .attr('transform', `translate(${config.margin.left}, ${config.margin.top})`)
-    })
+    if (!cache.clipPath) {
+      cache.container.select(function () {
+        const svg = d3.select(this.parentNode)
+        cache.clipPath = svg
+          .insert('defs', ':first-child') // inserts the <defs> el at the top
+          .append('clipPath')
+          .attr('id', 'line-clip')
+          .append('rect')
+      })
+    }
+
+    cache.clipPath
+      .attr('width', cache.chartWidth)
+      .attr('height', cache.chartHeight)
   }
 
   function drawLines () {
@@ -98,6 +97,7 @@ export default function Line (_container) {
       .append("path")
       .merge(lines)
       .attr("class", "mark line")
+      .attr('clip-path', 'url(#line-clip)')
       .classed("y2-line", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -136,6 +136,7 @@ export default function Line (_container) {
       .append("path")
       .merge(areas)
       .attr("class", "mark area")
+      .attr('clip-path', 'url(#line-clip)')
       .classed("y2-area", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -163,6 +164,7 @@ export default function Line (_container) {
       .append("path")
       .merge(areas)
       .attr("class", "mark stacked-area")
+      .attr('clip-path', 'url(#line-clip)')
       .attr("d", seriesLine)
       .style("stroke", "none")
       .style("fill", (d) => scales.colorScale(d.key))

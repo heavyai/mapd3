@@ -49,6 +49,23 @@ export default function Line (_container) {
       cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
+
+    cache.container.select(function () {
+      const svg = d3.select(this.parentNode)
+      cache.clipPath = svg
+        .append('defs')
+        .append('clipPath')
+        .attr('id', 'line-clip')
+      cache.clipPath.append('rect')
+        .attr('width', cache.chartWidth)
+        .attr('height', cache.chartHeight)
+        .attr('transform', `translate(${config.margin.left}, ${config.margin.top})`)
+      svg.select('.masking-rectangle')
+        .attr('clip-path', 'url(#line-clip)')
+        .attr('width', cache.chartWidth)
+        .attr('height', cache.chartHeight)
+        .attr('transform', `translate(${config.margin.left}, ${config.margin.top})`)
+    })
   }
 
   function drawLines () {

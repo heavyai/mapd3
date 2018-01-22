@@ -85,7 +85,6 @@ export default function Line (_container) {
     const seriesLine2 = d3.line()
         .x((d) => scales.xScale(d[keys.DATA]))
         .y((d) => scales.y2Scale(d[keys.VALUE]))
-        .curve(d3.curveCatmullRom)
 
     if (Array.isArray(config.xDomain)) {
       seriesLine.defined((d) => d[keys.DATA] >= config.xDomain[0] && d[keys.DATA] <= config.xDomain[1])

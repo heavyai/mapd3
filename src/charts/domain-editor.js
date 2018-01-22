@@ -270,6 +270,7 @@ export default function DomainEditor (_container) {
     }
 
     if (config.xDomainEditorIsEnabled) {
+      cache.xHitZone.style("display", "block")
       cache.xHitZone
         .style("width", `${cache.chartWidth + LOCK_SIZE}px`)
         .style("height", `${HOVER_ZONE_SIZE}px`)
@@ -297,6 +298,7 @@ export default function DomainEditor (_container) {
     }
 
     if (config.yDomainEditorIsEnabled) {
+      cache.yHitZone.style("display", "block")
       cache.yHitZone
         .style("width", `${HOVER_ZONE_SIZE}px`)
         .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
@@ -325,6 +327,7 @@ export default function DomainEditor (_container) {
     }
 
     if (config.y2DomainEditorIsEnabled) {
+      cache.y2HitZone.style("display", "block")
       cache.y2HitZone
         .style("width", `${HOVER_ZONE_SIZE}px`)
         .style("height", `${cache.chartHeight + LOCK_SIZE}px`)

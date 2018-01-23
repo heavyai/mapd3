@@ -138,8 +138,12 @@ export default function Tooltip (_container, isLegend = false) {
       .data((d) => {
         const legendData = [
           {key: "tooltip-color", value: scales.colorScale(d[keys.ID])},
-          {key: "tooltip-label", value: d[keys.LABEL]}
         ]
+
+        if (isLegend) {
+          legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
+        }
+
         if (typeof d[keys.VALUE] !== "undefined") {
           legendData.push({key: "value", value: d[keys.VALUE]})
         }

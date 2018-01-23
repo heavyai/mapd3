@@ -51,6 +51,8 @@ export default function Scale () {
     if (config.xDomain === "auto") {
       if (config.keyType === "string") {
         domain = _allKeys
+      } else if (config.keyType === "number") {
+        domain = d3.extent(_allKeys.map(d => Number(d)))
       } else {
         domain = d3.extent(_allKeys)
       }

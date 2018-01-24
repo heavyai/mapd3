@@ -26,6 +26,7 @@ export {
 	timeSecond,
 	timeMinute,
 	timeHour,
+	timeWeek,
 	timeYear,
 	area,
 	curveCatmullRom,

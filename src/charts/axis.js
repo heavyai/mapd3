@@ -94,6 +94,9 @@ export default function Axis (_container) {
   function formatXAxis () {
     if (config.keyType === "time") {
       if (config.xAxisFormat && config.xAxisFormat !== "auto") {
+        const formatter = d3.timeFormat(config.xAxisFormat)
+        cache.xAxis.tickFormat(formatter)
+      } else {
         cache.xAxis.tickFormat(multiFormat)
       }
     } else if (config.keyType === "string") {

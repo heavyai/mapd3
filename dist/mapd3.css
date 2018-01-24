@@ -75,10 +75,14 @@
     display: table-row; }
   .tooltip-group .section, .legend-group .section {
     display: table-cell;
+    vertical-align: middle;
     margin-right: 16px; }
   .tooltip-group .section.tooltip-color .swatch, .legend-group .section.tooltip-color .swatch {
     width: 8px;
     height: 8px; }
+  .tooltip-group .section.tooltip-color .dash, .legend-group .section.tooltip-color .dash {
+    width: 8px;
+    height: 1.5px; }
   .tooltip-group .section.tooltip-label, .tooltip-group .section.value, .legend-group .section.tooltip-label, .legend-group .section.value {
     padding-left: 5px;
     white-space: nowrap;
@@ -98,6 +102,10 @@
 .tooltip-group .section.tooltip-color .swatch {
   width: 12px;
   height: 12px; }
+
+.tooltip-group .section.tooltip-color .dash {
+  width: 12px;
+  height: 1.5px; }
 
 .legend-group {
   font-size: 11px; }

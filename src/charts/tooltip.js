@@ -22,6 +22,7 @@ export default function Tooltip (_container, isLegend = false) {
     tooltipTitle: null,
 
     // from chart
+    chartType: null,
     keyType: "time"
   }
 
@@ -125,6 +126,7 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function drawContent () {
+    console.log(config.chartType)
     const formatter = d3.format(config.numberFormat)
 
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
@@ -157,7 +159,7 @@ export default function Tooltip (_container, isLegend = false) {
         if (d.key === "tooltip-color") {
           selection.html("<div></div>")
             .select("div")
-            .attr("class", "swatch")
+            .attr("class", () => config.chartType === "line" ? "dash" : "swatch")
             .style("background", d.value)
         } else if (d.key === "value") {
           selection.html(formatter(d.value))

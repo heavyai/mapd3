@@ -16,7 +16,7 @@ export default function Tooltip (_container, isLegend = false) {
     height: 45,
 
     dateFormat: "%b %d, %Y",
-    numberFormat: ".2f",
+    numberFormat: null,
     seriesOrder: [],
     tooltipIsEnabled: true,
     tooltipTitle: null,
@@ -127,8 +127,26 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
+  function autoFormat (d) {
+    let yFormat = ".2f"
+    if (d < 1) {
+      yFormat = ".2f"
+    } else if (d < 100) {
+      yFormat = ".1f"
+    } else if (d < 1000) {
+      yFormat = ".0f"
+    } else if (d < 100000) {
+      yFormat = ".2s"
+    } else {
+      yFormat = ".2s"
+    }
+    return yFormat
+  }
+
   function drawContent () {
-    const formatter = d3.format(config.numberFormat)
+    const formatter = config.numberFormat
+      ? d3.format(config.numberFormat)
+      : d3.format(autoFormat)
 
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
         .data(cache.content)
@@ -141,7 +159,7 @@ export default function Tooltip (_container, isLegend = false) {
       .data((d) => {
         const legendData = [
           {
-            key: "tooltip-color", 
+            key: "tooltip-color",
             value: scales.colorScale(d[keys.LABEL]),
             style: scales.styleScale(d[keys.LABEL])
           },
@@ -163,7 +181,7 @@ export default function Tooltip (_container, isLegend = false) {
         const selection = d3.select(this)
         if (d.key === "tooltip-color") {
           const size = 12
-          const offset = isLegend ? 4 : 6
+          const offset = size / 2
           const svg = selection
             .html("<svg></svg>")
             .select("svg")

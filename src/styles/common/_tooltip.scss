@@ -44,13 +44,11 @@
     border-spacing: 0 5px;
   }
   .tooltip-item {
-    display: table-row;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
   }
-  .section {
-    display: table-cell;
-    vertical-align: middle;
-    margin-right: 16px;
-  }
+  .section {}
   .section.tooltip-label, .section.value {
     padding-left: 5px;
     white-space: nowrap;

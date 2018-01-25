@@ -72,11 +72,9 @@
     border-collapse: separate;
     border-spacing: 0 5px; }
   .tooltip-group .tooltip-item, .legend-group .tooltip-item {
-    display: table-row; }
-  .tooltip-group .section, .legend-group .section {
-    display: table-cell;
-    vertical-align: middle;
-    margin-right: 16px; }
+    display: flex;
+    justify-content: flex-start;
+    align-items: center; }
   .tooltip-group .section.tooltip-label, .tooltip-group .section.value, .legend-group .section.tooltip-label, .legend-group .section.value {
     padding-left: 5px;
     white-space: nowrap;

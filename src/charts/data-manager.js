@@ -124,7 +124,7 @@ export default function DataManager () {
       .entries(flatDataSorted)
       .map((d) => {
         const dataPoint = {}
-        console.log(555, _keyType, d.key, new Date(d.key))
+        // console.log(555, _keyType, d.key, new Date(d.key))
         dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
         dataPoint[keys.SERIES] = d.values
         return dataPoint
@@ -222,4 +222,3 @@ export default function DataManager () {
     setConfig
   }
 }
-

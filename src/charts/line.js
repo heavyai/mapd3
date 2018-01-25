@@ -21,6 +21,7 @@ export default function Line (_container) {
 
   let scales = {
     colorScale: null,
+    styleScale: null,
     xScale: null,
     yScale: null,
     y2Scale: null
@@ -68,10 +69,6 @@ export default function Line (_container) {
   }
 
   function drawLines () {
-    const styleLookup = {}
-    config.colorSchema.forEach(d => {
-      styleLookup[d.key] = d.style
-    })
     const seriesLine = d3.line()
         .x((d) => scales.xScale(d[keys.DATA]))
         .y((d) => scales.yScale(d[keys.VALUE]))
@@ -104,10 +101,9 @@ export default function Line (_container) {
       .style("stroke", getColor)
       .style("fill", "none")
       .attr("stroke-dasharray", d => {
-        const style = styleLookup[d[keys.ID]]
+        const style = scales.styleScale(d[keys.LABEL])
         return dashStylesTranslation[style]
       })
-
 
     lines.exit().remove()
   }

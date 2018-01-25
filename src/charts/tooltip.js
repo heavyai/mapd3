@@ -28,7 +28,8 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   let scales = {
-    colorScale: null
+    colorScale: null,
+    styleScale: null
   }
 
   const cache = {
@@ -127,12 +128,6 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function drawContent () {
-    // styleLookUp borrowed from line.drawLines, the two probably could be abstracted...
-    const styleLookup = {}
-    config.colorSchema.forEach(d => {
-      styleLookup[d.key] = d.style
-    })
-
     const formatter = d3.format(config.numberFormat)
 
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
@@ -145,7 +140,11 @@ export default function Tooltip (_container, isLegend = false) {
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
       .data((d) => {
         const legendData = [
-          {key: "tooltip-color", value: scales.colorScale(d[keys.LABEL])},
+          {
+            key: "tooltip-color", 
+            value: scales.colorScale(d[keys.LABEL]),
+            style: scales.styleScale(d[keys.LABEL])
+          },
         ]
 
         if (isLegend) {
@@ -163,7 +162,7 @@ export default function Tooltip (_container, isLegend = false) {
       .each(function each (d) {
         const selection = d3.select(this)
         if (d.key === "tooltip-color") {
-          const size = isLegend ? 8 : 12
+          const size = 12
           const offset = isLegend ? 4 : 6
           const svg = selection
             .html("<svg></svg>")
@@ -179,12 +178,10 @@ export default function Tooltip (_container, isLegend = false) {
               .attr("x2", size)
               .attr("y2", offset)
               .attr("stroke", d.value)
-              .attr("stroke-width", 1.5)
+              .attr("stroke-width", 2.5)
               .attr("stroke-dasharray", d => {
-                // borrowed from line.drawLines, the two probably could be abstracted...
-                const style = styleLookup[d[keys.ID]]
-                return dashStylesTranslation[style]
-            })
+                return dashStylesTranslation[d.style]
+              })
           } else {
             svg
               .append("rect")

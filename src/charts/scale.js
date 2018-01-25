@@ -85,6 +85,16 @@ export default function Scale () {
     return colorScale
   }
 
+  function buildStyleScale () {
+    const ids = data.dataBySeries.map(getID)
+    const styleScale = d3.scaleOrdinal()
+        .range(config.colorSchema.map((d) => d.style))
+        .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
+        .unknown("solid")
+
+    return styleScale
+  }
+
   function splitByGroups () {
     const groups = {}
     data.dataBySeries.forEach((d) => {
@@ -110,6 +120,7 @@ export default function Scale () {
 
     const xScale = buildXScale(allUniqueKeys)
     const colorScale = buildColorScale()
+    const styleScale = buildStyleScale()
 
     let yDomain = null
     if (config.yDomain === "auto") {
@@ -123,7 +134,8 @@ export default function Scale () {
     return {
       xScale,
       yScale,
-      colorScale
+      colorScale,
+      styleScale
     }
   }
 
@@ -138,6 +150,7 @@ export default function Scale () {
     const xScale = buildXScale(allUniqueKeys)
 
     const colorScale = buildColorScale()
+    const styleScale = buildStyleScale()
 
     let yScale = null
     if (hasLeftAxis) {
@@ -169,7 +182,8 @@ export default function Scale () {
       xScale,
       yScale,
       y2Scale,
-      colorScale
+      colorScale,
+      styleScale
     }
   }
 

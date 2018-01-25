@@ -72,8 +72,22 @@ export default function DataManager () {
     return cache.data
   }
 
+  function convertToDate (_date) {
+    // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
+    return new Date(new Date(_date).toString())
+  }
+
   function cleanData (_data, _keyType) {
     const dataBySeries = cloneData(_data[keys.SERIES])
+    dataBySeries.forEach((serie) => {
+      // convert type
+      serie[keys.VALUES].forEach((d) => {
+        if (_keyType === "time") {
+          d[keys.KEY] = convertToDate(d[keys.KEY])
+        }
+        d[keys.VALUE] = Number(d[keys.VALUE])
+      })
+    })
     const flatData = []
 
     // get all unique keys
@@ -95,13 +109,6 @@ export default function DataManager () {
       }))
       // sort
       serie[keys.VALUES] = sortData(filled, _keyType)
-      // convert type
-      serie[keys.VALUES].forEach((d) => {
-        if (_keyType === "time") {
-          d[keys.KEY] = new Date(d[keys.KEY])
-        }
-        d[keys.VALUE] = Number(d[keys.VALUE])
-      })
     })
 
     // flatten data
@@ -111,7 +118,7 @@ export default function DataManager () {
         dataPoint[keys.LABEL] = serie[keys.LABEL]
         dataPoint[keys.GROUP] = serie[keys.GROUP]
         dataPoint[keys.ID] = serie[keys.ID]
-        dataPoint[keys.KEY] = _keyType === "time" ? new Date(d[keys.KEY]) : d[keys.KEY]
+        dataPoint[keys.KEY] = d[keys.KEY]
         dataPoint[keys.VALUE] = d[keys.VALUE]
         flatData.push(dataPoint)
       })
@@ -124,7 +131,6 @@ export default function DataManager () {
       .entries(flatDataSorted)
       .map((d) => {
         const dataPoint = {}
-        // console.log(555, _keyType, d.key, new Date(d.key))
         dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
         dataPoint[keys.SERIES] = d.values
         return dataPoint

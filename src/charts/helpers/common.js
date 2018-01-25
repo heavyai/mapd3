@@ -26,7 +26,11 @@ export function sortData (_data, _keyType) {
 }
 
 export function getUnique (arr) {
-  return [...new Set(arr)]
+  const obj = {}
+  arr.forEach(d =>{
+    obj[d] = null
+  })
+  return Object.keys(obj)
 }
 
 export function invertScale (_scale, _mouseX, _keyType) {

@@ -144,10 +144,6 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function drawContent () {
-    const formatter = config.numberFormat
-      ? d3.format(config.numberFormat)
-      : d3.format(autoFormat)
-
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
         .data(cache.content)
     const tooltipItemsUpdate = tooltipItems.enter().append("div")
@@ -210,7 +206,7 @@ export default function Tooltip (_container, isLegend = false) {
               .style("fill", d.value)
           }
         } else if (d.key === "value") {
-          selection.html(formatter(d.value))
+          selection.html(d3.format(autoFormat(d.value))(d.value))
         } else {
           selection.html(d.value)
         }

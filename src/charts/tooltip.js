@@ -145,7 +145,7 @@ export default function Tooltip (_container, isLegend = false) {
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
       .data((d) => {
         const legendData = [
-          {key: "tooltip-color", value: scales.colorScale(d[keys.ID])},
+          {key: "tooltip-color", value: scales.colorScale(d[keys.LABEL])},
         ]
 
         if (isLegend) {

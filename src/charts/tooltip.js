@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys} from "./helpers/constants"
+import {keys, dashStylesTranslation} from "./helpers/constants"
 import {cloneData, override} from "./helpers/common"
 
 export default function Tooltip (_container, isLegend = false) {
@@ -23,6 +23,7 @@ export default function Tooltip (_container, isLegend = false) {
 
     // from chart
     chartType: null,
+    colorSchema: ["skyblue"],
     keyType: "time"
   }
 
@@ -126,7 +127,12 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function drawContent () {
-    console.log(config.chartType)
+    // styleLookUp borrowed from line.drawLines, the two probably could be abstracted...
+    const styleLookup = {}
+    config.colorSchema.forEach(d => {
+      styleLookup[d.key] = d.style
+    })
+
     const formatter = d3.format(config.numberFormat)
 
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
@@ -157,10 +163,37 @@ export default function Tooltip (_container, isLegend = false) {
       .each(function each (d) {
         const selection = d3.select(this)
         if (d.key === "tooltip-color") {
-          selection.html("<div></div>")
-            .select("div")
-            .attr("class", () => config.chartType === "line" ? "dash" : "swatch")
-            .style("background", d.value)
+          const size = isLegend ? 8 : 12
+          const offset = isLegend ? 4 : 6
+          const svg = selection
+            .html("<svg></svg>")
+            .select("svg")
+            .attr("width", size)
+            .attr("height", size)
+
+          if (config.chartType === "line") {
+            svg
+              .append("line")
+              .attr("x1", 0)
+              .attr("y1", offset)
+              .attr("x2", size)
+              .attr("y2", offset)
+              .attr("stroke", d.value)
+              .attr("stroke-width", 1.5)
+              .attr("stroke-dasharray", d => {
+                // borrowed from line.drawLines, the two probably could be abstracted...
+                const style = styleLookup[d[keys.ID]]
+                return dashStylesTranslation[style]
+            })
+          } else {
+            svg
+              .append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("width", size)
+              .attr("height", size)
+              .style("fill", d.value)
+          }
         } else if (d.key === "value") {
           selection.html(formatter(d.value))
         } else {

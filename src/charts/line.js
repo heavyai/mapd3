@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys} from "./helpers/constants"
+import {keys, dashStylesTranslation} from "./helpers/constants"
 import {override} from "./helpers/common"
 
 export default function Line (_container) {
@@ -72,11 +72,6 @@ export default function Line (_container) {
     config.colorSchema.forEach(d => {
       styleLookup[d.key] = d.style
     })
-    const stylesTranslation = {
-      dashes: "5, 4",
-      solid: null,
-      dotted: "1 4"
-    }
     const seriesLine = d3.line()
         .x((d) => scales.xScale(d[keys.DATA]))
         .y((d) => scales.yScale(d[keys.VALUE]))
@@ -110,7 +105,7 @@ export default function Line (_container) {
       .style("fill", "none")
       .attr("stroke-dasharray", d => {
         const style = styleLookup[d[keys.ID]]
-        return stylesTranslation[style]
+        return dashStylesTranslation[style]
       })
 
 

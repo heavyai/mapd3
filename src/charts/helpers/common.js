@@ -14,13 +14,13 @@ export function sortData (_data, _keyType) {
   const sortedData = cloneData(_data)
   if (_keyType === "time") {
     sortedData.forEach((d) => {
-      d[keys.DATA] = new Date(d[keys.DATA])
+      d[keys.KEY] = new Date(d[keys.KEY])
     })
-    sortedData.sort((a, b) => a[keys.DATA].getTime() - b[keys.DATA].getTime())
+    sortedData.sort((a, b) => a[keys.KEY].getTime() - b[keys.KEY].getTime())
   } else if (_keyType === "string") {
-    sortedData.sort((a, b) => a[keys.DATA].localeCompare(b[keys.DATA], "en", {numeric: false}))
+    sortedData.sort((a, b) => a[keys.KEY].localeCompare(b[keys.KEY], "en", {numeric: false}))
   } else {
-    sortedData.sort((a, b) => a[keys.DATA] - b[keys.DATA])
+    sortedData.sort((a, b) => a[keys.KEY] - b[keys.KEY])
   }
   return sortedData
 }

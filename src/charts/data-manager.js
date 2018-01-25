@@ -19,7 +19,7 @@ export default function DataManager () {
   }
 
   // accessors
-  const getKey = (d) => d[keys.DATA]
+  const getKey = (d) => d[keys.KEY]
   const getID = (d) => d[keys.ID]
 
   const DAY_IN_MS = 1000 * 60 * 60 * 24
@@ -98,7 +98,7 @@ export default function DataManager () {
       // convert type
       serie[keys.VALUES].forEach((d) => {
         if (_keyType === "time") {
-          d[keys.DATA] = new Date(d[keys.DATA])
+          d[keys.KEY] = new Date(d[keys.KEY])
         }
         d[keys.VALUE] = Number(d[keys.VALUE])
       })
@@ -111,7 +111,7 @@ export default function DataManager () {
         dataPoint[keys.LABEL] = serie[keys.LABEL]
         dataPoint[keys.GROUP] = serie[keys.GROUP]
         dataPoint[keys.ID] = serie[keys.ID]
-        dataPoint[keys.DATA] = _keyType === "time" ? new Date(d[keys.DATA]) : d[keys.DATA]
+        dataPoint[keys.KEY] = _keyType === "time" ? new Date(d[keys.KEY]) : d[keys.KEY]
         dataPoint[keys.VALUE] = d[keys.VALUE]
         flatData.push(dataPoint)
       })
@@ -124,7 +124,8 @@ export default function DataManager () {
       .entries(flatDataSorted)
       .map((d) => {
         const dataPoint = {}
-        dataPoint[keys.DATA] = _keyType === "time" ? new Date(d.key) : d.key
+        console.log(555, _keyType, d.key, new Date(d.key))
+        dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
         dataPoint[keys.SERIES] = d.values
         return dataPoint
       })
@@ -142,7 +143,7 @@ export default function DataManager () {
     const stackData = dataByKey
         .map((d) => {
           const points = {
-            key: d[keys.DATA]
+            key: d[keys.KEY]
           }
           d.series.forEach((dB) => {
             points[dB[keys.ID]] = dB[keys.VALUE]
@@ -183,7 +184,7 @@ export default function DataManager () {
 
     data[keys.SERIES].forEach((series) => {
       const values = series[keys.VALUES]
-      const allKeys = values.map(d => d[keys.DATA])
+      const allKeys = values.map(d => d[keys.KEY])
       const extentMinIndex = allKeys.indexOf(_extent[0])
       const extentMaxIndex = allKeys.indexOf(_extent[1])
       series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
@@ -197,7 +198,7 @@ export default function DataManager () {
 
     data[keys.SERIES].forEach((series) => {
       series[keys.VALUES] = series[keys.VALUES].filter((d) => {
-        const epoch = new Date(d[keys.DATA]).getTime()
+        const epoch = new Date(d[keys.KEY]).getTime()
         return epoch >= _dateExtent[0].getTime()
           && epoch <= _dateExtent[1].getTime()
       })

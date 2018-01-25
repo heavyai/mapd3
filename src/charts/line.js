@@ -70,16 +70,16 @@ export default function Line (_container) {
 
   function drawLines () {
     const seriesLine = d3.line()
-        .x((d) => scales.xScale(d[keys.DATA]))
+        .x((d) => scales.xScale(d[keys.KEY]))
         .y((d) => scales.yScale(d[keys.VALUE]))
 
     const seriesLine2 = d3.line()
-        .x((d) => scales.xScale(d[keys.DATA]))
+        .x((d) => scales.xScale(d[keys.KEY]))
         .y((d) => scales.y2Scale(d[keys.VALUE]))
 
     if (Array.isArray(config.xDomain)) {
-      seriesLine.defined((d) => d[keys.DATA] >= config.xDomain[0] && d[keys.DATA] <= config.xDomain[1])
-      seriesLine2.defined((d) => d[keys.DATA] >= config.xDomain[0] && d[keys.DATA] <= config.xDomain[1])
+      seriesLine.defined((d) => d[keys.KEY] >= config.xDomain[0] && d[keys.KEY] <= config.xDomain[1])
+      seriesLine2.defined((d) => d[keys.KEY] >= config.xDomain[0] && d[keys.KEY] <= config.xDomain[1])
     }
 
     const lines = cache.root.selectAll(".mark")
@@ -110,12 +110,12 @@ export default function Line (_container) {
 
   function drawAreas () {
     const seriesArea = d3.area()
-        .x((d) => scales.xScale(d[keys.DATA]))
+        .x((d) => scales.xScale(d[keys.KEY]))
         .y0((d) => scales.yScale(d[keys.VALUE]))
         .y1(() => cache.chartHeight)
 
     const seriesArea2 = d3.area()
-        .x((d) => scales.xScale(d[keys.DATA]))
+        .x((d) => scales.xScale(d[keys.KEY]))
         .y0((d) => scales.y2Scale(d[keys.VALUE]))
         .y1(() => cache.chartHeight)
         .curve(d3.curveCatmullRom)
@@ -144,7 +144,7 @@ export default function Line (_container) {
 
   function drawStackedAreas () {
     const seriesLine = d3.area()
-        .x((d) => scales.xScale(d.data[keys.DATA]))
+        .x((d) => scales.xScale(d.data[keys.KEY]))
         .y0((d) => scales.yScale(d[0]))
         .y1((d) => scales.yScale(d[1]))
 

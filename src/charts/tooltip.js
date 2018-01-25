@@ -273,7 +273,7 @@ export default function Tooltip (_container, isLegend = false) {
     const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
     setXPosition(tooltipX)
     setYPosition(tooltipY)
-    setTitle(_dataPoint[keys.DATA])
+    setTitle(_dataPoint[keys.KEY])
     setupContent(_dataPoint[keys.SERIES])
 
     drawTooltip()

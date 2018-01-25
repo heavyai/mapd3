@@ -1,5 +1,5 @@
 export const keys = {
-  DATA: "key",
+  KEY: "key",
   VALUE: "value",
   ID: "id",
   LABEL: "label",

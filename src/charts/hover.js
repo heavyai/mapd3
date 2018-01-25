@@ -118,7 +118,7 @@ export default function Hover (_container) {
   }
 
   function highlightStackedDataPoints (_dataPoint) {
-    const stackedDataPoint = {key: _dataPoint[keys.DATA]}
+    const stackedDataPoint = {key: _dataPoint[keys.KEY]}
     _dataPoint.series.forEach((d) => {
       const id = d[keys.ID]
       stackedDataPoint[id] = d[keys.VALUE]

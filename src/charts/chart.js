@@ -366,7 +366,7 @@ export default function Chart (_container) {
         const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
 
         if (dataPoint) {
-          const dataPointXPosition = scales.xScale(dataPoint[keys.DATA])
+          const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
           throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY)
         }
       })

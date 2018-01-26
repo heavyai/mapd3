@@ -17,7 +17,6 @@ export default function Tooltip (_container, isLegend = false) {
 
     dateFormat: "%b %d, %Y",
     numberFormat: null,
-    seriesOrder: [],
     tooltipIsEnabled: true,
     tooltipTitle: null,
 
@@ -162,8 +161,8 @@ export default function Tooltip (_container, isLegend = false) {
         const legendData = [
           {
             key: "tooltip-color",
-            value: scales.colorScale(d[keys.LABEL]),
-            style: scales.styleScale(d[keys.LABEL])
+            value: scales.colorScale(d[keys.ID]),
+            style: scales.styleScale(d[keys.ID])
           },
         ]
 
@@ -257,23 +256,12 @@ export default function Tooltip (_container, isLegend = false) {
   function setupContent (_series) {
     let series = _series
 
-    if (config.seriesOrder.length) {
-      series = sortByTopicsOrder(_series)
-    } else if (_series.length && _series[0][keys.LABEL]) {
-      series = sortByAlpha(_series)
-    }
-
-    cache.content = series
+    cache.content = sortSeries(series)
     return this
   }
 
-  function sortByTopicsOrder (_series, _order = seriesOrder) {
-    return _order.map((orderName) => _series.filter(({name}) => name === orderName)[0])
-  }
-
-  function sortByAlpha (_series) {
-    const series = cloneData(_series)
-    return series.sort((a, b) => a[keys.LABEL].localeCompare(b[keys.LABEL], "en", {numeric: false}))
+  function sortSeries (_series) {
+    return [..._series].sort((a, b) => b[keys.VALUE] - a[keys.VALUE])
   }
 
   function hide () {

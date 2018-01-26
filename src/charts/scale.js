@@ -79,7 +79,7 @@ export default function Scale () {
     const ids = data.dataBySeries.map(getID)
     const colorScale = d3.scaleOrdinal()
         .range(config.colorSchema.map((d) => d.value))
-        .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
+        .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
         .unknown(config.defaultColor)
 
     return colorScale
@@ -89,7 +89,7 @@ export default function Scale () {
     const ids = data.dataBySeries.map(getID)
     const styleScale = d3.scaleOrdinal()
         .range(config.colorSchema.map((d) => d.style))
-        .domain(config.colorSchema.map((d, i) => d.key || ids[i]))
+        .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
         .unknown("solid")
 
     return styleScale
@@ -116,7 +116,7 @@ export default function Scale () {
     const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
 
     const allKeys = data.flatDataSorted.map(getKey)
-    const allUniqueKeys = getUnique(allKeys)
+    const allUniqueKeys = getUnique(allKeys, config.keyType)
 
     const xScale = buildXScale(allUniqueKeys)
     const colorScale = buildColorScale()

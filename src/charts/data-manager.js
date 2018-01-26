@@ -94,7 +94,7 @@ export default function DataManager () {
     let allKeys = []
     dataBySeries.forEach(d => { allKeys = allKeys.concat(d.values) })
     allKeys = allKeys.map(d => d.key)
-    allKeys = getUnique(allKeys)
+    allKeys = getUnique(allKeys, _keyType)
 
     // Normalize dataBySeries
     dataBySeries.forEach((serie) => {

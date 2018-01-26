@@ -101,7 +101,7 @@ export default function Line (_container) {
       .style("stroke", getColor)
       .style("fill", "none")
       .attr("stroke-dasharray", d => {
-        const style = scales.styleScale(d[keys.LABEL])
+        const style = scales.styleScale(d[keys.ID])
         return dashStylesTranslation[style]
       })
 

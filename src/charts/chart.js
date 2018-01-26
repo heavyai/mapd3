@@ -68,7 +68,6 @@ export default function Chart (_container) {
     tooltipEase: d3.easeQuadInOut,
     tooltipHeight: 48,
     tooltipWidth: 160,
-    seriesOrder: [],
     tooltipIsEnabled: true,
     tooltipTitle: null,
 

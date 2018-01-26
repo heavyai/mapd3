@@ -25,12 +25,17 @@ export function sortData (_data, _keyType) {
   return sortedData
 }
 
-export function getUnique (arr) {
+export function getUnique (arr, _keyType) {
   const obj = {}
   arr.forEach(d =>{
     obj[d] = null
   })
-  return Object.keys(obj)
+  const keys = Object.keys(obj)
+  if (_keyType === "time") {
+    return keys.map(d => new Date(d))
+  } else {
+    return keys
+  }
 }
 
 export function invertScale (_scale, _mouseX, _keyType) {

@@ -71,7 +71,9 @@
     height: 18px;
   }
 }
+
 .legend-group {
+  overflow-y: auto;
   font-size: 11px;
 
   .section.tooltip-label {

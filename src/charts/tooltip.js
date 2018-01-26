@@ -124,6 +124,12 @@ export default function Tooltip (_container, isLegend = false) {
         const width = cache.xPosition === "auto" ? this.getBoundingClientRect().width : 0
         return `${xPosition + config.margin.left - width}px`
       })
+
+    if (isLegend) {
+      // set max-height in case there are too many legend items
+      cache.root.style("max-height", `${cache.chartHeight}px`)
+    }
+
     return this
   }
 

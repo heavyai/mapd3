@@ -92,6 +92,7 @@
   height: 18px; }
 
 .legend-group {
+  overflow-y: auto;
   font-size: 11px; }
   .legend-group .section.tooltip-label {
     font-weight: normal; }

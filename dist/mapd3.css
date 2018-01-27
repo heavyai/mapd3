@@ -203,4 +203,5 @@
 .label-group .axis-label {
   color: #a7a7a7;
   font-weight: bold;
-  font-size: 13px; }
+  font-size: 13px;
+  overflow: hidden; }

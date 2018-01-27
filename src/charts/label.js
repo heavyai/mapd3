@@ -92,6 +92,7 @@ export default function Label (_container) {
 
     cache.xAxisLabel
         .text(config.xLabel)
+        .style("max-width", `${cache.chartWidth}px`)
         .style("top", function top () {
           const LABEL_PADDING = 18
           const textHeight = this.getBoundingClientRect().height
@@ -101,6 +102,7 @@ export default function Label (_container) {
 
     cache.yAxisLabel
       .text(config.yLabel)
+      .style("max-width", `${cache.chartHeight}px`)
       .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
       .style("left", function top () {
         const LABEL_PADDING = 4
@@ -110,6 +112,7 @@ export default function Label (_container) {
 
     cache.y2AxisLabel
       .text(config.y2Label)
+      .style("max-width", `${cache.chartHeight}px`)
       .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
       .style("left", function top () {
         const LABEL_PADDING = 4

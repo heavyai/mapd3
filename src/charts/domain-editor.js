@@ -61,7 +61,7 @@ export default function DomainEditor (_container) {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
     const xDomain = config.xDomain === "auto" ? scales.xScale.domain() : config.xDomain
-    const yDomain = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
+    const yDomain = (config.yDomain === "auto" && scales.yScale) ? scales.yScale.domain() : config.yDomain
     const y2Domain = (config.y2Domain === "auto" && scales.y2Scale) ? scales.y2Scale.domain() : config.y2Domain
 
     let yMinText = null

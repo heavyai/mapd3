@@ -79,7 +79,7 @@ export default function Scale () {
     const ids = data.dataBySeries.map(getID)
     const colorScale = d3.scaleOrdinal()
         .range(config.colorSchema.map((d) => d.value))
-        .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
+        .domain(config.colorSchema.map((d, i) => (typeof d.id === "undefined") ? ids[i] : d.id))
         .unknown(config.defaultColor)
 
     return colorScale

@@ -221,7 +221,7 @@ export default function Axis (_container) {
           .attr("y2", scales.yScale)
 
         cache.horizontalGridLines.exit().remove()
-      } else {
+      } else if (cache.horizontalGridLines) {
         cache.horizontalGridLines.selectAll("*").remove()
       }
     }

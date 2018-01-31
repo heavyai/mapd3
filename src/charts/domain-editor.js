@@ -209,7 +209,7 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          const domain = scales.yScale.domain()
+          const domain = scales.y2Scale.domain()
           dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "y2", extent: domain})
         })
 
@@ -260,7 +260,7 @@ export default function DomainEditor (_container) {
         .on("click", function change () {
           const isLocked = this.classList.contains("locked")
           this.classList.toggle("locked", !isLocked)
-          const domain = scales.yScale.domain()
+          const domain = scales.xScale.domain()
           dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "x", extent: domain})
         })
 

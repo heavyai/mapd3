@@ -27,7 +27,9 @@ export default function Axis (_container) {
     hoverZoneSize: 30,
     tickSpacing: 40,
     dateFormat: "%b %d, %Y",
-    numberFormat: ".2f"
+    numberFormat: ".2f",
+    yDomain: "auto",
+    y2Domain: "auto"
   }
 
   let scales = {
@@ -90,13 +92,17 @@ export default function Axis (_container) {
 
   function autoFormat (_yExtent) {
     let yFormat = config.numberFormat
-    if ((_yExtent[1] - _yExtent[0]) < 1) {
+    if ((_yExtent[1] - _yExtent[0]) <= 0.02) {
+      yFormat = ".4f"
+    } else if ((_yExtent[1] - _yExtent[0]) <= 0.2) {
+      yFormat = ".3f"
+    } else if ((_yExtent[1] - _yExtent[0]) <= 1.1) {
       yFormat = ".2f"
-    } else if ((_yExtent[1] - _yExtent[0]) < 100) {
+    } else if ((_yExtent[1] - _yExtent[0]) <= 100) {
       yFormat = ".1f"
-    } else if ((_yExtent[1] - _yExtent[0]) < 1000) {
+    } else if ((_yExtent[1] - _yExtent[0]) <= 1000) {
       yFormat = ".0f"
-    } else if ((_yExtent[1] - _yExtent[0]) < 100000) {
+    } else if ((_yExtent[1] - _yExtent[0]) <= 100000) {
       yFormat = ".2s"
     } else {
       yFormat = ".2s"
@@ -104,12 +110,12 @@ export default function Axis (_container) {
     return yFormat
   }
 
-  function formatYAxis (axis, domain) {
+  function formatYAxis (axis) {
     if (!scales.yScale) {
       return
     }
     if (config.yAxisFormat === "auto") {
-      const yExtent = scales.yScale.domain()
+      const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
       let yFormat = autoFormat(yExtent)
       axis.tickFormat(d3.format(yFormat))
     } else if (typeof config.yAxisFormat === "string") {
@@ -117,12 +123,12 @@ export default function Axis (_container) {
     }
   }
 
-  function formatY2Axis (axis, domain) {
+  function formatY2Axis (axis) {
     if (!scales.y2Scale) {
       return
     }
     if (config.y2AxisFormat === "auto") {
-      const y2Extent = scales.y2Scale.domain()
+      const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
       let y2Format = autoFormat(y2Extent)
       axis.tickFormat(d3.format(y2Format))
     } else if (typeof config.y2AxisFormat === "string") {

@@ -140,6 +140,7 @@ export default function Axis (_container) {
     cache.xAxis = d3.axisBottom(scales.xScale)
         .tickSize(config.tickSizes, 0)
         .tickPadding(config.tickPadding)
+        .tickSizeOuter(0)
 
     formatXAxis()
 
@@ -147,6 +148,7 @@ export default function Axis (_container) {
       cache.yAxis = d3.axisLeft(scales.yScale)
           .tickSize([config.tickSizes])
           .tickPadding(config.tickPadding)
+          .tickSizeOuter(0)
 
       formatYAxis(cache.yAxis)
 
@@ -161,6 +163,7 @@ export default function Axis (_container) {
       cache.y2Axis = d3.axisRight(scales.y2Scale)
           .tickSize([config.tickSizes])
           .tickPadding(config.tickPadding)
+          .tickSizeOuter(0)
 
       formatY2Axis(cache.y2Axis)
 

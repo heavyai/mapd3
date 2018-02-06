@@ -42,8 +42,7 @@ export function invertScale (_scale, _mouseX, _keyType) {
   if (_keyType === "time" || _keyType === "number") {
     return _scale.invert(_mouseX)
   } else {
-    const bandStep = _scale.step()
-    const index = Math.round((_mouseX) / bandStep)
+    const index = Math.round((_mouseX) / _scale.step() - 0.5)
     return _scale.domain()[index]
   }
 }

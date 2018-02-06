@@ -38,13 +38,14 @@ export default function Scale () {
     const chartWidth = config.width - config.margin.left - config.margin.right
     let xScale = null
     let domain = null
+    const markW = chartWidth / _allKeys.length
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()
     } else if (config.keyType === "number") {
       xScale = d3.scaleLinear()
     } else {
-      xScale = (config.chartType === "bar" || config.chartType === "stackedBar") ? d3.scaleBand() : d3.scalePoint()
+      xScale = d3.scalePoint()
       xScale.padding(0)
     }
 
@@ -61,7 +62,7 @@ export default function Scale () {
     }
 
     xScale.domain(domain)
-      .range([0, chartWidth])
+      .range([markW / 2, chartWidth - markW / 2])
 
     return xScale
   }

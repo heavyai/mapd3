@@ -25,7 +25,8 @@ export default function Bar (_container) {
   const cache = {
     container: _container,
     svg: null,
-    chartHeight: null
+    chartHeight: null,
+    chartWidth: null
   }
 
   let data = {
@@ -48,16 +49,19 @@ export default function Bar (_container) {
   }
 
   function drawBars () {
+    const values = data.dataBySeries[0].values
+    const barW = cache.chartWidth / values.length
+
     const bars = cache.root.selectAll(".mark")
-        .data(data.dataBySeries[0].values)
+        .data(values)
 
     bars.enter()
       .append("rect")
       .attr("class", "mark rect")
       .merge(bars)
-      .attr("x", (d) => scales.xScale(d[keys.KEY]))
+      .attr("x", (d) => scales.xScale(d[keys.KEY]) - barW / 2)
       .attr("y", (d) => scales.yScale(d[keys.VALUE]))
-      .attr("width", () => scales.xScale.bandwidth())
+      .attr("width", () => barW)
       .attr("height", (d) => cache.chartHeight - scales.yScale(d[keys.VALUE]))
       .style("stroke", "white")
       .style("fill", getColor)
@@ -66,9 +70,11 @@ export default function Bar (_container) {
   }
 
   function drawStackedBars () {
+    const stack = data.stack(data.stackData)
+    const barW = cache.chartWidth / stack[0].length
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")
-        .data(data.stack(data.stackData))
+        .data(stack)
 
     const stackedUpdate = stackedBarGroups.enter()
       .append("g")
@@ -86,10 +92,10 @@ export default function Bar (_container) {
       .append("rect")
       .attr("class", "mark")
       .merge(stackedBars)
-      .attr("x", (d) => scales.xScale(d.data[keys.KEY]))
-      .attr("y", (d) => scales.yScale(d[1]))
+      .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2)
+      .attr("y", (d) => scales.yScale(d[1]) )
       .attr("height", (d) => scales.yScale(d[0]) - scales.yScale(d[1]))
-      .attr("width", scales.xScale.bandwidth())
+      .attr("width", barW)
 
     stackedBars.exit().remove()
   }

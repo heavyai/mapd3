@@ -22,6 +22,7 @@ export default function Line (_container) {
   let scales = {
     colorScale: null,
     styleScale: null,
+    chartTypeScale: null,
     xScale: null,
     yScale: null,
     y2Scale: null
@@ -83,7 +84,7 @@ export default function Line (_container) {
     }
 
     const lines = cache.root.selectAll(".mark")
-        .data(data.dataBySeries)
+        .data(data.dataBySeries.filter(d => scales.chartTypeScale(d[keys.ID]) === "line"))
 
     lines.enter()
       .append("path")
@@ -168,7 +169,7 @@ export default function Line (_container) {
 
     if (config.chartType === "area") {
       drawAreas()
-    } else if (config.chartType === "line") {
+    } else if (config.chartType === "line" || config.chartType === "combo") {
       drawLines()
     } else if (config.chartType === "stackedArea") {
       drawStackedAreas()

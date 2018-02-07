@@ -96,6 +96,16 @@ export default function Scale () {
     return styleScale
   }
 
+  function buildChartTypeScale () {
+    const ids = data.dataBySeries.map(getID)
+    const chartTypeScale = d3.scaleOrdinal()
+        .range(config.colorSchema.map((d) => d.type))
+        .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
+        .unknown("line")
+
+    return chartTypeScale
+  }
+
   function splitByGroups () {
     const groups = {}
     data.dataBySeries.forEach((d) => {
@@ -122,6 +132,7 @@ export default function Scale () {
     const xScale = buildXScale(allUniqueKeys)
     const colorScale = buildColorScale()
     const styleScale = buildStyleScale()
+    const chartTypeScale = buildChartTypeScale()
 
     let yDomain = null
     if (config.yDomain === "auto") {
@@ -136,7 +147,8 @@ export default function Scale () {
       xScale,
       yScale,
       colorScale,
-      styleScale
+      styleScale,
+      chartTypeScale
     }
   }
 
@@ -152,6 +164,7 @@ export default function Scale () {
 
     const colorScale = buildColorScale()
     const styleScale = buildStyleScale()
+    const chartTypeScale = buildChartTypeScale()
 
     let yScale = null
     if (hasLeftAxis) {
@@ -184,7 +197,8 @@ export default function Scale () {
       yScale,
       y2Scale,
       colorScale,
-      styleScale
+      styleScale,
+      chartTypeScale
     }
   }
 

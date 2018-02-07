@@ -17,6 +17,7 @@ export default function Bar (_container) {
 
   let scales = {
     colorScale: null,
+    chartTypeScale: null,
     xScale: null,
     yScale: null,
     y2Scale: null
@@ -49,11 +50,30 @@ export default function Bar (_container) {
   }
 
   function drawBars () {
-    const values = data.dataBySeries[0].values
-    const barW = cache.chartWidth / values.length
+    const stack = data.stack(data.stackData)
+    const barW = cache.chartWidth / stack[0].length
 
-    const bars = cache.root.selectAll(".mark")
-        .data(values)
+    const barLayer = cache.root.selectAll(".bar-layer")
+        .data(data.dataBySeries)
+
+    const barLayerUpdate = barLayer.enter()
+      .append("g")
+      .attr("class", "bar-layer")
+      .merge(barLayer)
+
+    barLayer.exit().remove()
+
+    const bars = barLayerUpdate.selectAll(".mark")
+        .data((d, i) => {
+          const datum = d.values
+            .filter(() => scales.chartTypeScale(d[keys.ID]) === "bar")
+            .map(dB => {
+              const dBClone = Object.assign({}, dB)
+              dBClone.id = d[keys.ID]
+              return dBClone
+            })
+          return datum
+        })
 
     bars.enter()
       .append("rect")
@@ -103,7 +123,7 @@ export default function Bar (_container) {
   function drawMarks () {
     buildSVG()
 
-    if (config.chartType === "bar") {
+    if (config.chartType === "bar" || config.chartType === "combo") {
       drawBars()
     } else if (config.chartType === "stackedBar") {
       drawStackedBars()

@@ -245,13 +245,13 @@ export default function Chart (_container) {
       .drawAxis()
       .drawGridLines()
 
-    components.line
+    components.bar
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
       .drawMarks()
 
-    components.bar
+    components.line
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)

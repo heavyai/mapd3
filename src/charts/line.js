@@ -83,8 +83,12 @@ export default function Line (_container) {
       seriesLine2.defined((d) => d[keys.KEY] >= config.xDomain[0] && d[keys.KEY] <= config.xDomain[1])
     }
 
+    let lineData = data.dataBySeries
+    if (config.chartType === "combo") {
+      lineData = lineData.filter(d => scales.chartTypeScale(d[keys.ID]) === "line")
+    }
     const lines = cache.root.selectAll(".mark")
-        .data(data.dataBySeries.filter(d => scales.chartTypeScale(d[keys.ID]) === "line"))
+        .data(lineData)
 
     lines.enter()
       .append("path")

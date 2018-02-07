@@ -65,9 +65,12 @@ export default function Bar (_container) {
 
     const bars = barLayerUpdate.selectAll(".mark")
         .data((d, i) => {
-          const datum = d.values
-            .filter(() => scales.chartTypeScale(d[keys.ID]) === "bar")
-            .map(dB => {
+          let values = d.values
+          if (config.chartType === "combo") {
+            values = values.filter(() => scales.chartTypeScale(d[keys.ID]) === "bar")
+          }
+
+          const datum = values.map(dB => {
               const dBClone = Object.assign({}, dB)
               dBClone.id = d[keys.ID]
               return dBClone

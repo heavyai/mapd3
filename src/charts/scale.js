@@ -152,6 +152,14 @@ export default function Scale () {
     }
   }
 
+  function validateDomain (domain) {
+    if (typeof domain[0] === "undefined" || typeof domain[1] === "undefined") {
+      return [0, 0]
+    } else {
+      return domain
+    }
+  }
+
   function getHorizontalScales () {
     const groups = splitByGroups()
     const groupKeys = Object.keys(groups) || []
@@ -175,7 +183,7 @@ export default function Scale () {
       } else {
         yDomain = config.yDomain
       }
-      yScale = buildYScale(yDomain)
+      yScale = buildYScale(validateDomain(yDomain))
     }
 
     let y2Scale = null

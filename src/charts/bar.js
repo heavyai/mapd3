@@ -53,8 +53,13 @@ export default function Bar (_container) {
     const stack = data.stack(data.stackData)
     const barW = cache.chartWidth / stack[0].length
 
+    let barData = data.dataBySeries
+    if (Array.isArray(config.chartType)) {
+      barData = barData.filter((d, i) => config.chartType[i] === "bar")
+    }
+
     const barLayer = cache.root.selectAll(".bar-layer")
-        .data(data.dataBySeries)
+        .data(barData)
 
     const barLayerUpdate = barLayer.enter()
       .append("g")
@@ -65,14 +70,10 @@ export default function Bar (_container) {
 
     const bars = barLayerUpdate.selectAll(".mark")
         .data((d, i) => {
-          let values = d.values
-          if (Array.isArray(config.chartType)) {
-            values = values.filter(dB => config.chartType[i] === "bar")
-          }
-
-          const datum = values.map(dB => {
+          const datum = d.values.map(dB => {
               const dBClone = Object.assign({}, dB)
               dBClone.id = d[keys.ID]
+              dBClone.group = d[keys.GROUP]
               return dBClone
             })
           return datum
@@ -83,9 +84,21 @@ export default function Bar (_container) {
       .attr("class", "mark rect")
       .merge(bars)
       .attr("x", (d) => scales.xScale(d[keys.KEY]) - barW / 2)
-      .attr("y", (d) => scales.yScale(d[keys.VALUE]))
+      .attr("y", (d) => {
+        if (d[keys.GROUP] === 0) {
+          return scales.yScale(d[keys.VALUE])
+        } else {
+          return scales.y2Scale(d[keys.VALUE])
+        }
+      })
       .attr("width", () => barW)
-      .attr("height", (d) => cache.chartHeight - scales.yScale(d[keys.VALUE]))
+      .attr("height", (d) => {
+        if (d[keys.GROUP] === 0) {
+          return cache.chartHeight - scales.yScale(d[keys.VALUE])
+        } else {
+          return cache.chartHeight - scales.y2Scale(d[keys.VALUE])
+        }
+      })
       .style("stroke", "white")
       .style("fill", getColor)
 

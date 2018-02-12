@@ -48,7 +48,7 @@ export default function Hover (_container) {
 
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
@@ -60,7 +60,7 @@ export default function Hover (_container) {
   }
 
   function drawHover (_dataPoint, _dataPointXPosition) {
-    buildSVG()
+    build()
 
     if (!isNaN(_dataPointXPosition)) {
       moveVerticalMarker(_dataPointXPosition)

@@ -46,7 +46,7 @@ export default function Tooltip (_container, isLegend = false) {
     title: null
   }
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
@@ -245,14 +245,6 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
-  function drawTooltip () {
-    buildSVG()
-    drawTitle()
-    drawContent()
-    move()
-    return this
-  }
-
   function setupContent (_series) {
     let series = _series
 
@@ -277,14 +269,14 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function setupTooltip (_dataPoint, _xPosition, _yPosition) {
-    buildSVG()
+    build()
     const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
     setXPosition(tooltipX)
     setYPosition(tooltipY)
     setTitle(_dataPoint[keys.KEY])
     setupContent(_dataPoint[keys.SERIES])
 
-    drawTooltip()
+    render()
     return this
   }
 
@@ -325,6 +317,14 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
+  function render () {
+    build()
+    drawTitle()
+    drawContent()
+    move()
+    return this
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -341,7 +341,7 @@ export default function Tooltip (_container, isLegend = false) {
     setTitle,
     hide,
     show,
-    drawTooltip,
+    render,
     setConfig,
     setScales,
     destroy

@@ -39,7 +39,7 @@ export default function Bar (_container) {
 
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
@@ -66,8 +66,8 @@ export default function Bar (_container) {
     const bars = barLayerUpdate.selectAll(".mark")
         .data((d, i) => {
           let values = d.values
-          if (config.chartType === "combo") {
-            values = values.filter(() => scales.chartTypeScale(d[keys.ID]) === "bar")
+          if (Array.isArray(config.chartType)) {
+            values = values.filter(dB => config.chartType[i] === "bar")
           }
 
           const datum = values.map(dB => {
@@ -123,16 +123,6 @@ export default function Bar (_container) {
     stackedBars.exit().remove()
   }
 
-  function drawMarks () {
-    buildSVG()
-
-    if (config.chartType === "bar" || config.chartType === "combo") {
-      drawBars()
-    } else if (config.chartType === "stackedBar") {
-      drawStackedBars()
-    }
-  }
-
   function setConfig (_config) {
     config = override(config, _config)
     return this
@@ -148,6 +138,16 @@ export default function Bar (_container) {
     return this
   }
 
+  function render () {
+    build()
+
+    if (config.chartType === "bar" || Array.isArray(config.chartType)) {
+      drawBars()
+    } else if (config.chartType === "stackedBar") {
+      drawStackedBars()
+    }
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -159,7 +159,7 @@ export default function Bar (_container) {
     setConfig,
     setScales,
     setData,
-    drawMarks,
+    render,
     destroy
   }
 }

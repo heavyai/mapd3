@@ -32,7 +32,7 @@ export default function Binning (_container) {
   // events
   const dispatcher = d3.dispatch("change")
 
-  function buildSVG () {
+  function build () {
 
     if (!cache.root) {
       cache.root = cache.container.append("div")
@@ -86,9 +86,9 @@ export default function Binning (_container) {
       .classed("dimmed", !_shouldBeSelected)
   }
 
-  function drawBinning () {
+  function render () {
     if (config.binningIsEnabled) {
-      buildSVG()
+      build()
     } else {
       destroy()
     }
@@ -116,7 +116,7 @@ export default function Binning (_container) {
   return {
     on,
     setConfig,
-    destroy,
-    drawBinning
+    render,
+    destroy
   }
 }

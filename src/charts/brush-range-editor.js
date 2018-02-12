@@ -16,7 +16,10 @@ export default function BrushRangeEditor (_container) {
     height: 500,
     keyType: "time",
     dateFormat: "%b %d, %Y",
-    numberFormat: ".2f"
+    numberFormat: ".2f",
+    brushRangeIsEnabled: true,
+    brushRangeMin: null,
+    brushRangeMax: null
   }
 
   const cache = {
@@ -24,11 +27,8 @@ export default function BrushRangeEditor (_container) {
     root: null,
     inputMin: null,
     inputMax: null,
-    rangeMin: null,
-    rangeMax: null,
     chartWidth: null,
-    chartHeight: null,
-    isEnabled: true
+    chartHeight: null
   }
 
   let scales = {
@@ -70,16 +70,16 @@ export default function BrushRangeEditor (_container) {
         .attr("contentEditable", true)
         .on("blur", function change () {
           const domain = scales.xScale.domain()
-          cache.rangeMin = stringToType(cache.inputMin.text(), config.keyType)
-          dispatcher.call("rangeChange", this, {extent: [cache.rangeMin, domain[1]]})
+          const rangeMin = stringToType(cache.inputMin.text(), config.keyType)
+          dispatcher.call("rangeChange", this, {extent: [rangeMin, domain[1]]})
         })
         .call(blurOnEnter)
         .style("float", "right")
     }
 
     const domain = scales.xScale.domain()
-    let rangeMin = cache.rangeMin === null ? domain[0] : cache.rangeMin
-    let rangeMax = cache.rangeMax === null ? domain[1] : cache.rangeMax
+    let rangeMin = config.brushRangeMin === null ? domain[0] : config.brushRangeMin
+    let rangeMax = config.brushRangeMax === null ? domain[1] : config.brushRangeMax
     if (config.keyType === "time") {
       const format = d3.utcFormat(config.dateFormat)
       rangeMin = format(new Date(rangeMin))
@@ -92,31 +92,6 @@ export default function BrushRangeEditor (_container) {
 
     cache.inputMin.text(rangeMin)
     cache.inputMax.text(rangeMax)
-  }
-
-  function drawRangeEditor () {
-    if (cache.isEnabled) {
-      buildSVG()
-    } else {
-      destroy()
-    }
-    return this
-  }
-
-  function setRangeMin (_rangeMin) {
-    cache.rangeMin = _rangeMin
-    return this
-  }
-
-  function setRangeMax (_rangeMax) {
-    cache.rangeMax = _rangeMax
-    return this
-  }
-
-  function setVisibility (_shouldBeVisible) {
-    cache.isEnabled = _shouldBeVisible
-    drawRangeEditor()
-    return this
   }
 
   function on (...args) {
@@ -134,6 +109,15 @@ export default function BrushRangeEditor (_container) {
     return this
   }
 
+  function render () {
+    if (config.brushRangeIsEnabled) {
+      buildSVG()
+    } else {
+      destroy()
+    }
+    return this
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -145,10 +129,7 @@ export default function BrushRangeEditor (_container) {
   return {
     on,
     setConfig,
-    drawRangeEditor,
-    setRangeMin,
-    setRangeMax,
-    setScales,
-    setVisibility
+    render,
+    setScales
   }
 }

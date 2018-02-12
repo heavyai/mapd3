@@ -139,24 +139,14 @@ export default function Chart (_container) {
     flatDataSorted: null
   }
 
-  const components = {}
-  const eventCollector = {}
+  let components = {}
+  let eventCollector = {}
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
   const dataManager = DataManager()
 
-  function render () {
-    buildSVG()
-
-    if (dataObject.dataBySeries) {
-      buildChart()
-    }
-
-    return this
-  }
-
-  function buildSVG () {
+  function build () {
     const w = config.width === "auto" ? cache.container.clientWidth : config.width
     const h = config.height === "auto" ? cache.container.clientHeight : config.height
     cache.chartWidth = Math.max(w - config.margin.left - config.margin.right, 0)
@@ -188,7 +178,7 @@ export default function Chart (_container) {
 
       addEvents()
 
-      Object.assign(components, {
+      components = {
         scale: Scale(),
         axis: Axis(cache.chart),
         line: Line(cache.panel),
@@ -201,9 +191,9 @@ export default function Chart (_container) {
         domainEditor: DomainEditor(cache.container),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
         label: Label(cache.container)
-      })
+      }
 
-      Object.assign(eventCollector, {
+      eventCollector = {
         onBrush: rebind(components.brush),
         onHover: rebind(components.hover),
         onBinning: rebind(components.binning),
@@ -211,7 +201,7 @@ export default function Chart (_container) {
         onBrushRangeEditor: rebind(components.brushRangeEditor),
         onLabel: rebind(components.label),
         onPanel: rebind(dispatcher)
-      })
+      }
     }
 
     cache.svg
@@ -234,56 +224,43 @@ export default function Chart (_container) {
   }
 
   function buildChart () {
-    components.scale
+    scales = components.scale
       .setConfig(config)
       .setData(dataObject)
-    scales = components.scale.getScales()
+      .getScales()
 
     components.axis
       .setConfig(config)
       .setScales(scales)
-      .drawAxis()
-      .drawGridLines()
+      .render()
 
     components.bar
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
-      .drawMarks()
+      .render()
 
     components.line
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
-      .drawMarks()
+      .render()
 
     components.tooltip
       .setConfig(config)
       .setScales(scales)
       .bindEvents(dispatcher)
 
-    const legendContent = dataObject.dataBySeries
-        .map((d) => ({
-          id: d.id,
-          key: d.key,
-          label: d.label
-        }))
-
     components.legend
       .setConfig(config)
-      .setConfig({tooltipIsEnabled: config.legendIsEnabled})
       .setScales(scales)
-      .setTitle(config.legendTitle)
-      .setContent(legendContent)
-      .setXPosition(config.legendXPosition)
-      .setYPosition(config.legendYPosition)
-      .drawTooltip()
+      .setData(dataObject)
 
     components.brush
       .setConfig(config)
       .setScales(scales)
       .setData(dataObject)
-      .drawBrush()
+      .render()
 
     components.hover
       .setConfig(config)
@@ -293,27 +270,21 @@ export default function Chart (_container) {
 
     components.binning
       .setConfig(config)
-      .drawBinning()
+      .render()
 
     components.domainEditor
       .setConfig(config)
       .setScales(scales)
-      .drawDomainEditor()
+      .render()
 
     components.brushRangeEditor
       .setConfig(config)
       .setScales(scales)
-      .setRangeMin(config.brushRangeMin)
-      .setRangeMax(config.brushRangeMax)
-      .drawRangeEditor()
-      .setVisibility(config.brushRangeIsEnabled)
+      .render()
 
     components.label
       .setConfig(config)
-      .setXLabels(config.xLabel)
-      .setYLabels(config.yLabel)
-      .setY2Labels(config.y2Label)
-      .drawLabels()
+      .render()
 
     triggerIntroAnimation()
     return this
@@ -385,6 +356,15 @@ export default function Chart (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
+    return this
+  }
+
+  function render () {
+    build()
+
+    if (dataObject.dataBySeries) {
+      buildChart()
+    }
     return this
   }
 

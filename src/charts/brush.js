@@ -128,19 +128,6 @@ export default function Brush (_container) {
     dispatcher.call("brushEnd", this, dataExtent, config)
   }
 
-  function drawBrush () {
-    if (!config.brushIsEnabled) {
-      destroy()
-    }
-
-    buildSVG()
-
-    if (data.dataBySeries) {
-      buildBrush()
-    }
-    return this
-  }
-
   function on (...args) {
     dispatcher.on(...args)
     return this
@@ -161,6 +148,19 @@ export default function Brush (_container) {
     return this
   }
 
+  function render () {
+    if (!config.brushIsEnabled) {
+      destroy()
+    }
+
+    buildSVG()
+
+    if (data.dataBySeries) {
+      buildBrush()
+    }
+    return this
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -174,7 +174,7 @@ export default function Brush (_container) {
     setConfig,
     setData,
     setScales,
-    drawBrush,
+    render,
     destroy
   }
 }

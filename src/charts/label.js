@@ -12,7 +12,10 @@ export default function Label (_container) {
       left: 70
     },
     width: 800,
-    height: 500
+    height: 500,
+    xLabel: "",
+    yLabel: "",
+    y2Label: ""
   }
 
   const cache = {
@@ -21,9 +24,6 @@ export default function Label (_container) {
     xAxisLabel: null,
     yAxisLabel: null,
     y2AxisLabel: null,
-    xLabel: null,
-    yLabel: null,
-    y2Label: null,
     chartWidth: null,
     chartHeight: null
   }
@@ -31,7 +31,7 @@ export default function Label (_container) {
   // events
   const dispatcher = d3.dispatch("axisLabelChange")
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
@@ -48,7 +48,6 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
-          config.xLabel = this.innerText
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "x"})
         })
         .on("keypress", function keypress () {
@@ -63,7 +62,6 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
-          config.yLabel = this.innerText
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y"})
         })
         .on("keypress", function keypress () {
@@ -79,7 +77,6 @@ export default function Label (_container) {
         .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
-          config.y2Label = this.innerText
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y2"})
         })
         .on("keypress", function keypress () {
@@ -121,26 +118,6 @@ export default function Label (_container) {
       })
   }
 
-  function drawLabels () {
-    buildSVG()
-    return this
-  }
-
-  function setXLabels (_xLabel) {
-    config.xLabel = _xLabel
-    return this
-  }
-
-  function setYLabels (_yLabel) {
-    config.yLabel = _yLabel
-    return this
-  }
-
-  function setY2Labels (_y2Label) {
-    config.y2Label = _y2Label
-    return this
-  }
-
   function on (...args) {
     dispatcher.on(...args)
     return this
@@ -148,6 +125,11 @@ export default function Label (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
+    return this
+  }
+
+  function render () {
+    build()
     return this
   }
 
@@ -162,10 +144,7 @@ export default function Label (_container) {
   return {
     on,
     setConfig,
-    setXLabels,
-    setYLabels,
-    setY2Labels,
-    drawLabels,
+    render,
     destroy
   }
 }

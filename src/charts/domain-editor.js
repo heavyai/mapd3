@@ -57,7 +57,7 @@ export default function DomainEditor (_container) {
   // events
   const dispatcher = d3.dispatch("domainChange", "domainLockToggle")
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
     const xDomain = config.xDomain === "auto" ? scales.xScale.domain() : config.xDomain
@@ -400,17 +400,6 @@ export default function DomainEditor (_container) {
     cache.xHitZone.style("opacity", "0")
   }
 
-  function drawDomainEditor () {
-    if (config.xDomainEditorIsEnabled
-        || config.yDomainEditorIsEnabled
-        || config.y2DomainEditorIsEnabled) {
-      buildSVG()
-    } else {
-      destroy()
-    }
-    return this
-  }
-
   function on (...args) {
     dispatcher.on(...args)
     return this
@@ -426,6 +415,17 @@ export default function DomainEditor (_container) {
     return this
   }
 
+  function render () {
+    if (config.xDomainEditorIsEnabled
+        || config.yDomainEditorIsEnabled
+        || config.y2DomainEditorIsEnabled) {
+      build()
+    } else {
+      destroy()
+    }
+    return this
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -438,7 +438,7 @@ export default function DomainEditor (_container) {
     on,
     setScales,
     setConfig,
-    drawDomainEditor,
+    render,
     destroy
   }
 }

@@ -34,11 +34,17 @@ export default function Scale () {
   const getKey = (d) => d[keys.KEY]
   const getValue = (d) => d[keys.VALUE]
 
+  function hasBars (_chartType) {
+    return _chartType === "bar"
+      || _chartType === "stackedBar"
+      || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
+  }
+
   function buildXScale (_allKeys) {
     const chartWidth = config.width - config.margin.left - config.margin.right
     let xScale = null
     let domain = null
-    const markW = chartWidth / _allKeys.length
+    const markW =  hasBars(config.chartType) ? chartWidth / _allKeys.length : 0
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()

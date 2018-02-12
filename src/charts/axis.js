@@ -51,7 +51,7 @@ export default function Axis (_container) {
     verticalGridLines: null
   }
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
@@ -174,9 +174,6 @@ export default function Axis (_container) {
   }
 
   function drawAxis () {
-    buildSVG()
-    buildAxis()
-
     cache.root.select(".axis.x")
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
@@ -267,6 +264,13 @@ export default function Axis (_container) {
     return this
   }
 
+  function render () {
+    build()
+    buildAxis()
+    drawAxis()
+    drawGridLines()
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -277,8 +281,7 @@ export default function Axis (_container) {
   return {
     setConfig,
     setScales,
-    drawAxis,
-    drawGridLines,
+    render,
     destroy
   }
 }

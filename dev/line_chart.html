@@ -25,16 +25,16 @@
 <script src="../dist/mapd3.js"></script>
 <script>
 
-const keyType = "time" // time, number, string
-const chartType = "line" // line, area, stackedArea, bar, stackedBar
-
+// time, number, string
+const keyType = "number" 
 const dataConfig = {
   keyType,
-  range: [-100, 2000],
-  pointCount: 200,
+  range: [0, 100],
+  pointCount: 5,
   groupCount: 1,
-  lineCount: 4
+  lineCount: 3
 }
+
 const dataManager = mapd3.DataManager()
     .setConfig(dataConfig)
 const data = dataManager.generateTestDataset()
@@ -42,7 +42,11 @@ const data = dataManager.generateTestDataset()
 //   d.values = d.values.slice((i*0.5)*100, (i+1)*100)
 // })
 
-console.log(data.series)
+// line, area, stackedArea, bar, stackedBar or array of [line,bar]
+// const chartType = data.series.map((d, i) => ["line", "bar"][i % 2]) 
+const chartType = "stackedBar" 
+
+console.log("data", data.series)
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "dotted"][i % 3])
@@ -124,8 +128,8 @@ const chart1 = mapd3.Chart(chartNode1)
     y2DomainEditorIsEnabled: dataConfig.groupCount > 1,
 
     // brush range
-    brushRangeMin: "July 01, 2017",
-    brushRangeMax: "Sept 02, 2017",
+    // brushRangeMin: "July 01, 2017",
+    // brushRangeMax: "Sept 02, 2017",
     brushRangeIsEnabled: true,
 
     // brush
@@ -156,7 +160,7 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-// setTimeout(() => chart1.setConfig({tooltipIsEnabled: true}).render(), 1000)
+// setTimeout(() => chart1.setConfig({xLabel: "test"}).render(), 1000)
 </script>
 </body>
 </html>

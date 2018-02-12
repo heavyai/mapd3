@@ -44,7 +44,7 @@ export default function Line (_container) {
 
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
-  function buildSVG () {
+  function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
 
@@ -84,8 +84,8 @@ export default function Line (_container) {
     }
 
     let lineData = data.dataBySeries
-    if (config.chartType === "combo") {
-      lineData = lineData.filter(d => scales.chartTypeScale(d[keys.ID]) === "line")
+    if (Array.isArray(config.chartType)) {
+      lineData = lineData.filter((d, i) => config.chartType[i] === "line")
     }
     const lines = cache.root.selectAll(".mark")
         .data(lineData)
@@ -168,18 +168,6 @@ export default function Line (_container) {
     areas.exit().remove()
   }
 
-  function drawMarks () {
-    buildSVG()
-
-    if (config.chartType === "area") {
-      drawAreas()
-    } else if (config.chartType === "line" || config.chartType === "combo") {
-      drawLines()
-    } else if (config.chartType === "stackedArea") {
-      drawStackedAreas()
-    }
-  }
-
   function setConfig (_config) {
     config = override(config, _config)
     return this
@@ -195,6 +183,18 @@ export default function Line (_container) {
     return this
   }
 
+  function render () {
+    build()
+
+    if (config.chartType === "area") {
+      drawAreas()
+    } else if (config.chartType === "line" || Array.isArray(config.chartType)) {
+      drawLines()
+    } else if (config.chartType === "stackedArea") {
+      drawStackedAreas()
+    }
+  }
+
   function destroy () {
     if (cache.root) {
       cache.root.remove()
@@ -207,7 +207,7 @@ export default function Line (_container) {
     setConfig,
     setScales,
     setData,
-    drawMarks,
+    render,
     destroy
   }
 }

@@ -238,7 +238,7 @@ export default function Tooltip (_container, isLegend = false) {
     let title = config.tooltipTitle || cache.title
 
     if (typeof title === "object") {
-      title = d3.timeFormat(config.dateFormat)(title)
+      title = d3.utcFormat(config.dateFormat)(title)
     }
 
     cache.tooltipTitle.html(title)

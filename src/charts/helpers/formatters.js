@@ -96,3 +96,17 @@ export function multiFormat(date) {
       : d3.timeYear(date) < date ? formatMonth
       : formatYear)(date);
 }
+
+export function formatOddDateBin(specifier, val) {
+  switch (specifier) {
+    case "1c":
+      return;
+    case "10y":
+      return;
+    case "1q":
+      val = d3.utcFormat('%m')(val) // convert to integer month (01 - 12)
+      return `Q${Math.floor((parseInt(val, 10) + 3) / 3)}`;
+    default:
+      return;
+  }
+}

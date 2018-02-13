@@ -2,7 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
 import {cloneData, override} from "./helpers/common"
-import {multiFormat} from "./helpers/formatters"
+import {formatOddDateBin, multiFormat} from "./helpers/formatters"
 
 export default function Tooltip (_container, isLegend = false) {
 
@@ -251,14 +251,22 @@ export default function Tooltip (_container, isLegend = false) {
       "1m": "%M",
       "1h": "%H",
       "1d": "%A",
-      "1w": "%U",
-      "10y": ""
+      "1w": "%U"
     }
 
     // format date if we have a date
     if (title instanceof Date) {
-      let specifier = binTranslation[config.binningResolution] || config.dateFormat
-      title = d3.utcFormat(specifier)(title)
+      const { binningResolution } = config;
+      let specifier = binTranslation[binningResolution]
+
+      if (specifier) {
+        title = d3.utcFormat(specifier)(title)
+      } else if (["1c", "10y", "1q"].includes(binningResolution)) {
+        // handle exceptions for bin translation specifiers (century, decade, quarter)
+        title = formatOddDateBin(binningResolution, title)
+      } else {
+        title = d3.utcFormat(config.dateFormat)(title)
+      }
     }
 
     cache.tooltipTitle.html(title)

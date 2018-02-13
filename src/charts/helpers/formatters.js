@@ -97,6 +97,15 @@ export function multiFormat(date) {
       : formatYear)(date);
 }
 
+/**
+ *  Format dates when binned by quarter, decade, century
+*/
+
+function formatQuarter(val) {
+  val = d3.utcFormat('%m')(val) // convert to integer month (01 - 12)
+  return `Q${Math.floor((parseInt(val, 10) + 3) / 3)}`;
+}
+
 export function formatOddDateBin(specifier, val) {
   switch (specifier) {
     case "1c":
@@ -104,8 +113,7 @@ export function formatOddDateBin(specifier, val) {
     case "10y":
       return;
     case "1q":
-      val = d3.utcFormat('%m')(val) // convert to integer month (01 - 12)
-      return `Q${Math.floor((parseInt(val, 10) + 3) / 3)}`;
+      return formatQuarter(val)
     default:
       return;
   }

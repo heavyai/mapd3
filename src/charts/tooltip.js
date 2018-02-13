@@ -257,14 +257,8 @@ export default function Tooltip (_container, isLegend = false) {
 
     // format date if we have a date
     if (title instanceof Date) {
-      if (config.binningIsAuto) {
-        title = multiFormat(title)
-      } else if (config.binningResolution) {
-        const specifier = binTranslation[config.binningResolution]
-        title = specifier ? d3.timeFormat(specifier)(title) : multiFormat(title)
-      } else {
-        title = d3.utcFormat(config.dateFormat)(title)
-      }
+      let specifier = binTranslation[config.binningResolution] || config.dateFormat
+      title = d3.utcFormat(specifier)(title)
     }
 
     cache.tooltipTitle.html(title)

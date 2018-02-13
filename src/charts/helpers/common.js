@@ -1,5 +1,4 @@
 import {keys} from "./constants"
-import * as d3 from "./d3-service"
 
 /**
  * Clones the passed array of data
@@ -87,29 +86,4 @@ export function stringToType (str, type) {
     converted = Number(str)
   }
   return converted
-}
-
-// slightly modified version of d3's default time-formatting to always use abbrev month names
-const formatMillisecond = d3.timeFormat(".%L");
-const formatSecond = d3.timeFormat(":%S");
-const formatMinute = d3.timeFormat("%I:%M");
-const formatHour = d3.timeFormat("%I %p");
-const formatDay = d3.timeFormat("%a %d");
-const formatWeek = d3.timeFormat("%b %d");
-const formatMonth = d3.timeFormat("%b");
-const formatYear = d3.timeFormat("%Y");
-
-/**
- * auto formats a date obj to a string using d3-time-format
- * @param {Date} date object to format
- * @returns {string} date string
-*/
-export function multiFormat(date) {
-  return (d3.timeSecond(date) < date ? formatMillisecond
-      : d3.timeMinute(date) < date ? formatSecond
-      : d3.timeHour(date) < date ? formatMinute
-      : d3.timeDay(date) < date ? formatHour
-      : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
-      : d3.timeYear(date) < date ? formatMonth
-      : formatYear)(date);
 }

@@ -1,5 +1,6 @@
 import * as d3 from "./helpers/d3-service"
-import {multiFormat, override} from "./helpers/common"
+import {override} from "./helpers/common"
+import {autoFormat, multiFormat, getExtractFormatter} from "./helpers/formatters"
 
 export default function Axis (_container) {
 
@@ -28,6 +29,7 @@ export default function Axis (_container) {
     tickSpacing: 40,
     dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
+    extractType: null,
     yDomain: "auto",
     y2Domain: "auto"
   }
@@ -83,31 +85,15 @@ export default function Axis (_container) {
     } else if (config.keyType === "string") {
       cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.xTickSkip)))
     } else if (config.keyType === "number") {
-      if (config.xAxisFormat && config.xAxisFormat !== "auto") {
+      if (config.extractType) {
+        console.log("extract")
+        const formatter = getExtractFormatter(config.extractType)
+        cache.xAxis.tickFormat(formatter)
+      } else if (config.xAxisFormat && config.xAxisFormat !== "auto") {
         const formatter = d3.format(config.xAxisFormat)
         cache.xAxis.tickFormat(formatter)
       }
     }
-  }
-
-  function autoFormat (_yExtent) {
-    let yFormat = config.numberFormat
-    if ((_yExtent[1] - _yExtent[0]) <= 0.02) {
-      yFormat = ".4f"
-    } else if ((_yExtent[1] - _yExtent[0]) <= 0.2) {
-      yFormat = ".3f"
-    } else if ((_yExtent[1] - _yExtent[0]) <= 1.1) {
-      yFormat = ".2f"
-    } else if ((_yExtent[1] - _yExtent[0]) <= 100) {
-      yFormat = ".1f"
-    } else if ((_yExtent[1] - _yExtent[0]) <= 1000) {
-      yFormat = ".0f"
-    } else if ((_yExtent[1] - _yExtent[0]) <= 100000) {
-      yFormat = ".2s"
-    } else {
-      yFormat = ".2s"
-    }
-    return yFormat
   }
 
   function formatYAxis (axis) {
@@ -116,7 +102,7 @@ export default function Axis (_container) {
     }
     if (config.yAxisFormat === "auto") {
       const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-      let yFormat = autoFormat(yExtent)
+      let yFormat = autoFormat(yExtent, config.numberFormat)
       axis.tickFormat(d3.format(yFormat))
     } else if (typeof config.yAxisFormat === "string") {
       axis.tickFormat(d3.format(config.yAxisFormat))
@@ -129,7 +115,7 @@ export default function Axis (_container) {
     }
     if (config.y2AxisFormat === "auto") {
       const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
-      let y2Format = autoFormat(y2Extent)
+      let y2Format = autoFormat(y2Extent, config.numberFormat)
       axis.tickFormat(d3.format(y2Format))
     } else if (typeof config.y2AxisFormat === "string") {
       axis.tickFormat(d3.format(config.y2AxisFormat))

@@ -32,6 +32,7 @@ export default function Chart (_container) {
     height: 500,
     keyType: "time",
     chartType: "line", // line, area, stackedLine, stackedArea
+    extractType: null, // isodow, month, quarter, hour, minute
     ease: d3.easeLinear,
 
     // intro animation

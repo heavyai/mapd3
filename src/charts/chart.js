@@ -250,7 +250,6 @@ export default function Chart (_container) {
     components.tooltip
       .setConfig(config)
       .setScales(scales)
-      .setData(dataObject)
       .bindEvents(dispatcher)
 
     components.legend

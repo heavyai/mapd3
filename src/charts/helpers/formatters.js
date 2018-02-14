@@ -106,34 +106,15 @@ function formatQuarter(val) {
   return `Q${Math.floor((parseInt(val, 10) + 3) / 3)}`;
 }
 
-function formatDecade(val, dataObject) {
-  const formatter = d3.utcFormat('%Y')
-  const dates = dataObject.dataByKey.map((d, i) => {
-    let year = parseInt(formatter(d.key), 10)
-    if (i % 2 === 0) {
-      year -= 1
-    }
-    return year
-  })
-  val = parseInt(formatter(val))
-  const idx = dates.indexOf(val)
-  const len = dates.length
-
-  return
-  // 1980, 1989, 2001, 2010
-  // 0,    1,    2,    3
-  // 1980 - 1989, 1990 - 1999, 2001 - 2010
-}
-
-export function formatOddDateBin(specifier, val, dataObject) {
+export function formatOddDateBin(specifier, val) {
   switch (specifier) {
     case "1c":
-      return;
+      return
     case "10y":
-      return formatDecade(val, dataObject)
+      return
     case "1q":
       return formatQuarter(val)
     default:
-      return;
+      return
   }
 }

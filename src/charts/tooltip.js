@@ -268,8 +268,9 @@ export default function Tooltip (_container, isLegend = false) {
 
       if (specifier) {
         title = d3.utcFormat(specifier)(title)
-      } else if (["1c", "10y", "1q"].includes(binningResolution)) {
-        // handle exceptions for bin translation specifiers (century, decade, quarter)
+      } else if (binningResolution === "1q") {
+        // handle bin translation for bin types not available in d3-time (century, decade, quarter)
+        // currently only handling "1q"
         title = formatOddDateBin(binningResolution, title, data)
       } else {
         title = d3.utcFormat(config.dateFormat)(title)

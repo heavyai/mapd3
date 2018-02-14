@@ -49,6 +49,13 @@ export default function Tooltip (_container, isLegend = false) {
     title: null
   }
 
+  let data = {
+    dataBySeries: null,
+    groupKeys: null,
+    stack: null,
+    stackData: null
+  }
+
   function build () {
     cache.chartWidth = config.width - config.margin.left - config.margin.right
     cache.chartHeight = config.height - config.margin.top - config.margin.bottom
@@ -263,7 +270,7 @@ export default function Tooltip (_container, isLegend = false) {
         title = d3.utcFormat(specifier)(title)
       } else if (["1c", "10y", "1q"].includes(binningResolution)) {
         // handle exceptions for bin translation specifiers (century, decade, quarter)
-        title = formatOddDateBin(binningResolution, title)
+        title = formatOddDateBin(binningResolution, title, data)
       } else {
         title = d3.utcFormat(config.dateFormat)(title)
       }
@@ -325,6 +332,11 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
+  }
+
   function setTitle (_title) {
     cache.title = _title
     return this
@@ -372,6 +384,7 @@ export default function Tooltip (_container, isLegend = false) {
     render,
     setConfig,
     setScales,
+    setData,
     destroy
   }
 }

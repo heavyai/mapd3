@@ -2,6 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
 import {cloneData, override} from "./helpers/common"
+import {formatOddDateBin, multiFormat} from "./helpers/formatters"
 
 export default function Tooltip (_container, isLegend = false) {
 
@@ -21,6 +22,8 @@ export default function Tooltip (_container, isLegend = false) {
     tooltipTitle: null,
 
     // from chart
+    binningResolution: null,
+    binningIsAuto: null,
     chartType: null,
     colorSchema: ["skyblue"],
     keyType: "time"
@@ -236,9 +239,35 @@ export default function Tooltip (_container, isLegend = false) {
 
   function drawTitle () {
     let title = config.tooltipTitle || cache.title
+    // translate bin from human readable code to d3 time format specifier
+    // TO DO: handle special cases such as "decade" that should display an non-normal value like "1991 - 2000"
+    const binTranslation = {
+      "1c": "",
+      "10y": "",
+      "1y": "%Y",
+      "1q": "",
+      "1mo": "%B",
+      "1s": "%S",
+      "1m": "%M",
+      "1h": "%H",
+      "1d": "%A",
+      "1w": "%U"
+    }
 
-    if (typeof title === "object") {
-      title = d3.utcFormat(config.dateFormat)(title)
+    // format date if we have a date
+    if (title instanceof Date) {
+      const { binningResolution } = config;
+      let specifier = binTranslation[binningResolution]
+
+      if (specifier) {
+        title = d3.utcFormat(specifier)(title)
+      } else if (binningResolution === "1q") {
+        // handle bin translation for bin types not available in d3-time (century, decade, quarter)
+        // currently only handling "1q"
+        title = formatOddDateBin(binningResolution, title)
+      } else {
+        title = d3.utcFormat(config.dateFormat)(title)
+      }
     }
 
     cache.tooltipTitle.html(title)

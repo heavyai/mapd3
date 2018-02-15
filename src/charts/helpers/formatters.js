@@ -100,12 +100,6 @@ export function multiFormat(date) {
 /**
  *  Format dates when binned by quarter, decade, century
 */
-
-function formatQuarter(value) {
-  const monthNumber = d3.utcFormat('%m')(value) // convert to integer month (01 - 12)
-  return `Q${Math.floor((parseInt(monthNumber, 10) + 3) / 3)} ${d3.utcFormat('%Y')(value)}`;
-}
-
 export function formatOddDateBin(specifier, value) {
   switch (specifier) {
     // reproducing the old line chart behavior, even if it's wrong
@@ -116,7 +110,8 @@ export function formatOddDateBin(specifier, value) {
     case "10y":
       return `${d3.utcFormat("%Y")(value)} - ${d3.utcFormat("%Y")(d3.utcYear.offset(value, 9))}`
     case "1q":
-      return formatQuarter(value)
+      const monthNumber = d3.utcFormat('%m')(value) // convert to integer month (01 - 12)
+      return `Q${Math.floor((parseInt(monthNumber, 10) + 3) / 3)} ${d3.utcFormat('%Y')(value)}`;
     default:
       return
   }

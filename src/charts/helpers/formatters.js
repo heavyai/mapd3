@@ -101,20 +101,33 @@ export function multiFormat(date) {
  *  Format dates when binned by quarter, decade, century
 */
 
-function formatQuarter(val) {
-  val = d3.utcFormat('%m')(val) // convert to integer month (01 - 12)
-  return `Q${Math.floor((parseInt(val, 10) + 3) / 3)}`;
+function formatQuarter(value) {
+  const monthNumber = d3.utcFormat('%m')(value) // convert to integer month (01 - 12)
+  return `Q${Math.floor((parseInt(monthNumber, 10) + 3) / 3)} ${d3.utcFormat('%Y')(value)}`;
 }
 
-export function formatOddDateBin(specifier, val) {
+export function formatOddDateBin(specifier, value) {
   switch (specifier) {
+    // reproducing the old line chart behavior, even if it's wrong
+    case "1w":
+      return `${d3.utcFormat("%b %d")(value)} - ${d3.utcFormat("%b %d,")(d3.utcDay.offset(value, 6))}`
     case "1c":
-      return
+      return `${d3.utcFormat("%Y")(value)} - ${d3.utcFormat("%Y")(d3.utcYear.offset(value, 99))}`
     case "10y":
-      return
+      return `${d3.utcFormat("%Y")(value)} - ${d3.utcFormat("%Y")(d3.utcYear.offset(value, 9))}`
     case "1q":
-      return formatQuarter(val)
+      return formatQuarter(value)
     default:
       return
   }
+}
+
+// translate bin from human readable code to d3 time format specifier
+export const binTranslation = {
+  "1y": "%Y",
+  "1mo": "%b %Y",
+  "1s": "%b %d, %Y %H:%M:%S",
+  "1m": "%b %d, %Y %H:%M",
+  "1h": "%b %d, %Y %H:%M",
+  "1d": "%b %d, %Y"
 }

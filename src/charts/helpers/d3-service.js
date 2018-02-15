@@ -28,6 +28,8 @@ export {
 	timeHour,
 	timeWeek,
 	timeYear,
+	utcYear,
+	utcDay,
 	area,
 	curveCatmullRom,
 	line,

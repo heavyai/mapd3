@@ -52,6 +52,7 @@ export default function Bar (_container) {
   function drawBars () {
     const stack = data.stack(data.stackData)
     const barW = cache.chartWidth / stack[0].length
+    const MIN_BAR_HEIGHT = 1
 
     let barData = data.dataBySeries
     if (Array.isArray(config.chartType)) {
@@ -94,9 +95,9 @@ export default function Bar (_container) {
       .attr("width", () => barW)
       .attr("height", (d) => {
         if (d[keys.GROUP] === 0) {
-          return cache.chartHeight - scales.yScale(d[keys.VALUE])
+          return Math.max(cache.chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
         } else {
-          return cache.chartHeight - scales.y2Scale(d[keys.VALUE])
+          return Math.max(cache.chartHeight - scales.y2Scale(d[keys.VALUE]), MIN_BAR_HEIGHT)
         }
       })
       .style("stroke", "white")

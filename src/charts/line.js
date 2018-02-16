@@ -31,7 +31,6 @@ export default function Line (_container) {
   const cache = {
     container: _container,
     svg: null,
-    clipPath: null,
     chartHeight: null,
   }
 
@@ -52,21 +51,6 @@ export default function Line (_container) {
       cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
-
-    if (!cache.clipPath) {
-      cache.container.select(function () {
-        const svg = d3.select(this.parentNode)
-        cache.clipPath = svg
-          .insert('defs', ':first-child') // inserts the <defs> el at the top
-          .append('clipPath')
-          .attr('id', 'line-clip')
-          .append('rect')
-      })
-    }
-
-    cache.clipPath
-      .attr('width', cache.chartWidth)
-      .attr('height', cache.chartHeight)
   }
 
   function drawLines () {
@@ -94,7 +78,7 @@ export default function Line (_container) {
       .append("path")
       .merge(lines)
       .attr("class", "mark line")
-      .attr('clip-path', 'url(#line-clip)')
+      .attr('clip-path', 'url(#mark-clip)')
       .classed("y2-line", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -132,7 +116,7 @@ export default function Line (_container) {
       .append("path")
       .merge(areas)
       .attr("class", "mark area")
-      .attr('clip-path', 'url(#line-clip)')
+      .attr('clip-path', 'url(#mark-clip)')
       .classed("y2-area", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -160,7 +144,7 @@ export default function Line (_container) {
       .append("path")
       .merge(areas)
       .attr("class", "mark stacked-area")
-      .attr('clip-path', 'url(#line-clip)')
+      .attr('clip-path', 'url(#mark-clip)')
       .attr("d", seriesLine)
       .style("stroke", "none")
       .style("fill", (d) => scales.colorScale(d.key))

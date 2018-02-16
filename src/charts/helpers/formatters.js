@@ -126,3 +126,8 @@ export const binTranslation = {
   "1h": "%b %d, %Y %H:%M",
   "1d": "%b %d, %Y"
 }
+
+export function formatTooltipNumber(d) {
+  // comma separator, max 2 decimals
+  return d3.format(",")(Math.round(d * 100) / 100)
+}

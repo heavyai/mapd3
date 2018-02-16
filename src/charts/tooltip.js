@@ -2,7 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
 import {cloneData, override} from "./helpers/common"
-import {binTranslation, formatOddDateBin, multiFormat} from "./helpers/formatters"
+import {binTranslation, formatOddDateBin, multiFormat, formatTooltipNumber} from "./helpers/formatters"
 
 export default function Tooltip (_container, isLegend = false) {
 
@@ -135,22 +135,6 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
-  function autoFormat (d) {
-    let yFormat = ".2f"
-    if (d < 1) {
-      yFormat = ".2f"
-    } else if (d < 100) {
-      yFormat = ".1f"
-    } else if (d < 1000) {
-      yFormat = ".0f"
-    } else if (d < 100000) {
-      yFormat = ".2s"
-    } else {
-      yFormat = ".2s"
-    }
-    return yFormat
-  }
-
   function drawContent () {
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
         .data(cache.content)
@@ -214,7 +198,7 @@ export default function Tooltip (_container, isLegend = false) {
               .style("fill", d.value)
           }
         } else if (d.key === "value") {
-          selection.html(d3.format(autoFormat(d.value))(d.value))
+          selection.html(formatTooltipNumber(d.value))
         } else {
           selection.html(d.value)
         }
@@ -253,6 +237,8 @@ export default function Tooltip (_container, isLegend = false) {
       } else {
         title = d3.utcFormat(config.dateFormat)(title)
       }
+    } else if (!isNaN(title)) {
+      title = formatTooltipNumber(title)
     }
 
     cache.tooltipTitle.html(title)

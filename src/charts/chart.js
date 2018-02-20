@@ -17,6 +17,7 @@ import DomainEditor from "./domain-editor"
 import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
 import DataManager from "./data-manager"
+import ClipPath from "./clip-path"
 
 export default function Chart (_container) {
 
@@ -191,7 +192,8 @@ export default function Chart (_container) {
         binning: Binning(cache.headerGroup),
         domainEditor: DomainEditor(cache.container),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
-        label: Label(cache.container)
+        label: Label(cache.container),
+        clipPath: ClipPath(cache.svg)
       }
 
       eventCollector = {
@@ -284,6 +286,10 @@ export default function Chart (_container) {
       .render()
 
     components.label
+      .setConfig(config)
+      .render()
+
+    components.clipPath
       .setConfig(config)
       .render()
 

@@ -83,6 +83,7 @@ export default function Bar (_container) {
     bars.enter()
       .append("rect")
       .attr("class", "mark rect")
+      .attr('clip-path', 'url(#mark-clip)')
       .merge(bars)
       .attr("x", (d) => scales.xScale(d[keys.KEY]) - barW / 2)
       .attr("y", (d) => {
@@ -128,6 +129,7 @@ export default function Bar (_container) {
     stackedBars.enter()
       .append("rect")
       .attr("class", "mark")
+      .attr('clip-path', 'url(#mark-clip)')
       .merge(stackedBars)
       .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2)
       .attr("y", (d) => scales.yScale(d[1]) )

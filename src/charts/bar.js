@@ -52,15 +52,22 @@ export default function Bar (_container) {
 
   function drawBars () {
     const stack = data.stack(data.stackData)
-    const barW = cache.chartWidth / stack[0].length
     const MIN_BAR_HEIGHT = 1
+    const GUTTER_WIDTH_DIVIDER = 10
 
     let barData = []
     if (Array.isArray(config.chartType)) {
       barData = data.dataBySeries.filter((d, i) => config.chartType[i] === "bar")
-    } else if(config.chartType === "bar") {
+    } else if(config.chartType === "bar" || config.chartType === "groupedBar") {
       barData = data.dataBySeries
     }
+
+    const groupCount = stack[0].length
+    const groupMemberCount = barData.length
+    const groupW = groupCount ? (cache.chartWidth / groupCount) : 0
+    const barW = groupW
+    const gutterW = groupW / GUTTER_WIDTH_DIVIDER
+    const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
 
     const barLayer = cache.root.selectAll(".bar-layer")
         .data(barData)
@@ -78,6 +85,7 @@ export default function Bar (_container) {
               const dBClone = Object.assign({}, dB)
               dBClone.id = d[keys.ID]
               dBClone.group = d[keys.GROUP]
+              dBClone.index = i
               return dBClone
             })
           return datum
@@ -85,10 +93,17 @@ export default function Bar (_container) {
 
     bars.enter()
       .append("rect")
-      .attr("class", "mark rect")
+      .attr("class", "mark bar")
       .attr('clip-path', 'url(#mark-clip)')
       .merge(bars)
-      .attr("x", (d) => scales.xScale(d[keys.KEY]) - barW / 2)
+      .attr("x", (d, i) => {
+        if (config.chartType === "groupedBar" || barData.length > 1) {
+          const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d.index + gutterW / 2
+          return Math.max(x, 0)
+        } else {
+          return Math.max(scales.xScale(d[keys.KEY]) - barW / 2, 0)
+        }
+      })
       .attr("y", (d) => {
         if (d[keys.GROUP] === 0) {
           return scales.yScale(d[keys.VALUE])
@@ -96,7 +111,13 @@ export default function Bar (_container) {
           return scales.y2Scale(d[keys.VALUE])
         }
       })
-      .attr("width", () => barW)
+      .attr("width", () => {
+        if (config.chartType === "groupedBar" || barData.length > 1) {
+          return groupedBarW
+        } else {
+          return barW
+        }
+      })
       .attr("height", (d) => {
         if (d[keys.GROUP] === 0) {
           return Math.max(cache.chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
@@ -131,7 +152,7 @@ export default function Bar (_container) {
 
     stackedBars.enter()
       .append("rect")
-      .attr("class", "mark")
+      .attr("class", "mark bar")
       .attr('clip-path', 'url(#mark-clip)')
       .merge(stackedBars)
       .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2)
@@ -140,6 +161,64 @@ export default function Bar (_container) {
       .attr("width", barW)
 
     stackedBars.exit().remove()
+  }
+
+  function drawGroupedBars () {
+    const stack = data.stack(data.stackData)
+    const groupW = cache.chartWidth / stack[0].length
+    const gutterW = groupW / 10
+    const groupedBarW = (groupW - gutterW) / stack.length
+    const MIN_BAR_HEIGHT = 1
+
+    const barLayer = cache.root.selectAll(".bar-layer")
+        .data(data.dataBySeries)
+
+    const barLayerUpdate = barLayer.enter()
+      .append("g")
+      .attr("class", "bar-layer")
+      .merge(barLayer)
+
+    barLayer.exit().remove()
+
+    const bars = barLayerUpdate.selectAll(".mark")
+        .data((d, i) => {
+          const datum = d.values.map(dB => {
+              const dBClone = Object.assign({}, dB)
+              dBClone.id = d[keys.ID]
+              dBClone.group = d[keys.GROUP]
+              return dBClone
+            })
+          return datum
+        })
+
+    bars.enter()
+      .append("rect")
+      .attr("class", "mark bar")
+      .attr('clip-path', 'url(#mark-clip)')
+      .merge(bars)
+      .attr("x", (d, i) => {
+        const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d[keys.ID] + gutterW / 2
+        return Math.max(x, 0)
+      })
+      .attr("y", (d) => {
+        if (d[keys.GROUP] === 0) {
+          return scales.yScale(d[keys.VALUE])
+        } else {
+          return scales.y2Scale(d[keys.VALUE])
+        }
+      })
+      .attr("width", groupedBarW)
+      .attr("height", (d) => {
+        if (d[keys.GROUP] === 0) {
+          return Math.max(cache.chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
+        } else {
+          return Math.max(cache.chartHeight - scales.y2Scale(d[keys.VALUE]), MIN_BAR_HEIGHT)
+        }
+      })
+      .style("stroke", "white")
+      .style("fill", getColor)
+
+    bars.exit().remove()
   }
 
   function setConfig (_config) {
@@ -159,7 +238,6 @@ export default function Bar (_container) {
 
   function render () {
     build()
-
     if (config.chartType === "stackedBar") {
       drawStackedBars()
     } else {

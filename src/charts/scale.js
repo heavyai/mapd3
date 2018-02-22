@@ -42,6 +42,7 @@ export default function Scale () {
   function hasBars (_chartType) {
     return _chartType === "bar"
       || _chartType === "stackedBar"
+      || _chartType === "groupedBar"
       || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
   }
 

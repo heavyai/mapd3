@@ -134,6 +134,9 @@
 .chart .stacked-area {
   fill-opacity: 0.5; }
 
+.chart .bar {
+  stroke-width: 0.5; }
+
 .brush-chart .brush-area {
   fill: #EFF2F5; }
 

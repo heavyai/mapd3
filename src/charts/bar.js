@@ -106,9 +106,9 @@ export default function Bar (_container) {
       })
       .attr("y", (d) => {
         if (d[keys.GROUP] === 0) {
-          return scales.yScale(d[keys.VALUE])
+          return Math.min(scales.yScale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
         } else {
-          return scales.y2Scale(d[keys.VALUE])
+          return Math.max(scales.y2Scale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
         }
       })
       .attr("width", () => {
@@ -161,64 +161,6 @@ export default function Bar (_container) {
       .attr("width", barW)
 
     stackedBars.exit().remove()
-  }
-
-  function drawGroupedBars () {
-    const stack = data.stack(data.stackData)
-    const groupW = cache.chartWidth / stack[0].length
-    const gutterW = groupW / 10
-    const groupedBarW = (groupW - gutterW) / stack.length
-    const MIN_BAR_HEIGHT = 1
-
-    const barLayer = cache.root.selectAll(".bar-layer")
-        .data(data.dataBySeries)
-
-    const barLayerUpdate = barLayer.enter()
-      .append("g")
-      .attr("class", "bar-layer")
-      .merge(barLayer)
-
-    barLayer.exit().remove()
-
-    const bars = barLayerUpdate.selectAll(".mark")
-        .data((d, i) => {
-          const datum = d.values.map(dB => {
-              const dBClone = Object.assign({}, dB)
-              dBClone.id = d[keys.ID]
-              dBClone.group = d[keys.GROUP]
-              return dBClone
-            })
-          return datum
-        })
-
-    bars.enter()
-      .append("rect")
-      .attr("class", "mark bar")
-      .attr('clip-path', 'url(#mark-clip)')
-      .merge(bars)
-      .attr("x", (d, i) => {
-        const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d[keys.ID] + gutterW / 2
-        return Math.max(x, 0)
-      })
-      .attr("y", (d) => {
-        if (d[keys.GROUP] === 0) {
-          return scales.yScale(d[keys.VALUE])
-        } else {
-          return scales.y2Scale(d[keys.VALUE])
-        }
-      })
-      .attr("width", groupedBarW)
-      .attr("height", (d) => {
-        if (d[keys.GROUP] === 0) {
-          return Math.max(cache.chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
-        } else {
-          return Math.max(cache.chartHeight - scales.y2Scale(d[keys.VALUE]), MIN_BAR_HEIGHT)
-        }
-      })
-      .style("stroke", "white")
-      .style("fill", getColor)
-
-    bars.exit().remove()
   }
 
   function setConfig (_config) {

@@ -88,14 +88,14 @@ export default function Label (_container) {
     }
 
     cache.xAxisLabel
-        .text(config.xLabel)
-        .style("max-width", `${cache.chartWidth}px`)
-        .style("top", function top () {
-          const LABEL_PADDING = 18
-          const textHeight = this.getBoundingClientRect().height
-          return `${config.height - textHeight - LABEL_PADDING}px`
-        })
-        .style("left", `${config.margin.left + cache.chartWidth / 2}px`)
+      .text(config.xLabel)
+      .style("max-width", `${cache.chartWidth}px`)
+      .style("top", function top () {
+        const LABEL_PADDING = 18
+        const textHeight = this.getBoundingClientRect().height || LABEL_PADDING
+        return `${config.height - textHeight - LABEL_PADDING}px`
+      })
+      .style("left", `${config.margin.left + cache.chartWidth / 2}px`)
 
     cache.yAxisLabel
       .text(config.yLabel)

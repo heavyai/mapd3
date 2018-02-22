@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {override} from "./helpers/common"
+import {override, getSizes} from "./helpers/common"
 import {autoFormat, multiFormat, getExtractFormatter} from "./helpers/formatters"
 
 export default function Axis (_container) {
@@ -54,9 +54,6 @@ export default function Axis (_container) {
   }
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.root) {
       cache.root = cache.container.append("g")
           .classed("axis-group", true)
@@ -70,6 +67,10 @@ export default function Axis (_container) {
 
       cache.root.append("g").attr("class", "axis y2")
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
 
     cache.root.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }

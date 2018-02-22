@@ -87,3 +87,21 @@ export function stringToType (str, type) {
   }
   return converted
 }
+
+export function getSizes (config, cache) {
+  const width = config.width === "auto"
+    ? (cache.container && cache.container.clientWidth || 0)
+    : config.width
+  const height = config.height === "auto"
+    ? (cache.container && cache.container.clientHeight || 0)
+    : config.height
+  const chartWidth = Math.max(width - config.margin.left - config.margin.right, 0)
+  const chartHeight = Math.max(height - config.margin.top - config.margin.bottom, 0)
+
+  return {
+    width,
+    height,
+    chartWidth,
+    chartHeight
+  }
+}

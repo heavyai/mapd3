@@ -1,5 +1,5 @@
 import {keys} from "./helpers/constants"
-import {override} from "./helpers/common"
+import {override, getSizes} from "./helpers/common"
 
 export default function Bar (_container) {
 
@@ -40,13 +40,14 @@ export default function Bar (_container) {
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.root) {
       cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
   }
 
   function drawBars () {

@@ -2,7 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, override, throttle, rebind} from "./helpers/common"
+import {cloneData, override, throttle, rebind, getSizes} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -126,6 +126,7 @@ export default function Chart (_container) {
     panel: null,
     margin: null,
     maskingRectangle: null,
+    width: null, height: null,
     chartWidth: null, chartHeight: null,
     xAxis: null, yAxis: null, yAxis2: null
   }
@@ -149,11 +150,6 @@ export default function Chart (_container) {
   const dataManager = DataManager()
 
   function build () {
-    const w = config.width === "auto" ? cache.container.clientWidth : config.width
-    const h = config.height === "auto" ? cache.container.clientHeight : config.height
-    cache.chartWidth = Math.max(w - config.margin.left - config.margin.right, 0)
-    cache.chartHeight = Math.max(h - config.margin.top - config.margin.bottom, 0)
-
     if (!cache.svg) {
       const template = `<div class="mapd3 mapd3-container">
         <div class="header-group"></div>
@@ -207,9 +203,15 @@ export default function Chart (_container) {
       }
     }
 
+    const {width, height, chartWidth, chartHeight} = getSizes(config, cache)
+    cache.width = width
+    cache.height = height
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
+
     cache.svg
-      .attr("width", config.width)
-      .attr("height", config.height)
+      .attr("width", cache.width)
+      .attr("height", cache.height)
 
     cache.headerGroup
       .style("width", `${cache.chartWidth}px`)
@@ -318,7 +320,7 @@ export default function Chart (_container) {
         .duration(config.animationDuration)
         .ease(config.ease)
         .attr("width", 0)
-        .attr("x", config.width - config.margin.right)
+        .attr("x", cache.width - config.margin.right)
         .on("end", () => cache.maskingRectangle.remove())
     }
   }

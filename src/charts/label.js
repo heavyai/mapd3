@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override} from "./helpers/common"
+import {override, getSizes} from "./helpers/common"
 
 export default function Label (_container) {
 
@@ -32,9 +32,6 @@ export default function Label (_container) {
   const dispatcher = d3.dispatch("axisLabelChange")
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.root) {
       cache.root = cache.container
           .append("div")
@@ -86,6 +83,10 @@ export default function Label (_container) {
         })
         .style("transform", "translate(-50%) rotate(90deg)")
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
 
     cache.xAxisLabel
       .text(config.xLabel)

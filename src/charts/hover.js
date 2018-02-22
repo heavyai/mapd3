@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
-import {override} from "./helpers/common"
+import {override, getSizes} from "./helpers/common"
 
 export default function Hover (_container) {
 
@@ -49,14 +49,15 @@ export default function Hover (_container) {
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.root) {
       cache.root = cache.container.append("g")
           .classed("hover-group", true)
           .style("pointer-events", "none")
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
   }
 
   function drawHover (_dataPoint, _dataPointXPosition) {

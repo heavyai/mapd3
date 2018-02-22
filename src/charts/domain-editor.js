@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, stringToType} from "./helpers/common"
+import {override, stringToType, getSizes} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function DomainEditor (_container) {
@@ -58,8 +58,6 @@ export default function DomainEditor (_container) {
   const dispatcher = d3.dispatch("domainChange", "domainLockToggle")
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
     const xDomain = config.xDomain === "auto" ? scales.xScale.domain() : config.xDomain
     const yDomain = (config.yDomain === "auto" && scales.yScale) ? scales.yScale.domain() : config.yDomain
     const y2Domain = (config.y2Domain === "auto" && scales.y2Scale) ? scales.y2Scale.domain() : config.y2Domain
@@ -268,6 +266,10 @@ export default function DomainEditor (_container) {
       hideY2Editor()
       hideXEditor()
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
 
     if (config.xDomainEditorIsEnabled) {
       cache.xHitZone.style("display", "block")

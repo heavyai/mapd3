@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {override} from "./helpers/common"
+import {override, getSizes} from "./helpers/common"
 
 /**
  * ClipPath: component that creates an SVG defs element with a rectangular clipping path
@@ -26,15 +26,16 @@ export default function ClipPath (_container) {
   }
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.clipPath) {
       cache.clipPath = cache.container.append('defs')
         .append('clipPath')
         .attr('id', 'mark-clip')
         .append('rect')
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
 
     cache.clipPath
       .attr('width', cache.chartWidth)

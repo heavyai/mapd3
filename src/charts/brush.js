@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {invertScale, override} from "./helpers/common"
+import {invertScale, override, getSizes} from "./helpers/common"
 
 export default function Brush (_container) {
 
@@ -40,9 +40,6 @@ export default function Brush (_container) {
   const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd", "brushClear")
 
   function buildSVG () {
-    cache.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
-    cache.chartHeight = Math.max(config.height - config.margin.top - config.margin.bottom, 0)
-
     if (!cache.root) {
       cache.root = cache.container.append("g")
           .classed("brush-group", true)
@@ -52,6 +49,10 @@ export default function Brush (_container) {
         .on("brush", handleBrushMove)
         .on("end", handleBrushEnd)
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
   }
 
   function buildBrush () {

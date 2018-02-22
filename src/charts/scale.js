@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
-import {getUnique, override} from "./helpers/common"
+import {getUnique, override, getSizes} from "./helpers/common"
 
 export default function Scale () {
 
@@ -23,6 +23,11 @@ export default function Scale () {
     y2Domain: "auto"
   }
 
+  const cache = {
+    chartWidth: null,
+    chartHeight: null
+  }
+
   let data = {
     dataByKey: null,
     dataBySeries: null,
@@ -40,11 +45,16 @@ export default function Scale () {
       || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
   }
 
+  function getScaleSizes () {
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
+  }
+
   function buildXScale (_allKeys) {
-    const chartWidth = config.width - config.margin.left - config.margin.right
     let xScale = null
     let domain = null
-    const markW =  hasBars(config.chartType) ? chartWidth / _allKeys.length : 0
+    const markW =  hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()
@@ -68,16 +78,15 @@ export default function Scale () {
     }
 
     xScale.domain(domain)
-      .range([markW / 2, chartWidth - markW / 2])
+      .range([markW / 2, cache.chartWidth - markW / 2])
 
     return xScale
   }
 
   function buildYScale (_extent) {
-    const chartHeight = config.height - config.margin.top - config.margin.bottom
     const yScale = d3.scaleLinear()
         .domain(_extent)
-        .rangeRound([chartHeight, 0])
+        .rangeRound([cache.chartHeight, 0])
 
     return yScale
   }
@@ -217,6 +226,7 @@ export default function Scale () {
   }
 
   function getScales () {
+    getScaleSizes()
     if (config.chartType === "stackedBar"
       || config.chartType === "stackedArea") {
       return getStackedScales()

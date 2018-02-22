@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, stringToType} from "./helpers/common"
+import {override, stringToType, getSizes} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function BrushRangeEditor (_container) {
@@ -39,9 +39,6 @@ export default function BrushRangeEditor (_container) {
   const dispatcher = d3.dispatch("rangeChange")
 
   function buildSVG () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.root) {
       cache.root = cache.container
           .append("div")
@@ -76,6 +73,10 @@ export default function BrushRangeEditor (_container) {
         .call(blurOnEnter)
         .style("float", "right")
     }
+
+    const {chartWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = chartWidth
+    cache.chartHeight = chartHeight
 
     const domain = scales.xScale.domain()
     let rangeMin = config.brushRangeMin === null ? domain[0] : config.brushRangeMin

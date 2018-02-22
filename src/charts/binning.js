@@ -11,8 +11,6 @@ export default function Binning (_container) {
       bottom: 40,
       left: 70
     },
-    width: 800,
-    height: 500,
     autoLabel: "auto",
     binningToggles: [],
     label: "BIN:",

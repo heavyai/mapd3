@@ -54,9 +54,11 @@ export default function Bar (_container) {
     const barW = cache.chartWidth / stack[0].length
     const MIN_BAR_HEIGHT = 1
 
-    let barData = data.dataBySeries
+    let barData = []
     if (Array.isArray(config.chartType)) {
-      barData = barData.filter((d, i) => config.chartType[i] === "bar")
+      barData = data.dataBySeries.filter((d, i) => config.chartType[i] === "bar")
+    } else if(config.chartType === "bar") {
+      barData = data.dataBySeries
     }
 
     const barLayer = cache.root.selectAll(".bar-layer")
@@ -157,10 +159,10 @@ export default function Bar (_container) {
   function render () {
     build()
 
-    if (config.chartType === "bar" || Array.isArray(config.chartType)) {
-      drawBars()
-    } else if (config.chartType === "stackedBar") {
+    if (config.chartType === "stackedBar") {
       drawStackedBars()
+    } else {
+      drawBars()
     }
   }
 

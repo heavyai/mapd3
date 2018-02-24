@@ -154,11 +154,14 @@ export default function Brush (_container) {
       destroy()
     }
 
-    buildSVG()
+    if (config.brushIsEnabled) {
+      buildSVG()
+    }
 
-    if (data.dataBySeries) {
+    if (config.brushIsEnabled && data.dataBySeries) {
       buildBrush()
     }
+
     return this
   }
 

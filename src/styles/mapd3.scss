@@ -1,18 +1,20 @@
-// Helpers
-@import "helpers/_variables.scss";
-@import "common/general.scss";
+.mapd3 {
+    // Helpers
+    @import "helpers/_variables.scss";
+    @import "common/general.scss";
 
-// Common Elements
-@import "common/_grid.scss";
-@import "common/_axes.scss";
-@import "common/_tooltip.scss";
-@import "common/_legend.scss";
+    // Common Elements
+    @import "common/_grid.scss";
+    @import "common/_axes.scss";
+    @import "common/_tooltip.scss";
+    @import "common/_legend.scss";
 
-// Charts
-@import "charts/line.scss";
-@import "charts/brush.scss";
-@import "charts/binning.scss";
-@import "charts/hover.scss";
-@import "charts/domain-editor.scss";
-@import "charts/brush-range-editor.scss";
-@import "charts/label.scss";
+    // Charts
+    @import "charts/line.scss";
+    @import "charts/brush.scss";
+    @import "charts/binning.scss";
+    @import "charts/hover.scss";
+    @import "charts/domain-editor.scss";
+    @import "charts/brush-range-editor.scss";
+    @import "charts/label.scss";
+}

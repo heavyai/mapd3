@@ -1,42 +1,42 @@
-[contenteditable]:focus {
+.mapd3 [contenteditable]:focus {
   outline: 1px solid #ddd; }
 
-[contenteditable] {
+.mapd3 [contenteditable] {
   border: 1px solid transparent; }
 
-[contenteditable]:hover, .axis-label:focus {
+.mapd3 [contenteditable]:hover, .mapd3 .axis-label:focus {
   border: 1px solid #ddd; }
 
-.vertical-grid-line,
-.horizontal-grid-line {
+.mapd3 .vertical-grid-line,
+.mapd3 .horizontal-grid-line {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #EFF2F5;
   stroke-width: 1;
   stroke-dasharray: 4, 4; }
 
-.extended-y-line,
-.extended-x-line {
+.mapd3 .extended-y-line,
+.mapd3 .extended-x-line {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #D2D6DF;
   stroke-width: 1; }
 
-.axis-group .axis .tick line {
+.mapd3 .axis-group .axis .tick line {
   fill: none;
   stroke: #c7c7c7;
   stroke-width: 1;
   shape-rendering: crispEdges; }
 
-.axis-group .axis .tick text {
+.mapd3 .axis-group .axis .tick text {
   font-size: 10px;
   fill: #a7a7a7;
   padding: 12px; }
 
-.axis-group .y-title, .axis-group .x-title {
+.mapd3 .axis-group .y-title, .mapd3 .axis-group .x-title {
   font-size: 0.8em; }
 
-.tooltip-group, .legend-group {
+.mapd3 .tooltip-group, .mapd3 .legend-group {
   border: 1px solid #ddd;
   border-radius: 4px;
   background: white;
@@ -44,166 +44,166 @@
   padding: 0 4px 0 4px;
   max-width: 160px;
   overflow: auto; }
-  .tooltip-group .tooltip-title-section, .legend-group .tooltip-title-section {
+  .mapd3 .tooltip-group .tooltip-title-section, .mapd3 .legend-group .tooltip-title-section {
     display: table;
     border-bottom: 1px solid #ddd;
     width: 100%;
     color: #a7a7a7; }
-  .tooltip-group .tooltip-title-section.collapsed:hover, .legend-group .tooltip-title-section.collapsed:hover {
+  .mapd3 .tooltip-group .tooltip-title-section.collapsed:hover, .mapd3 .legend-group .tooltip-title-section.collapsed:hover {
     cursor: pointer;
     color: #22A7F0; }
-  .tooltip-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover, .legend-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover {
+  .mapd3 .tooltip-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover, .mapd3 .legend-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover {
     cursor: pointer;
     color: #22A7F0; }
-  .tooltip-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse, .legend-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse {
+  .mapd3 .tooltip-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse, .mapd3 .legend-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse {
     opacity: 1; }
-  .tooltip-group .tooltip-title-section.collapsed .tooltip-collapse, .legend-group .tooltip-title-section.collapsed .tooltip-collapse {
+  .mapd3 .tooltip-group .tooltip-title-section.collapsed .tooltip-collapse, .mapd3 .legend-group .tooltip-title-section.collapsed .tooltip-collapse {
     display: none; }
-  .tooltip-group .tooltip-collapse, .legend-group .tooltip-collapse {
+  .mapd3 .tooltip-group .tooltip-collapse, .mapd3 .legend-group .tooltip-collapse {
     display: table-cell;
     text-align: right;
     opacity: 0; }
-  .tooltip-group .tooltip-title, .legend-group .tooltip-title {
+  .mapd3 .tooltip-group .tooltip-title, .mapd3 .legend-group .tooltip-title {
     display: table-cell;
     font-size: 11px;
     font-weight: bold; }
-  .tooltip-group .tooltip-body, .legend-group .tooltip-body {
+  .mapd3 .tooltip-group .tooltip-body, .mapd3 .legend-group .tooltip-body {
     display: table;
     border-collapse: separate;
     border-spacing: 0 5px; }
-  .tooltip-group .tooltip-item, .legend-group .tooltip-item {
+  .mapd3 .tooltip-group .tooltip-item, .mapd3 .legend-group .tooltip-item {
     display: flex;
     justify-content: flex-start;
     align-items: center; }
-  .tooltip-group .section.tooltip-label, .tooltip-group .section.value, .legend-group .section.tooltip-label, .legend-group .section.value {
+  .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .tooltip-group .section.value, .mapd3 .legend-group .section.tooltip-label, .mapd3 .legend-group .section.value {
     padding-left: 5px;
     white-space: nowrap;
     max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis; }
-  .tooltip-group .section.tooltip-label, .legend-group .section.tooltip-label {
+  .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .legend-group .section.tooltip-label {
     font-size: 12px;
     font-weight: bold; }
-  .tooltip-group .section.value, .legend-group .section.value {
+  .mapd3 .tooltip-group .section.value, .mapd3 .legend-group .section.value {
     text-align: right;
     font-size: 13px; }
 
-.tooltip-group .tooltip-item {
+.mapd3 .tooltip-group .tooltip-item {
   height: 18px; }
 
-.legend-group {
+.mapd3 .legend-group {
   overflow-y: auto;
   font-size: 11px; }
-  .legend-group .section.tooltip-label {
+  .mapd3 .legend-group .section.tooltip-label {
     font-weight: normal; }
 
-.mapd3-legend .legend-entry.is-faded .legend-entry-name,
-.mapd3-legend .legend-entry.is-faded .legend-entry-value,
-.mapd3-legend .legend-entry.is-faded .legend-circle {
+.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-name,
+.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-value,
+.mapd3 .mapd3-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.97;
   transition: opacity .2s ease-out;
   -moz-transition: opacity .2s ease-out;
   -webkit-transition: opacity .2s ease-out; }
 
-.mapd3-legend .legend-entry.is-faded .legend-entry-name,
-.mapd3-legend .legend-entry.is-faded .legend-entry-value,
-.mapd3-legend .legend-entry.is-faded .legend-circle {
+.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-name,
+.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-value,
+.mapd3 .mapd3-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.2; }
 
-.chart .masking-rectangle {
+.mapd3 .chart .masking-rectangle {
   fill: #ffffff; }
 
-.chart .x.axis path, .chart .x.axis .domain, .chart .y.axis path, .chart .y.axis .domain, .chart .y2.axis path, .chart .y2.axis .domain {
+.mapd3 .chart .x.axis path, .mapd3 .chart .x.axis .domain, .mapd3 .chart .y.axis path, .mapd3 .chart .y.axis .domain, .mapd3 .chart .y2.axis path, .mapd3 .chart .y2.axis .domain {
   display: block;
   stroke: #ADB0B6; }
 
-.chart .vertical-grid-line, .chart .horizontal-grid-line {
+.mapd3 .chart .vertical-grid-line, .mapd3 .chart .horizontal-grid-line {
   stroke-dasharray: none; }
 
-.chart .line, .chart .area, .chart .stacked-area {
+.mapd3 .chart .line, .mapd3 .chart .area, .mapd3 .chart .stacked-area {
   stroke-width: 1.5px;
   stroke-linecap: round;
   stroke-linejoin: round; }
 
-.chart .line {
+.mapd3 .chart .line {
   fill: none; }
 
-.chart .area {
+.mapd3 .chart .area {
   fill-opacity: 0.5; }
 
-.chart .stacked-area {
+.mapd3 .chart .stacked-area {
   fill-opacity: 0.5; }
 
-.chart .bar {
+.mapd3 .chart .bar {
   stroke-width: 0.5; }
 
-.brush-chart .brush-area {
+.mapd3 .brush-chart .brush-area {
   fill: #EFF2F5; }
 
-.brush-chart rect.brush-rect.selection {
+.mapd3 .brush-chart rect.brush-rect.selection {
   fill-opacity: 0.08;
   fill: url("#brush-area-gradient");
   stroke-linejoin: round; }
 
-.brush-chart rect.brush-rect.handle {
+.mapd3 .brush-chart rect.brush-rect.handle {
   fill: #00d8d2;
   width: 0.2rem; }
 
-.brush-chart .axis path {
+.mapd3 .brush-chart .axis path {
   display: none; }
 
-.brush-group .selection {
+.mapd3 .brush-group .selection {
   fill: #22A7F0; }
 
-.brush-group .handle {
+.mapd3 .brush-group .handle {
   fill: #eee; }
 
-.binning-group {
+.mapd3 .binning-group {
   font-size: 11px;
   color: #868686; }
-  .binning-group .item, .binning-group .bin-label {
+  .mapd3 .binning-group .item, .mapd3 .binning-group .bin-label {
     float: left;
     padding-right: 4px; }
-  .binning-group .item {
+  .mapd3 .binning-group .item {
     cursor: pointer; }
-  .binning-group .item.selected {
+  .mapd3 .binning-group .item.selected {
     color: #22A7F0;
     font-weight: bold;
     border-bottom: #22A7F0 2px solid;
     text-decoration: none; }
-  .binning-group .item.selected.item-auto {
+  .mapd3 .binning-group .item.selected.item-auto {
     border-bottom: none; }
-  .binning-group .dimmed {
+  .mapd3 .binning-group .dimmed {
     font-weight: normal; }
-  .binning-group .bin-label {
+  .mapd3 .binning-group .bin-label {
     font-weight: bold; }
 
-.vertical-marker {
+.mapd3 .vertical-marker {
   stroke: #D2D6DF;
   stroke-width: 1;
   fill: none; }
 
-.domain-input-group .domain-input {
+.mapd3 .domain-input-group .domain-input {
   font-size: 10px;
   background: white; }
 
-.domain-input-group .domain-lock.locked {
+.mapd3 .domain-input-group .domain-lock.locked {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0E3QTdBNzt9LnN0MXtmaWxsOiNGRkZGRkY7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTcsNDFWMTloNnYtM2MwLTYuMSw0LjktMTEsMTEtMTFzMTEsNC45LDExLDExdjNoNnYyMkg3eiBNMjksMTl2LTNjMC0yLjgtMi4yLTUtNS01cy01LDIuMi01LDV2M0gyOXoiLz48cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjQsNmM1LjUsMCwxMCw0LjUsMTAsMTB2NGg2djIwSDhWMjBoNnYtNEMxNCwxMC41LDE4LjUsNiwyNCw2IE0xOCwyMGgxMnYtNGMwLTMuMy0yLjctNi02LTZzLTYsMi43LTYsNlYyMCBNMjQsNGMtNi42LDAtMTIsNS40LTEyLDEydjJIOEg2djJ2MjB2MmgyaDMyaDJ2LTJWMjB2LTJoLTJoLTR2LTJDMzYsOS40LDMwLjYsNCwyNCw0TDI0LDR6IE0yMCwxOHYtMmMwLTIuMiwxLjgtNCw0LTRzNCwxLjgsNCw0djJIMjBMMjAsMTh6Ii8+PC9nPjwvc3ZnPg==); }
 
-.domain-input-group .domain-lock {
+.mapd3 .domain-input-group .domain-lock {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0E3QTdBNzt9LnN0MXtmaWxsOiNGRkZGRkY7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTcsNDFWMTloNnYtN2MwLTYuMSw0LjktMTEsMTEtMTFzMTEsNC45LDExLDExdjNoLTZ2LTNjMC0yLjgtMi4yLTUtNS01cy01LDIuMi01LDV2N2gyMnYyMkg3eiIvPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNCwyYzUuNSwwLDEwLDQuNSwxMCwxMHYyaC00di0yYzAtMy4zLTIuNy02LTYtNnMtNiwyLjctNiw2djhoMjJ2MjBIOFYyMGg2di04QzE0LDYuNSwxOC41LDIsMjQsMiBNMjQsMGMtNi42LDAtMTIsNS40LTEyLDEydjZIOEg2djJ2MjB2MmgyaDMyaDJ2LTJWMjB2LTJoLTJIMjB2LTZjMC0yLjIsMS44LTQsNC00czQsMS44LDQsNHYydjJoMmg0aDJ2LTJ2LTJDMzYsNS40LDMwLjYsMCwyNCwwTDI0LDB6Ii8+PC9nPjwvc3ZnPg==); }
 
-.domain-input-group .domain-lock {
+.mapd3 .domain-input-group .domain-lock {
   cursor: pointer; }
 
-.brush-range-input-group {
+.mapd3 .brush-range-input-group {
   white-space: nowrap;
   color: #868686;
   font-weight: bold; }
-  .brush-range-input-group .brush-range-input, .brush-range-input-group .separator {
+  .mapd3 .brush-range-input-group .brush-range-input, .mapd3 .brush-range-input-group .separator {
     padding: 0 2px; }
 
-.label-group .axis-label {
+.mapd3 .label-group .axis-label {
   color: #a7a7a7;
   font-weight: bold;
   font-size: 13px;

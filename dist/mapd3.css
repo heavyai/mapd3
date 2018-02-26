@@ -37,13 +37,11 @@
   font-size: 0.8em; }
 
 .tooltip-group, .legend-group {
-  border: 1px solid #ddd;
   border-radius: 4px;
   background: white;
   opacity: 0.9;
   padding: 0 4px 0 4px;
-  max-width: 160px;
-  overflow: auto; }
+  max-width: 160px; }
   .tooltip-group .tooltip-title-section, .legend-group .tooltip-title-section {
     display: table;
     border-bottom: 1px solid #ddd;
@@ -92,7 +90,6 @@
   height: 18px; }
 
 .legend-group {
-  overflow-y: auto;
   font-size: 11px; }
   .legend-group .section.tooltip-label {
     font-weight: normal; }
@@ -208,3 +205,5 @@
   font-weight: bold;
   font-size: 13px;
   overflow: hidden; }
+
+/*# sourceMappingURL=mapd3.css.map*/

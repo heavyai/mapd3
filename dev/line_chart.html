@@ -30,7 +30,7 @@ const keyType = "number"
 const dataConfig = {
   keyType,
   range: [0, 100],
-  pointCount: 5,
+  pointCount: 10,
   groupCount: 1,
   lineCount: 3
 }
@@ -44,7 +44,7 @@ const data = dataManager.generateTestDataset()
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2]) 
-const chartType = "stackedBar" 
+const chartType = "stackedBar"  
 
 console.log("data", data.series)
 
@@ -138,7 +138,10 @@ const chart1 = mapd3.Chart(chartNode1)
     // label
     xLabel: "X Axis Label",
     yLabel: "Y Axis Label",
-    y2Label: dataConfig.groupCount > 1 ? "Y2 Axis Label" : ""
+    y2Label: dataConfig.groupCount > 1 ? "Y2 Axis Label" : "",
+
+    // bar 
+    barSpacingPercent: 10
   })
   .setData(data)
 

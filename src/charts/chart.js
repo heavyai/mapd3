@@ -109,7 +109,10 @@ export default function Chart (_container) {
     // label
     xLabel: "",
     yLabel: "",
-    y2Label: ""
+    y2Label: "",
+
+    // bar 
+    barSpacingPercent: 10
   }
 
   let scales = {

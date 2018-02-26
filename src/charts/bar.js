@@ -12,7 +12,8 @@ export default function Bar (_container) {
     },
     width: 800,
     height: 500,
-    chartType: null
+    chartType: null,
+    barSpacingPercent: 10
   }
 
   let scales = {
@@ -37,6 +38,8 @@ export default function Bar (_container) {
     stackData: null
   }
 
+  const MIN_BAR_HEIGHT = 1
+
   const getColor = (d) => scales.colorScale(d[keys.ID])
 
   function build () {
@@ -52,8 +55,6 @@ export default function Bar (_container) {
 
   function drawBars () {
     const stack = data.stack(data.stackData)
-    const MIN_BAR_HEIGHT = 1
-    const GUTTER_WIDTH_DIVIDER = 10
 
     let barData = []
     if (Array.isArray(config.chartType)) {
@@ -66,7 +67,7 @@ export default function Bar (_container) {
     const groupMemberCount = barData.length
     const groupW = groupCount ? (cache.chartWidth / groupCount) : 0
     const barW = groupW
-    const gutterW = groupW / GUTTER_WIDTH_DIVIDER
+    const gutterW = groupW / 100 * config.barSpacingPercent
     const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
 
     const barLayer = cache.root.selectAll(".bar-layer")
@@ -134,6 +135,7 @@ export default function Bar (_container) {
   function drawStackedBars () {
     const stack = data.stack(data.stackData)
     const barW = cache.chartWidth / stack[0].length
+    const gutterW = barW / 100 * config.barSpacingPercent
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")
         .data(stack)
@@ -155,10 +157,10 @@ export default function Bar (_container) {
       .attr("class", "mark bar")
       .attr('clip-path', 'url(#mark-clip)')
       .merge(stackedBars)
-      .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2)
+      .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2 + gutterW / 2)
       .attr("y", (d) => scales.yScale(d[1]) )
-      .attr("height", (d) => scales.yScale(d[0]) - scales.yScale(d[1]))
-      .attr("width", barW)
+      .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
+      .attr("width", barW - gutterW)
 
     stackedBars.exit().remove()
   }

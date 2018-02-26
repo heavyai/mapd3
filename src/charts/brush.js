@@ -90,10 +90,14 @@ export default function Brush (_container) {
     }
   }
 
+  function extendIsValid (extent) {
+    return extent && extent.length && extent.filter(d => !isNaN(d) && typeof d !== "undefined" && d !== null).length == 2
+  }
+
   function moveBrush () {
     const dataExtent = scales.xScale.domain()
     const extent = clampBrush(dataExtent)
-    if (extent) {
+    if (extendIsValid(extent)) {
       cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
     }
     return this

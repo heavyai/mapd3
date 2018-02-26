@@ -1,12 +1,10 @@
 // Tooltip (which is also the legend component)
 .tooltip-group, .legend-group {
-  border: 1px solid #ddd;
   border-radius: 4px;
   background: white;
   opacity: 0.9;
   padding: 0 4px 0 4px;
   max-width: 160px;
-  overflow: auto;
 
   .tooltip-title-section {
     display: table;
@@ -73,7 +71,6 @@
 }
 
 .legend-group {
-  overflow-y: auto;
   font-size: 11px;
 
   .section.tooltip-label {

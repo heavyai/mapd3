@@ -1,6 +1,6 @@
 {
   "name": "mapd3",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "A fast chart library for the fastest DB",
   "main": "dist/mapd3.js",
   "contributors": [
@@ -12,6 +12,9 @@
   "scripts": {
     "docs:build": "documentation build -f \"html\" examples/examples.js -o doc",
     "docs:serve": "documentation serve --watch examples/examples.js -o doc",
+    "build": "yarn build:prod && yarn build:dev",
+    "build:prod": "webpack --env.prod",
+    "build:dev": "webpack --env.dev",
     "prod": "webpack --env.prod --watch",
     "dev": "webpack --env.dev --watch",
     "clean": "yarn cache clean && rm -rf node_modules"

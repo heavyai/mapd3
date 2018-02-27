@@ -105,3 +105,7 @@ export function getSizes (config, cache) {
     chartHeight
   }
 }
+
+export function isNumeric (val) {
+    return Number(parseFloat(val)) === val;
+}

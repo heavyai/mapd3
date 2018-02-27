@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
-import {cloneData, override} from "./helpers/common"
+import {cloneData, isNumeric, override} from "./helpers/common"
 import {binTranslation, formatOddDateBin, multiFormat, formatTooltipNumber} from "./helpers/formatters"
 
 export default function Tooltip (_container, isLegend = false) {
@@ -20,8 +20,6 @@ export default function Tooltip (_container, isLegend = false) {
     numberFormat: null,
     tooltipIsEnabled: true,
     tooltipTitle: null,
-
-    // from chart
     binningResolution: null,
     binningIsAuto: null,
     chartType: null,
@@ -237,7 +235,7 @@ export default function Tooltip (_container, isLegend = false) {
       } else {
         title = d3.utcFormat(config.dateFormat)(title)
       }
-    } else if (!isNaN(title)) {
+    } else if (isNumeric(title)) {
       title = formatTooltipNumber(title)
     }
 

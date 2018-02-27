@@ -155,10 +155,10 @@ export default function Bar (_container) {
       .attr("class", "mark bar")
       .attr('clip-path', 'url(#mark-clip)')
       .merge(stackedBars)
-      .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2)
+      .attr("x", (d) => scales.xScale(d.data[keys.KEY])) // - barW / 2
       .attr("y", (d) => scales.yScale(d[1]) )
       .attr("height", (d) => scales.yScale(d[0]) - scales.yScale(d[1]))
-      .attr("width", barW)
+      .attr("width", scales.xScale.bandwidth())
 
     stackedBars.exit().remove()
   }

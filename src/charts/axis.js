@@ -18,6 +18,7 @@ export default function Axis (_container) {
     xAxisFormat: null,
     yAxisFormat: null,
     y2AxisFormat: null,
+    chartType: null,
     keyType: null,
     yTicks: null,
     y2Ticks: null,
@@ -161,9 +162,13 @@ export default function Axis (_container) {
   }
 
   function drawAxis () {
-    cache.root.select(".axis.x")
+    const xAxis = cache.root.select(".axis.x")
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
+
+    if (config.chartType === "bar" || config.chartType === "stackedBar") {
+      xAxis.select(".domain").remove()
+    }
 
     if (scales.yScale) {
       cache.root.select(".axis.y")

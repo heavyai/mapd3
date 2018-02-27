@@ -55,12 +55,16 @@ export default function Scale () {
   function buildXScale (_allKeys) {
     let xScale = null
     let domain = null
-    const markW =  hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0
+    const isBarChart = hasBars(config.chartType)
+    const markW = 0 //  hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()
     } else if (config.keyType === "number") {
       xScale = d3.scaleLinear()
+    } else if (config.keyType === "string" && isBarChart) {
+      xScale = d3.scaleBand()
+      xScale.padding(0.2)
     } else {
       xScale = d3.scalePoint()
       xScale.padding(0)

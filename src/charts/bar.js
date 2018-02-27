@@ -109,7 +109,7 @@ export default function Bar (_container) {
         if (d[keys.GROUP] === 0) {
           return Math.min(scales.yScale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
         } else {
-          return Math.max(scales.y2Scale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
+          return Math.min(scales.y2Scale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
         }
       })
       .attr("width", () => {

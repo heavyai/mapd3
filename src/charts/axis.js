@@ -87,7 +87,6 @@ export default function Axis (_container) {
       cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.xTickSkip)))
     } else if (config.keyType === "number") {
       if (config.extractType) {
-        console.log("extract")
         const formatter = getExtractFormatter(config.extractType)
         cache.xAxis.tickFormat(formatter)
       } else if (config.xAxisFormat && config.xAxisFormat !== "auto") {

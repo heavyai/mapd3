@@ -113,7 +113,7 @@ export function isNumeric (val) {
 export function extendIsValid (extent) {
   return extent
     && extent.length
-    && extent.filter(d => !isNaN(d.valueOf) // valueOf also catches Invalid Date
+    && extent.filter(d => !isNaN(d.valueOf()) // valueOf also catches Invalid Date
       && typeof d !== "undefined"
       && d !== null
     ).length == 2

@@ -51,17 +51,9 @@ export default function Binning (_container) {
             dispatcher.call("change", this, {name: config.autoLabel, isSelected: toggled})
           })
           .text(config.autoLabel)
-
-      cache.binningItems = cache.root.selectAll(".toggleExclusive")
-          .data(config.binningToggles)
-          .enter().append("div")
-          .attr("class", (d) => `item item-${d} toggleExclusive`)
-          .on("click.select", function click (d) {
-            const isSelected = this.classList.contains("selected")
-            dispatcher.call("change", this, {name: d, isSelected})
-          })
-          .text((d) => d)
     }
+
+    setBinningToggles(config.binningToggles)
 
     const LINE_HEIGHT = 20
     cache.root
@@ -70,6 +62,22 @@ export default function Binning (_container) {
 
     changeBinning(config.binningResolution)
     toggleAuto(config.binningIsAuto)
+  }
+
+  function setBinningToggles (_binningToggles) {
+    cache.binningItems = cache.root.selectAll(".toggleExclusive")
+          .data(_binningToggles)
+
+    cache.binningItems.enter().append("div")
+        .attr("class", (d) => `item item-${d} toggleExclusive`)
+        .on("click.select", function click (d) {
+          const isSelected = this.classList.contains("selected")
+          dispatcher.call("change", this, {name: d, isSelected})
+        })
+        .merge(cache.binningItems)
+        .text((d) => d)
+
+    cache.binningItems.exit().remove()
   }
 
   function changeBinning (_selectedItemName) {

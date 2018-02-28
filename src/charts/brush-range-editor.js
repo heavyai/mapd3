@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, stringToType, getSizes} from "./helpers/common"
+import {override, stringToType, getSizes, extendIsValid} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function BrushRangeEditor (_container) {
@@ -79,20 +79,26 @@ export default function BrushRangeEditor (_container) {
     cache.chartHeight = chartHeight
 
     const domain = scales.xScale.domain()
-    let rangeMin = config.brushRangeMin === null ? domain[0] : config.brushRangeMin
-    let rangeMax = config.brushRangeMax === null ? domain[1] : config.brushRangeMax
-    if (config.keyType === "time") {
-      const format = d3.utcFormat(config.dateFormat)
-      rangeMin = format(new Date(rangeMin))
-      rangeMax = format(new Date(rangeMax))
-    } else {
-      const format = d3.format(config.numberFormat)
-      rangeMin = format(rangeMin)
-      rangeMax = format(rangeMax)
-    }
+    if (extendIsValid(domain)) {
+      let rangeMin = config.brushRangeMin === null ? domain[0] : config.brushRangeMin
+      let rangeMax = config.brushRangeMax === null ? domain[1] : config.brushRangeMax
 
-    cache.inputMin.text(rangeMin)
-    cache.inputMax.text(rangeMax)
+      if (config.keyType === "time") {
+        const format = d3.utcFormat(config.dateFormat)
+        rangeMin = format(new Date(rangeMin))
+        rangeMax = format(new Date(rangeMax))
+      } else {
+        const format = d3.format(config.numberFormat)
+        rangeMin = format(rangeMin)
+        rangeMax = format(rangeMax)
+      }
+
+      cache.inputMin.text(rangeMin)
+      cache.inputMax.text(rangeMax)
+    } else {
+      cache.inputMin.text("")
+      cache.inputMax.text("")
+    }
   }
 
   function on (...args) {

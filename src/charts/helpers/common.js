@@ -1,4 +1,5 @@
 import {keys} from "./constants"
+import * as d3 from "./d3-service"
 
 /**
  * Clones the passed array of data
@@ -81,10 +82,11 @@ export function rebind (target) {
 export function stringToType (str, type) {
   let converted = str
   if (type === "time") {
-    converted = new Date(str)
+    converted = d3.timeParse("%m-%d-%Y")(str)
   } else if (type === "number") {
     converted = Number(str)
   }
+  console.log("stringToType", str, type, converted)
   return converted
 }
 

@@ -14,6 +14,7 @@ export default function Line (_container) {
     },
     width: 800,
     height: 500,
+    chartId: null,
     chartType: null,
     colorSchema: ["skyblue"],
     xDomain: "auto"
@@ -79,7 +80,7 @@ export default function Line (_container) {
       .append("path")
       .merge(lines)
       .attr("class", "mark line")
-      .attr('clip-path', 'url(#mark-clip)')
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .classed("y2-line", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -117,7 +118,7 @@ export default function Line (_container) {
       .append("path")
       .merge(areas)
       .attr("class", "mark area")
-      .attr('clip-path', 'url(#mark-clip)')
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .classed("y2-area", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -145,7 +146,7 @@ export default function Line (_container) {
       .append("path")
       .merge(areas)
       .attr("class", "mark stacked-area")
-      .attr('clip-path', 'url(#mark-clip)')
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .attr("d", seriesLine)
       .style("stroke", "none")
       .style("fill", (d) => scales.colorScale(d.key))

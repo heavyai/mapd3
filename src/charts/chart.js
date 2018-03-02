@@ -32,6 +32,7 @@ export default function Chart (_container) {
     width: 800,
     height: 500,
     keyType: "time",
+    chartId: "1",
     chartType: "line", // line, area, stackedLine, stackedArea
     extractType: null, // isodow, month, quarter, hour, minute
     ease: d3.easeLinear,
@@ -111,7 +112,7 @@ export default function Chart (_container) {
     yLabel: "",
     y2Label: "",
 
-    // bar 
+    // bar
     barSpacingPercent: 10
   }
 

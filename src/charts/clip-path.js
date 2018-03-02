@@ -15,7 +15,8 @@ export default function ClipPath (_container) {
       left: 70
     },
     width: 800,
-    height: 500
+    height: 500,
+    chartId : null,
   }
 
   const cache = {
@@ -29,7 +30,7 @@ export default function ClipPath (_container) {
     if (!cache.clipPath) {
       cache.clipPath = cache.container.append('defs')
         .append('clipPath')
-        .attr('id', 'mark-clip')
+        .attr('id', `mark-clip-${config.chartId}`)
         .append('rect')
     }
 

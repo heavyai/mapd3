@@ -12,6 +12,7 @@ export default function Bar (_container) {
     },
     width: 800,
     height: 500,
+    chartId: null,
     chartType: null,
     barSpacingPercent: 10
   }
@@ -95,7 +96,7 @@ export default function Bar (_container) {
     bars.enter()
       .append("rect")
       .attr("class", "mark bar")
-      .attr('clip-path', 'url(#mark-clip)')
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .merge(bars)
       .attr("x", (d, i) => {
         if (config.chartType === "groupedBar" || barData.length > 1) {
@@ -155,7 +156,7 @@ export default function Bar (_container) {
     stackedBars.enter()
       .append("rect")
       .attr("class", "mark bar")
-      .attr('clip-path', 'url(#mark-clip)')
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
       .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2 + gutterW / 2)
       .attr("y", (d) => scales.yScale(d[1]) )

@@ -2,7 +2,14 @@ import * as d3 from "./helpers/d3-service"
 
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
-import {cloneData, override, throttle, rebind, getSizes} from "./helpers/common"
+import {
+  cloneData,
+  override,
+  throttle,
+  rebind,
+  getSizes,
+  uniqueId
+} from "./helpers/common"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -32,6 +39,7 @@ export default function Chart (_container) {
     width: 800,
     height: 500,
     keyType: "time",
+    chartId: uniqueId(),
     chartType: "line", // line, area, stackedLine, stackedArea
     extractType: null, // isodow, month, quarter, hour, minute
     ease: d3.easeLinear,
@@ -111,7 +119,7 @@ export default function Chart (_container) {
     yLabel: "",
     y2Label: "",
 
-    // bar 
+    // bar
     barSpacingPercent: 10
   }
 

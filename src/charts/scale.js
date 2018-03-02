@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
+import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX, MAX_MARK_WIDTH} from "./helpers/constants"
 import {getUnique, override, getSizes} from "./helpers/common"
 
 export default function Scale () {
@@ -55,7 +55,7 @@ export default function Scale () {
   function buildXScale (_allKeys) {
     let xScale = null
     let domain = null
-    const markW =  hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0
+    const markW =  Math.min(hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0, MAX_MARK_WIDTH)
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()

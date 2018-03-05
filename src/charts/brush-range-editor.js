@@ -49,6 +49,14 @@ export default function BrushRangeEditor (_container) {
       cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          let text = cache.inputMax.text()
+          const parsed = d3.timeParse("%b %d, %Y")(text)
+          if (parsed instanceof Date) {
+            text = d3.timeFormat("%m-%d-%Y")(parsed)
+          }
+          cache.inputMax.text(text)
+        })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
           cache.rangeMax = stringToType(cache.inputMax.text(), config.keyType)
@@ -65,6 +73,14 @@ export default function BrushRangeEditor (_container) {
       cache.inputMin = cache.root.append("div")
         .attr("class", "brush-range-input min")
         .attr("contentEditable", true)
+        .on("focus", function focus () {
+          let text = cache.inputMin.text()
+          const parsed = d3.timeParse("%b %d, %Y")(text)
+          if (parsed instanceof Date) {
+            text = d3.timeFormat("%m-%d-%Y")(parsed)
+          }
+          cache.inputMin.text(text)
+        })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
           const rangeMin = stringToType(cache.inputMin.text(), config.keyType)

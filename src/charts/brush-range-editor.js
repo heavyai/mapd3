@@ -51,11 +51,11 @@ export default function BrushRangeEditor (_container) {
         .attr("contentEditable", true)
         .on("focus", function focus () {
           let text = cache.inputMax.text()
-          const parsed = d3.timeParse("%b %d, %Y")(text)
+          const parsed = d3.timeParse(config.dateFormat)(text)
           if (parsed instanceof Date) {
             text = d3.timeFormat("%m-%d-%Y")(parsed)
+            cache.inputMax.text(text)
           }
-          cache.inputMax.text(text)
         })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
@@ -72,7 +72,10 @@ export default function BrushRangeEditor (_container) {
                 { extent: [rangeMin, cache.rangeMax] }
               )
             } else {
-              cache.inputMax.text(d3.utcFormat(config.dateFormat)(oldValue))
+              const text = oldValue instanceof Date
+                ? d3.utcFormat(config.dateFormat)(oldValue)
+                : oldValue
+              cache.inputMax.text(text)
             }
           }
         })
@@ -89,11 +92,11 @@ export default function BrushRangeEditor (_container) {
         .attr("contentEditable", true)
         .on("focus", function focus () {
           let text = cache.inputMin.text()
-          const parsed = d3.timeParse("%b %d, %Y")(text)
+          const parsed = d3.timeParse(config.dateFormat)(text)
           if (parsed instanceof Date) {
             text = d3.timeFormat("%m-%d-%Y")(parsed)
+            cache.inputMin.text(text)
           }
-          cache.inputMin.text(text)
         })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
@@ -110,7 +113,10 @@ export default function BrushRangeEditor (_container) {
                 { extent: [cache.rangeMin, rangeMax] }
               )
             } else {
-              cache.inputMin.text(d3.utcFormat(config.dateFormat)(oldValue))
+              const text = oldValue instanceof Date
+                ? d3.utcFormat(config.dateFormat)(oldValue)
+                : oldValue
+              cache.inputMin.text(text)
             }
           }
         })
@@ -151,7 +157,6 @@ export default function BrushRangeEditor (_container) {
   }
 
   function setConfig (_config) {
-    console.log(_config.brushRangeMax, _config.brushRangeMin)
     config = override(config, _config)
     return this
   }

@@ -38,6 +38,17 @@ export default function BrushRangeEditor (_container) {
   // events
   const dispatcher = d3.dispatch("rangeChange")
 
+  function handleFocus (selection) {
+    return function() {
+      let text = selection.text()
+      const parsed = d3.timeParse(config.dateFormat)(text)
+      if (parsed instanceof Date) {
+        text = d3.timeFormat("%m-%d-%Y")(parsed)
+        selection.text(text)
+      }
+    }
+  }
+
   function buildSVG () {
     if (!cache.root) {
       cache.root = cache.container
@@ -49,14 +60,11 @@ export default function BrushRangeEditor (_container) {
       cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")
         .attr("contentEditable", true)
-        .on("focus", function focus () {
-          let text = cache.inputMax.text()
-          const parsed = d3.timeParse(config.dateFormat)(text)
-          if (parsed instanceof Date) {
-            text = d3.timeFormat("%m-%d-%Y")(parsed)
-            cache.inputMax.text(text)
-          }
-        })
+
+      const handleMaxFocus = handleFocus(cache.inputMax)
+
+      cache.inputMax
+        .on("focus", handleMaxFocus)
         .on("blur", function change () {
           const domain = scales.xScale.domain()
           const rangeMin = cache.rangeMin || domain[0]
@@ -90,14 +98,11 @@ export default function BrushRangeEditor (_container) {
       cache.inputMin = cache.root.append("div")
         .attr("class", "brush-range-input min")
         .attr("contentEditable", true)
-        .on("focus", function focus () {
-          let text = cache.inputMin.text()
-          const parsed = d3.timeParse(config.dateFormat)(text)
-          if (parsed instanceof Date) {
-            text = d3.timeFormat("%m-%d-%Y")(parsed)
-            cache.inputMin.text(text)
-          }
-        })
+
+      const handleMinFocus = handleFocus(cache.inputMin)
+
+      cache.inputMin
+        .on("focus", handleMinFocus)
         .on("blur", function change () {
           const domain = scales.xScale.domain()
           const rangeMax = cache.rangeMax || domain[1]

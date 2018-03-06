@@ -59,19 +59,21 @@ export default function BrushRangeEditor (_container) {
         })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
+          const rangeMin = cache.rangeMin || domain[0]
+          const oldValue = cache.rangeMax || domain[1]
           const newValue = stringToType(cache.inputMax.text(), config.keyType)
+
           if (newValue !== cache.rangeMax) {
-            cache.rangeMax = newValue
-            dispatcher.call(
-              "rangeChange",
-              this,
-              {
-                extent: [
-                  cache.rangeMin || domain[0],
-                  cache.rangeMax
-                ]
-              }
-            )
+            if (newValue > rangeMin) {
+              cache.rangeMax = newValue
+              dispatcher.call(
+                "rangeChange",
+                this,
+                { extent: [rangeMin, cache.rangeMax] }
+              )
+            } else {
+              cache.inputMax.text(d3.utcFormat(config.dateFormat)(oldValue))
+            }
           }
         })
         .call(blurOnEnter)
@@ -95,19 +97,21 @@ export default function BrushRangeEditor (_container) {
         })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
+          const rangeMax = cache.rangeMax || domain[1]
+          const oldValue = cache.rangeMin || domain[0]
           const newValue = stringToType(cache.inputMin.text(), config.keyType)
+
           if (newValue !== cache.rangeMin) {
-            cache.rangeMin = newValue
-            dispatcher.call(
-              "rangeChange",
-              this,
-              {
-                extent: [
-                  cache.rangeMin,
-                  cache.rangeMax || domain[1]
-                ]
-              }
-            )
+            if (newValue < rangeMax) {
+              cache.rangeMin = newValue
+              dispatcher.call(
+                "rangeChange",
+                this,
+                { extent: [cache.rangeMin, rangeMax] }
+              )
+            } else {
+              cache.inputMin.text(d3.utcFormat(config.dateFormat)(oldValue))
+            }
           }
         })
         .call(blurOnEnter)

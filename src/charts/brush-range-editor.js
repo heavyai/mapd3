@@ -59,8 +59,20 @@ export default function BrushRangeEditor (_container) {
         })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
-          cache.rangeMax = stringToType(cache.inputMax.text(), config.keyType)
-          dispatcher.call("rangeChange", this, {extent: [domain[0], cache.rangeMax]})
+          const newValue = stringToType(cache.inputMax.text(), config.keyType)
+          if (newValue !== cache.rangeMax) {
+            cache.rangeMax = newValue
+            dispatcher.call(
+              "rangeChange",
+              this,
+              {
+                extent: [
+                  cache.rangeMin || domain[0],
+                  cache.rangeMax
+                ]
+              }
+            )
+          }
         })
         .call(blurOnEnter)
         .style("float", "right")
@@ -83,8 +95,20 @@ export default function BrushRangeEditor (_container) {
         })
         .on("blur", function change () {
           const domain = scales.xScale.domain()
-          const rangeMin = stringToType(cache.inputMin.text(), config.keyType)
-          dispatcher.call("rangeChange", this, {extent: [rangeMin, domain[1]]})
+          const newValue = stringToType(cache.inputMin.text(), config.keyType)
+          if (newValue !== cache.rangeMin) {
+            cache.rangeMin = newValue
+            dispatcher.call(
+              "rangeChange",
+              this,
+              {
+                extent: [
+                  cache.rangeMin,
+                  cache.rangeMax || domain[1]
+                ]
+              }
+            )
+          }
         })
         .call(blurOnEnter)
         .style("float", "right")
@@ -123,6 +147,7 @@ export default function BrushRangeEditor (_container) {
   }
 
   function setConfig (_config) {
+    console.log(_config.brushRangeMax, _config.brushRangeMin)
     config = override(config, _config)
     return this
   }

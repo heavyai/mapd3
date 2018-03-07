@@ -134,16 +134,21 @@ export default function BrushRangeEditor (_container) {
     cache.chartHeight = chartHeight
 
     const domain = scales.xScale.domain()
+
     if (extendIsValid(domain)) {
       let rangeMin = config.brushRangeMin === null ? domain[0] : config.brushRangeMin
       let rangeMax = config.brushRangeMax === null ? domain[1] : config.brushRangeMax
 
       if (config.keyType === "time") {
         const format = d3.utcFormat(config.dateFormat)
+        cache.rangeMin = new Date(rangeMin)
+        cache.rangeMax = new Date(rangeMax)
         rangeMin = format(new Date(rangeMin))
         rangeMax = format(new Date(rangeMax))
       } else {
         const format = d3.format(config.numberFormat)
+        cache.rangeMin = rangeMin
+        cache.rangeMax = rangeMax
         rangeMin = format(rangeMin)
         rangeMax = format(rangeMax)
       }

@@ -64,7 +64,7 @@ export default function Bar (_container) {
       barData = data.dataBySeries
     }
 
-    const groupCount = stack[0].length
+    const groupCount = (stack[0] && stack[0].length) || 1
     const groupMemberCount = barData.length
     const groupW = groupCount ? (cache.chartWidth / groupCount) : 0
     const barW = Math.min(groupW, MAX_MARK_WIDTH)
@@ -135,7 +135,8 @@ export default function Bar (_container) {
 
   function drawStackedBars () {
     const stack = data.stack(data.stackData)
-    const barW = Math.min(cache.chartWidth / stack[0].length, MAX_MARK_WIDTH)
+    const stackCount = stack[0] && stack[0].length || 1
+    const barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
     const gutterW = barW / 100 * config.barSpacingPercent
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")

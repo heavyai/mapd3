@@ -69,12 +69,12 @@ export default function Binning (_container) {
           .data(_binningToggles)
 
     cache.binningItems.enter().append("div")
-        .attr("class", (d) => `item item-${d} toggleExclusive`)
         .on("click.select", function click (d) {
           const isSelected = this.classList.contains("selected")
           dispatcher.call("change", this, {name: d, isSelected})
         })
         .merge(cache.binningItems)
+        .attr("class", (d) => `item item-${d} toggleExclusive`)
         .text((d) => d)
 
     cache.binningItems.exit().remove()

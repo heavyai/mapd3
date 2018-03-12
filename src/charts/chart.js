@@ -3,7 +3,6 @@ import * as d3 from "./helpers/d3-service"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
 import {
-  cloneData,
   override,
   throttle,
   rebind,
@@ -311,7 +310,6 @@ export default function Chart (_container) {
   }
 
   function setData (_data) {
-    dataObject.data = cloneData(_data[keys.SERIES])
     const cleanedData = dataManager.cleanData(_data, config.keyType)
     Object.assign(dataObject, cleanedData)
 

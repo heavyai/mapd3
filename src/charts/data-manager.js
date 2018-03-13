@@ -133,6 +133,7 @@ export default function DataManager () {
         const dataPoint = {}
         dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
         dataPoint[keys.SERIES] = d.values
+        dataPoint[keys.TOTAL] = d.values.reduce((acc, cur) => acc + cur.value, 0)
         return dataPoint
       })
 

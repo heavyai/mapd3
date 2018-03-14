@@ -150,7 +150,8 @@ export default function DataManager () {
     const stackData = dataByKey
         .map((d) => {
           const points = {
-            key: d[keys.KEY]
+            key: d[keys.KEY],
+            total: d[keys.TOTAL]
           }
           d.series.forEach((dB) => {
             points[dB[keys.ID]] = dB[keys.VALUE]

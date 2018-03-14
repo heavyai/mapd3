@@ -240,6 +240,14 @@ export default function Axis (_container) {
     return this
   }
 
+  function updateAxis(axis = "xAxis") {
+    const classString = axis === "xAxis" ? ".axis.x" : ".axis.y"
+    const axisType = axis === "xAxis" ? d3.axisBottom(scales.xScale) : d3.axisLeft(scales.yScale)
+    cache.root.select(classString)
+      .call(axisType)
+    return this
+  }
+
   function setConfig (_config) {
     config = override(config, _config)
     return this
@@ -267,6 +275,7 @@ export default function Axis (_container) {
   return {
     setConfig,
     setScales,
+    updateAxis,
     render,
     destroy
   }

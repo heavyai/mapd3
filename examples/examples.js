@@ -15,8 +15,8 @@
   *   .generateTestDataset()
  */
 
-const keyType = "number" // time, number, string
-const chartType = "line" // line, area, stackedArea
+const keyType = "string" // time, number, string
+const chartType = "stackedBar" // line, area, stackedArea
 
 const dataManager = mapd3.DataManager()
 
@@ -46,8 +46,8 @@ const dataManager = mapd3.DataManager()
 dataManager.setConfig({
   keyType,
   range: [0, 100],
-  pointCount: 2000,
-  groupCount: 1,
+  pointCount: 10,
+  groupCount: 3,
   lineCount: 4
 })
 
@@ -226,11 +226,11 @@ chart.setConfig({
   animationDuration: 1500,
 
   // scale
-  colorSchema: palette,
+  colorSchema: [{"key":"Credit","id":0,"value":"#ea5545","style":"solid"},{"key":"Cash","id":1,"value":"#bdcf32","style":"solid"},{"key":"Unknown","id":2,"value":"#b33dc6","style":"solid"},{"key":"No Charge","id":3,"value":"#ef9b20","style":"solid"},{"key":"Dispute","id":4,"value":"#87bc45","style":"solid"}],
   defaultColor: "skyblue",
   xDomain: "auto",
   yDomain: "auto",
-  y2Domain: "auto",
+  y2Domain: false,
 
   // axis
   tickPadding: 5,
@@ -311,3 +311,11 @@ chart.setData(data)
   * .render()
   */
 chart.render()
+
+setTimeout(() => {
+  chart.setConfig({
+    barSortProperty: "total",
+    barSortOrder: "asc"
+  })
+  chart.render()
+}, 1000)

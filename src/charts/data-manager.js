@@ -215,6 +215,27 @@ export default function DataManager () {
     return data
   }
 
+  function resortData (property = "total", order = "desc", dataObject) {
+    let sortFn;
+
+    if (order === "desc") {
+      sortFn = (a, b) => {
+        if (b[property] < a[property]) return  -1
+        if (b[property] > a[property]) return 1
+        return 0
+      }
+    } else {
+      sortFn = (a, b) => {
+        if (a[property] < b[property]) return -1
+        if (a[property] > b[property]) return 1
+        return 0
+      }
+    }
+
+    const stackData = [...dataObject.stackData].sort(sortFn)
+    return stackData
+  }
+
   function setConfig (_config) {
     config = Object.assign({}, config, _config)
     return this
@@ -227,6 +248,7 @@ export default function DataManager () {
     getNearestDataPoint,
     filterByDate,
     filterByKey,
+    resortData,
     setConfig
   }
 }

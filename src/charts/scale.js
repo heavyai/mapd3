@@ -226,6 +226,13 @@ export default function Scale () {
     }
   }
 
+  function updateXScale () {
+    if (config.chartType === "stackedBar") {
+      const { xScale } = getStackedScales()
+      return xScale.copy().domain(data.stackData.map(d => d.key))
+    }
+  }
+
   function getScales () {
     getScaleSizes()
     if (config.chartType === "stackedBar"
@@ -249,6 +256,7 @@ export default function Scale () {
   return {
     setConfig,
     setData,
-    getScales
+    getScales,
+    updateXScale
   }
 }

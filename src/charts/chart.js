@@ -399,7 +399,6 @@ export default function Chart (_container) {
   }
 
   function render () {
-    console.log(config)
     build()
 
     if (dataObject.dataBySeries) {

@@ -110,6 +110,10 @@
 .mapd3 .mapd3-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.2; }
 
+.mapd3 .bar .axis.x > path.domain,
+.mapd3 .stackedBar .axis.x > path.domain {
+  display: none; }
+
 .mapd3 .chart .masking-rectangle {
   fill: #ffffff; }
 

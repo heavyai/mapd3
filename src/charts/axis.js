@@ -13,6 +13,7 @@ export default function Axis (_container) {
     },
     width: 800,
     height: 500,
+    chartType: null,
     tickSizes: null,
     tickPadding: null,
     xAxisFormat: null,
@@ -52,6 +53,8 @@ export default function Axis (_container) {
     horizontalGridLines: null,
     verticalGridLines: null
   }
+
+  let removedLabels = false
 
   function build () {
     if (!cache.root) {
@@ -159,10 +162,43 @@ export default function Axis (_container) {
     }
   }
 
+  function removeHalfXLabels () {
+    const removeRatio = Math.max((config.width - config.margin.left - config.margin.right) / scales.xScale.domain().length)
+
+    if (removeRatio <= 5 && !removedLabels) {
+      cache.root.select(".axis.x").selectAll("text")
+        .each(function (d, i) {
+          if (i % 2 === 0) {
+            d3.select(this).remove()
+          }
+        })
+
+      removedLabels = true
+    }
+
+    return this
+  }
+
+  function rotateXLables () {
+    cache.root.select(".axis.x").selectAll("text")
+      .attr("y", 0)
+      .attr("x", 9)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(90)")
+      .style("text-anchor", "start")
+
+    return this
+  }
+
   function drawAxis () {
     cache.root.select(".axis.x")
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
+
+    if (["stackedBar", "bar"].includes(config.chartType)) {
+      rotateXLables()
+      removeHalfXLabels()
+    }
 
     if (scales.yScale) {
       cache.root.select(".axis.y")
@@ -261,6 +297,7 @@ export default function Axis (_container) {
     if (cache.root) {
       cache.root.remove()
       cache.root = null
+      removedLabels = false
     }
   }
 

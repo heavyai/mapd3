@@ -25,7 +25,7 @@ export default function DataManager () {
   const DAY_IN_MS = 1000 * 60 * 60 * 24
 
   function generateRandomString (_length) {
-    return Math.random().toString(36).replace(/[^a-z0-9]+/g, "").substr(0, _length || 5)
+    return [...Array(_length || 15)].map(() => Math.random().toString(36)[3]).join("")
   }
 
   function generateSeries (_dataKeys, _range, _allowNegative) {

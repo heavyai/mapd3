@@ -13,7 +13,6 @@ export default function Axis (_container) {
     },
     width: 800,
     height: 500,
-    chartType: null,
     tickSizes: null,
     tickPadding: null,
     xAxisFormat: null,
@@ -54,8 +53,6 @@ export default function Axis (_container) {
     verticalGridLines: null
   }
 
-  let removedLabels = false
-
   function build () {
     if (!cache.root) {
       cache.root = cache.container.append("g")
@@ -87,7 +84,11 @@ export default function Axis (_container) {
         cache.xAxis.tickFormat(multiFormat)
       }
     } else if (config.keyType === "string") {
-      cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % config.xTickSkip)))
+      let xTickSkip = config.xTickSkip
+      if (config.xTickSkip === "auto") {
+        xTickSkip = getNumberOfLabelsToSkip()
+      }
+      cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % xTickSkip)))
     } else if (config.keyType === "number") {
       if (config.extractType) {
         const formatter = getExtractFormatter(config.extractType)
@@ -162,23 +163,6 @@ export default function Axis (_container) {
     }
   }
 
-  function removeHalfXLabels () {
-    const removeRatio = Math.max((config.width - config.margin.left - config.margin.right) / scales.xScale.domain().length)
-
-    if (removeRatio <= 5 && !removedLabels) {
-      cache.root.select(".axis.x").selectAll("text")
-        .each(function (d, i) {
-          if (i % 2 === 0) {
-            d3.select(this).remove()
-          }
-        })
-
-      removedLabels = true
-    }
-
-    return this
-  }
-
   function rotateXLables () {
     cache.root.select(".axis.x").selectAll("text")
       .attr("y", 0)
@@ -190,15 +174,18 @@ export default function Axis (_container) {
     return this
   }
 
+  function getNumberOfLabelsToSkip () {
+    const labels = scales.xScale.domain()
+    const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest))
+    const APPROX_FONT_WIDTH = 4
+    const longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
+    return Math.ceil(longestLabelApproxWidth / (cache.chartWidth / labels.length)) + 1
+  }
+
   function drawAxis () {
     cache.root.select(".axis.x")
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
-
-    if (["stackedBar", "bar"].includes(config.chartType)) {
-      rotateXLables()
-      removeHalfXLabels()
-    }
 
     if (scales.yScale) {
       cache.root.select(".axis.y")
@@ -297,7 +284,6 @@ export default function Axis (_container) {
     if (cache.root) {
       cache.root.remove()
       cache.root = null
-      removedLabels = false
     }
   }
 

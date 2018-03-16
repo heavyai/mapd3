@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {invertScale, override, getSizes} from "./helpers/common"
+import {invertScale, override, getSizes, extendIsValid} from "./helpers/common"
 
 export default function Brush (_container) {
 
@@ -88,10 +88,6 @@ export default function Brush (_container) {
         clamp(config.brushRangeMax, _dataExtent)
       ]
     }
-  }
-
-  function extendIsValid (extent) {
-    return extent && extent.length && extent.filter(d => !isNaN(d) && typeof d !== "undefined" && d !== null).length == 2
   }
 
   function moveBrush () {

@@ -1,4 +1,5 @@
 import {keys} from "./constants"
+import * as d3 from "./d3-service"
 
 /**
  * Clones the passed array of data
@@ -81,10 +82,11 @@ export function rebind (target) {
 export function stringToType (str, type) {
   let converted = str
   if (type === "time") {
-    converted = new Date(str)
+    converted = d3.timeParse("%m-%d-%Y")(str)
   } else if (type === "number") {
     converted = Number(str)
   }
+  console.log("stringToType", str, type, converted)
   return converted
 }
 
@@ -108,4 +110,17 @@ export function getSizes (config, cache) {
 
 export function isNumeric (val) {
     return Number(parseFloat(val)) === val;
+}
+
+export function extendIsValid (extent) {
+  return extent
+    && extent.length
+    && extent.filter(d => !isNaN(d.valueOf()) // valueOf also catches Invalid Date
+      && typeof d !== "undefined"
+      && d !== null
+    ).length == 2
+}
+
+export function uniqueId () {
+  return `id-${Math.random().toString(36).substr(2, 16)}`
 }

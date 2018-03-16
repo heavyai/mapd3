@@ -16,3 +16,5 @@ export const dashStylesTranslation = {
   solid: null,
   dotted: "1 4"
 }
+
+export const MAX_MARK_WIDTH = 200

@@ -10,6 +10,7 @@
     @import "common/_legend.scss";
 
     // Charts
+    @import "charts/bar.scss";
     @import "charts/line.scss";
     @import "charts/brush.scss";
     @import "charts/binning.scss";

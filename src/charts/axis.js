@@ -176,7 +176,7 @@ export default function Axis (_container) {
 
   function getNumberOfLabelsToSkip () {
     const labels = scales.xScale.domain()
-    const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest))
+    const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), { length: 0 })
     const APPROX_FONT_WIDTH = 4
     const longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
     return Math.ceil(longestLabelApproxWidth / (cache.chartWidth / labels.length)) + 1

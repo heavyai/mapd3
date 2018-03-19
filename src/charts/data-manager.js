@@ -144,6 +144,7 @@ export default function DataManager () {
         dataPoint[keys.TOTAL] = d.values.reduce((acc, cur) => acc + cur.value, 0)
         return dataPoint
       })
+      .sort((a, b) => b[keys.TOTAL] - a[keys.TOTAL])
 
     // get group keys
     const groupKeys = {}

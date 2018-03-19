@@ -66,6 +66,7 @@ export default function Chart (_container) {
     xTickSkip: 0,
     grid: null,
     axisTransitionDuration: 0,
+    labelsAreRotated: false,
 
     xTitle: "",
     yTitle: "",

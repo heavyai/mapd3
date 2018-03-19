@@ -11,7 +11,8 @@ export default function DataManager () {
     range: [0, 100],
     pointCount: 200,
     groupCount: 2,
-    lineCount: 4
+    lineCount: 4,
+    stringMinMaxLength: [4, 8]
   }
   const cache = {
     data: null,
@@ -25,7 +26,12 @@ export default function DataManager () {
   const DAY_IN_MS = 1000 * 60 * 60 * 24
 
   function generateRandomString (_length) {
-    return [...Array(_length || 15)].map(() => Math.random().toString(36)[3]).join("")
+    let stringLength = _length
+    if (!_length) {
+      const range = config.stringMinMaxLength
+      stringLength = Math.round(Math.random() * (range[1] - range[0])) + range[0]
+    }
+    return [...Array(stringLength)].map(() => Math.random().toString(36)[3]).join("")
   }
 
   function generateSeries (_dataKeys, _range, _allowNegative) {

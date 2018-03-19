@@ -26,13 +26,14 @@
 <script>
 
 // time, number, string
-const keyType = "number" 
+const keyType = "string" 
 const dataConfig = {
   keyType,
   range: [0, 100],
-  pointCount: 10,
+  pointCount: 20,
   groupCount: 1,
-  lineCount: 3
+  lineCount: 3,
+  stringMinMaxLength: [20, 20]
 }
 
 const dataManager = mapd3.DataManager()
@@ -93,6 +94,7 @@ const chart1 = mapd3.Chart(chartNode1)
     y2AxisFormat: ".2f",
     grid: "horizontal",
     axisTransitionDuration: 0,
+    labelsAreRotated: false,
 
     // hover
     dotRadius: 4,

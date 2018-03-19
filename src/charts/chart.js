@@ -66,6 +66,7 @@ export default function Chart (_container) {
     xTickSkip: 0,
     grid: null,
     axisTransitionDuration: 0,
+    labelsAreRotated: false,
 
     xTitle: "",
     yTitle: "",
@@ -184,15 +185,15 @@ export default function Chart (_container) {
       }
 
       const template = (chartType) => `<div class="mapd3 mapd3-container">
-        <div class="header-group"></div>
-        <svg class="chart ${chartClassName(chartType)}">
-          <g class="chart-group"></g>
-          <g class="panel-group">
-            <rect class="panel-background"></rect>
-          </g>
-          <rect class="masking-rectangle"></rect>
-        </svg>
-      </div>`
+          <div class="header-group"></div>
+          <svg class="chart ${chartClassName(chartType)}">
+            <g class="chart-group"></g>
+            <g class="panel-group">
+              <rect class="panel-background"></rect>
+            </g>
+            <rect class="masking-rectangle"></rect>
+          </svg>
+        </div>`
 
       const base = d3.select(cache.container)
           .html(template(config.chartType))

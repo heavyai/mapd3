@@ -31,7 +31,8 @@ export default function Axis (_container) {
     numberFormat: ".2f",
     extractType: null,
     yDomain: "auto",
-    y2Domain: "auto"
+    y2Domain: "auto",
+    labelsAreRotated: false
   }
 
   let scales = {
@@ -163,7 +164,7 @@ export default function Axis (_container) {
     }
   }
 
-  function rotateXLables () {
+  function rotateXLabels () {
     cache.root.select(".axis.x").selectAll("text")
       .attr("y", 0)
       .attr("x", 9)
@@ -175,10 +176,15 @@ export default function Axis (_container) {
   }
 
   function getNumberOfLabelsToSkip () {
-    const labels = scales.xScale.domain()
-    const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), { length: 0 })
     const APPROX_FONT_WIDTH = 5
-    const longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
+    const labels = scales.xScale.domain()
+    let longestLabelApproxWidth = null
+    if (config.labelsAreRotated) {
+      longestLabelApproxWidth = APPROX_FONT_WIDTH
+    } else {
+      const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), { length: 0 })
+      longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
+    }
     return Math.ceil(longestLabelApproxWidth / (cache.chartWidth / labels.length))
   }
 
@@ -186,6 +192,10 @@ export default function Axis (_container) {
     cache.root.select(".axis.x")
         .attr("transform", `translate(0, ${cache.chartHeight})`)
         .call(cache.xAxis)
+
+    if (config.labelsAreRotated) {
+      rotateXLabels()
+    }
 
     if (scales.yScale) {
       cache.root.select(".axis.y")

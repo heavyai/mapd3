@@ -1,0 +1,7 @@
+.bar,
+.stackedBar {
+  // bar charts don't get a horizontal line for the x axis
+  .axis.x > path.domain {
+    display: none;
+  }
+}

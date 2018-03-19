@@ -164,9 +164,28 @@ export default function Chart (_container) {
 
   function build () {
     if (!cache.svg) {
-      const template = `<div class="mapd3 mapd3-container">
+      const chartClassName = chartType => {
+          switch(chartType) {
+            case "bar":
+            case "stackedBar":
+              return "bar"
+
+            case "line":
+            case "stackedArea":
+              return "line"
+
+            // TO DO: handle bar line combo chartType...
+            case Array.isArray(chartType):
+              return "combo"
+
+            default:
+              return ""
+          }
+      }
+
+      const template = (chartType) => `<div class="mapd3 mapd3-container">
         <div class="header-group"></div>
-        <svg class="chart">
+        <svg class="chart ${chartClassName(chartType)}">
           <g class="chart-group"></g>
           <g class="panel-group">
             <rect class="panel-background"></rect>
@@ -176,7 +195,7 @@ export default function Chart (_container) {
       </div>`
 
       const base = d3.select(cache.container)
-          .html(template)
+          .html(template(config.chartType))
 
       cache.container = base.select(".mapd3-container")
           .style("position", "relative")

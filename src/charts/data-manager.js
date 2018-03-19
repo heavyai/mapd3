@@ -11,7 +11,10 @@ export default function DataManager () {
     range: [0, 100],
     pointCount: 200,
     groupCount: 2,
-    lineCount: 4
+    lineCount: 4,
+    stringMinMaxLength: [4, 8],
+    barSortProperty: null,
+    barSortOrder: null
   }
   const cache = {
     data: null,
@@ -108,7 +111,7 @@ export default function DataManager () {
         value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
       }))
       // sort
-      serie[keys.VALUES] = sortData(filled, _keyType)
+      serie[keys.VALUES] = sortData(filled, _keyType, config.barSortProperty, config.barSortOrder)
     })
 
     // flatten data
@@ -124,7 +127,7 @@ export default function DataManager () {
       })
     })
     // sort flat data
-    const flatDataSorted = sortData(flatData, _keyType)
+    const flatDataSorted = sortData(flatData, _keyType, config.barSortProperty, config.barSortOrder)
 
     const dataByKey = d3.nest()
       .key(getKey)

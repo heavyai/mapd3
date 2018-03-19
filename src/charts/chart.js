@@ -121,8 +121,8 @@ export default function Chart (_container) {
 
     // bar
     barSpacingPercent: 10,
-    barSortProperty: null,
-    barSortOrder: null
+    barSortProperty: "value", // "key" or "value"
+    barSortOrder: "desc" // "asc" or "desc"
   }
 
   let scales = {
@@ -307,6 +307,8 @@ export default function Chart (_container) {
     components.clipPath
       .setConfig(config)
       .render()
+
+    dataManager.setConfig(config)
 
     triggerIntroAnimation()
     return this

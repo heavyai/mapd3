@@ -33,7 +33,7 @@ const dataConfig = {
   pointCount: 20,
   groupCount: 1,
   lineCount: 3,
-  stringMinMaxLength: [20, 20]
+  stringMinMaxLength: [5, 10]
 }
 
 const dataManager = mapd3.DataManager()
@@ -82,6 +82,9 @@ const chart1 = mapd3.Chart(chartNode1)
     xDomain: "auto",
     yDomain: "auto",
     y2Domain: "auto",
+
+    // data
+    sortBy: "alphaAscending", // totalAscending, totalDescending, alphaAscending, alphaDescending
 
     // axis
     tickPadding: 5,
@@ -165,7 +168,7 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-// setTimeout(() => chart1.setConfig({xLabel: "test"}).render(), 1000)
+setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
 </script>
 </body>
 </html>

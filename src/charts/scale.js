@@ -32,7 +32,8 @@ export default function Scale () {
     dataByKey: null,
     dataBySeries: null,
     flatDataSorted: null,
-    groupKeys: null
+    groupKeys: null,
+    allKeyTotals: null
   }
 
   const getID = (d) => d[keys.ID]
@@ -55,7 +56,7 @@ export default function Scale () {
   function buildXScale (_allKeys) {
     let xScale = null
     let domain = null
-    const markW =  Math.min(hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0, MAX_MARK_WIDTH)
+    const markW = Math.min(hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0, MAX_MARK_WIDTH)
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()
@@ -141,11 +142,9 @@ export default function Scale () {
 
   function getStackedScales () {
     const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
+    const allKeys = data.allKeyTotals.map(getKey)
 
-    const allKeys = data.flatDataSorted.map(getKey)
-    const allUniqueKeys = getUnique(allKeys, config.keyType)
-
-    const xScale = buildXScale(allUniqueKeys)
+    const xScale = buildXScale(allKeys)
     const colorScale = buildColorScale()
     const styleScale = buildStyleScale()
     const chartTypeScale = buildChartTypeScale()
@@ -179,12 +178,12 @@ export default function Scale () {
   function getHorizontalScales () {
     const groups = splitByGroups()
     const groupKeys = Object.keys(groups) || []
+    const allKeys = data.allKeyTotals.map(getKey)
 
     const hasLeftAxis = groupKeys.indexOf(LEFT_AXIS_GROUP_INDEX) > -1
     const hasRightAxis = groupKeys.indexOf(RIGHT_AXIS_GROUP_INDEX) > -1
 
-    const allUniqueKeys = data.dataByKey.map(d => d.key)
-    const xScale = buildXScale(allUniqueKeys)
+    const xScale = buildXScale(allKeys)
 
     const colorScale = buildColorScale()
     const styleScale = buildStyleScale()

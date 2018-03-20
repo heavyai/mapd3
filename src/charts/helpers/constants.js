@@ -18,3 +18,10 @@ export const dashStylesTranslation = {
 }
 
 export const MAX_MARK_WIDTH = 200
+
+export const comparators = {
+  TOTAL_ASCENDING: "totalAscending",
+  TOTAL_DESCENDING: "totalDescending",
+  ALPHA_ASCENDING: "alphaAscending",
+  ALPHA_DESCENDING: "alphaDescending"
+}

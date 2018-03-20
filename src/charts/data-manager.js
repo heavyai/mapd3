@@ -144,7 +144,7 @@ export default function DataManager () {
         dataPoint[keys.TOTAL] = d.values.reduce((acc, cur) => acc + cur.value, 0)
         return dataPoint
       })
-      .sort((a, b) => b[keys.TOTAL] - a[keys.TOTAL])
+      .sort((a, b) => b[keys.TOTAL] - a[keys.TOTAL]) // to do use sort() here
 
     // get group keys
     const groupKeys = {}
@@ -167,6 +167,7 @@ export default function DataManager () {
           })
           return points
         })
+        .sort((a, b) => b[keys.TOTAL] - a[keys.TOTAL])
 
     // d3 stack
     const stack = d3.stack()

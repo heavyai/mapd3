@@ -5,7 +5,8 @@ export const keys = {
   LABEL: "label",
   GROUP: "group",
   VALUES: "values",
-  SERIES: "series"
+  SERIES: "series",
+  TOTAL: "total"
 }
 
 export const LEFT_AXIS_GROUP_INDEX = "0"

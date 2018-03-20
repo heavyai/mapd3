@@ -14,7 +14,9 @@ export default function Bar (_container) {
     height: 500,
     chartId: null,
     chartType: null,
-    barSpacingPercent: 10
+    barSpacingPercent: 10,
+    barSortProperty: null,
+    barSortOrder: null
   }
 
   let scales = {
@@ -152,7 +154,7 @@ export default function Bar (_container) {
     stackedBarGroups.exit().remove()
 
     const stackedBars = stackedUpdate.selectAll(".mark")
-        .data((d) => d)
+        .data((d) => d, d => d.data.key)
 
     stackedBars.enter()
       .append("rect")
@@ -165,6 +167,12 @@ export default function Bar (_container) {
       .attr("width", barW - gutterW)
 
     stackedBars.exit().remove()
+
+    // TO DO: Remove this
+    // test for bar sorting update
+    // setTimeout(() => {
+    //   sortBars(config.barSortProperty, config.barSortOrder)
+    // }, 1000)
   }
 
   function setConfig (_config) {
@@ -198,10 +206,96 @@ export default function Bar (_container) {
     }
   }
 
+  function sortBars (property = "total", order = "desc") {
+    let sortFn;
+
+    if (order === "desc") {
+      sortFn = (a, b) => b[property] - a[property]
+    } else {
+      sortFn = (a, b) => a[property] - b[property]
+    }
+
+    const barData = config.chartType === "stackedBar" ? [...data.stackData] : [...data.dataBySeries]
+    const stackDataSorted = barData.sort(sortFn)
+    const stack = data.stack(stackDataSorted)
+    const stackCount = stack[0] && stack[0].length || 1
+    const barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
+    const gutterW = barW / 100 * config.barSpacingPercent
+
+    const xScaleCopy = scales.xScale
+      .copy()
+      .domain(stackDataSorted.map(d => d.key))
+
+    const stackedBarGroups = cache.root.selectAll(".bar-group")
+        .data(stack)
+
+    const stackedUpdate = stackedBarGroups.enter()
+      .append("g")
+      .attr("class", "bar-group")
+      .merge(stackedBarGroups)
+      .attr("fill", (d) => scales.colorScale(d.key))
+      .attr("stroke", "white")
+
+    stackedBarGroups.exit().remove()
+
+    const stackedBars = stackedUpdate.selectAll(".mark")
+        .data((d) => d, d => d.data.key)
+
+    stackedBars.enter()
+      .append("rect")
+      .attr("class", "mark bar")
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
+      .merge(stackedBars)
+      .attr("x", (d) => xScaleCopy(d.data[keys.KEY])- barW / 2 + gutterW / 2)
+      .attr("y", (d) => scales.yScale(d[1]) )
+      .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
+      .attr("width", barW - gutterW)
+
+    stackedBars.exit().remove()
+
+  }
+
+  function sortBars2 (xScaleCopy) {
+    const stack = data.stack(data.stackData)
+    const stackCount = stack[0] && stack[0].length || 1
+    const barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
+    const gutterW = barW / 100 * config.barSpacingPercent
+
+    const stackedBarGroups = cache.root.selectAll(".bar-group")
+        .data(stack)
+
+    const stackedUpdate = stackedBarGroups.enter()
+      .append("g")
+      .attr("class", "bar-group")
+      .merge(stackedBarGroups)
+      .attr("fill", (d) => scales.colorScale(d.key))
+      .attr("stroke", "white")
+
+    stackedBarGroups.exit().remove()
+
+    const stackedBars = stackedUpdate.selectAll(".mark")
+        .data((d) => d, d => d.data.key)
+
+    stackedBars.enter()
+      .append("rect")
+      .attr("class", "mark bar")
+      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
+      .merge(stackedBars)
+      .attr("x", (d) => xScaleCopy(d.data[keys.KEY])- barW / 2 + gutterW / 2)
+      .attr("y", (d) => scales.yScale(d[1]) )
+      .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
+      .attr("width", barW - gutterW)
+
+    stackedBars.exit().remove()
+
+  }
+
   return {
     setConfig,
     setScales,
     setData,
+    sortBars,
+    sortBars2,
     render,
     destroy
   }

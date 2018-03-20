@@ -10,7 +10,27 @@ export function cloneData (_dataToClone) {
   return JSON.parse(JSON.stringify(_dataToClone))
 }
 
-export function sortData (_data, _keyType) {
+function sort (property = "value", order = "desc") {
+  let sortFn
+
+  if (order === "desc") {
+    sortFn = (a, b) => {
+      if (b[property] < a[property]) return  -1
+      if (b[property] > a[property]) return 1
+      return 0
+    }
+  } else {
+    sortFn = (a, b) => {
+      if (a[property] < b[property]) return -1
+      if (a[property] > b[property]) return 1
+      return 0
+    }
+  }
+
+  return sortFn
+}
+
+export function sortData (_data, _keyType, _sortKey, _sortOrder) {
   const sortedData = cloneData(_data)
   if (_keyType === "time") {
     sortedData.forEach((d) => {
@@ -18,7 +38,7 @@ export function sortData (_data, _keyType) {
     })
     sortedData.sort((a, b) => a[keys.KEY].getTime() - b[keys.KEY].getTime())
   } else if (_keyType === "string") {
-    sortedData.sort((a, b) => a[keys.KEY].localeCompare(b[keys.KEY], "en", {numeric: false}))
+    sortedData.sort(sort(_sortKey, _sortOrder))
   } else {
     sortedData.sort((a, b) => a[keys.KEY] - b[keys.KEY])
   }

@@ -16,6 +16,7 @@ export {
 	easeLinear,
 	easeQuadInOut,
 	select,
+	selectAll,
 	mouse,
 	event,
 	transition,

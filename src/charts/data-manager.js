@@ -12,7 +12,9 @@ export default function DataManager () {
     pointCount: 200,
     groupCount: 2,
     lineCount: 4,
-    stringMinMaxLength: [4, 8]
+    stringMinMaxLength: [4, 8],
+    barSortProperty: null,
+    barSortOrder: null
   }
   const cache = {
     data: null,
@@ -114,7 +116,7 @@ export default function DataManager () {
         value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
       }))
       // sort
-      serie[keys.VALUES] = sortData(filled, _keyType)
+      serie[keys.VALUES] = sortData(filled, _keyType, config.barSortProperty, config.barSortOrder)
     })
 
     // flatten data
@@ -130,7 +132,7 @@ export default function DataManager () {
       })
     })
     // sort flat data
-    const flatDataSorted = sortData(flatData, _keyType)
+    const flatDataSorted = sortData(flatData, _keyType, config.barSortProperty, config.barSortOrder)
 
     const dataByKey = d3.nest()
       .key(getKey)
@@ -139,8 +141,10 @@ export default function DataManager () {
         const dataPoint = {}
         dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
         dataPoint[keys.SERIES] = d.values
+        dataPoint[keys.TOTAL] = d.values.reduce((acc, cur) => acc + cur.value, 0)
         return dataPoint
       })
+      .sort((a, b) => b[keys.TOTAL] - a[keys.TOTAL]) // to do use sort() here
 
     // get group keys
     const groupKeys = {}
@@ -155,13 +159,15 @@ export default function DataManager () {
     const stackData = dataByKey
         .map((d) => {
           const points = {
-            key: d[keys.KEY]
+            key: d[keys.KEY],
+            total: d[keys.TOTAL]
           }
           d.series.forEach((dB) => {
             points[dB[keys.ID]] = dB[keys.VALUE]
           })
           return points
         })
+        .sort((a, b) => b[keys.TOTAL] - a[keys.TOTAL])
 
     // d3 stack
     const stack = d3.stack()
@@ -219,6 +225,27 @@ export default function DataManager () {
     return data
   }
 
+  function resortData (property = "total", order = "desc", dataObject) {
+    let sortFn;
+
+    if (order === "desc") {
+      sortFn = (a, b) => {
+        if (b[property] < a[property]) return  -1
+        if (b[property] > a[property]) return 1
+        return 0
+      }
+    } else {
+      sortFn = (a, b) => {
+        if (a[property] < b[property]) return -1
+        if (a[property] > b[property]) return 1
+        return 0
+      }
+    }
+
+    const stackData = [...dataObject.stackData].sort(sortFn)
+    return stackData
+  }
+
   function setConfig (_config) {
     config = Object.assign({}, config, _config)
     return this
@@ -231,6 +258,7 @@ export default function DataManager () {
     getNearestDataPoint,
     filterByDate,
     filterByKey,
+    resortData,
     setConfig
   }
 }

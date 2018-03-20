@@ -121,7 +121,9 @@ export default function Chart (_container) {
     y2Label: "",
 
     // bar
-    barSpacingPercent: 10
+    barSpacingPercent: 10,
+    barSortProperty: "value", // "key" or "value"
+    barSortOrder: "desc" // "asc" or "desc"
   }
 
   let scales = {
@@ -326,6 +328,8 @@ export default function Chart (_container) {
       .setConfig(config)
       .render()
 
+    dataManager.setConfig(config)
+
     triggerIntroAnimation()
     return this
   }
@@ -399,12 +403,46 @@ export default function Chart (_container) {
     return this
   }
 
+  function resortMarks() {
+    const { barSortProperty, barSortOrder } = config
+    const stackData = dataManager.resortData(barSortProperty, barSortOrder, dataObject)
+    dataObject.stackData = stackData
+
+    components.scale.setData(dataObject)
+
+    const xScaleCopy = components.scale.updateXScale()
+    const scales = components.scale.getScales()
+
+    components.bar.setData(dataObject)
+    components.bar.sortBars(xScaleCopy)
+
+    components.axis.setScales({ ...scales, xScale: xScaleCopy })
+    components.axis.updateAxis("xAxis")
+
+    components.hover
+      .destroy()
+      .setConfig(config)
+      .setScales(scales)
+      .setData(dataObject)
+      .bindEvents(dispatcher)
+  }
+
   function render () {
     build()
 
     if (dataObject.dataBySeries) {
       buildChart()
     }
+
+    if (
+      config.chartType === "stackedBar"
+      && (dataObject && dataObject.stackData)
+      && config.barSortOrder
+      && config.barSortProperty
+    ) {
+      resortMarks()
+    }
+
     return this
   }
 

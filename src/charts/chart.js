@@ -68,6 +68,9 @@ export default function Chart (_container) {
     axisTransitionDuration: 0,
     labelsAreRotated: false,
 
+    // data
+    sortBy: null,
+
     xTitle: "",
     yTitle: "",
 
@@ -332,7 +335,7 @@ export default function Chart (_container) {
 
   function setData (_data) {
     dataObject.data = cloneData(_data[keys.SERIES])
-    const cleanedData = dataManager.cleanData(_data, config.keyType)
+    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
     Object.assign(dataObject, cleanedData)
 
     render()

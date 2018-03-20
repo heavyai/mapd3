@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys} from "./helpers/constants"
-import {invertScale, sortData, cloneData, getUnique} from "./helpers/common"
+import {comparators, keys} from "./helpers/constants"
+import {ascendingComparator, descendingComparator, invertScale, sortData, cloneData, getUnique} from "./helpers/common"
 
 
 export default function DataManager () {
@@ -31,13 +31,13 @@ export default function DataManager () {
       const range = config.stringMinMaxLength
       stringLength = Math.round(Math.random() * (range[1] - range[0])) + range[0]
     }
-    return [...Array(stringLength)].map(() => Math.random().toString(36)[3]).join("")
+    return [...Array(stringLength)].map(() => String.fromCharCode(Math.round(Math.random() * 25) + 97)).join("")
   }
 
   function generateSeries (_dataKeys, _range, _allowNegative) {
     let value = d3.randomUniform(..._range)()
-    const variabilityRatio = 50
-    const randomWalkStepSize = (_range[1] - _range[0]) / variabilityRatio
+    const variabilityDivider = 10
+    const randomWalkStepSize = (_range[1] - _range[0]) / variabilityDivider
     const rnd = d3.randomNormal(0, 1)
     return _dataKeys.map((d) => {
       value = value + rnd() * randomWalkStepSize
@@ -83,7 +83,7 @@ export default function DataManager () {
     return new Date(new Date(_date).toString())
   }
 
-  function cleanData (_data, _keyType) {
+  function cleanData (_data, _keyType, _sortBy) {
     const dataBySeries = cloneData(_data[keys.SERIES])
     dataBySeries.forEach((serie) => {
       // convert type
@@ -169,7 +169,30 @@ export default function DataManager () {
         .order(d3.stackOrderNone)
         .offset(d3.stackOffsetNone)
 
-    return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys}
+    // get stack totals
+    const allKeyTotals = dataByKey.map(d => ({
+      key: d[keys.KEY],
+      total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE]))
+    }))
+
+    switch (_sortBy) {
+    case comparators.TOTAL_ASCENDING:
+      allKeyTotals.sort(ascendingComparator("total"))
+      break
+    case comparators.TOTAL_DESCENDING:
+      allKeyTotals.sort(descendingComparator("total"))
+      break
+    case comparators.ALPHA_ASCENDING:
+      allKeyTotals.sort(ascendingComparator("key"))
+      break
+    case comparators.ALPHA_DESCENDING:
+      allKeyTotals.sort(descendingComparator("key"))
+      break
+    default:
+      break
+    }
+
+    return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys, allKeyTotals}
   }
 
   function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {

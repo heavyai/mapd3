@@ -185,16 +185,42 @@ export default function Chart (_container) {
           }
       }
 
-      const template = (chartType) => `<div class="mapd3 mapd3-container">
-          <div class="header-group"></div>
-          <svg class="chart ${chartClassName(chartType)}">
-            <g class="chart-group"></g>
-            <g class="panel-group">
-              <rect class="panel-background"></rect>
-            </g>
-            <rect class="masking-rectangle"></rect>
-          </svg>
-        </div>`
+      const template = (chartType) => {
+        const className = chartClassName(chartType)
+
+        switch (chartType) {
+          case "stackedBar":
+            return `<div class="mapd3 mapd3-container">
+              <div class="header-group"></div>
+              <div class="svg-wrapper">
+                <svg class="chart ${className}">
+                  <g class="chart-group"></g>
+                  <g class="panel-group">
+                    <rect class="panel-background"></rect>
+                  </g>
+                  <rect class="masking-rectangle"></rect>
+                </svg>
+              </div>
+              <div class="external-axis">
+                <svg>
+                  <g class="axis-group"></g>
+                </svg>
+              </div>
+            </div>`
+
+          default:
+            return `<div class="mapd3 mapd3-container">
+              <div class="header-group"></div>
+              <svg class="chart ${className}">
+                <g class="chart-group"></g>
+                <g class="panel-group">
+                  <rect class="panel-background"></rect>
+                </g>
+                <rect class="masking-rectangle"></rect>
+              </svg>
+            </div>`
+        }
+      }
 
       const base = d3.select(cache.container)
           .html(template(config.chartType))

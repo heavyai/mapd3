@@ -190,8 +190,13 @@ export default function Chart (_container) {
 
         switch (chartType) {
           case "stackedBar":
-            return `<div class="mapd3 mapd3-container">
-              <div class="header-group"></div>
+            // removed header-group
+            return `<div class="mapd3 mapd3-container ${className}">
+              <div class="external-axis">
+                <svg>
+                  <g class="axis-group"></g>
+                </svg>
+              </div>
               <div class="svg-wrapper">
                 <svg class="chart ${className}">
                   <g class="chart-group"></g>
@@ -199,11 +204,6 @@ export default function Chart (_container) {
                     <rect class="panel-background"></rect>
                   </g>
                   <rect class="masking-rectangle"></rect>
-                </svg>
-              </div>
-              <div class="external-axis">
-                <svg>
-                  <g class="axis-group"></g>
                 </svg>
               </div>
             </div>`

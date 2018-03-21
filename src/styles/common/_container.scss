@@ -1,0 +1,16 @@
+// .mapd3 namespacing in compiled css is messing this up...
+.mapd3.mapd3-container.bar {
+  .svg-wrapper {
+    display: inline-block;
+    width: calc(100% - 100px);
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+  }
+
+  .external-axis {
+    display: inline-block;
+    width: 100px;
+    height: 100%;
+  }
+}

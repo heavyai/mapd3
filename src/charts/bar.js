@@ -8,7 +8,7 @@ export default function Bar (_container) {
       top: 60,
       right: 30,
       bottom: 40,
-      left: 70
+      left: 0
     },
     width: 800,
     height: 500,

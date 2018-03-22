@@ -8,7 +8,6 @@
     @import "common/_axes.scss";
     @import "common/_tooltip.scss";
     @import "common/_legend.scss";
-    @import "common/_container.scss";
 
     // Charts
     @import "charts/bar.scss";
@@ -20,3 +19,5 @@
     @import "charts/brush-range-editor.scss";
     @import "charts/label.scss";
 }
+
+@import "common/_container.scss";

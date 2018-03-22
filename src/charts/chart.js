@@ -190,6 +190,7 @@ export default function Chart (_container) {
 
         switch (chartType) {
           case "stackedBar":
+            // stacked bar needs to scroll horizontally, & thus requires different template setup
             // removed header-group
             return `<div class="mapd3 mapd3-container ${className}">
               <div class="external-axis">
@@ -228,7 +229,7 @@ export default function Chart (_container) {
       cache.container = base.select(".mapd3-container")
           .style("position", "relative")
 
-      cache.svg = base.select("svg")
+      cache.svg = base.select("svg.chart")
       cache.headerGroup = base.select(".header-group")
           .style("position", "absolute")
       cache.panel = cache.svg.select(".panel-group")
@@ -363,6 +364,7 @@ export default function Chart (_container) {
     dataObject.data = cloneData(_data[keys.SERIES])
     const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
     Object.assign(dataObject, cleanedData)
+    console.log("setData called: ", dataObject)
 
     render()
     return this
@@ -425,6 +427,7 @@ export default function Chart (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
+    console.log("set config: ", config)
     return this
   }
 
@@ -439,6 +442,7 @@ export default function Chart (_container) {
 
   function destroy () {
     cache.svg.on(".", null).remove()
+    console.log("destroy called")
   }
 
   return {

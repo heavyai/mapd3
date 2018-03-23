@@ -236,7 +236,7 @@ export default function Chart (_container) {
 
       components = {
         scale: Scale(),
-        axis: Axis(cache.chart),
+        axis: Axis(cache.container),
         line: Line(cache.panel),
         bar: Bar(cache.panel),
         tooltip: Tooltip(cache.container),

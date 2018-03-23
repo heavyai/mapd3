@@ -67,6 +67,7 @@ export default function Chart (_container) {
     grid: null,
     axisTransitionDuration: 0,
     labelsAreRotated: false,
+    useExternalAxis: false,
 
     // data
     sortBy: null,
@@ -185,33 +186,17 @@ export default function Chart (_container) {
           }
       }
 
-      const template = (chartType) => {
+      const createTemplate = (chartType) => {
         const className = chartClassName(chartType)
 
-        switch (chartType) {
-          case "stackedBar":
-            // stacked bar needs to scroll horizontally, & thus requires different template setup
-            // removed header-group
-            return `<div class="mapd3 mapd3-container ${className}">
-              <div class="external-axis">
-                <svg>
-                  <g class="axis-group"></g>
-                </svg>
-              </div>
-              <div class="svg-wrapper">
-                <svg class="chart ${className}">
-                  <g class="chart-group"></g>
-                  <g class="panel-group">
-                    <rect class="panel-background"></rect>
-                  </g>
-                  <rect class="masking-rectangle"></rect>
-                </svg>
-              </div>
-            </div>`
-
-          default:
-            return `<div class="mapd3 mapd3-container">
-              <div class="header-group"></div>
+        if (config.useExternalAxis) {
+          return `<div class="mapd3 mapd3-container ${className}">
+            <div class="external-axis">
+              <svg>
+                <g class="axis-group"></g>
+              </svg>
+            </div>
+            <div class="svg-wrapper">
               <svg class="chart ${className}">
                 <g class="chart-group"></g>
                 <g class="panel-group">
@@ -219,12 +204,24 @@ export default function Chart (_container) {
                 </g>
                 <rect class="masking-rectangle"></rect>
               </svg>
-            </div>`
+            </div>
+          </div>`
+        } else {
+          return `<div class="mapd3 mapd3-container">
+            <div class="header-group"></div>
+            <svg class="chart ${className}">
+              <g class="chart-group"></g>
+              <g class="panel-group">
+                <rect class="panel-background"></rect>
+              </g>
+              <rect class="masking-rectangle"></rect>
+            </svg>
+          </div>`
         }
       }
 
       const base = d3.select(cache.container)
-          .html(template(config.chartType))
+          .html(createTemplate(config.chartType))
 
       cache.container = base.select(".mapd3-container")
           .style("position", "relative")

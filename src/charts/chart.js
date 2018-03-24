@@ -424,7 +424,6 @@ export default function Chart (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
-    console.log("set config: ", config)
     return this
   }
 

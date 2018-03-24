@@ -17,6 +17,7 @@ export const dashStylesTranslation = {
   dotted: "1 4"
 }
 
+export const MIN_MARK_WIDTH = 20
 export const MAX_MARK_WIDTH = 200
 
 export const comparators = {

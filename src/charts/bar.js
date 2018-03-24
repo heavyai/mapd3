@@ -1,4 +1,4 @@
-import {keys, MAX_MARK_WIDTH} from "./helpers/constants"
+import {keys, MIN_MARK_WIDTH, MAX_MARK_WIDTH} from "./helpers/constants"
 import {override, getSizes} from "./helpers/common"
 
 export default function Bar (_container) {
@@ -8,7 +8,7 @@ export default function Bar (_container) {
       top: 60,
       right: 30,
       bottom: 40,
-      left: 70
+      left: 0
     },
     width: 800,
     height: 500,
@@ -136,7 +136,10 @@ export default function Bar (_container) {
   function drawStackedBars () {
     const stack = data.stack(data.stackData)
     const stackCount = stack[0] && stack[0].length || 1
-    const barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
+    let barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
+    if (barW < MIN_MARK_WIDTH) {
+      barW = MIN_MARK_WIDTH
+    }
     const gutterW = barW / 100 * config.barSpacingPercent
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")

@@ -1,4 +1,4 @@
-import {keys} from "./constants"
+import {keys, MIN_MARK_WIDTH} from "./constants"
 import * as d3 from "./d3-service"
 
 /**
@@ -91,12 +91,22 @@ export function stringToType (str, type) {
 }
 
 export function getSizes (config, cache) {
-  const width = config.width === "auto"
+  const FAKE_X_SCALE_DOMAIN_LENGTH = 39
+  let width = config.width === "auto"
     ? (cache.container && cache.container.clientWidth || 0)
     : config.width
   const height = config.height === "auto"
     ? (cache.container && cache.container.clientHeight || 0)
     : config.height
+
+  // FIX ME: How do we get the xScale.domain().length here?
+  // basically if the number of x scale items * min mark width * padding is larger
+  // then the given width, we need to make the chart svg wider so the user can scroll
+  // and so the bars don't get too narrow & overlap with one another
+  if (config.useExternalAxis && (width / MIN_MARK_WIDTH * 1.1) < FAKE_X_SCALE_DOMAIN_LENGTH) {
+    width = FAKE_X_SCALE_DOMAIN_LENGTH * MIN_MARK_WIDTH * 1.1
+  }
+
   const chartWidth = Math.max(width - config.margin.left - config.margin.right, 0)
   const chartHeight = Math.max(height - config.margin.top - config.margin.bottom, 0)
 

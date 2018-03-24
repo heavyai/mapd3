@@ -67,6 +67,7 @@ export default function Chart (_container) {
     grid: null,
     axisTransitionDuration: 0,
     labelsAreRotated: false,
+    useExternalAxis: false,
 
     // data
     sortBy: null,
@@ -185,24 +186,47 @@ export default function Chart (_container) {
           }
       }
 
-      const template = (chartType) => `<div class="mapd3 mapd3-container">
-          <div class="header-group"></div>
-          <svg class="chart ${chartClassName(chartType)}">
-            <g class="chart-group"></g>
-            <g class="panel-group">
-              <rect class="panel-background"></rect>
-            </g>
-            <rect class="masking-rectangle"></rect>
-          </svg>
-        </div>`
+      const createTemplate = (chartType) => {
+        const className = chartClassName(chartType)
+
+        if (config.useExternalAxis) {
+          return `<div class="mapd3 mapd3-container ${className}">
+            <div class="external-axis">
+              <svg>
+                <g class="axis-group"></g>
+              </svg>
+            </div>
+            <div class="svg-wrapper">
+              <svg class="chart ${className}">
+                <g class="chart-group"></g>
+                <g class="panel-group">
+                  <rect class="panel-background"></rect>
+                </g>
+                <rect class="masking-rectangle"></rect>
+              </svg>
+            </div>
+          </div>`
+        } else {
+          return `<div class="mapd3 mapd3-container">
+            <div class="header-group"></div>
+            <svg class="chart ${className}">
+              <g class="chart-group"></g>
+              <g class="panel-group">
+                <rect class="panel-background"></rect>
+              </g>
+              <rect class="masking-rectangle"></rect>
+            </svg>
+          </div>`
+        }
+      }
 
       const base = d3.select(cache.container)
-          .html(template(config.chartType))
+          .html(createTemplate(config.chartType))
 
       cache.container = base.select(".mapd3-container")
           .style("position", "relative")
 
-      cache.svg = base.select("svg")
+      cache.svg = base.select("svg.chart")
       cache.headerGroup = base.select(".header-group")
           .style("position", "absolute")
       cache.panel = cache.svg.select(".panel-group")
@@ -212,7 +236,7 @@ export default function Chart (_container) {
 
       components = {
         scale: Scale(),
-        axis: Axis(cache.chart),
+        axis: Axis(cache.container),
         line: Line(cache.panel),
         bar: Bar(cache.panel),
         tooltip: Tooltip(cache.container),
@@ -337,6 +361,7 @@ export default function Chart (_container) {
     dataObject.data = cloneData(_data[keys.SERIES])
     const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
     Object.assign(dataObject, cleanedData)
+    console.log("setData called: ", dataObject)
 
     render()
     return this
@@ -413,6 +438,7 @@ export default function Chart (_container) {
 
   function destroy () {
     cache.svg.on(".", null).remove()
+    console.log("destroy called")
   }
 
   return {

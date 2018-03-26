@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {invertScale, override, getSizes, extendIsValid} from "./helpers/common"
+import {clamp, invertScale, override, getSizes, extendIsValid} from "./helpers/common"
 
 export default function Brush (_container) {
 
@@ -70,10 +70,6 @@ export default function Brush (_container) {
     const selection = d3.event.selection
     const dataExtent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
     return dataExtent
-  }
-
-  function clamp (value, _dataExtent) {
-    return Math.min(Math.max(_dataExtent[0], value), _dataExtent[1])
   }
 
   function clampBrush (_dataExtent) {

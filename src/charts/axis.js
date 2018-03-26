@@ -32,8 +32,7 @@ export default function Axis (_container) {
     extractType: null,
     yDomain: "auto",
     y2Domain: "auto",
-    labelsAreRotated: false,
-    useExternalAxis: false
+    labelsAreRotated: false
   }
 
   let scales = {
@@ -55,31 +54,12 @@ export default function Axis (_container) {
     verticalGridLines: null
   }
 
-  const EXTERNAL_AXIS_WIDTH = 60
-
-  function buildDefault () {
+  function build () {
     if (!cache.root) {
       cache.root = cache.container.select("svg.chart > g.chart-group")
         .append("g")
-          .classed("axis-group", true)
-          .style("pointer-events", "none")
-      cache.root.append("g").attr("class", "grid-lines-group")
-      cache.root.append("g").attr("class", "axis x")
-      cache.root.append("g").attr("class", "axis y")
-      cache.root.append("g").attr("class", "axis y2")
-    }
-    const {chartWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-    cache.root.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
-  }
-
-  function buildWithExternalAxis () {
-    if (!cache.root) {
-      cache.root = cache.container.select("svg.chart > g.chart-group")
-        .append("g")
-          .classed("axis-group", true)
-          .style("pointer-events", "none")
+        .classed("axis-group", true)
+        .style("pointer-events", "none")
       cache.root.append("g").attr("class", "grid-lines-group")
       cache.root.append("g").attr("class", "axis x")
       cache.root.append("g").attr("class", "axis y2")
@@ -91,22 +71,14 @@ export default function Axis (_container) {
     const {chartWidth, chartHeight} = getSizes(config, cache)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
-    cache.root.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
+    // cache.root.attr("transform", `translate(0, ${config.margin.top})`)
 
     cache.container.select(".external-axis > svg")
-      .attr("width", EXTERNAL_AXIS_WIDTH)
+      .attr("width", config.margin.left)
       .attr("height", cache.chartHeight + config.margin.top + config.margin.bottom)
 
     cache.axisExternal
-      .attr("transform", `translate(${EXTERNAL_AXIS_WIDTH}, ${config.margin.top})`)
-  }
-
-  function build () {
-    if (config.useExternalAxis) {
-      buildWithExternalAxis()
-    } else {
-      buildDefault()
-    }
+      .attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
   }
 
   function formatXAxis () {
@@ -230,7 +202,7 @@ export default function Axis (_container) {
       rotateXLabels()
     }
 
-    const yAxisGroup = config.useExternalAxis ? cache.axisExternal.select(".axis.y") : cache.root.select(".axis.y")
+    const yAxisGroup = cache.axisExternal.select(".axis.y")
 
     if (scales.yScale) {
       yAxisGroup.transition()

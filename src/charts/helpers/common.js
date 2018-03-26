@@ -99,22 +99,17 @@ export function getSizes (config, cache) {
     ? (cache.container && cache.container.clientHeight || 0)
     : config.height
 
-  // FIX ME: How do we get the xScale.domain().length here?
-  // basically if the number of x scale items * min mark width * padding is larger
-  // then the given width, we need to make the chart svg wider so the user can scroll
-  // and so the bars don't get too narrow & overlap with one another
-  if (config.useExternalAxis && (width / MIN_MARK_WIDTH * 1.1) < FAKE_X_SCALE_DOMAIN_LENGTH) {
-    width = FAKE_X_SCALE_DOMAIN_LENGTH * MIN_MARK_WIDTH * 1.1
-  }
-
   const chartWidth = Math.max(width - config.margin.left - config.margin.right, 0)
   const chartHeight = Math.max(height - config.margin.top - config.margin.bottom, 0)
+
+  const markPanelWidth = 1200
 
   return {
     width,
     height,
     chartWidth,
-    chartHeight
+    chartHeight,
+    markPanelWidth
   }
 }
 
@@ -157,4 +152,8 @@ export function descendingComparator (key) {
     }
     return 0
   }
+}
+
+export function clamp (value, clampMinMax) {
+  return Math.min(Math.max(clampMinMax[0], value), clampMinMax[1])
 }

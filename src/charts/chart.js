@@ -25,6 +25,7 @@ import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
 import DataManager from "./data-manager"
 import ClipPath from "./clip-path"
+import ScrollingPanelConfigurator from "./scrolling-panel-configurator"
 
 export default function Chart (_container) {
 
@@ -67,7 +68,6 @@ export default function Chart (_container) {
     grid: null,
     axisTransitionDuration: 0,
     labelsAreRotated: false,
-    useExternalAxis: false,
 
     // data
     sortBy: null,
@@ -188,27 +188,13 @@ export default function Chart (_container) {
 
       const createTemplate = (chartType) => {
         const className = chartClassName(chartType)
-
-        if (config.useExternalAxis) {
-          return `<div class="mapd3 mapd3-container ${className}">
-            <div class="external-axis">
-              <svg>
-                <g class="axis-group"></g>
-              </svg>
-            </div>
-            <div class="svg-wrapper">
-              <svg class="chart ${className}">
-                <g class="chart-group"></g>
-                <g class="panel-group">
-                  <rect class="panel-background"></rect>
-                </g>
-                <rect class="masking-rectangle"></rect>
-              </svg>
-            </div>
-          </div>`
-        } else {
-          return `<div class="mapd3 mapd3-container">
-            <div class="header-group"></div>
+        return `<div class="mapd3 mapd3-container ${className}">
+          <div class="external-axis">
+            <svg>
+              <g class="axis-group"></g>
+            </svg>
+          </div>
+          <div class="svg-wrapper">
             <svg class="chart ${className}">
               <g class="chart-group"></g>
               <g class="panel-group">
@@ -216,8 +202,8 @@ export default function Chart (_container) {
               </g>
               <rect class="masking-rectangle"></rect>
             </svg>
-          </div>`
-        }
+          </div>
+        </div>`
       }
 
       const base = d3.select(cache.container)
@@ -226,9 +212,11 @@ export default function Chart (_container) {
       cache.container = base.select(".mapd3-container")
           .style("position", "relative")
 
+      cache.svgWrapper = base.select(".svg-wrapper")
       cache.svg = base.select("svg.chart")
       cache.headerGroup = base.select(".header-group")
           .style("position", "absolute")
+      cache.yAxisContainer = cache.svg.select(".external-axis")
       cache.panel = cache.svg.select(".panel-group")
       cache.chart = cache.svg.select(".chart-group")
 
@@ -247,7 +235,8 @@ export default function Chart (_container) {
         domainEditor: DomainEditor(cache.container),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
         label: Label(cache.container),
-        clipPath: ClipPath(cache.svg)
+        // clipPath: ClipPath(cache.svg),
+        // scrollingPanelConfigurator: ScrollingPanelConfigurator(cache.svg)
       }
 
       eventCollector = {
@@ -261,27 +250,38 @@ export default function Chart (_container) {
       }
     }
 
-    const {width, height, chartWidth, chartHeight} = getSizes(config, cache)
+    const {markPanelWidth, width, height, chartWidth, chartHeight} = getSizes(config, cache)
     cache.width = width
     cache.height = height
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
 
+    cache.yAxisContainer
+      .attr("width", config.margin.left)
+
+    cache.svgWrapper
+      .style("width", `${cache.chartWidth}px`)
+      .style("height", `${cache.height}px`)
+
+    // cache.svg
+      // .attr("width", cache.chartWidth)
+      // .attr("height", cache.height)
+
     cache.svg
-      .attr("width", cache.width)
-      .attr("height", cache.height)
+      .attr('width', markPanelWidth)
+      .attr('height', chartHeight + config.margin.bottom)
+      .attr("transform", `translate(0,${config.margin.top})`)
 
     cache.headerGroup
       .style("width", `${cache.chartWidth}px`)
       .style("left", `${config.margin.left}px`)
 
     cache.panel
-      .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
+      // .attr("transform", `translate(0,${config.margin.top})`)
       .select(".panel-background")
-      .attr("width", cache.chartWidth)
-      .attr("height", cache.chartHeight)
+      .style("width", `${cache.chartWidth}px`)
+      .style("height", `${cache.chartheight}px`)
       .attr("fill", "transparent")
-
 
     return this
   }
@@ -291,6 +291,14 @@ export default function Chart (_container) {
       .setConfig(config)
       .setData(dataObject)
       .getScales()
+
+    // components.scrollingPanelConfigurator
+    //   .setConfig(config)
+    //   .render()
+
+    // components.clipPath
+    //   .setConfig(config)
+    //   .render()
 
     components.axis
       .setConfig(config)
@@ -349,10 +357,6 @@ export default function Chart (_container) {
       .setConfig(config)
       .render()
 
-    components.clipPath
-      .setConfig(config)
-      .render()
-
     triggerIntroAnimation()
     return this
   }
@@ -361,7 +365,6 @@ export default function Chart (_container) {
     dataObject.data = cloneData(_data[keys.SERIES])
     const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
     Object.assign(dataObject, cleanedData)
-    console.log("setData called: ", dataObject)
 
     render()
     return this
@@ -438,7 +441,6 @@ export default function Chart (_container) {
 
   function destroy () {
     cache.svg.on(".", null).remove()
-    console.log("destroy called")
   }
 
   return {

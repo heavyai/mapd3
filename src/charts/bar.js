@@ -49,8 +49,8 @@ export default function Bar (_container) {
           .classed("mark-group", true)
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = chartWidth
+    const {markPanelWidth, chartHeight} = getSizes(config, cache)
+    cache.chartWidth = markPanelWidth
     cache.chartHeight = chartHeight
   }
 
@@ -162,8 +162,8 @@ export default function Bar (_container) {
       .attr("class", "mark bar")
       .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
-      .attr("x", (d) => scales.xScale(d.data[keys.KEY])- barW / 2 + gutterW / 2)
-      .attr("y", (d) => scales.yScale(d[1]) )
+      .attr("x", (d) => scales.xScale(d.data[keys.KEY]) - barW / 2 + gutterW / 2)
+      .attr("y", (d) => scales.yScale(d[1]))
       .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
       .attr("width", barW - gutterW)
 

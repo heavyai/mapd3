@@ -175,6 +175,7 @@ export default function DataManager () {
       total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE]))
     }))
 
+    // sort
     switch (_sortBy) {
     case comparators.TOTAL_ASCENDING:
       allKeyTotals.sort(ascendingComparator("total"))

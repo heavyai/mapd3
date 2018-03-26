@@ -7,7 +7,7 @@ import {
   MAX_MARK_WIDTH,
   MIN_MARK_WIDTH
 } from "./helpers/constants"
-import {clamp, getUnique, override, getSizes} from "./helpers/common"
+import {clamp, getMarkWidth, getUnique, hasBars, override, getSizes} from "./helpers/common"
 
 export default function Scale () {
 
@@ -31,7 +31,9 @@ export default function Scale () {
 
   const cache = {
     chartWidth: null,
-    chartHeight: null
+    chartHeight: null,
+    markPanelWidth: null,
+    markWidth: null
   }
 
   let data = {
@@ -46,25 +48,18 @@ export default function Scale () {
   const getKey = (d) => d[keys.KEY]
   const getValue = (d) => d[keys.VALUE]
 
-  function hasBars (_chartType) {
-    return _chartType === "bar"
-      || _chartType === "stackedBar"
-      || _chartType === "groupedBar"
-      || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
-  }
-
   function getScaleSizes () {
-    const {chartWidth, chartHeight, markPanelWidth} = getSizes(config, cache)
+    const markCount = data.stackData && data.stackData.length || 0
+    const {chartWidth, chartHeight, markPanelWidth, markWidth} = getSizes(config, null, markCount)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
     cache.markPanelWidth = markPanelWidth
+    cache.markWidth = markWidth
   }
 
   function buildXScale (_allKeys) {
     let xScale = null
     let domain = null
-    let markW = hasBars(config.chartType) ? cache.markPanelWidth / _allKeys.length : 0
-    markW = clamp(markW, [MIN_MARK_WIDTH, MAX_MARK_WIDTH])
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()
@@ -88,7 +83,7 @@ export default function Scale () {
     }
 
     xScale.domain(domain)
-      .range([markW / 2, cache.markPanelWidth - markW / 2])
+      .range([cache.markWidth / 2, cache.markPanelWidth - cache.markWidth / 2])
 
     return xScale
   }

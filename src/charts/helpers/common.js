@@ -1,4 +1,4 @@
-import {keys, MIN_MARK_WIDTH} from "./constants"
+import {keys, MIN_MARK_WIDTH, MAX_MARK_WIDTH} from "./constants"
 import * as d3 from "./d3-service"
 
 /**
@@ -90,31 +90,41 @@ export function stringToType (str, type) {
   return converted
 }
 
-export function getSizes (config, cache) {
-  const FAKE_X_SCALE_DOMAIN_LENGTH = 39
-  let width = config.width === "auto"
-    ? (cache.container && cache.container.clientWidth || 0)
+export function getSizes (config, container, markCount) {
+  const width = config.width === "auto"
+    ? (container && container.clientWidth || 0)
     : config.width
   const height = config.height === "auto"
-    ? (cache.container && cache.container.clientHeight || 0)
+    ? (container && container.clientHeight || 0)
     : config.height
 
   const chartWidth = Math.max(width - config.margin.left - config.margin.right, 0)
   const chartHeight = Math.max(height - config.margin.top - config.margin.bottom, 0)
 
-  const markPanelWidth = 1200
+  let markPanelWidth  = chartWidth
+  if (data) {
+    const minMarkPanelWidth = markCount * MIN_MARK_WIDTH
+    markPanelWidth = chartWidth < minMarkPanelWidth ? minMarkPanelWidth : chartWidth
+  }
+
+  let markWidth = null
+  if (markCount) {
+    markWidth = markPanelWidth / markCount
+    markWidth = clamp(markWidth, [MIN_MARK_WIDTH, MAX_MARK_WIDTH])
+  }
 
   return {
     width,
     height,
     chartWidth,
     chartHeight,
-    markPanelWidth
+    markPanelWidth,
+    markWidth
   }
 }
 
 export function isNumeric (val) {
-    return Number(parseFloat(val)) === val;
+  return Number(parseFloat(val)) === val
 }
 
 export function extendIsValid (extent) {
@@ -156,4 +166,11 @@ export function descendingComparator (key) {
 
 export function clamp (value, clampMinMax) {
   return Math.min(Math.max(clampMinMax[0], value), clampMinMax[1])
+}
+
+export function hasBars (_chartType) {
+  return _chartType === "bar"
+    || _chartType === "stackedBar"
+    || _chartType === "groupedBar"
+    || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
 }

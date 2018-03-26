@@ -250,7 +250,9 @@ export default function Chart (_container) {
       }
     }
 
-    const {markPanelWidth, width, height, chartWidth, chartHeight} = getSizes(config, cache)
+
+    const markCount = dataObject.stackData && dataObject.stackData.length || 0
+    const {markPanelWidth, width, height, chartWidth, chartHeight} = getSizes(config, cache.container, markCount)
     cache.width = width
     cache.height = height
     cache.chartWidth = chartWidth
@@ -268,8 +270,8 @@ export default function Chart (_container) {
       // .attr("height", cache.height)
 
     cache.svg
-      .attr('width', markPanelWidth)
-      .attr('height', chartHeight + config.margin.bottom)
+      .attr("width", markPanelWidth)
+      .attr("height", chartHeight + config.margin.bottom)
       .attr("transform", `translate(0,${config.margin.top})`)
 
     cache.headerGroup

@@ -1,5 +1,5 @@
 import {keys, MIN_MARK_WIDTH, MAX_MARK_WIDTH} from "./helpers/constants"
-import {override, getSizes} from "./helpers/common"
+import {override, getMarkWidth, getSizes} from "./helpers/common"
 
 export default function Bar (_container) {
 
@@ -135,12 +135,17 @@ export default function Bar (_container) {
 
   function drawStackedBars () {
     const stack = data.stack(data.stackData)
-    const stackCount = stack[0] && stack[0].length || 1
-    let barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
-    if (barW < MIN_MARK_WIDTH) {
-      barW = MIN_MARK_WIDTH
-    }
-    const gutterW = barW / 100 * config.barSpacingPercent
+    const stackCount = data.stackData && data.stackData.length || 1
+
+    // let barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
+    // if (barW < MIN_MARK_WIDTH) {
+    //   barW = MIN_MARK_WIDTH
+    // }
+    // const barW = getMarkWidth(config, stackCount)
+    const {markWidth, chartWidth} = getSizes(config, cache.container, stackCount)
+    console.log(markWidth, stackCount, chartWidth)
+    console.log(markWidth)
+    const gutterW = markWidth / 100 * config.barSpacingPercent
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")
         .data(stack)
@@ -162,10 +167,10 @@ export default function Bar (_container) {
       .attr("class", "mark bar")
       .attr('clip-path', `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
-      .attr("x", (d) => scales.xScale(d.data[keys.KEY]) - barW / 2 + gutterW / 2)
+      .attr("x", (d) => scales.xScale(d.data[keys.KEY]) - markWidth / 2 + gutterW / 2)
       .attr("y", (d) => scales.yScale(d[1]))
       .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
-      .attr("width", barW - gutterW)
+      .attr("width", markWidth - gutterW)
 
     stackedBars.exit().remove()
   }

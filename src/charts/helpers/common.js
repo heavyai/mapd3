@@ -86,41 +86,26 @@ export function stringToType (str, type) {
   } else if (type === "number") {
     converted = Number(str)
   }
-  console.log("stringToType", str, type, converted)
   return converted
 }
 
-export function getSizes (config, container, markCount) {
-  const width = config.width === "auto"
-    ? (container && container.clientWidth || 0)
-    : config.width
-  const height = config.height === "auto"
-    ? (container && container.clientHeight || 0)
-    : config.height
+export function getSizes (config, data) {
+  const sizes = {}
 
-  const chartWidth = Math.max(width - config.margin.left - config.margin.right, 0)
-  const chartHeight = Math.max(height - config.margin.top - config.margin.bottom, 0)
+  const markCount = data && data.allKeyTotals && data.allKeyTotals.length || 0
 
-  let markPanelWidth  = chartWidth
-  if (data) {
-    const minMarkPanelWidth = markCount * MIN_MARK_WIDTH
-    markPanelWidth = chartWidth < minMarkPanelWidth ? minMarkPanelWidth : chartWidth
-  }
+  sizes.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
+  sizes.chartHeight = Math.max(config.height - config.margin.top - config.margin.bottom, 0)
 
-  let markWidth = null
+  sizes.markPanelWidth = sizes.chartWidth
   if (markCount) {
-    markWidth = markPanelWidth / markCount
-    markWidth = clamp(markWidth, [MIN_MARK_WIDTH, MAX_MARK_WIDTH])
+    const minMarkPanelWidth = markCount * MIN_MARK_WIDTH
+    sizes.markPanelWidth = sizes.chartWidth < minMarkPanelWidth ? minMarkPanelWidth : sizes.chartWidth
+    sizes.markWidth = sizes.markPanelWidth / markCount
+    sizes.markWidth = clamp(sizes.markWidth, [MIN_MARK_WIDTH, MAX_MARK_WIDTH])
   }
 
-  return {
-    width,
-    height,
-    chartWidth,
-    chartHeight,
-    markPanelWidth,
-    markWidth
-  }
+  return sizes
 }
 
 export function isNumeric (val) {

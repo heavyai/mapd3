@@ -10,6 +10,7 @@ import {
   getSizes,
   uniqueId
 } from "./helpers/common"
+import {autoConfigure} from "./helpers/auto-config"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -24,8 +25,6 @@ import DomainEditor from "./domain-editor"
 import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
 import DataManager from "./data-manager"
-import ClipPath from "./clip-path"
-import ScrollingPanelConfigurator from "./scrolling-panel-configurator"
 
 export default function Chart (_container) {
 
@@ -155,11 +154,13 @@ export default function Chart (_container) {
     hasSecondAxis: false,
     stackData: null,
     stack: null,
-    flatDataSorted: null
+    flatDataSorted: null,
+    allKeyTotals: null
   }
 
   let components = {}
   let eventCollector = {}
+  let componentConfig = {}
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
@@ -234,9 +235,7 @@ export default function Chart (_container) {
         binning: Binning(cache.headerGroup),
         domainEditor: DomainEditor(cache.container),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
-        label: Label(cache.container),
-        // clipPath: ClipPath(cache.svg),
-        // scrollingPanelConfigurator: ScrollingPanelConfigurator(cache.svg)
+        label: Label(cache.container)
       }
 
       eventCollector = {
@@ -250,11 +249,9 @@ export default function Chart (_container) {
       }
     }
 
-
-    const markCount = dataObject.stackData && dataObject.stackData.length || 0
-    const {markPanelWidth, width, height, chartWidth, chartHeight} = getSizes(config, cache.container, markCount)
-    cache.width = width
-    cache.height = height
+    const {markPanelWidth, chartWidth, chartHeight} = getSizes(componentConfig, dataObject)
+    cache.width = componentConfig.width
+    cache.height = componentConfig.height
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
 
@@ -264,10 +261,6 @@ export default function Chart (_container) {
     cache.svgWrapper
       .style("width", `${cache.chartWidth}px`)
       .style("height", `${cache.height}px`)
-
-    // cache.svg
-      // .attr("width", cache.chartWidth)
-      // .attr("height", cache.height)
 
     cache.svg
       .attr("width", markPanelWidth)
@@ -293,14 +286,6 @@ export default function Chart (_container) {
       .setConfig(config)
       .setData(dataObject)
       .getScales()
-
-    // components.scrollingPanelConfigurator
-    //   .setConfig(config)
-    //   .render()
-
-    // components.clipPath
-    //   .setConfig(config)
-    //   .render()
 
     components.axis
       .setConfig(config)
@@ -429,6 +414,9 @@ export default function Chart (_container) {
 
   function setConfig (_config) {
     config = override(config, _config)
+
+    const autoConfig = autoConfigure(config, cache, data)
+    componentConfig = override(config, autoConfig)
     return this
   }
 

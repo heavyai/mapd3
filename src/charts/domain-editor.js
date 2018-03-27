@@ -267,7 +267,7 @@ export default function DomainEditor (_container) {
       hideXEditor()
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight} = getSizes(config)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
 

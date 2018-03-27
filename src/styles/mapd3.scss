@@ -4,6 +4,7 @@
     @import "common/general.scss";
 
     // Common Elements
+    @import "common/_container.scss";
     @import "common/_grid.scss";
     @import "common/_axes.scss";
     @import "common/_tooltip.scss";
@@ -19,5 +20,3 @@
     @import "charts/brush-range-editor.scss";
     @import "charts/label.scss";
 }
-
-@import "common/_container.scss";

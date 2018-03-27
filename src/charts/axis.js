@@ -51,7 +51,12 @@ export default function Axis (_container) {
     yAxis: null,
     y2Axis: null,
     horizontalGridLines: null,
-    verticalGridLines: null
+    verticalGridLines: null,
+    markPanelWidth: null
+  }
+
+  const data = {
+    dataByKey: null
   }
 
   function build () {
@@ -68,9 +73,10 @@ export default function Axis (_container) {
       cache.axisExternal.append("g").attr("class", "axis y")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight, markPanelWidth} = getSizes(config, data)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
+    cache.markPanelWidth = markPanelWidth
     // cache.root.attr("transform", `translate(0, ${config.margin.top})`)
 
     cache.container.select(".external-axis > svg")
@@ -190,7 +196,7 @@ export default function Axis (_container) {
       const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), { length: 0 })
       longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
     }
-    return Math.ceil(longestLabelApproxWidth / (cache.chartWidth / labels.length))
+    return Math.ceil(longestLabelApproxWidth / (cache.markPanelWidth / labels.length))
   }
 
   function drawAxis () {
@@ -247,9 +253,10 @@ export default function Axis (_container) {
           .merge(cache.horizontalGridLines)
           .transition()
           .duration(config.axisTransitionDuration)
-          .attr("x2", cache.chartWidth)
+          .attr("x2", cache.markPanelWidth)
           .attr("y1", scales.yScale)
           .attr("y2", scales.yScale)
+          console.log(cache.markPanelWidth)
 
         cache.horizontalGridLines.exit().remove()
       } else if (cache.horizontalGridLines) {

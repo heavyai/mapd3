@@ -49,8 +49,7 @@ export default function Scale () {
   const getValue = (d) => d[keys.VALUE]
 
   function getScaleSizes () {
-    const markCount = data.stackData && data.stackData.length || 0
-    const {chartWidth, chartHeight, markPanelWidth, markWidth} = getSizes(config, null, markCount)
+    const {chartWidth, chartHeight, markPanelWidth, markWidth} = getSizes(config, data)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
     cache.markPanelWidth = markPanelWidth

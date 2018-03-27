@@ -1,5 +1,4 @@
-// .mapd3 namespacing in compiled css is messing this up...
-.mapd3.mapd3-container.bar {
+&.mapd3-container{
   display: flex;
   align-items: stretch;
 

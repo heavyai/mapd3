@@ -7,6 +7,14 @@
 .mapd3 [contenteditable]:hover, .mapd3 .axis-label:focus {
   border: 1px solid #ddd; }
 
+.mapd3.mapd3-container {
+  display: flex;
+  align-items: stretch; }
+  .mapd3.mapd3-container .svg-wrapper {
+    display: inline-block;
+    overflow-y: hidden;
+    overflow-x: scroll; }
+
 .mapd3 .vertical-grid-line,
 .mapd3 .horizontal-grid-line {
   fill: none;
@@ -212,11 +220,3 @@
   font-weight: bold;
   font-size: 13px;
   overflow: hidden; }
-
-.mapd3.mapd3-container.bar {
-  display: flex;
-  align-items: stretch; }
-  .mapd3.mapd3-container.bar .svg-wrapper {
-    display: inline-block;
-    overflow-y: hidden;
-    overflow-x: scroll; }

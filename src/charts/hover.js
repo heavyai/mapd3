@@ -55,7 +55,7 @@ export default function Hover (_container) {
           .style("pointer-events", "none")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight} = getSizes(config)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
   }

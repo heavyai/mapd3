@@ -50,7 +50,7 @@ export default function Line (_container) {
           .classed("mark-group", true)
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight} = getSizes(config)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
   }

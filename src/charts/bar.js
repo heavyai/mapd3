@@ -28,8 +28,6 @@ export default function Bar (_container) {
   const cache = {
     container: _container,
     svg: null,
-    chartHeight: null,
-    chartWidth: null
   }
 
   let data = {
@@ -48,26 +46,21 @@ export default function Bar (_container) {
       cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
-
-    const {markPanelWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = markPanelWidth
-    cache.chartHeight = chartHeight
   }
 
   function drawBars () {
-    const stack = data.stack(data.stackData)
+    const markCount = data.dataByKey && data.dataByKey.length || 1
+    const {chartHeight, markWidth, markPanelWidth} = getSizes(config, data)
 
     let barData = []
     if (Array.isArray(config.chartType)) {
       barData = data.dataBySeries.filter((d, i) => config.chartType[i] === "bar")
-    } else if(config.chartType === "bar" || config.chartType === "groupedBar") {
+    } else if (config.chartType === "bar" || config.chartType === "groupedBar") {
       barData = data.dataBySeries
     }
 
-    const groupCount = (stack[0] && stack[0].length) || 1
     const groupMemberCount = barData.length
-    const groupW = groupCount ? (cache.chartWidth / groupCount) : 0
-    const barW = Math.min(groupW, MAX_MARK_WIDTH)
+    const groupW = markCount ? (markPanelWidth / markCount) : 0
     const gutterW = groupW / 100 * config.barSpacingPercent
     const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
 
@@ -103,28 +96,28 @@ export default function Bar (_container) {
           const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d.index + gutterW / 2
           return Math.max(x, 0)
         } else {
-          return Math.max(scales.xScale(d[keys.KEY]) - barW / 2, 0)
+          return Math.max(scales.xScale(d[keys.KEY]) - markWidth / 2, 0)
         }
       })
       .attr("y", (d) => {
         if (d[keys.GROUP] === 0) {
-          return Math.min(scales.yScale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
+          return Math.min(scales.yScale(d[keys.VALUE]), chartHeight - MIN_BAR_HEIGHT)
         } else {
-          return Math.min(scales.y2Scale(d[keys.VALUE]), cache.chartHeight - MIN_BAR_HEIGHT)
+          return Math.min(scales.y2Scale(d[keys.VALUE]), chartHeight - MIN_BAR_HEIGHT)
         }
       })
       .attr("width", () => {
         if (config.chartType === "groupedBar" || barData.length > 1) {
           return groupedBarW
         } else {
-          return barW
+          return markWidth
         }
       })
       .attr("height", (d) => {
         if (d[keys.GROUP] === 0) {
-          return Math.max(cache.chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
+          return Math.max(chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
         } else {
-          return Math.max(cache.chartHeight - scales.y2Scale(d[keys.VALUE]), MIN_BAR_HEIGHT)
+          return Math.max(chartHeight - scales.y2Scale(d[keys.VALUE]), MIN_BAR_HEIGHT)
         }
       })
       .style("stroke", "white")
@@ -134,17 +127,9 @@ export default function Bar (_container) {
   }
 
   function drawStackedBars () {
-    const stack = data.stack(data.stackData)
-    const stackCount = data.stackData && data.stackData.length || 1
+    const {markWidth} = getSizes(config, data)
 
-    // let barW = Math.min(cache.chartWidth / stackCount, MAX_MARK_WIDTH)
-    // if (barW < MIN_MARK_WIDTH) {
-    //   barW = MIN_MARK_WIDTH
-    // }
-    // const barW = getMarkWidth(config, stackCount)
-    const {markWidth, chartWidth} = getSizes(config, cache.container, stackCount)
-    console.log(markWidth, stackCount, chartWidth)
-    console.log(markWidth)
+    const stack = data.stack(data.stackData)
     const gutterW = markWidth / 100 * config.barSpacingPercent
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")

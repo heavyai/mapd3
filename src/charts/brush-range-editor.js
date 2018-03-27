@@ -129,7 +129,7 @@ export default function BrushRangeEditor (_container) {
         .style("float", "right")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight} = getSizes(config)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
 

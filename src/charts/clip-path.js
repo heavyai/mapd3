@@ -34,7 +34,7 @@ export default function ClipPath (_container) {
         .append('rect')
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight} = getSizes(config)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
 

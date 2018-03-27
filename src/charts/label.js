@@ -84,7 +84,7 @@ export default function Label (_container) {
         .style("transform", "translate(-50%) rotate(90deg)")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
+    const {chartWidth, chartHeight} = getSizes(config)
     cache.chartWidth = chartWidth
     cache.chartHeight = chartHeight
 

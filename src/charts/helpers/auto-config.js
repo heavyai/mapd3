@@ -11,10 +11,11 @@ export function getSizes (config, data) {
 
   sizes.markPanelWidth = sizes.chartWidth
   if (markCount) {
-    const minMarkPanelWidth = markCount * MIN_MARK_WIDTH
+    const minMarkWidth = config.useScrolling ? MIN_MARK_WIDTH : 0
+    const minMarkPanelWidth = markCount * minMarkWidth
     sizes.markPanelWidth = sizes.chartWidth < minMarkPanelWidth ? minMarkPanelWidth : sizes.chartWidth
     sizes.markWidth = sizes.markPanelWidth / markCount
-    sizes.markWidth = clamp(sizes.markWidth, [MIN_MARK_WIDTH, MAX_MARK_WIDTH])
+    sizes.markWidth = clamp(sizes.markWidth, [minMarkWidth, MAX_MARK_WIDTH])
   }
 
   return sizes

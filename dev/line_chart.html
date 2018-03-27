@@ -31,7 +31,7 @@ const keyType = "string"
 const dataConfig = {
   keyType,
   range: [0, 100],
-  pointCount: 100,
+  pointCount: 120,
   groupCount: 1,
   lineCount: 3,
   stringMinMaxLength: [5, 10]
@@ -46,7 +46,7 @@ const data = dataManager.generateTestDataset()
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-const chartType = "stackedBar"
+const chartType = "line"
 
 console.log("data", data.series)
 
@@ -72,6 +72,7 @@ const chart1 = mapd3.Chart(chartNode1)
     },
     keyType, // time, number, string
     chartType, // line, area, stackedArea, bar, stackedBar
+    useScrolling: false,
 
     // intro animation
     isAnimated: false,
@@ -81,7 +82,7 @@ const chart1 = mapd3.Chart(chartNode1)
     colorSchema: palette,
     defaultColor: "skyblue",
     xDomain: "auto",
-    yDomain: [50, 100],
+    yDomain: "auto",
     y2Domain: "auto",
 
     // data

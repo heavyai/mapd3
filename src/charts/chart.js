@@ -44,6 +44,7 @@ export default function Chart (_container) {
     chartType: "line", // line, area, stackedLine, stackedArea
     extractType: null, // isodow, month, quarter, hour, minute
     ease: d3.easeLinear,
+    useScrolling: false,
 
     // intro animation
     isAnimated: false,
@@ -218,7 +219,6 @@ export default function Chart (_container) {
       cache.svg = base.select("svg.chart")
       cache.headerGroup = base.select(".header-group")
           .style("position", "absolute")
-      cache.yAxisContainer = cache.svg.select(".external-axis")
       cache.panel = cache.svg.select(".panel-group")
       cache.chart = cache.svg.select(".chart-group")
 
@@ -251,9 +251,6 @@ export default function Chart (_container) {
       }
     }
 
-    cache.yAxisContainer
-      .attr("width", config.margin.left)
-
     cache.svgWrapper
       .style("width", `${config.chartWidth}px`)
       .style("height", `${config.height}px`)
@@ -268,9 +265,8 @@ export default function Chart (_container) {
       .style("left", `${config.margin.left}px`)
 
     cache.panel
-      // .attr("transform", `translate(0,${config.margin.top})`)
       .select(".panel-background")
-      .style("width", `${config.chartWidth}px`)
+      .style("width", `${config.markPanelWidth}px`)
       .style("height", `${cache.chartheight}px`)
       .attr("fill", "transparent")
 
@@ -392,13 +388,14 @@ export default function Chart (_container) {
       })
       .on("mousemove.dispatch", () => {
         const [mouseX, mouseY] = d3.mouse(cache.panel.node())
+        const [panelMouseX] = d3.mouse(cache.svgWrapper.node())
         if (!dataObject.data) { return }
         const xPosition = mouseX
         const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
 
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
-          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY)
+          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY, panelMouseX)
         }
       })
   }

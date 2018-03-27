@@ -1,8 +1,8 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
-import {cloneData, isNumeric, override} from "./helpers/common"
-import {binTranslation, formatOddDateBin, multiFormat, formatTooltipNumber} from "./helpers/formatters"
+import {isNumeric, override} from "./helpers/common"
+import {binTranslation, formatOddDateBin, formatTooltipNumber} from "./helpers/formatters"
 
 export default function Tooltip (_container, isLegend = false) {
 
@@ -24,7 +24,11 @@ export default function Tooltip (_container, isLegend = false) {
     binningIsAuto: null,
     chartType: null,
     colorSchema: ["skyblue"],
-    keyType: "time"
+    keyType: "time",
+
+    markPanelWidth: null,
+    chartWidth: null,
+    chartHeight: null
   }
 
   let scales = {
@@ -35,8 +39,6 @@ export default function Tooltip (_container, isLegend = false) {
   const cache = {
     container: _container,
     root: null,
-    chartWidth: null,
-    chartHeight: null,
     tooltipDivider: null,
     tooltipBody: null,
     tooltipTitle: null,
@@ -48,9 +50,6 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function build () {
-    cache.chartWidth = config.width - config.margin.left - config.margin.right
-    cache.chartHeight = config.height - config.margin.top - config.margin.bottom
-
     if (!cache.root) {
       cache.root = cache.container.append("div")
           .attr("class", isLegend ? "legend-group" : "tooltip-group")
@@ -87,7 +86,7 @@ export default function Tooltip (_container, isLegend = false) {
     }
 
     if (isLegend) {
-      cache.root.style("max-height", cache.chartHeight)
+      cache.root.style("max-height", config.chartHeight)
       if (config.tooltipIsEnabled) {
         show()
       } else {
@@ -103,15 +102,16 @@ export default function Tooltip (_container, isLegend = false) {
     let avoidanceOffset = OFFSET
     const tooltipY = _mouseY + config.margin.top - tooltipSize.height / 2
 
-    if (_mouseX > (cache.chartWidth / 2)) {
+    if (_mouseX > (config.markPanelWidth / 2)) {
       avoidanceOffset = -tooltipSize.width - OFFSET
     }
+
     return [tooltipX + avoidanceOffset, tooltipY]
   }
 
   function move () {
     const xPosition = cache.xPosition === "auto"
-        ? cache.chartWidth
+        ? config.chartWidth
         : cache.xPosition
 
     const yPosition = cache.yPosition === "auto"
@@ -127,7 +127,7 @@ export default function Tooltip (_container, isLegend = false) {
 
     if (isLegend) {
       // set max-height in case there are too many legend items
-      cache.root.style("max-height", `${cache.chartHeight}px`)
+      cache.root.style("max-height", `${config.chartHeight}px`)
     }
 
     return this
@@ -148,7 +148,7 @@ export default function Tooltip (_container, isLegend = false) {
             key: "tooltip-color",
             value: scales.colorScale(d[keys.ID]),
             style: scales.styleScale(d[keys.ID])
-          },
+          }
         ]
 
         if (isLegend) {
@@ -183,9 +183,7 @@ export default function Tooltip (_container, isLegend = false) {
               .attr("y2", offset)
               .attr("stroke", d.value)
               .attr("stroke-width", 2.5)
-              .attr("stroke-dasharray", d => {
-                return dashStylesTranslation[d.style]
-              })
+              .attr("stroke-dasharray", dB => dashStylesTranslation[dB.style])
           } else {
             svg
               .append("rect")
@@ -224,8 +222,8 @@ export default function Tooltip (_container, isLegend = false) {
 
     // format date if we have a date
     if (title instanceof Date) {
-      const { binningResolution } = config;
-      let specifier = binTranslation[binningResolution]
+      const {binningResolution} = config
+      const specifier = binTranslation[binningResolution]
 
       if (specifier) {
         title = d3.utcFormat(specifier)(title)
@@ -244,9 +242,7 @@ export default function Tooltip (_container, isLegend = false) {
   }
 
   function setupContent (_series) {
-    let series = _series
-
-    cache.content = sortSeries(series)
+    cache.content = sortSeries(_series)
     return this
   }
 
@@ -266,9 +262,9 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
-  function setupTooltip (_dataPoint, _xPosition, _yPosition) {
+  function setupTooltip (_dataPoint, _xPosition, _yPosition, _panelXPosition) {
     build()
-    const [tooltipX, tooltipY] = calculateTooltipPosition(_xPosition, _yPosition)
+    const [tooltipX, tooltipY] = calculateTooltipPosition(_panelXPosition, _yPosition)
     setXPosition(tooltipX)
     setYPosition(tooltipY)
     setTitle(_dataPoint[keys.KEY])

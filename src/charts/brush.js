@@ -17,7 +17,7 @@ export default function Brush (_container) {
     brushRangeMax: null,
     brushIsEnabled: true,
 
-    chartWidth: null,
+    markPanelWidth: null,
     chartHeight: null
   }
 
@@ -53,7 +53,7 @@ export default function Brush (_container) {
   }
 
   function buildBrush () {
-    cache.brush.extent([[0, 0], [config.chartWidth, config.chartHeight]])
+    cache.brush.extent([[0, 0], [config.markPanelWidth, config.chartHeight]])
 
     cache.chartBrush = cache.root.call(cache.brush)
 

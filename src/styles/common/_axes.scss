@@ -3,6 +3,10 @@ $text-size: 1rem;
 $tick-size: 1;
 
 .axis-group {
+    .domain {
+        fill: none;
+        stroke: #c7c7c7;
+    }
     .axis .tick {
         line {
             fill: none;

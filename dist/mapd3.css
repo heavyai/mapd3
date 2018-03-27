@@ -30,6 +30,10 @@
   stroke: #D2D6DF;
   stroke-width: 1; }
 
+.mapd3 .axis-group .domain {
+  fill: none;
+  stroke: #c7c7c7; }
+
 .mapd3 .axis-group .axis .tick line {
   fill: none;
   stroke: #c7c7c7;
@@ -124,10 +128,6 @@
 
 .mapd3 .chart .masking-rectangle {
   fill: #ffffff; }
-
-.mapd3 .chart .x.axis path, .mapd3 .chart .x.axis .domain, .mapd3 .chart .y.axis path, .mapd3 .chart .y.axis .domain, .mapd3 .chart .y2.axis path, .mapd3 .chart .y2.axis .domain {
-  display: block;
-  stroke: #ADB0B6; }
 
 .mapd3 .chart .vertical-grid-line, .mapd3 .chart .horizontal-grid-line {
   stroke-dasharray: none; }

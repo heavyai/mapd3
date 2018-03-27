@@ -192,7 +192,7 @@ export default function Chart (_container) {
       const createTemplate = (chartType) => {
         const className = chartClassName(chartType)
         return `<div class="mapd3 mapd3-container ${className}">
-          <div class="external-axis">
+          <div class="y-axis-container">
             <svg>
               <g class="axis-group"></g>
             </svg>
@@ -204,6 +204,11 @@ export default function Chart (_container) {
                 <rect class="panel-background"></rect>
               </g>
               <rect class="masking-rectangle"></rect>
+            </svg>
+          </div>
+          <div class="y2-axis-container">
+            <svg>
+              <g class="axis-group"></g>
             </svg>
           </div>
         </div>`

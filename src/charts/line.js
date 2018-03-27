@@ -1,23 +1,17 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
-import {override, getSizes} from "./helpers/common"
+import {override} from "./helpers/common"
 
 export default function Line (_container) {
 
   let config = {
-    margin: {
-      top: 60,
-      right: 30,
-      bottom: 40,
-      left: 70
-    },
-    width: 800,
-    height: 500,
     chartId: null,
     chartType: null,
     colorSchema: ["skyblue"],
-    xDomain: "auto"
+    xDomain: "auto",
+
+    chartHeight: null
   }
 
   let scales = {
@@ -31,8 +25,7 @@ export default function Line (_container) {
 
   const cache = {
     container: _container,
-    svg: null,
-    chartHeight: null,
+    svg: null
   }
 
   let data = {
@@ -49,10 +42,6 @@ export default function Line (_container) {
       cache.root = cache.container.append("g")
           .classed("mark-group", true)
     }
-
-    const {chartWidth, chartHeight} = getSizes(config)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
   }
 
   function drawLines () {
@@ -103,12 +92,12 @@ export default function Line (_container) {
     const seriesArea = d3.area()
         .x((d) => scales.xScale(d[keys.KEY]))
         .y0((d) => scales.yScale(d[keys.VALUE]))
-        .y1(() => cache.chartHeight)
+        .y1(() => config.chartHeight)
 
     const seriesArea2 = d3.area()
         .x((d) => scales.xScale(d[keys.KEY]))
         .y0((d) => scales.y2Scale(d[keys.VALUE]))
-        .y1(() => cache.chartHeight)
+        .y1(() => config.chartHeight)
         .curve(d3.curveCatmullRom)
 
     const areas = cache.root.selectAll(".mark")

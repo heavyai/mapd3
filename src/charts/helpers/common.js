@@ -1,4 +1,4 @@
-import {keys, MIN_MARK_WIDTH, MAX_MARK_WIDTH} from "./constants"
+import {keys} from "./constants"
 import * as d3 from "./d3-service"
 
 /**
@@ -87,25 +87,6 @@ export function stringToType (str, type) {
     converted = Number(str)
   }
   return converted
-}
-
-export function getSizes (config, data) {
-  const sizes = {}
-
-  const markCount = data && data.allKeyTotals && data.allKeyTotals.length || 0
-
-  sizes.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
-  sizes.chartHeight = Math.max(config.height - config.margin.top - config.margin.bottom, 0)
-
-  sizes.markPanelWidth = sizes.chartWidth
-  if (markCount) {
-    const minMarkPanelWidth = markCount * MIN_MARK_WIDTH
-    sizes.markPanelWidth = sizes.chartWidth < minMarkPanelWidth ? minMarkPanelWidth : sizes.chartWidth
-    sizes.markWidth = sizes.markPanelWidth / markCount
-    sizes.markWidth = clamp(sizes.markWidth, [MIN_MARK_WIDTH, MAX_MARK_WIDTH])
-  }
-
-  return sizes
 }
 
 export function isNumeric (val) {

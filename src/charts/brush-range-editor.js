@@ -6,14 +6,6 @@ import {blurOnEnter} from "./interactors"
 export default function BrushRangeEditor (_container) {
 
   let config = {
-    margin: {
-      top: 60,
-      right: 30,
-      bottom: 40,
-      left: 70
-    },
-    width: 800,
-    height: 500,
     keyType: "time",
     dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
@@ -26,9 +18,7 @@ export default function BrushRangeEditor (_container) {
     container: _container,
     root: null,
     inputMin: null,
-    inputMax: null,
-    chartWidth: null,
-    chartHeight: null
+    inputMax: null
   }
 
   let scales = {
@@ -128,10 +118,6 @@ export default function BrushRangeEditor (_container) {
         .call(blurOnEnter)
         .style("float", "right")
     }
-
-    const {chartWidth, chartHeight} = getSizes(config)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
 
     const domain = scales.xScale.domain()
 

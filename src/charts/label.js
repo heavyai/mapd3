@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, getSizes} from "./helpers/common"
+import {override} from "./helpers/common"
 
 export default function Label (_container) {
 
@@ -15,7 +15,10 @@ export default function Label (_container) {
     height: 500,
     xLabel: "",
     yLabel: "",
-    y2Label: ""
+    y2Label: "",
+
+    chartWidth: null,
+    chartHeight: null
   }
 
   const cache = {
@@ -23,9 +26,7 @@ export default function Label (_container) {
     root: null,
     xAxisLabel: null,
     yAxisLabel: null,
-    y2AxisLabel: null,
-    chartWidth: null,
-    chartHeight: null
+    y2AxisLabel: null
   }
 
   // events
@@ -84,24 +85,20 @@ export default function Label (_container) {
         .style("transform", "translate(-50%) rotate(90deg)")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-
     cache.xAxisLabel
       .text(config.xLabel)
-      .style("max-width", `${cache.chartWidth}px`)
+      .style("max-width", `${config.chartWidth}px`)
       .style("top", function top () {
         const LABEL_PADDING = 18
         const textHeight = this.getBoundingClientRect().height || LABEL_PADDING
         return `${config.height - textHeight - LABEL_PADDING}px`
       })
-      .style("left", `${config.margin.left + cache.chartWidth / 2}px`)
+      .style("left", `${config.margin.left + config.chartWidth / 2}px`)
 
     cache.yAxisLabel
       .text(config.yLabel)
-      .style("max-width", `${cache.chartHeight}px`)
-      .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
+      .style("max-width", `${config.chartHeight}px`)
+      .style("top", `${config.margin.top + config.chartHeight / 2}px`)
       .style("left", function top () {
         const LABEL_PADDING = 4
         const textWidth = this.getBoundingClientRect().width
@@ -110,8 +107,8 @@ export default function Label (_container) {
 
     cache.y2AxisLabel
       .text(config.y2Label)
-      .style("max-width", `${cache.chartHeight}px`)
-      .style("top", `${config.margin.top + cache.chartHeight / 2}px`)
+      .style("max-width", `${config.chartHeight}px`)
+      .style("top", `${config.margin.top + config.chartHeight / 2}px`)
       .style("left", function top () {
         const LABEL_PADDING = 4
         const textWidth = this.getBoundingClientRect().width

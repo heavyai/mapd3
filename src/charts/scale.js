@@ -3,33 +3,21 @@ import * as d3 from "./helpers/d3-service"
 import {
   keys,
   LEFT_AXIS_GROUP_INDEX,
-  RIGHT_AXIS_GROUP_INDEX,
-  MAX_MARK_WIDTH,
-  MIN_MARK_WIDTH
+  RIGHT_AXIS_GROUP_INDEX
 } from "./helpers/constants"
-import {clamp, getMarkWidth, getUnique, hasBars, override, getSizes} from "./helpers/common"
+import {override} from "./helpers/common"
 
 export default function Scale () {
 
   let config = {
-    margin: {
-      top: 60,
-      right: 30,
-      bottom: 40,
-      left: 70
-    },
-    height: null,
-    width: null,
     keyType: null,
     chartType: null,
     colorSchema: null,
     defaultColor: null,
     xDomain: "auto",
     yDomain: "auto",
-    y2Domain: "auto"
-  }
+    y2Domain: "auto",
 
-  const cache = {
     chartWidth: null,
     chartHeight: null,
     markPanelWidth: null,
@@ -47,14 +35,6 @@ export default function Scale () {
   const getID = (d) => d[keys.ID]
   const getKey = (d) => d[keys.KEY]
   const getValue = (d) => d[keys.VALUE]
-
-  function getScaleSizes () {
-    const {chartWidth, chartHeight, markPanelWidth, markWidth} = getSizes(config, data)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-    cache.markPanelWidth = markPanelWidth
-    cache.markWidth = markWidth
-  }
 
   function buildXScale (_allKeys) {
     let xScale = null
@@ -82,7 +62,7 @@ export default function Scale () {
     }
 
     xScale.domain(domain)
-      .range([cache.markWidth / 2, cache.markPanelWidth - cache.markWidth / 2])
+      .range([config.markWidth / 2, config.markPanelWidth - config.markWidth / 2])
 
     return xScale
   }
@@ -90,7 +70,7 @@ export default function Scale () {
   function buildYScale (_extent) {
     const yScale = d3.scaleLinear()
         .domain(_extent)
-        .rangeRound([cache.chartHeight, 0])
+        .rangeRound([config.chartHeight, 0])
 
     return yScale
   }
@@ -228,7 +208,6 @@ export default function Scale () {
   }
 
   function getScales () {
-    getScaleSizes()
     if (config.chartType === "stackedBar"
       || config.chartType === "stackedArea") {
       return getStackedScales()

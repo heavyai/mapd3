@@ -7,7 +7,6 @@ import {
   override,
   throttle,
   rebind,
-  getSizes,
   uniqueId
 } from "./helpers/common"
 import {autoConfigure} from "./helpers/auto-config"
@@ -25,10 +24,12 @@ import DomainEditor from "./domain-editor"
 import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
 import DataManager from "./data-manager"
+import ClipPath from "./clip-path"
+
 
 export default function Chart (_container) {
 
-  let config = {
+  let inputConfig = {
     // common
     margin: {
       top: 48,
@@ -160,7 +161,7 @@ export default function Chart (_container) {
 
   let components = {}
   let eventCollector = {}
-  let componentConfig = {}
+  let config = {}
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
@@ -235,7 +236,8 @@ export default function Chart (_container) {
         binning: Binning(cache.headerGroup),
         domainEditor: DomainEditor(cache.container),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
-        label: Label(cache.container)
+        label: Label(cache.container),
+        clipPath: ClipPath(cache.svg)
       }
 
       eventCollector = {
@@ -249,32 +251,26 @@ export default function Chart (_container) {
       }
     }
 
-    const {markPanelWidth, chartWidth, chartHeight} = getSizes(componentConfig, dataObject)
-    cache.width = componentConfig.width
-    cache.height = componentConfig.height
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-
     cache.yAxisContainer
       .attr("width", config.margin.left)
 
     cache.svgWrapper
-      .style("width", `${cache.chartWidth}px`)
-      .style("height", `${cache.height}px`)
+      .style("width", `${config.chartWidth}px`)
+      .style("height", `${config.height}px`)
 
     cache.svg
-      .attr("width", markPanelWidth)
-      .attr("height", chartHeight + config.margin.bottom)
+      .attr("width", config.markPanelWidth)
+      .attr("height", config.chartHeight + config.margin.bottom)
       .attr("transform", `translate(0,${config.margin.top})`)
 
     cache.headerGroup
-      .style("width", `${cache.chartWidth}px`)
+      .style("width", `${config.chartWidth}px`)
       .style("left", `${config.margin.left}px`)
 
     cache.panel
       // .attr("transform", `translate(0,${config.margin.top})`)
       .select(".panel-background")
-      .style("width", `${cache.chartWidth}px`)
+      .style("width", `${config.chartWidth}px`)
       .style("height", `${cache.chartheight}px`)
       .attr("fill", "transparent")
 
@@ -286,6 +282,10 @@ export default function Chart (_container) {
       .setConfig(config)
       .setData(dataObject)
       .getScales()
+
+    components.clipPath
+      .setConfig(config)
+      .render()
 
     components.axis
       .setConfig(config)
@@ -353,6 +353,9 @@ export default function Chart (_container) {
     const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
     Object.assign(dataObject, cleanedData)
 
+    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
+    config = Object.assign({}, inputConfig, autoConfig)
+
     render()
     return this
   }
@@ -369,7 +372,7 @@ export default function Chart (_container) {
         .duration(config.animationDuration)
         .ease(config.ease)
         .attr("width", 0)
-        .attr("x", cache.width - config.margin.right)
+        .attr("x", config.width - config.margin.right)
         .on("end", () => cache.maskingRectangle.remove())
     }
   }
@@ -413,10 +416,10 @@ export default function Chart (_container) {
   }
 
   function setConfig (_config) {
-    config = override(config, _config)
+    inputConfig = override(inputConfig, _config)
 
-    const autoConfig = autoConfigure(config, cache, data)
-    componentConfig = override(config, autoConfig)
+    const autoConfig = autoConfigure(inputConfig, cache, data)
+    config = Object.assign({}, inputConfig, autoConfig)
     return this
   }
 

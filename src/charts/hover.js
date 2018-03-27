@@ -15,7 +15,10 @@ export default function Hover (_container) {
     width: 800,
     height: 500,
     dotRadius: null,
-    chartType: null
+    chartType: null,
+
+    chartWidth: null,
+    chartHeight: null
   }
 
   let scales = {
@@ -28,8 +31,6 @@ export default function Hover (_container) {
   const cache = {
     container: _container,
     svg: null,
-    chartWidth: null,
-    chartHeight: null,
     dateRange: [null, null],
     brush: null,
     chartBrush: null,
@@ -54,10 +55,6 @@ export default function Hover (_container) {
           .classed("hover-group", true)
           .style("pointer-events", "none")
     }
-
-    const {chartWidth, chartHeight} = getSizes(config)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
   }
 
   function drawHover (_dataPoint, _dataPointXPosition) {
@@ -144,7 +141,7 @@ export default function Hover (_container) {
       .classed("vertical-marker", true)
       .merge(verticalMarkerLine)
       .attr("y1", 0)
-      .attr("y2", cache.chartHeight)
+      .attr("y2", config.chartHeight)
 
     verticalMarkerLine.exit().remove()
   }

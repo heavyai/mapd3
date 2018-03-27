@@ -32,7 +32,11 @@ export default function Axis (_container) {
     extractType: null,
     yDomain: "auto",
     y2Domain: "auto",
-    labelsAreRotated: false
+    labelsAreRotated: false,
+
+    chartWidth: null,
+    chartHeight: null,
+    markPanelWidth: null
   }
 
   let scales = {
@@ -45,18 +49,11 @@ export default function Axis (_container) {
   const cache = {
     container: _container,
     background: null,
-    chartHeight: null,
-    chartWidth: null,
     xAxis: null,
     yAxis: null,
     y2Axis: null,
     horizontalGridLines: null,
-    verticalGridLines: null,
-    markPanelWidth: null
-  }
-
-  const data = {
-    dataByKey: null
+    verticalGridLines: null
   }
 
   function build () {
@@ -73,15 +70,9 @@ export default function Axis (_container) {
       cache.axisExternal.append("g").attr("class", "axis y")
     }
 
-    const {chartWidth, chartHeight, markPanelWidth} = getSizes(config, data)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-    cache.markPanelWidth = markPanelWidth
-    // cache.root.attr("transform", `translate(0, ${config.margin.top})`)
-
     cache.container.select(".external-axis > svg")
       .attr("width", config.margin.left)
-      .attr("height", cache.chartHeight + config.margin.top + config.margin.bottom)
+      .attr("height", config.chartHeight + config.margin.top + config.margin.bottom)
 
     cache.axisExternal
       .attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
@@ -157,7 +148,7 @@ export default function Axis (_container) {
       if (Number.isInteger(config.yTicks)) {
         cache.yAxis.ticks(config.yTicks)
       } else {
-        cache.yAxis.ticks(Math.ceil(cache.chartHeight / config.tickSpacing))
+        cache.yAxis.ticks(Math.ceil(config.chartHeight / config.tickSpacing))
       }
     }
 
@@ -196,12 +187,12 @@ export default function Axis (_container) {
       const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), { length: 0 })
       longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
     }
-    return Math.ceil(longestLabelApproxWidth / (cache.markPanelWidth / labels.length))
+    return Math.ceil(longestLabelApproxWidth / (config.markPanelWidth / labels.length))
   }
 
   function drawAxis () {
     cache.root.select(".axis.x")
-        .attr("transform", `translate(0, ${cache.chartHeight})`)
+        .attr("transform", `translate(0, ${config.chartHeight})`)
         .call(cache.xAxis)
 
     if (config.labelsAreRotated) {
@@ -221,7 +212,7 @@ export default function Axis (_container) {
 
     if (scales.y2Scale) {
       cache.root.select(".axis.y2")
-          .attr("transform", `translate(${cache.chartWidth}, 0)`)
+          .attr("transform", `translate(${config.chartWidth}, 0)`)
           .transition()
           .duration(config.axisTransitionDuration)
           .ease(config.ease)
@@ -239,7 +230,7 @@ export default function Axis (_container) {
       if (Number.isInteger(config.yTicks)) {
         ticks = config.yTicks
       } else {
-        ticks = Math.ceil(cache.chartHeight / config.tickSpacing)
+        ticks = Math.ceil(config.chartHeight / config.tickSpacing)
       }
 
       if (scales.yScale) {
@@ -253,10 +244,9 @@ export default function Axis (_container) {
           .merge(cache.horizontalGridLines)
           .transition()
           .duration(config.axisTransitionDuration)
-          .attr("x2", cache.markPanelWidth)
+          .attr("x2", config.markPanelWidth)
           .attr("y1", scales.yScale)
           .attr("y2", scales.yScale)
-          console.log(cache.markPanelWidth)
 
         cache.horizontalGridLines.exit().remove()
       } else if (cache.horizontalGridLines) {
@@ -276,7 +266,7 @@ export default function Axis (_container) {
         .transition()
         .duration(config.axisTransitionDuration)
         .attr("y1", 0)
-        .attr("y2", cache.chartHeight)
+        .attr("y2", config.chartHeight)
         .attr("x1", scales.xScale)
         .attr("x2", scales.xScale)
 

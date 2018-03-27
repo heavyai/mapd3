@@ -1,5 +1,4 @@
-import * as d3 from "./helpers/d3-service"
-import {override, getSizes} from "./helpers/common"
+import {override} from "./helpers/common"
 
 /**
  * ClipPath: component that creates an SVG defs element with a rectangular clipping path
@@ -16,31 +15,28 @@ export default function ClipPath (_container) {
     },
     width: 800,
     height: 500,
-    chartId : null,
+    chartId: null,
+
+    markPanelWidth: null,
+    chartHeight: null
   }
 
   const cache = {
     container: _container,
-    clipPath: null,
-    chartWidth: null,
-    chartHeight: null,
+    clipPath: null
   }
 
   function build () {
     if (!cache.clipPath) {
-      cache.clipPath = cache.container.append('defs')
-        .append('clipPath')
-        .attr('id', `mark-clip-${config.chartId}`)
-        .append('rect')
+      cache.clipPath = cache.container.append("defs")
+        .append("clipPath")
+        .attr("id", `mark-clip-${config.chartId}`)
+        .append("rect")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-
     cache.clipPath
-      .attr('width', cache.chartWidth)
-      .attr('height', cache.chartHeight)
+      .attr("width", config.markPanelWidth)
+      .attr("height", config.chartHeight)
   }
 
   function setConfig (_config) {
@@ -48,7 +44,7 @@ export default function ClipPath (_container) {
     return this
   }
 
-  function render() {
+  function render () {
     build()
   }
 

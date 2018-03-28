@@ -105,7 +105,7 @@ export default function Hover (_container) {
         if (leftAxisGroup && leftAxisGroup.indexOf(d[keys.ID]) > -1) {
           return scales.yScale(d[keys.VALUE])
         } else {
-          return scales.y2Scale(d[keys.VALUE])
+          return scales.y2Scale ? scales.y2Scale(d[keys.VALUE]) : scales.yScale(d[keys.VALUE])
         }
       })
       .attr("r", config.dotRadius)

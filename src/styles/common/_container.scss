@@ -3,7 +3,7 @@
   align-items: stretch;
 
   .svg-wrapper {
-    display: inline-block;
+    display: flex;
     overflow-y: hidden;
     overflow-x: scroll;
   }

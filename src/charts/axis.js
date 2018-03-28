@@ -60,7 +60,7 @@ export default function Axis (_container) {
   }
 
   function build () {
-    if (!cache.root) {
+    if (!cache.xAxisRoot) {
       cache.xAxisRoot = cache.container.select("svg.chart > g.chart-group")
         .append("g")
         .classed("axis-group", true)
@@ -71,8 +71,6 @@ export default function Axis (_container) {
       cache.y2AxisRoot = cache.container.select(".y2-axis-container > svg")
       cache.yAxisRoot.select(".axis-group").append("g").attr("class", "axis y")
       cache.y2AxisRoot.select(".axis-group").append("g").attr("class", "axis y2")
-
-      console.log(cache.yAxisRoot.node())
     }
 
     const DOMAIN_LINE_WIDTH = 1

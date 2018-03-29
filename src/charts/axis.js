@@ -48,6 +48,7 @@ export default function Axis (_container) {
 
   const cache = {
     container: _container,
+    root: null,
     xAxisRoot: null,
     yAxisRoot: null,
     y2AxisRoot: null,
@@ -60,9 +61,9 @@ export default function Axis (_container) {
   }
 
   function build () {
-    if (!cache.xAxisRoot) {
-      cache.xAxisRoot = cache.container.select("svg.chart > g.chart-group")
-        .append("g")
+    if (!cache.root) {
+      cache.root = cache.container.select("svg.chart > g.chart-group")
+      cache.xAxisRoot = cache.root.append("g")
         .classed("axis-group", true)
         .style("pointer-events", "none")
       cache.xAxisRoot.append("g").attr("class", "grid-lines-group")

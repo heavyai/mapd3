@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {override, getSizes} from "./helpers/common"
+import {override} from "./helpers/common"
 import {autoFormat, multiFormat, getExtractFormatter} from "./helpers/formatters"
 
 export default function Axis (_container) {

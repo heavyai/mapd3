@@ -162,68 +162,69 @@ export default function Chart (_container) {
 
   let components = {}
   let eventCollector = {}
-  let config = {}
+  let config = null
+  setConfig(inputConfig) // init with config = inputConfig
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
   const dataManager = DataManager()
 
+  const createTemplate = (chartType) => {
+    const chartClassName = _chartType => {
+      switch (chartType) {
+      case "bar":
+      case "stackedBar":
+        return "bar"
+
+      case "line":
+      case "stackedArea":
+        return "line"
+
+      // TO DO: handle bar line combo chartType...
+      case Array.isArray(_chartType):
+        return "combo"
+
+      default:
+        return ""
+      }
+    }
+
+    const className = chartClassName(chartType)
+    return `<div class="mapd3 mapd3-container ${className}">
+        <div class="y-axis-container">
+          <svg>
+            <g class="axis-group"></g>
+          </svg>
+        </div>
+        <div class="svg-wrapper">
+          <svg class="chart ${className}">
+            <g class="chart-group"></g>
+            <g class="panel-group">
+              <rect class="panel-background"></rect>
+            </g>
+            <rect class="masking-rectangle"></rect>
+          </svg>
+        </div>
+        <div class="y2-axis-container">
+          <svg>
+            <g class="axis-group"></g>
+          </svg>
+        </div>
+      </div>`
+  }
+
   function build () {
-    if (!cache.svg) {
-      const chartClassName = chartType => {
-          switch(chartType) {
-            case "bar":
-            case "stackedBar":
-              return "bar"
-
-            case "line":
-            case "stackedArea":
-              return "line"
-
-            // TO DO: handle bar line combo chartType...
-            case Array.isArray(chartType):
-              return "combo"
-
-            default:
-              return ""
-          }
-      }
-
-      const createTemplate = (chartType) => {
-        const className = chartClassName(chartType)
-        return `<div class="mapd3 mapd3-container ${className}">
-          <div class="y-axis-container">
-            <svg>
-              <g class="axis-group"></g>
-            </svg>
-          </div>
-          <div class="svg-wrapper">
-            <svg class="chart ${className}">
-              <g class="chart-group"></g>
-              <g class="panel-group">
-                <rect class="panel-background"></rect>
-              </g>
-              <rect class="masking-rectangle"></rect>
-            </svg>
-          </div>
-          <div class="y2-axis-container">
-            <svg>
-              <g class="axis-group"></g>
-            </svg>
-          </div>
-        </div>`
-      }
-
+    if (!cache.root) {
       const base = d3.select(cache.container)
-          .html(createTemplate(config.chartType))
+        .html(createTemplate(config.chartType))
 
-      cache.container = base.select(".mapd3-container")
-          .style("position", "relative")
+      cache.root = base.select(".mapd3-container")
+        .style("position", "relative")
 
       cache.svgWrapper = base.select(".svg-wrapper")
       cache.svg = base.select("svg.chart")
       cache.headerGroup = base.select(".header-group")
-          .style("position", "absolute")
+        .style("position", "absolute")
       cache.panel = cache.svg.select(".panel-group")
       cache.chart = cache.svg.select(".chart-group")
 
@@ -231,17 +232,17 @@ export default function Chart (_container) {
 
       components = {
         scale: Scale(),
-        axis: Axis(cache.container),
+        axis: Axis(cache.root),
         line: Line(cache.panel),
         bar: Bar(cache.panel),
-        tooltip: Tooltip(cache.container),
-        legend: Legend(cache.container),
+        tooltip: Tooltip(cache.root),
+        legend: Legend(cache.root),
         brush: Brush(cache.panel),
         hover: Hover(cache.panel),
         binning: Binning(cache.headerGroup),
-        domainEditor: DomainEditor(cache.container),
+        domainEditor: DomainEditor(cache.root),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
-        label: Label(cache.container),
+        label: Label(cache.root),
         clipPath: ClipPath(cache.svg)
       }
 
@@ -406,7 +407,7 @@ export default function Chart (_container) {
   }
 
   function getEvents () {
-    if (!cache.svg) {
+    if (!cache.root) {
       render()
     }
     return eventCollector
@@ -435,7 +436,7 @@ export default function Chart (_container) {
   }
 
   function destroy () {
-    cache.svg.on(".", null).remove()
+    cache.root.on(".", null).remove()
   }
 
   return {

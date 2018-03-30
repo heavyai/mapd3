@@ -272,8 +272,8 @@ export default function Chart (_container) {
 
     cache.panel
       .select(".panel-background")
-      .style("flex", `0 0 ${config.markPanelWidth}px`)
-      .style("height", `${cache.chartheight}px`)
+      .style("width", `${config.markPanelWidth}px`)
+      .style("height", `${config.chartHeight}px`)
       .attr("fill", "transparent")
 
     return this

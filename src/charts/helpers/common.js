@@ -86,30 +86,11 @@ export function stringToType (str, type) {
   } else if (type === "number") {
     converted = Number(str)
   }
-  console.log("stringToType", str, type, converted)
   return converted
 }
 
-export function getSizes (config, cache) {
-  const width = config.width === "auto"
-    ? (cache.container && cache.container.clientWidth || 0)
-    : config.width
-  const height = config.height === "auto"
-    ? (cache.container && cache.container.clientHeight || 0)
-    : config.height
-  const chartWidth = Math.max(width - config.margin.left - config.margin.right, 0)
-  const chartHeight = Math.max(height - config.margin.top - config.margin.bottom, 0)
-
-  return {
-    width,
-    height,
-    chartWidth,
-    chartHeight
-  }
-}
-
 export function isNumeric (val) {
-    return Number(parseFloat(val)) === val;
+  return Number(parseFloat(val)) === val
 }
 
 export function extendIsValid (extent) {
@@ -147,4 +128,15 @@ export function descendingComparator (key) {
     }
     return 0
   }
+}
+
+export function clamp (value, clampMinMax) {
+  return Math.min(Math.max(clampMinMax[0], value), clampMinMax[1])
+}
+
+export function hasBars (_chartType) {
+  return _chartType === "bar"
+    || _chartType === "stackedBar"
+    || _chartType === "groupedBar"
+    || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
 }

@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {invertScale, override, getSizes, extendIsValid} from "./helpers/common"
+import {clamp, invertScale, override, extendIsValid} from "./helpers/common"
 
 export default function Brush (_container) {
 
@@ -15,7 +15,10 @@ export default function Brush (_container) {
     keyType: null,
     brushRangeMin: null,
     brushRangeMax: null,
-    brushIsEnabled: true
+    brushIsEnabled: true,
+
+    markPanelWidth: null,
+    chartHeight: null
   }
 
   let scales = {
@@ -27,9 +30,7 @@ export default function Brush (_container) {
     dateRange: [null, null],
     brush: null,
     chartBrush: null,
-    handle: null,
-    chartWidth: null,
-    chartHeight: null
+    handle: null
   }
 
   let data = {
@@ -49,19 +50,15 @@ export default function Brush (_container) {
         .on("brush", handleBrushMove)
         .on("end", handleBrushEnd)
     }
-
-    const {chartWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
   }
 
   function buildBrush () {
-    cache.brush.extent([[0, 0], [cache.chartWidth, cache.chartHeight]])
+    cache.brush.extent([[0, 0], [config.markPanelWidth, config.chartHeight]])
 
     cache.chartBrush = cache.root.call(cache.brush)
 
     cache.chartBrush.selectAll(".brush-rect")
-      .attr("height", cache.chartHeight)
+      .attr("height", config.chartHeight)
 
     moveBrush()
   }
@@ -70,10 +67,6 @@ export default function Brush (_container) {
     const selection = d3.event.selection
     const dataExtent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
     return dataExtent
-  }
-
-  function clamp (value, _dataExtent) {
-    return Math.min(Math.max(_dataExtent[0], value), _dataExtent[1])
   }
 
   function clampBrush (_dataExtent) {

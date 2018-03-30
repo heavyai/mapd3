@@ -1,0 +1,10 @@
+&.mapd3-container{
+  display: flex;
+  align-items: stretch;
+
+  .svg-wrapper {
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: scroll;
+  }
+}

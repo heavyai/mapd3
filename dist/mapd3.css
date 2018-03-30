@@ -7,6 +7,14 @@
 .mapd3 [contenteditable]:hover, .mapd3 .axis-label:focus {
   border: 1px solid #ddd; }
 
+.mapd3.mapd3-container {
+  display: flex;
+  align-items: stretch; }
+  .mapd3.mapd3-container .svg-wrapper {
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: scroll; }
+
 .mapd3 .vertical-grid-line,
 .mapd3 .horizontal-grid-line {
   fill: none;
@@ -21,6 +29,10 @@
   shape-rendering: crispEdges;
   stroke: #D2D6DF;
   stroke-width: 1; }
+
+.mapd3 .axis-group .domain {
+  fill: none;
+  stroke: #c7c7c7; }
 
 .mapd3 .axis-group .axis .tick line {
   fill: none;
@@ -116,10 +128,6 @@
 
 .mapd3 .chart .masking-rectangle {
   fill: #ffffff; }
-
-.mapd3 .chart .x.axis path, .mapd3 .chart .x.axis .domain, .mapd3 .chart .y.axis path, .mapd3 .chart .y.axis .domain, .mapd3 .chart .y2.axis path, .mapd3 .chart .y2.axis .domain {
-  display: block;
-  stroke: #ADB0B6; }
 
 .mapd3 .chart .vertical-grid-line, .mapd3 .chart .horizontal-grid-line {
   stroke-dasharray: none; }

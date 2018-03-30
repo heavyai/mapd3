@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, stringToType, getSizes} from "./helpers/common"
+import {override, stringToType} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function DomainEditor (_container) {
@@ -25,7 +25,10 @@ export default function DomainEditor (_container) {
     y2Lock: false,
     xDomainEditorIsEnabled: true,
     yDomainEditorIsEnabled: true,
-    y2DomainEditorIsEnabled: true
+    y2DomainEditorIsEnabled: true,
+
+    chartWidth: null,
+    chartHeight: null
   }
 
   const cache = {
@@ -42,9 +45,7 @@ export default function DomainEditor (_container) {
     y2LockIcon: null,
     xMinInput: null,
     xMaxInput: null,
-    xLockIcon: null,
-    chartWidth: null,
-    chartHeight: null
+    xLockIcon: null
   }
 
   let scales = {
@@ -267,16 +268,12 @@ export default function DomainEditor (_container) {
       hideXEditor()
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-
     if (config.xDomainEditorIsEnabled) {
       cache.xHitZone.style("display", "block")
       cache.xHitZone
-        .style("width", `${cache.chartWidth + LOCK_SIZE}px`)
+        .style("width", `${config.chartWidth + LOCK_SIZE}px`)
         .style("height", `${HOVER_ZONE_SIZE}px`)
-        .style("top", `${config.margin.top + cache.chartHeight}px`)
+        .style("top", `${config.margin.top + config.chartHeight}px`)
         .style("left", `${config.margin.left}px`)
         .style("display", "block")
 
@@ -303,7 +300,7 @@ export default function DomainEditor (_container) {
       cache.yHitZone.style("display", "block")
       cache.yHitZone
         .style("width", `${HOVER_ZONE_SIZE}px`)
-        .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
+        .style("height", `${config.chartHeight + LOCK_SIZE}px`)
         .style("top", `${config.margin.top - LOCK_SIZE}px`)
         .style("left", `${config.margin.left - HOVER_ZONE_SIZE}px`)
         .style("display", "block")
@@ -314,7 +311,7 @@ export default function DomainEditor (_container) {
         .text(yFormatter(yDomain[1]))
 
       cache.yMinInput
-        .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
+        .style("top", `${config.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
         .style("right", "0px")
         .text(yFormatter(yDomain[0]))
 
@@ -332,9 +329,9 @@ export default function DomainEditor (_container) {
       cache.y2HitZone.style("display", "block")
       cache.y2HitZone
         .style("width", `${HOVER_ZONE_SIZE}px`)
-        .style("height", `${cache.chartHeight + LOCK_SIZE}px`)
+        .style("height", `${config.chartHeight + LOCK_SIZE}px`)
         .style("top", `${config.margin.top - LOCK_SIZE}px`)
-        .style("left", `${config.margin.left + cache.chartWidth}px`)
+        .style("left", `${config.margin.left + config.chartWidth}px`)
 
       cache.y2MaxInput
         .style("top", `${LOCK_SIZE}px`)
@@ -342,7 +339,7 @@ export default function DomainEditor (_container) {
         .text(y2Formatter(y2Domain[1]))
 
       cache.y2MinInput
-        .style("top", `${cache.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
+        .style("top", `${config.chartHeight + LOCK_SIZE - INPUT_HEIGHT}px`)
         .style("left", `${PADDING}px`)
         .text(y2Formatter(y2Domain[0]))
 

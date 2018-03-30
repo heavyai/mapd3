@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {override, getSizes} from "./helpers/common"
+import {override} from "./helpers/common"
 import {autoFormat, multiFormat, getExtractFormatter} from "./helpers/formatters"
 
 export default function Axis (_container) {
@@ -32,7 +32,11 @@ export default function Axis (_container) {
     extractType: null,
     yDomain: "auto",
     y2Domain: "auto",
-    labelsAreRotated: false
+    labelsAreRotated: false,
+
+    chartWidth: null,
+    chartHeight: null,
+    markPanelWidth: null
   }
 
   let scales = {
@@ -44,9 +48,11 @@ export default function Axis (_container) {
 
   const cache = {
     container: _container,
+    root: null,
+    xAxisRoot: null,
+    yAxisRoot: null,
+    y2AxisRoot: null,
     background: null,
-    chartHeight: null,
-    chartWidth: null,
     xAxis: null,
     yAxis: null,
     y2Axis: null,
@@ -56,24 +62,30 @@ export default function Axis (_container) {
 
   function build () {
     if (!cache.root) {
-      cache.root = cache.container.append("g")
-          .classed("axis-group", true)
-          .style("pointer-events", "none")
-
-      cache.root.append("g").attr("class", "grid-lines-group")
-
-      cache.root.append("g").attr("class", "axis x")
-
-      cache.root.append("g").attr("class", "axis y")
-
-      cache.root.append("g").attr("class", "axis y2")
+      cache.root = cache.container.select("svg.chart > g.chart-group")
+      cache.xAxisRoot = cache.root.append("g")
+        .classed("axis-group", true)
+        .style("pointer-events", "none")
+      cache.xAxisRoot.append("g").attr("class", "grid-lines-group")
+      cache.xAxisRoot.append("g").attr("class", "axis x")
+      cache.yAxisRoot = cache.container.select(".y-axis-container > svg")
+      cache.y2AxisRoot = cache.container.select(".y2-axis-container > svg")
+      cache.yAxisRoot.select(".axis-group").append("g").attr("class", "axis y")
+      cache.y2AxisRoot.select(".axis-group").append("g").attr("class", "axis y2")
     }
 
-    const {chartWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
+    const DOMAIN_LINE_WIDTH = 1
+    cache.yAxisRoot
+      .attr("width", config.margin.left)
+      .attr("height", config.chartHeight + config.margin.top + config.margin.bottom)
+      .select(".axis-group")
+      .attr("transform", `translate(${config.margin.left - DOMAIN_LINE_WIDTH}, ${config.margin.top})`)
 
-    cache.root.attr("transform", `translate(${config.margin.left}, ${config.margin.top})`)
+    cache.y2AxisRoot
+      .attr("width", config.margin.left)
+      .attr("height", config.chartHeight + config.margin.top + config.margin.bottom)
+      .select(".axis-group")
+      .attr("transform", `translate(0, ${config.margin.top})`)
   }
 
   function formatXAxis () {
@@ -120,7 +132,7 @@ export default function Axis (_container) {
     }
     if (config.y2AxisFormat === "auto") {
       const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
-      let y2Format = autoFormat(y2Extent, config.numberFormat)
+      const y2Format = autoFormat(y2Extent, config.numberFormat)
       axis.tickFormat(d3.format(y2Format))
     } else if (typeof config.y2AxisFormat === "string") {
       axis.tickFormat(d3.format(config.y2AxisFormat))
@@ -146,7 +158,7 @@ export default function Axis (_container) {
       if (Number.isInteger(config.yTicks)) {
         cache.yAxis.ticks(config.yTicks)
       } else {
-        cache.yAxis.ticks(Math.ceil(cache.chartHeight / config.tickSpacing))
+        cache.yAxis.ticks(Math.ceil(config.chartHeight / config.tickSpacing))
       }
     }
 
@@ -165,7 +177,7 @@ export default function Axis (_container) {
   }
 
   function rotateXLabels () {
-    cache.root.select(".axis.x").selectAll("text")
+    cache.xAxisRoot.select(".axis.x").selectAll("text")
       .attr("y", 0)
       .attr("x", 9)
       .attr("dy", ".35em")
@@ -182,15 +194,15 @@ export default function Axis (_container) {
     if (config.labelsAreRotated) {
       longestLabelApproxWidth = APPROX_FONT_WIDTH
     } else {
-      const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), { length: 0 })
+      const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), {length: 0})
       longestLabelApproxWidth = longestLabel.length * APPROX_FONT_WIDTH
     }
-    return Math.ceil(longestLabelApproxWidth / (cache.chartWidth / labels.length))
+    return Math.ceil(longestLabelApproxWidth / (config.markPanelWidth / labels.length))
   }
 
   function drawAxis () {
-    cache.root.select(".axis.x")
-        .attr("transform", `translate(0, ${cache.chartHeight})`)
+    cache.xAxisRoot.select(".axis.x")
+        .attr("transform", `translate(0, ${config.chartHeight})`)
         .call(cache.xAxis)
 
     if (config.labelsAreRotated) {
@@ -198,24 +210,23 @@ export default function Axis (_container) {
     }
 
     if (scales.yScale) {
-      cache.root.select(".axis.y")
-          .transition()
-          .duration(config.axisTransitionDuration)
-          .ease(config.ease)
-          .call(cache.yAxis)
+      cache.yAxisRoot.select(".axis.y")
+        .transition()
+        .duration(config.axisTransitionDuration)
+        .ease(config.ease)
+        .call(cache.yAxis)
     } else {
-      cache.root.select(".axis.y").selectAll("*").remove()
+      cache.yAxisRoot.selectAll("*").remove()
     }
 
     if (scales.y2Scale) {
-      cache.root.select(".axis.y2")
-          .attr("transform", `translate(${cache.chartWidth}, 0)`)
-          .transition()
-          .duration(config.axisTransitionDuration)
-          .ease(config.ease)
-          .call(cache.y2Axis)
+      cache.y2AxisRoot.select(".axis.y2")
+        .transition()
+        .duration(config.axisTransitionDuration)
+        .ease(config.ease)
+        .call(cache.y2Axis)
     } else {
-      cache.root.select(".axis.y2").selectAll("*").remove()
+      cache.y2AxisRoot.select(".axis.y2").selectAll("*").remove()
     }
 
     return this
@@ -227,11 +238,11 @@ export default function Axis (_container) {
       if (Number.isInteger(config.yTicks)) {
         ticks = config.yTicks
       } else {
-        ticks = Math.ceil(cache.chartHeight / config.tickSpacing)
+        ticks = Math.ceil(config.chartHeight / config.tickSpacing)
       }
 
       if (scales.yScale) {
-        cache.horizontalGridLines = cache.root.select(".grid-lines-group")
+        cache.horizontalGridLines = cache.xAxisRoot.select(".grid-lines-group")
             .selectAll("line.horizontal-grid-line")
             .data(scales.yScale.ticks(ticks))
 
@@ -241,7 +252,7 @@ export default function Axis (_container) {
           .merge(cache.horizontalGridLines)
           .transition()
           .duration(config.axisTransitionDuration)
-          .attr("x2", cache.chartWidth)
+          .attr("x2", config.markPanelWidth)
           .attr("y1", scales.yScale)
           .attr("y2", scales.yScale)
 
@@ -252,7 +263,7 @@ export default function Axis (_container) {
     }
 
     if (config.grid === "vertical" || config.grid === "full") {
-      cache.verticalGridLines = cache.root.select(".grid-lines-group")
+      cache.verticalGridLines = cache.xAxisRoot.select(".grid-lines-group")
           .selectAll("line.vertical-grid-line")
           .data(cache.xAxis.tickValues())
 
@@ -263,7 +274,7 @@ export default function Axis (_container) {
         .transition()
         .duration(config.axisTransitionDuration)
         .attr("y1", 0)
-        .attr("y2", cache.chartHeight)
+        .attr("y2", config.chartHeight)
         .attr("x1", scales.xScale)
         .attr("x2", scales.xScale)
 
@@ -291,9 +302,17 @@ export default function Axis (_container) {
   }
 
   function destroy () {
-    if (cache.root) {
-      cache.root.remove()
-      cache.root = null
+    if (cache.xAxisRoot) {
+      cache.xAxisRoot.remove()
+      cache.xAxisRoot = null
+    }
+    if (cache.yAxisRoot) {
+      cache.yAxisRoot.remove()
+      cache.yAxisRoot = null
+    }
+    if (cache.y2AxisRoot) {
+      cache.y2AxisRoot.remove()
+      cache.y2AxisRoot = null
     }
   }
 

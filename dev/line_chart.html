@@ -24,28 +24,29 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script> -->
 <script src="../dist/mapd3.js"></script>
 <script>
+/* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "string" 
+const keyType = "string"
 const dataConfig = {
   keyType,
   range: [0, 100],
-  pointCount: 20,
-  groupCount: 1,
+  pointCount: 120,
+  groupCount: 2,
   lineCount: 3,
   stringMinMaxLength: [5, 10]
 }
 
 const dataManager = mapd3.DataManager()
-    .setConfig(dataConfig)
+  .setConfig(dataConfig)
 const data = dataManager.generateTestDataset()
 // data.series.forEach((d, i) => {
 //   d.values = d.values.slice((i*0.5)*100, (i+1)*100)
 // })
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
-// const chartType = data.series.map((d, i) => ["line", "bar"][i % 2]) 
-const chartType = "stackedBar"  
+const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
+// const chartType = "stackedBar"
 
 console.log("data", data.series)
 
@@ -67,10 +68,11 @@ const chart1 = mapd3.Chart(chartNode1)
       top: 32,
       right: 70,
       bottom: 64,
-      left: 70
+      left: 80
     },
     keyType, // time, number, string
     chartType, // line, area, stackedArea, bar, stackedBar
+    useScrolling: true,
 
     // intro animation
     isAnimated: false,
@@ -145,7 +147,7 @@ const chart1 = mapd3.Chart(chartNode1)
     yLabel: "Y Axis Label",
     y2Label: dataConfig.groupCount > 1 ? "Y2 Axis Label" : "",
 
-    // bar 
+    // bar
     barSpacingPercent: 10
   })
   .setData(data)
@@ -168,7 +170,7 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
+// setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
 </script>
 </body>
 </html>

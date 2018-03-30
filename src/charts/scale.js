@@ -1,31 +1,27 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX, MAX_MARK_WIDTH} from "./helpers/constants"
-import {getUnique, override, getSizes} from "./helpers/common"
+import {
+  keys,
+  LEFT_AXIS_GROUP_INDEX,
+  RIGHT_AXIS_GROUP_INDEX
+} from "./helpers/constants"
+import {override} from "./helpers/common"
 
 export default function Scale () {
 
   let config = {
-    margin: {
-      top: 60,
-      right: 30,
-      bottom: 40,
-      left: 70
-    },
-    height: null,
-    width: null,
     keyType: null,
     chartType: null,
     colorSchema: null,
     defaultColor: null,
     xDomain: "auto",
     yDomain: "auto",
-    y2Domain: "auto"
-  }
+    y2Domain: "auto",
 
-  const cache = {
     chartWidth: null,
-    chartHeight: null
+    chartHeight: null,
+    markPanelWidth: null,
+    markWidth: null
   }
 
   let data = {
@@ -40,23 +36,9 @@ export default function Scale () {
   const getKey = (d) => d[keys.KEY]
   const getValue = (d) => d[keys.VALUE]
 
-  function hasBars (_chartType) {
-    return _chartType === "bar"
-      || _chartType === "stackedBar"
-      || _chartType === "groupedBar"
-      || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
-  }
-
-  function getScaleSizes () {
-    const {chartWidth, chartHeight} = getSizes(config, cache)
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
-  }
-
   function buildXScale (_allKeys) {
     let xScale = null
     let domain = null
-    const markW = Math.min(hasBars(config.chartType) ? cache.chartWidth / _allKeys.length : 0, MAX_MARK_WIDTH)
 
     if (config.keyType === "time") {
       xScale = d3.scaleTime()
@@ -80,7 +62,7 @@ export default function Scale () {
     }
 
     xScale.domain(domain)
-      .range([markW / 2, cache.chartWidth - markW / 2])
+      .range([config.markWidth / 2, config.markPanelWidth - config.markWidth / 2])
 
     return xScale
   }
@@ -88,7 +70,7 @@ export default function Scale () {
   function buildYScale (_extent) {
     const yScale = d3.scaleLinear()
         .domain(_extent)
-        .rangeRound([cache.chartHeight, 0])
+        .rangeRound([config.chartHeight, 0])
 
     return yScale
   }
@@ -226,7 +208,6 @@ export default function Scale () {
   }
 
   function getScales () {
-    getScaleSizes()
     if (config.chartType === "stackedBar"
       || config.chartType === "stackedArea") {
       return getStackedScales()

@@ -7,9 +7,9 @@ import {
   override,
   throttle,
   rebind,
-  getSizes,
   uniqueId
 } from "./helpers/common"
+import {autoConfigure} from "./helpers/auto-config"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -26,9 +26,10 @@ import Label from "./label"
 import DataManager from "./data-manager"
 import ClipPath from "./clip-path"
 
+
 export default function Chart (_container) {
 
-  let config = {
+  let inputConfig = {
     // common
     margin: {
       top: 48,
@@ -43,6 +44,7 @@ export default function Chart (_container) {
     chartType: "line", // line, area, stackedLine, stackedArea
     extractType: null, // isodow, month, quarter, hour, minute
     ease: d3.easeLinear,
+    useScrolling: false,
 
     // intro animation
     isAnimated: false,
@@ -154,57 +156,75 @@ export default function Chart (_container) {
     hasSecondAxis: false,
     stackData: null,
     stack: null,
-    flatDataSorted: null
+    flatDataSorted: null,
+    allKeyTotals: null
   }
 
   let components = {}
   let eventCollector = {}
+  let config = null
+  setConfig(inputConfig) // init with config = inputConfig
 
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
   const dataManager = DataManager()
 
-  function build () {
-    if (!cache.svg) {
-      const chartClassName = chartType => {
-          switch(chartType) {
-            case "bar":
-            case "stackedBar":
-              return "bar"
+  const createTemplate = (chartType) => {
+    const chartClassName = _chartType => {
+      switch (chartType) {
+      case "bar":
+      case "stackedBar":
+        return "bar"
 
-            case "line":
-            case "stackedArea":
-              return "line"
+      case "line":
+      case "stackedArea":
+        return "line"
 
-            // TO DO: handle bar line combo chartType...
-            case Array.isArray(chartType):
-              return "combo"
+      // TO DO: handle bar line combo chartType...
+      case Array.isArray(_chartType):
+        return "combo"
 
-            default:
-              return ""
-          }
+      default:
+        return ""
       }
+    }
 
-      const template = (chartType) => `<div class="mapd3 mapd3-container">
-          <div class="header-group"></div>
-          <svg class="chart ${chartClassName(chartType)}">
+    const className = chartClassName(chartType)
+    return `<div class="mapd3 mapd3-container ${className}">
+        <div class="y-axis-container">
+          <svg>
+            <g class="axis-group"></g>
+          </svg>
+        </div>
+        <div class="svg-wrapper">
+          <svg class="chart ${className}">
             <g class="chart-group"></g>
             <g class="panel-group">
               <rect class="panel-background"></rect>
             </g>
             <rect class="masking-rectangle"></rect>
           </svg>
-        </div>`
+        </div>
+        <div class="y2-axis-container">
+          <svg>
+            <g class="axis-group"></g>
+          </svg>
+        </div>
+      </div>`
+  }
 
+  function build () {
+    if (!cache.root) {
       const base = d3.select(cache.container)
-          .html(template(config.chartType))
+        .html(createTemplate(config.chartType))
 
-      cache.container = base.select(".mapd3-container")
-          .style("position", "relative")
+      cache.root = base.select(".mapd3-container")
+        .style("position", "relative")
 
-      cache.svg = base.select("svg")
+      cache.svgWrapper = base.select(".svg-wrapper")
+      cache.svg = base.select("svg.chart")
       cache.headerGroup = base.select(".header-group")
-          .style("position", "absolute")
+        .style("position", "absolute")
       cache.panel = cache.svg.select(".panel-group")
       cache.chart = cache.svg.select(".chart-group")
 
@@ -212,17 +232,17 @@ export default function Chart (_container) {
 
       components = {
         scale: Scale(),
-        axis: Axis(cache.chart),
+        axis: Axis(cache.root),
         line: Line(cache.panel),
         bar: Bar(cache.panel),
-        tooltip: Tooltip(cache.container),
-        legend: Legend(cache.container),
+        tooltip: Tooltip(cache.root),
+        legend: Legend(cache.root),
         brush: Brush(cache.panel),
         hover: Hover(cache.panel),
         binning: Binning(cache.headerGroup),
-        domainEditor: DomainEditor(cache.container),
+        domainEditor: DomainEditor(cache.root),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
-        label: Label(cache.container),
+        label: Label(cache.root),
         clipPath: ClipPath(cache.svg)
       }
 
@@ -237,27 +257,24 @@ export default function Chart (_container) {
       }
     }
 
-    const {width, height, chartWidth, chartHeight} = getSizes(config, cache)
-    cache.width = width
-    cache.height = height
-    cache.chartWidth = chartWidth
-    cache.chartHeight = chartHeight
+    cache.svgWrapper
+      .style("flex", `0 0 ${config.chartWidth}px`)
+      .style("height", `${config.height}px`)
 
     cache.svg
-      .attr("width", cache.width)
-      .attr("height", cache.height)
+      .style("flex", `0 0 ${config.markPanelWidth}px`)
+      .style("height", `${config.chartHeight + config.margin.bottom}`)
+      .attr("transform", `translate(0,${config.margin.top})`)
 
     cache.headerGroup
-      .style("width", `${cache.chartWidth}px`)
+      .style("flex", `0 0 ${config.chartWidth}px`)
       .style("left", `${config.margin.left}px`)
 
     cache.panel
-      .attr("transform", `translate(${config.margin.left},${config.margin.top})`)
       .select(".panel-background")
-      .attr("width", cache.chartWidth)
-      .attr("height", cache.chartHeight)
+      .style("width", `${config.markPanelWidth}px`)
+      .style("height", `${config.chartHeight}px`)
       .attr("fill", "transparent")
-
 
     return this
   }
@@ -267,6 +284,10 @@ export default function Chart (_container) {
       .setConfig(config)
       .setData(dataObject)
       .getScales()
+
+    components.clipPath
+      .setConfig(config)
+      .render()
 
     components.axis
       .setConfig(config)
@@ -325,10 +346,6 @@ export default function Chart (_container) {
       .setConfig(config)
       .render()
 
-    components.clipPath
-      .setConfig(config)
-      .render()
-
     triggerIntroAnimation()
     return this
   }
@@ -337,6 +354,9 @@ export default function Chart (_container) {
     dataObject.data = cloneData(_data[keys.SERIES])
     const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
     Object.assign(dataObject, cleanedData)
+
+    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
+    config = Object.assign({}, inputConfig, autoConfig)
 
     render()
     return this
@@ -354,7 +374,7 @@ export default function Chart (_container) {
         .duration(config.animationDuration)
         .ease(config.ease)
         .attr("width", 0)
-        .attr("x", cache.width - config.margin.right)
+        .attr("x", config.width - config.margin.right)
         .on("end", () => cache.maskingRectangle.remove())
     }
   }
@@ -374,19 +394,20 @@ export default function Chart (_container) {
       })
       .on("mousemove.dispatch", () => {
         const [mouseX, mouseY] = d3.mouse(cache.panel.node())
+        const [panelMouseX] = d3.mouse(cache.svgWrapper.node())
         if (!dataObject.data) { return }
         const xPosition = mouseX
         const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
 
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
-          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY)
+          throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY, panelMouseX)
         }
       })
   }
 
   function getEvents () {
-    if (!cache.svg) {
+    if (!cache.root) {
       render()
     }
     return eventCollector
@@ -398,7 +419,10 @@ export default function Chart (_container) {
   }
 
   function setConfig (_config) {
-    config = override(config, _config)
+    inputConfig = override(inputConfig, _config)
+
+    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
+    config = Object.assign({}, inputConfig, autoConfig)
     return this
   }
 
@@ -412,7 +436,7 @@ export default function Chart (_container) {
   }
 
   function destroy () {
-    cache.svg.on(".", null).remove()
+    cache.root.on(".", null).remove()
   }
 
   return {

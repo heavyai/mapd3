@@ -5,13 +5,6 @@
     .masking-rectangle {
         fill: $white;
     }
-
-    .x.axis, .y.axis, .y2.axis {
-        path, .domain {
-            display: block;
-            stroke: #ADB0B6;
-        }
-    }
     .vertical-grid-line, .horizontal-grid-line {
         stroke-dasharray: none;
     }

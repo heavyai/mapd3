@@ -40,18 +40,18 @@ export default function Line (_container) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container.append("g")
-          .classed("mark-group", true)
+        .classed("mark-group", true)
     }
   }
 
   function drawLines () {
     const seriesLine = d3.line()
-        .x((d) => scales.xScale(d[keys.KEY]))
-        .y((d) => scales.yScale(d[keys.VALUE]))
+      .x((d) => scales.xScale(d[keys.KEY]))
+      .y((d) => scales.yScale(d[keys.VALUE]))
 
     const seriesLine2 = d3.line()
-        .x((d) => scales.xScale(d[keys.KEY]))
-        .y((d) => scales.y2Scale(d[keys.VALUE]))
+      .x((d) => scales.xScale(d[keys.KEY]))
+      .y((d) => scales.y2Scale(d[keys.VALUE]))
 
     if (Array.isArray(config.xDomain)) {
       seriesLine.defined((d) => d[keys.KEY] >= config.xDomain[0] && d[keys.KEY] <= config.xDomain[1])
@@ -63,13 +63,13 @@ export default function Line (_container) {
       lineData = lineData.filter((d, i) => config.chartType[i] === "line")
     }
     const lines = cache.root.selectAll(".mark")
-        .data(lineData)
+      .data(lineData)
 
     lines.enter()
       .append("path")
       .merge(lines)
       .attr("class", "mark line")
-      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
+      .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .classed("y2-line", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -90,24 +90,24 @@ export default function Line (_container) {
 
   function drawAreas () {
     const seriesArea = d3.area()
-        .x((d) => scales.xScale(d[keys.KEY]))
-        .y0((d) => scales.yScale(d[keys.VALUE]))
-        .y1(() => config.chartHeight)
+      .x((d) => scales.xScale(d[keys.KEY]))
+      .y0((d) => scales.yScale(d[keys.VALUE]))
+      .y1(() => config.chartHeight)
 
     const seriesArea2 = d3.area()
-        .x((d) => scales.xScale(d[keys.KEY]))
-        .y0((d) => scales.y2Scale(d[keys.VALUE]))
-        .y1(() => config.chartHeight)
-        .curve(d3.curveCatmullRom)
+      .x((d) => scales.xScale(d[keys.KEY]))
+      .y0((d) => scales.y2Scale(d[keys.VALUE]))
+      .y1(() => config.chartHeight)
+      .curve(d3.curveCatmullRom)
 
     const areas = cache.root.selectAll(".mark")
-        .data(data.dataBySeries)
+      .data(data.dataBySeries)
 
     areas.enter()
       .append("path")
       .merge(areas)
       .attr("class", "mark area")
-      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
+      .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .classed("y2-area", (d) => d[keys.GROUP] > 0)
       .attr("d", (d) => {
         if (d[keys.GROUP] === 0) {
@@ -124,18 +124,18 @@ export default function Line (_container) {
 
   function drawStackedAreas () {
     const seriesLine = d3.area()
-        .x((d) => scales.xScale(d.data[keys.KEY]))
-        .y0((d) => scales.yScale(d[0]))
-        .y1((d) => scales.yScale(d[1]))
+      .x((d) => scales.xScale(d.data[keys.KEY]))
+      .y0((d) => scales.yScale(d[0]))
+      .y1((d) => scales.yScale(d[1]))
 
     const areas = cache.root.selectAll(".mark")
-        .data(data.stack(data.stackData))
+      .data(data.stack(data.stackData))
 
     areas.enter()
       .append("path")
       .merge(areas)
       .attr("class", "mark stacked-area")
-      .attr('clip-path', `url(#mark-clip-${config.chartId})`)
+      .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .attr("d", seriesLine)
       .style("stroke", "none")
       .style("fill", (d) => scales.colorScale(d.key))

@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys, LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
-import {override, getSizes} from "./helpers/common"
+import {keys, LEFT_AXIS_GROUP_INDEX} from "./helpers/constants"
+import {override} from "./helpers/common"
 
 export default function Hover (_container) {
 
@@ -52,8 +52,8 @@ export default function Hover (_container) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container.append("g")
-          .classed("hover-group", true)
-          .style("pointer-events", "none")
+        .classed("hover-group", true)
+        .style("pointer-events", "none")
     }
   }
 
@@ -94,7 +94,7 @@ export default function Hover (_container) {
 
   function drawHighlightDataPoints (_dotsData) {
     const dots = cache.root.selectAll(".dot")
-        .data(_dotsData)
+      .data(_dotsData)
 
     dots.enter()
       .append("circle")
@@ -134,7 +134,7 @@ export default function Hover (_container) {
 
   function drawVerticalMarker () {
     const verticalMarkerLine = cache.root.selectAll("line")
-        .data([0])
+      .data([0])
 
     verticalMarkerLine.enter()
       .append("line")

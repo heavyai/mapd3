@@ -119,7 +119,7 @@ export default function Axis (_container) {
     }
     if (config.yAxisFormat === "auto") {
       const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-      let yFormat = autoFormat(yExtent, config.numberFormat)
+      const yFormat = autoFormat(yExtent, config.numberFormat)
       axis.tickFormat(d3.format(yFormat))
     } else if (typeof config.yAxisFormat === "string") {
       axis.tickFormat(d3.format(config.yAxisFormat))
@@ -141,17 +141,17 @@ export default function Axis (_container) {
 
   function buildAxis () {
     cache.xAxis = d3.axisBottom(scales.xScale)
-        .tickSize(config.tickSizes, 0)
-        .tickPadding(config.tickPadding)
-        .tickSizeOuter(0)
+      .tickSize(config.tickSizes, 0)
+      .tickPadding(config.tickPadding)
+      .tickSizeOuter(0)
 
     formatXAxis()
 
     if (scales.yScale) {
       cache.yAxis = d3.axisLeft(scales.yScale)
-          .tickSize([config.tickSizes])
-          .tickPadding(config.tickPadding)
-          .tickSizeOuter(0)
+        .tickSize([config.tickSizes])
+        .tickPadding(config.tickPadding)
+        .tickSizeOuter(0)
 
       formatYAxis(cache.yAxis)
 
@@ -164,9 +164,9 @@ export default function Axis (_container) {
 
     if (scales.hasSecondAxis) {
       cache.y2Axis = d3.axisRight(scales.y2Scale)
-          .tickSize([config.tickSizes])
-          .tickPadding(config.tickPadding)
-          .tickSizeOuter(0)
+        .tickSize([config.tickSizes])
+        .tickPadding(config.tickPadding)
+        .tickSizeOuter(0)
 
       formatY2Axis(cache.y2Axis)
 
@@ -202,8 +202,8 @@ export default function Axis (_container) {
 
   function drawAxis () {
     cache.xAxisRoot.select(".axis.x")
-        .attr("transform", `translate(0, ${config.chartHeight})`)
-        .call(cache.xAxis)
+      .attr("transform", `translate(0, ${config.chartHeight})`)
+      .call(cache.xAxis)
 
     if (config.labelsAreRotated) {
       rotateXLabels()
@@ -243,8 +243,8 @@ export default function Axis (_container) {
 
       if (scales.yScale) {
         cache.horizontalGridLines = cache.xAxisRoot.select(".grid-lines-group")
-            .selectAll("line.horizontal-grid-line")
-            .data(scales.yScale.ticks(ticks))
+          .selectAll("line.horizontal-grid-line")
+          .data(scales.yScale.ticks(ticks))
 
         cache.horizontalGridLines.enter()
           .append("line")
@@ -264,8 +264,8 @@ export default function Axis (_container) {
 
     if (config.grid === "vertical" || config.grid === "full") {
       cache.verticalGridLines = cache.xAxisRoot.select(".grid-lines-group")
-          .selectAll("line.vertical-grid-line")
-          .data(cache.xAxis.tickValues())
+        .selectAll("line.vertical-grid-line")
+        .data(cache.xAxis.tickValues())
 
       cache.verticalGridLines.enter()
         .append("line")

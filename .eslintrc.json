@@ -112,7 +112,7 @@
     "no-lone-blocks": 2, // unless in es6, these are just useless clutter.
     "no-lonely-if": 2, // extra-verbose and unusual.
     "no-loop-func": 2, // functions in loops are difficult to reason about.
-    "no-magic-numbers": [2, {"enforceConst": true, "ignore": [0,1,2]}], // what the number represents gets lost.
+    "no-magic-numbers": 0, // what the number represents gets lost.
     "no-mixed-requires": 1, // group requires and seperate from other init for clearer code.
     "no-mixed-spaces-and-tabs": 2, // just spaces for consistency.
     "no-multi-spaces": 2, // these are almost always typos.

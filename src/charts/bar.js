@@ -49,7 +49,7 @@ export default function Bar (_container) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container.append("g")
-          .classed("mark-group", true)
+        .classed("mark-group", true)
     }
   }
 
@@ -69,7 +69,7 @@ export default function Bar (_container) {
     const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
 
     const barLayer = cache.root.selectAll(".bar-layer")
-        .data(barData)
+      .data(barData)
 
     const barLayerUpdate = barLayer.enter()
       .append("g")
@@ -79,16 +79,16 @@ export default function Bar (_container) {
     barLayer.exit().remove()
 
     const bars = barLayerUpdate.selectAll(".mark")
-        .data((d, i) => {
-          const datum = d.values.map(dB => {
-              const dBClone = Object.assign({}, dB)
-              dBClone.id = d[keys.ID]
-              dBClone.group = d[keys.GROUP]
-              dBClone.index = i
-              return dBClone
-            })
-          return datum
+      .data((d, i) => {
+        const datum = d.values.map(dB => {
+          const dBClone = Object.assign({}, dB)
+          dBClone.id = d[keys.ID]
+          dBClone.group = d[keys.GROUP]
+          dBClone.index = i
+          return dBClone
         })
+        return datum
+      })
 
     bars.enter()
       .append("rect")
@@ -135,7 +135,7 @@ export default function Bar (_container) {
     const gutterW = config.markWidth / 100 * config.barSpacingPercent
 
     const stackedBarGroups = cache.root.selectAll(".bar-group")
-        .data(stack)
+      .data(stack)
 
     const stackedUpdate = stackedBarGroups.enter()
       .append("g")
@@ -147,7 +147,7 @@ export default function Bar (_container) {
     stackedBarGroups.exit().remove()
 
     const stackedBars = stackedUpdate.selectAll(".mark")
-        .data((d) => d)
+      .data((d) => d)
 
     stackedBars.enter()
       .append("rect")

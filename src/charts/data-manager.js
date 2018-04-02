@@ -153,21 +153,21 @@ export default function DataManager () {
 
     // stack data
     const stackData = dataByKey
-        .map((d) => {
-          const points = {
-            key: d[keys.KEY]
-          }
-          d.series.forEach((dB) => {
-            points[dB[keys.ID]] = dB[keys.VALUE]
-          })
-          return points
+      .map((d) => {
+        const points = {
+          key: d[keys.KEY]
+        }
+        d.series.forEach((dB) => {
+          points[dB[keys.ID]] = dB[keys.VALUE]
         })
+        return points
+      })
 
     // d3 stack
     const stack = d3.stack()
-        .keys(dataBySeries.map(getID))
-        .order(d3.stackOrderNone)
-        .offset(d3.stackOffsetNone)
+      .keys(dataBySeries.map(getID))
+      .order(d3.stackOrderNone)
+      .offset(d3.stackOffsetNone)
 
     // get stack totals
     const allKeyTotals = dataByKey.map(d => ({

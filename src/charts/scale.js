@@ -61,8 +61,9 @@ export default function Scale () {
       domain = config.xDomain
     }
 
+    const markWidthOffset = config.markWidth ? config.markWidth / 2 : 0
     xScale.domain(domain)
-      .range([config.markWidth / 2, config.markPanelWidth - config.markWidth / 2])
+      .range([markWidthOffset, config.markPanelWidth - markWidthOffset])
 
     return xScale
   }

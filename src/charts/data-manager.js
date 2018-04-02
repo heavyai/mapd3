@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {comparators, keys} from "./helpers/constants"
-import {ascendingComparator, descendingComparator, invertScale, sortData, cloneData, getUnique} from "./helpers/common"
+import {ascendingComparator, descendingComparator, clamp, invertScale, sortData, cloneData, getUnique} from "./helpers/common"
 
 
 export default function DataManager () {
@@ -34,16 +34,13 @@ export default function DataManager () {
     return [...Array(stringLength)].map(() => String.fromCharCode(Math.round(Math.random() * 25) + 97)).join("")
   }
 
-  function generateSeries (_dataKeys, _range, _allowNegative) {
+  function generateSeries (_dataKeys, _range) {
     let value = d3.randomUniform(..._range)()
     const variabilityDivider = 10
     const randomWalkStepSize = (_range[1] - _range[0]) / variabilityDivider
     const rnd = d3.randomNormal(0, 1)
     return _dataKeys.map((d) => {
-      value = value + rnd() * randomWalkStepSize
-      if (!_allowNegative && value < randomWalkStepSize) {
-        value = value + randomWalkStepSize
-      }
+      value = clamp(value + rnd() * randomWalkStepSize, _range)
       return {
         value,
         key: config.keyType === "time" ? d.toISOString() : d

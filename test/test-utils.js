@@ -1,3 +1,5 @@
+import DataManager from "../src/charts/data-manager"
+
 export const baseConfig = {
   // common
   margin: {
@@ -94,4 +96,23 @@ export const baseConfig = {
 
   // bar
   barSpacingPercent: 10
+}
+
+export function generateComponentData (_config) {
+  const baseDataConfig = {
+    keyType: "time",
+    range: [0, 100],
+    pointCount: 200,
+    groupCount: 2,
+    lineCount: 2
+  }
+
+  const config = Object.assign({}, baseDataConfig, _config)
+
+  const dataManager = DataManager()
+    .setConfig(config)
+  const inputData = dataManager.generateTestDataset()
+  const cleanData = dataManager.cleanData(inputData, config.keyType)
+
+  return cleanData
 }

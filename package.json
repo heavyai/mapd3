@@ -18,7 +18,7 @@
     "prod": "webpack --env.prod --watch",
     "dev": "webpack --env.dev --watch",
     "clean": "yarn cache clean && rm -rf node_modules",
-    "test": "mocha-webpack test/**/*.spec.js dist/*{css,js} --require test/setup.js --webpack-config webpack.config-spec.js --watch",
+    "test": "mocha-webpack test/**/*.spec.js --require test/setup.js --webpack-config webpack.config-spec.js --watch",
     "format": "eslint \"src/**/*.js\" --fix"
   },
   "repository": {
@@ -71,7 +71,6 @@
     "sinon": "^4.5.0",
     "text": "requirejs/text",
     "webpack": "^3.10.0",
-    "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^1.16.2",
     "webpack-livereload-plugin": "^0.9.0",
     "webpack-node-externals": "^1.6.0",

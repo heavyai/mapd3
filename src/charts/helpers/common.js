@@ -27,14 +27,14 @@ export function sortData (_data, _keyType) {
 
 export function getUnique (arr, _keyType) {
   const obj = {}
-  arr.forEach(d =>{
+  arr.forEach(d => {
     obj[d] = null
   })
-  const keys = Object.keys(obj)
+  const allKeys = Object.keys(obj)
   if (_keyType === "time") {
-    return keys.map(d => new Date(d))
+    return allKeys.map(d => new Date(d))
   } else {
-    return keys
+    return allKeys
   }
 }
 
@@ -99,7 +99,7 @@ export function extendIsValid (extent) {
     && extent.filter(d => !isNaN(d.valueOf()) // valueOf also catches Invalid Date
       && typeof d !== "undefined"
       && d !== null
-    ).length == 2
+    ).length === 2
 }
 
 export function uniqueId () {

@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, stringToType, getSizes, extendIsValid} from "./helpers/common"
+import {override, stringToType, extendIsValid} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function BrushRangeEditor (_container) {
@@ -29,7 +29,7 @@ export default function BrushRangeEditor (_container) {
   const dispatcher = d3.dispatch("rangeChange")
 
   function handleFocus (selection) {
-    return function() {
+    return () => {
       let text = selection.text()
       const parsed = d3.timeParse(config.dateFormat)(text)
       if (parsed instanceof Date) {
@@ -42,10 +42,10 @@ export default function BrushRangeEditor (_container) {
   function buildSVG () {
     if (!cache.root) {
       cache.root = cache.container
-          .append("div")
-          .attr("class", "brush-range-input-group")
-          .style("top", 0)
-          .style("padding-top", "12px")
+        .append("div")
+        .attr("class", "brush-range-input-group")
+        .style("top", 0)
+        .style("padding-top", "12px")
 
       cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")
@@ -67,7 +67,7 @@ export default function BrushRangeEditor (_container) {
               dispatcher.call(
                 "rangeChange",
                 this,
-                { extent: [rangeMin, cache.rangeMax] }
+                {extent: [rangeMin, cache.rangeMax]}
               )
             } else {
               const text = oldValue instanceof Date
@@ -105,7 +105,7 @@ export default function BrushRangeEditor (_container) {
               dispatcher.call(
                 "rangeChange",
                 this,
-                { extent: [cache.rangeMin, rangeMax] }
+                {extent: [cache.rangeMin, rangeMax]}
               )
             } else {
               const text = oldValue instanceof Date

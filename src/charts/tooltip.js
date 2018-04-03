@@ -52,27 +52,27 @@ export default function Tooltip (_container, isLegend = false) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container.append("div")
-          .attr("class", isLegend ? "legend-group" : "tooltip-group")
-          .style("position", "absolute")
+        .attr("class", isLegend ? "legend-group" : "tooltip-group")
+        .style("position", "absolute")
 
       const panel = cache.root.append("div")
         .attr("class", "tooltip-panel")
 
       cache.tooltipTitleSection = panel.append("div")
-          .attr("class", "tooltip-title-section")
+        .attr("class", "tooltip-title-section")
 
       cache.tooltipTitle = cache.tooltipTitleSection.append("div")
-          .attr("class", "tooltip-title")
+        .attr("class", "tooltip-title")
 
       cache.tooltipBody = panel.append("div")
-          .attr("class", "tooltip-body")
+        .attr("class", "tooltip-body")
 
       if (isLegend) {
         cache.tooltipTitleSection.append("div")
           .attr("class", "tooltip-collapse")
           .html("↗")
 
-        cache.tooltipTitleSection.on("click", function () {
+        cache.tooltipTitleSection.on("click", function click () {
           const isCollapsed = this.classList.toggle("collapsed")
           toggleCollapse(isCollapsed)
         })
@@ -111,12 +111,12 @@ export default function Tooltip (_container, isLegend = false) {
 
   function move () {
     const xPosition = cache.xPosition === "auto"
-        ? config.chartWidth
-        : cache.xPosition
+      ? config.chartWidth
+      : cache.xPosition
 
     const yPosition = cache.yPosition === "auto"
-        ? config.margin.top
-        : cache.yPosition
+      ? config.margin.top
+      : cache.yPosition
 
     cache.root
       .style("top", `${yPosition}px`)
@@ -135,7 +135,7 @@ export default function Tooltip (_container, isLegend = false) {
 
   function drawContent () {
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
-        .data(cache.content)
+      .data(cache.content)
     const tooltipItemsUpdate = tooltipItems.enter().append("div")
       .attr("class", "tooltip-item")
       .merge(tooltipItems)

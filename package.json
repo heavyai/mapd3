@@ -17,7 +17,9 @@
     "build:dev": "webpack --env.dev",
     "prod": "webpack --env.prod --watch",
     "dev": "webpack --env.dev --watch",
-    "clean": "yarn cache clean && rm -rf node_modules"
+    "clean": "yarn cache clean && rm -rf node_modules",
+    "test": "mocha-webpack test/**/*.spec.js --require test/setup.js --webpack-config webpack.config-spec.js --watch",
+    "format": "eslint \"src/**/*.js\" --fix"
   },
   "repository": {
     "type": "git",
@@ -51,21 +53,27 @@
     "babel-eslint": "^7.2.3",
     "babel-loader": "^8.0.0-beta.0",
     "babel-plugin-add-module-exports": "^0.2.1",
+    "chai": "^4.1.2",
     "css-loader": "^0.28.7",
     "eslint": "^4.18.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "ink-docstrap": "^1.3.0",
     "jsdoc": "^3.5.4",
+    "jsdom": "^11.6.2",
     "json-loader": "^0.5.7",
+    "mocha": "^5.0.5",
+    "mocha-webpack": "^1.1.0",
     "node-sass": "^4.7.2",
+    "null-loader": "^0.1.1",
     "requirejs-plugins": "^1.0.2",
     "sanitize-html": "^1.13.0",
     "sass-loader": "^6.0.6",
+    "sinon": "^4.5.0",
     "text": "requirejs/text",
     "webpack": "^3.10.0",
-    "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^1.16.2",
     "webpack-livereload-plugin": "^0.9.0",
+    "webpack-node-externals": "^1.6.0",
     "yargs": "^10.0.3"
   }
 }

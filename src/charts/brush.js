@@ -43,7 +43,7 @@ export default function Brush (_container) {
   function buildSVG () {
     if (!cache.root) {
       cache.root = cache.container.append("g")
-          .classed("brush-group", true)
+        .classed("brush-group", true)
 
       cache.brush = d3.brushX()
         .on("start", handleBrushStart)

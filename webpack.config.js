@@ -1,40 +1,23 @@
 const webpack = require("webpack")
 const path = require("path")
 const LiveReloadPlugin = require("webpack-livereload-plugin")
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
-const chartModulesPath = path.resolve("./src/charts")
-const fixturesPath = path.resolve("./test/fixtures")
-const vendorsPath = path.resolve("./node_modules")
 const bundleIndexPath = path.resolve("./src/bundle.js")
-const scssIndexPath = path.resolve("./src/styles/mapd3.scss")
 
-const defaultJSLoader = {
-  test: /\.js$/,
-  include: /src/,
-  exclude: /(node_modules)/,
-  use: {
-    loader: 'babel-loader',
-    options: {
-      presets: ["@babel/preset-env"],
-      cacheDirectory: false
-    }
-  }
-}
-const config = function (env) {
+const config = (env) => {
   if (env.prod) {
     return {
       entry: {
-        mapd3: bundleIndexPath,
+        mapd3: bundleIndexPath
       },
 
       devtool: "sourcemap",
 
       output: {
         path: path.resolve(__dirname, "dist"),
-        filename: '[name].min.js',
+        filename: "[name].min.js",
         library: "[name]",
-        libraryTarget: "umd",
+        libraryTarget: "umd"
       },
 
       externals: {
@@ -47,7 +30,7 @@ const config = function (env) {
             test: /\.js$/,
             exclude: /(node_modules)/,
             use: {
-              loader: 'babel-loader',
+              loader: "babel-loader",
               options: {
                 presets: ["@babel/preset-env"],
                 cacheDirectory: false
@@ -68,21 +51,19 @@ const config = function (env) {
         new webpack.optimize.UglifyJsPlugin()
       ]
     }
-  }
-
-  if (env.dev) {
+  } else if (env.dev) {
     return {
       entry: {
-        mapd3: bundleIndexPath,
+        mapd3: bundleIndexPath
       },
 
       devtool: "eval",
 
       output: {
         path: path.resolve(__dirname, "dist"),
-        filename: '[name].js',
+        filename: "[name].js",
         library: "[name]",
-        libraryTarget: "umd",
+        libraryTarget: "umd"
       },
 
       externals: {
@@ -95,7 +76,7 @@ const config = function (env) {
             test: /\.js$/,
             exclude: /(node_modules)/,
             use: {
-              loader: 'babel-loader',
+              loader: "babel-loader",
               options: {
                 presets: ["@babel/preset-env"],
                 cacheDirectory: false
@@ -112,10 +93,11 @@ const config = function (env) {
         new ExtractTextPlugin({
           filename: "[name].css",
           allChunks: true
-        }),
-        // new BundleAnalyzerPlugin()
+        })
       ]
     }
+  } else {
+    return
   }
 }
 

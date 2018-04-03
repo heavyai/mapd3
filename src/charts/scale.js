@@ -61,16 +61,17 @@ export default function Scale () {
       domain = config.xDomain
     }
 
+    const markWidthOffset = config.markWidth ? config.markWidth / 2 : 0
     xScale.domain(domain)
-      .range([config.markWidth / 2, config.markPanelWidth - config.markWidth / 2])
+      .range([markWidthOffset, config.markPanelWidth - markWidthOffset])
 
     return xScale
   }
 
   function buildYScale (_extent) {
     const yScale = d3.scaleLinear()
-        .domain(_extent)
-        .rangeRound([config.chartHeight, 0])
+      .domain(_extent)
+      .rangeRound([config.chartHeight, 0])
 
     return yScale
   }
@@ -78,9 +79,9 @@ export default function Scale () {
   function buildColorScale () {
     const ids = data.dataBySeries.map(getID)
     const colorScale = d3.scaleOrdinal()
-        .range(config.colorSchema.map((d) => d.value))
-        .domain(config.colorSchema.map((d, i) => (typeof d.id === "undefined") ? ids[i] : d.id))
-        .unknown(config.defaultColor)
+      .range(config.colorSchema.map((d) => d.value))
+      .domain(config.colorSchema.map((d, i) => ((typeof d.id === "undefined") ? ids[i] : d.id)))
+      .unknown(config.defaultColor)
 
     return colorScale
   }
@@ -88,9 +89,9 @@ export default function Scale () {
   function buildStyleScale () {
     const ids = data.dataBySeries.map(getID)
     const styleScale = d3.scaleOrdinal()
-        .range(config.colorSchema.map((d) => d.style))
-        .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
-        .unknown("solid")
+      .range(config.colorSchema.map((d) => d.style))
+      .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
+      .unknown("solid")
 
     return styleScale
   }
@@ -98,9 +99,9 @@ export default function Scale () {
   function buildChartTypeScale () {
     const ids = data.dataBySeries.map(getID)
     const chartTypeScale = d3.scaleOrdinal()
-        .range(config.colorSchema.map((d) => d.type))
-        .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
-        .unknown("line")
+      .range(config.colorSchema.map((d) => d.type))
+      .domain(config.colorSchema.map((d, i) => d.id || ids[i]))
+      .unknown("line")
 
     return chartTypeScale
   }

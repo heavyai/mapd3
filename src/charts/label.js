@@ -35,11 +35,11 @@ export default function Label (_container) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container
-          .append("div")
-          .attr("class", "label-group")
-          .style("position", "absolute")
-          .style("top", 0)
-          .style("white-space", "nowrap")
+        .append("div")
+        .attr("class", "label-group")
+        .style("position", "absolute")
+        .style("top", 0)
+        .style("white-space", "nowrap")
 
       cache.xAxisLabel = cache.root.append("div")
         .attr("class", "axis-label x")

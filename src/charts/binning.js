@@ -34,23 +34,23 @@ export default function Binning (_container) {
 
     if (!cache.root) {
       cache.root = cache.container.append("div")
-          .attr("class", "binning-group")
-          .style("float", "left")
-          .style("padding-top", "12px")
-          .style("padding-left", "12px")
+        .attr("class", "binning-group")
+        .style("float", "left")
+        .style("padding-top", "12px")
+        .style("padding-left", "12px")
 
       cache.label = cache.root.append("div")
-          .attr("class", "bin-label")
-          .text(config.label)
+        .attr("class", "bin-label")
+        .text(config.label)
 
       cache.autoItem = cache.root.append("div")
-          .attr("class", "item item-auto toggleOnOff")
-          .on("click.select", function click () {
-            const isSelected = this.classList.contains("selected")
-            const toggled = !isSelected
-            dispatcher.call("change", this, {name: config.autoLabel, isSelected: toggled})
-          })
-          .text(config.autoLabel)
+        .attr("class", "item item-auto toggleOnOff")
+        .on("click.select", function click () {
+          const isSelected = this.classList.contains("selected")
+          const toggled = !isSelected
+          dispatcher.call("change", this, {name: config.autoLabel, isSelected: toggled})
+        })
+        .text(config.autoLabel)
     }
 
     setBinningToggles(config.binningToggles)
@@ -66,16 +66,16 @@ export default function Binning (_container) {
 
   function setBinningToggles (_binningToggles) {
     cache.binningItems = cache.root.selectAll(".toggleExclusive")
-          .data(_binningToggles)
+      .data(_binningToggles)
 
     cache.binningItems.enter().append("div")
-        .on("click.select", function click (d) {
-          const isSelected = this.classList.contains("selected")
-          dispatcher.call("change", this, {name: d, isSelected})
-        })
-        .merge(cache.binningItems)
-        .attr("class", (d) => `item item-${d} toggleExclusive`)
-        .text((d) => d)
+      .on("click.select", function click (d) {
+        const isSelected = this.classList.contains("selected")
+        dispatcher.call("change", this, {name: d, isSelected})
+      })
+      .merge(cache.binningItems)
+      .attr("class", (d) => `item item-${d} toggleExclusive`)
+      .text((d) => d)
 
     cache.binningItems.exit().remove()
   }

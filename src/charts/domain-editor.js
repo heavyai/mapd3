@@ -87,32 +87,32 @@ export default function DomainEditor (_container) {
 
     if (!cache.root) {
       cache.root = cache.container
-          .append("div")
-          .attr("class", "domain-input-group")
-          .style("position", "absolute")
-          .style("top", 0)
+        .append("div")
+        .attr("class", "domain-input-group")
+        .style("position", "absolute")
+        .style("top", 0)
 
       // hit zones
       cache.xHitZone = cache.root.append("div")
-          .attr("class", "hit-zone x")
-          .style("pointer-events", "all")
-          .style("position", "absolute")
-          .on("mouseover.dispatch", showXEditor)
-          .on("mouseout.dispatch", hideXEditor)
+        .attr("class", "hit-zone x")
+        .style("pointer-events", "all")
+        .style("position", "absolute")
+        .on("mouseover.dispatch", showXEditor)
+        .on("mouseout.dispatch", hideXEditor)
 
       cache.yHitZone = cache.root.append("div")
-          .attr("class", "hit-zone y")
-          .style("pointer-events", "all")
-          .style("position", "absolute")
-          .on("mouseover.dispatch", showYEditor)
-          .on("mouseout.dispatch", hideYEditor)
+        .attr("class", "hit-zone y")
+        .style("pointer-events", "all")
+        .style("position", "absolute")
+        .on("mouseover.dispatch", showYEditor)
+        .on("mouseout.dispatch", hideYEditor)
 
       cache.y2HitZone = cache.root.append("div")
-          .attr("class", "hit-zone y2")
-          .style("pointer-events", "all")
-          .style("position", "absolute")
-          .on("mouseover.dispatch", showY2Editor)
-          .on("mouseout.dispatch", hideY2Editor)
+        .attr("class", "hit-zone y2")
+        .style("pointer-events", "all")
+        .style("position", "absolute")
+        .on("mouseover.dispatch", showY2Editor)
+        .on("mouseout.dispatch", hideY2Editor)
 
       // y input group
       cache.yMaxInput = cache.yHitZone.append("div")
@@ -278,9 +278,9 @@ export default function DomainEditor (_container) {
         .style("display", "block")
 
       cache.xMinInput
-      .style("top", `${PADDING}px`)
-      .style("left", "0px")
-      .text(xFormatter(xDomain[0]))
+        .style("top", `${PADDING}px`)
+        .style("left", "0px")
+        .text(xFormatter(xDomain[0]))
 
       cache.xMaxInput
         .style("top", `${PADDING}px`)

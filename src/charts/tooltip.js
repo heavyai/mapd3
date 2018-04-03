@@ -4,7 +4,7 @@ import {keys, dashStylesTranslation} from "./helpers/constants"
 import {isNumeric, override} from "./helpers/common"
 import {binTranslation, formatOddDateBin, formatTooltipNumber} from "./helpers/formatters"
 
-export default function Tooltip (_container, isLegend = false) {
+export default function Tooltip (_container, _isLegend = false) {
 
   let config = {
     margin: {
@@ -17,7 +17,6 @@ export default function Tooltip (_container, isLegend = false) {
     height: 45,
 
     dateFormat: "%b %d, %Y",
-    numberFormat: null,
     tooltipIsEnabled: true,
     tooltipTitle: null,
     binningResolution: null,
@@ -25,6 +24,7 @@ export default function Tooltip (_container, isLegend = false) {
     chartType: null,
     colorSchema: ["skyblue"],
     keyType: "time",
+    tooltipFormat: null,
 
     markPanelWidth: null,
     chartWidth: null,
@@ -52,7 +52,7 @@ export default function Tooltip (_container, isLegend = false) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container.append("div")
-        .attr("class", isLegend ? "legend-group" : "tooltip-group")
+        .attr("class", _isLegend ? "legend-group" : "tooltip-group")
         .style("position", "absolute")
 
       const panel = cache.root.append("div")
@@ -67,7 +67,7 @@ export default function Tooltip (_container, isLegend = false) {
       cache.tooltipBody = panel.append("div")
         .attr("class", "tooltip-body")
 
-      if (isLegend) {
+      if (_isLegend) {
         cache.tooltipTitleSection.append("div")
           .attr("class", "tooltip-collapse")
           .html("↗")
@@ -85,7 +85,7 @@ export default function Tooltip (_container, isLegend = false) {
       }
     }
 
-    if (isLegend) {
+    if (_isLegend) {
       cache.root.style("max-height", config.chartHeight)
       if (config.tooltipIsEnabled) {
         show()
@@ -125,12 +125,22 @@ export default function Tooltip (_container, isLegend = false) {
         return `${xPosition + config.margin.left - width}px`
       })
 
-    if (isLegend) {
+    if (_isLegend) {
       // set max-height in case there are too many legend items
       cache.root.style("max-height", `${config.chartHeight}px`)
     }
 
     return this
+  }
+
+  function formatValue (_value, _format, _index) {
+    if (typeof _format === "string" && _format !== "auto") {
+      return d3.format(_format)(_value)
+    } else if (Array.isArray(_format)) {
+      return _format[_index] ? d3.format(_format[_index])(_value) : formatTooltipNumber(_value)
+    } else {
+      return formatTooltipNumber(_value)
+    }
   }
 
   function drawContent () {
@@ -142,7 +152,7 @@ export default function Tooltip (_container, isLegend = false) {
     tooltipItems.exit().remove()
 
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d) => {
+      .data((d, i) => {
         const legendData = [
           {
             key: "tooltip-color",
@@ -151,12 +161,13 @@ export default function Tooltip (_container, isLegend = false) {
           }
         ]
 
-        if (isLegend) {
+        if (_isLegend) {
           legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
         }
 
         if (typeof d[keys.VALUE] !== "undefined") {
-          legendData.push({key: "value", value: d[keys.VALUE]})
+          const formattedValue = formatValue(d[keys.VALUE], config.tooltipFormat, i)
+          legendData.push({key: "value", value: formattedValue})
         }
         return legendData
       })
@@ -193,8 +204,6 @@ export default function Tooltip (_container, isLegend = false) {
               .attr("height", size)
               .style("fill", d.value)
           }
-        } else if (d.key === "value") {
-          selection.html(formatTooltipNumber(d.value))
         } else {
           selection.html(d.value)
         }
@@ -204,8 +213,8 @@ export default function Tooltip (_container, isLegend = false) {
     return this
   }
 
-  function toggleCollapse (isCollapsed) {
-    if (isCollapsed) {
+  function toggleCollapse (_isCollapsed) {
+    if (_isCollapsed) {
       cache.tooltipTitle.html("Legend")
       cache.tooltipBody.style("display", "none")
       move()

@@ -192,6 +192,7 @@ export default function Chart (_container) {
 
     const className = chartClassName(chartType)
     return `<div class="mapd3 mapd3-container ${className}">
+        <div class="header-group"></div>
         <div class="y-axis-container">
           <svg>
             <g class="axis-group"></g>
@@ -268,7 +269,7 @@ export default function Chart (_container) {
       .attr("transform", `translate(0,${config.margin.top})`)
 
     cache.headerGroup
-      .style("flex", `0 0 ${config.chartWidth}px`)
+      .style("width", `${config.chartWidth}px`)
       .style("left", `${config.margin.left}px`)
 
     cache.panel

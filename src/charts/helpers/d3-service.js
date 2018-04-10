@@ -6,6 +6,7 @@ export {
   timeFormat,
   utcFormat,
   format,
+  formatPrefix,
   bisector,
   extent,
   sum,

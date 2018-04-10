@@ -1,3 +1,4 @@
+import * as d3 from "./charts/helpers/d3-service"
 import Chart from "./charts/chart.js"
 import Tooltip from "./charts/tooltip.js"
 import Legend from "./charts/legend.js"
@@ -26,5 +27,6 @@ export {
   Brush,
   Hover,
   Interactors,
-  colors
+  colors,
+  d3
 }

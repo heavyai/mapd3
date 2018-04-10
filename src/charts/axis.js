@@ -123,6 +123,8 @@ export default function Axis (_container) {
       axis.tickFormat(d3.format(yFormat))
     } else if (typeof config.yAxisFormat === "string") {
       axis.tickFormat(d3.format(config.yAxisFormat))
+    } else if (Array.isArray(config.yAxisFormat)) {
+      axis.tickFormat(d3.format(config.yAxisFormat[0]))
     }
   }
 
@@ -136,6 +138,8 @@ export default function Axis (_container) {
       axis.tickFormat(d3.format(y2Format))
     } else if (typeof config.y2AxisFormat === "string") {
       axis.tickFormat(d3.format(config.y2AxisFormat))
+    } else if (Array.isArray(config.y2AxisFormat)) {
+      axis.tickFormat(d3.format(config.y2AxisFormat[0]))
     }
   }
 
@@ -216,7 +220,7 @@ export default function Axis (_container) {
         .ease(config.ease)
         .call(cache.yAxis)
     } else {
-      cache.yAxisRoot.selectAll("*").remove()
+      cache.yAxisRoot.select(".axis.y").selectAll("*").remove()
     }
 
     if (scales.y2Scale) {

@@ -27,12 +27,12 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "string"
+const keyType = "time"
 const dataConfig = {
   keyType,
   range: [0, 100],
-  pointCount: 120,
-  groupCount: 2,
+  pointCount: 20,
+  groupCount: 1,
   lineCount: 3,
   stringMinMaxLength: [5, 10]
 }
@@ -45,8 +45,8 @@ const data = dataManager.generateTestDataset()
 // })
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
-// const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-const chartType = "stackedBar"
+const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
+// const chartType = "stackedBar"
 
 console.log("data", data.series)
 
@@ -97,6 +97,7 @@ const chart1 = mapd3.Chart(chartNode1)
     xAxisFormat: "auto",
     yAxisFormat: "auto",
     y2AxisFormat: ".2f",
+    tooltipFormat: [".4f", ".6f"],
     grid: "horizontal",
     axisTransitionDuration: 0,
     labelsAreRotated: false,
@@ -170,7 +171,7 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
+// setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
 </script>
 </body>
 </html>

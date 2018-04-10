@@ -28,8 +28,7 @@ export function autoConfigure (config, cache, data) {
     newConfig.height = cache.container && cache.container.clientHeight || 0
   }
 
-  const sizes = getSizes(config, data)
-  Object.assign(newConfig, sizes)
+  const sizes = getSizes({...config, ...newConfig}, data)
 
-  return newConfig
+  return {...newConfig, ...sizes}
 }

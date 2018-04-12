@@ -161,8 +161,9 @@ export default function Tooltip (_container, _isLegend = false) {
           }
         ]
 
-        // TO DO: enable this via a config option?
-        legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
+        if (typeof d[keys.LABEL] !== "undefined") {
+          legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
+        }
 
         if (typeof d[keys.VALUE] !== "undefined") {
           const formattedValue = formatValue(d[keys.VALUE], config.tooltipFormat, i)

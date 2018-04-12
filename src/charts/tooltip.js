@@ -102,7 +102,7 @@ export default function Tooltip (_container, _isLegend = false) {
     let avoidanceOffset = OFFSET
     const tooltipY = _mouseY + config.margin.top - tooltipSize.height / 2
 
-    if (_mouseX > (config.markPanelWidth / 2)) {
+    if (_mouseX > (config.chartWidth / 2)) {
       avoidanceOffset = -tooltipSize.width - OFFSET
     }
 
@@ -161,7 +161,7 @@ export default function Tooltip (_container, _isLegend = false) {
           }
         ]
 
-        if (_isLegend) {
+        if (typeof d[keys.LABEL] !== "undefined") {
           legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
         }
 

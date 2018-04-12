@@ -407,15 +407,13 @@ export default function Chart (_container) {
         }
       })
       .on("click.dispatch", () => {
-        const [mouseX, mouseY] = d3.mouse(cache.panel.node())
-        const [panelMouseX] = d3.mouse(cache.svgWrapper.node())
+        const [mouseX] = d3.mouse(cache.panel.node())
         if (!dataObject.data) { return }
         const xPosition = mouseX
         const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
 
         if (dataPoint) {
-          const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
-          throttledDispatch("mouseClickPanel", null, dataPoint, dataPointXPosition, mouseY, panelMouseX)
+          throttledDispatch("mouseClickPanel", null, dataPoint)
         }
       })
   }

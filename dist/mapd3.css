@@ -54,8 +54,8 @@
   background: white;
   opacity: 0.9;
   padding: 0 4px 0 4px;
-  max-width: 160px;
-  overflow: auto; }
+  max-width: 250px;
+  overflow: hidden; }
   .mapd3 .tooltip-group .tooltip-title-section, .mapd3 .legend-group .tooltip-title-section {
     display: table;
     border-bottom: 1px solid #ddd;

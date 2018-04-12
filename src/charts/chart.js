@@ -167,7 +167,7 @@ export default function Chart (_container) {
   setConfig(inputConfig) // init with config = inputConfig
 
   // events
-  const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel")
+  const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel", "mouseClickPanel")
   const dataManager = DataManager()
 
   const createTemplate = (chartType) => {
@@ -404,6 +404,16 @@ export default function Chart (_container) {
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
           throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY, panelMouseX)
+        }
+      })
+      .on("click.dispatch", () => {
+        const [mouseX] = d3.mouse(cache.panel.node())
+        if (!dataObject.data) { return }
+        const xPosition = mouseX
+        const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
+
+        if (dataPoint) {
+          throttledDispatch("mouseClickPanel", null, dataPoint)
         }
       })
   }

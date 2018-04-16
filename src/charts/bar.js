@@ -19,7 +19,8 @@ export default function Bar (_container) {
     markWidth: null,
     chartWidth: null,
     chartHeight: null,
-    markPanelWidth: null
+    markPanelWidth: null,
+    selectedKeys: []
   }
 
   let scales = {
@@ -43,8 +44,21 @@ export default function Bar (_container) {
   }
 
   const MIN_BAR_HEIGHT = 1
+  const DIMMED_COLOR = "silver"
 
-  const getColor = (d) => scales.colorScale(d[keys.ID])
+  const getColor = (d) => {
+    const key = d.data && d.data.key
+
+    if (key && config.selectedKeys.length && Array.isArray(config.selectedKeys)) {
+      if (config.selectedKeys.indexOf(key) > -1) {
+        return scales.colorScale(d.id)
+      } else {
+        return DIMMED_COLOR
+      }
+    } else {
+      return scales.colorScale(d.id)
+    }
+  }
 
   function build () {
     if (!cache.root) {
@@ -141,13 +155,16 @@ export default function Bar (_container) {
       .append("g")
       .attr("class", "bar-group")
       .merge(stackedBarGroups)
-      .attr("fill", (d) => scales.colorScale(d.key))
       .attr("stroke", "white")
 
     stackedBarGroups.exit().remove()
 
     const stackedBars = stackedUpdate.selectAll(".mark")
-      .data((d) => d)
+      .data((d, i, p) => {
+        // add the id to individual datum to use for choosing color
+        const datum = d.map(dB => ({...dB, id: p[i].__data__.key}))
+        return datum
+      })
 
     stackedBars.enter()
       .append("rect")
@@ -158,6 +175,7 @@ export default function Bar (_container) {
       .attr("y", (d) => scales.yScale(d[1]))
       .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
       .attr("width", config.markWidth - gutterW)
+      .attr("fill", getColor)
 
     stackedBars.exit().remove()
   }

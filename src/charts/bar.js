@@ -49,7 +49,7 @@ export default function Bar (_container) {
   const getColor = (d) => {
     const key = d.data && d.data.key
 
-    if (key && config.selectedKeys.length && Array.isArray(config.selectedKeys)) {
+    if (key && Array.isArray(config.selectedKeys) && config.selectedKeys.length) {
       if (config.selectedKeys.indexOf(key) > -1) {
         return scales.colorScale(d.id)
       } else {

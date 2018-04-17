@@ -127,7 +127,8 @@ export default function Chart (_container) {
     y2Label: "",
 
     // bar
-    barSpacingPercent: 10
+    barSpacingPercent: 10,
+    selectedKeys: []
   }
 
   let scales = {

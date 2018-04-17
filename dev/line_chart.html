@@ -27,7 +27,7 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "time"
+const keyType = "string"
 const dataConfig = {
   keyType,
   range: [0, 100],
@@ -45,8 +45,8 @@ const data = dataManager.generateTestDataset()
 // })
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
-const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-// const chartType = "stackedBar"
+// const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
+const chartType = "stackedBar"
 
 console.log("data", data.series)
 
@@ -149,9 +149,11 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Label: dataConfig.groupCount > 1 ? "Y2 Axis Label" : "",
 
     // bar
-    barSpacingPercent: 10
+    barSpacingPercent: 10,
+    selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
   })
   .setData(data)
+
 
 chart1.getEvents()
 //   .onBrush("brushStart", (d) => console.log(d))

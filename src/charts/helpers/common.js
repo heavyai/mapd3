@@ -89,6 +89,11 @@ export function stringToType (str, type) {
   return converted
 }
 
+export function isNumberString (val) {
+  // eslint-disable-next-line eqeqeq
+  return Number(parseFloat(val)) == val
+}
+
 export function isNumeric (val) {
   return Number(parseFloat(val)) === val
 }

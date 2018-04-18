@@ -89,7 +89,9 @@ export default function Axis (_container) {
   }
 
   function formatXAxis () {
-    if (config.keyType === "time") {
+    if (typeof config.xAxisFormat === "function") {
+      cache.xAxis.tickFormat(config.xAxisFormat)
+    } else if (config.keyType === "time") {
       if (config.xAxisFormat && config.xAxisFormat !== "auto") {
         const formatter = d3.utcFormat(config.xAxisFormat)
         cache.xAxis.tickFormat(formatter)
@@ -117,7 +119,9 @@ export default function Axis (_container) {
     if (!scales.yScale) {
       return
     }
-    if (config.yAxisFormat === "auto") {
+    if (typeof config.yAxisFormat === "function") {
+      axis.tickFormat(config.yAxisFormat)
+    } else if (config.yAxisFormat === "auto") {
       const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
       const yFormat = autoFormat(yExtent, config.numberFormat)
       axis.tickFormat(d3.format(yFormat))
@@ -132,7 +136,9 @@ export default function Axis (_container) {
     if (!scales.y2Scale) {
       return
     }
-    if (config.y2AxisFormat === "auto") {
+    if (typeof config.y2AxisFormat === "function") {
+      axis.tickFormat(config.y2AxisFormat)
+    } else if (config.y2AxisFormat === "auto") {
       const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
       const y2Format = autoFormat(y2Extent, config.numberFormat)
       axis.tickFormat(d3.format(y2Format))

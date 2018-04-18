@@ -237,12 +237,13 @@ export default function Tooltip (_container, _isLegend = false) {
 
   function drawTitle () {
     let title = config.tooltipTitle || cache.title
+
     if (typeof config.tooltipTitleFormat === "function") {
       title = config.tooltipTitleFormat(title)
     } else if (title instanceof Date) {
       const {binningResolution} = config
       const specifier = binTranslation[binningResolution]
-      if (config.tooltipTitleFormat) {
+      if (config.tooltipTitleFormat !== "auto") {
         title = d3.utcFormat(config.tooltipTitleFormat)(title)
       } else if (specifier) {
         title = d3.utcFormat(specifier)(title)

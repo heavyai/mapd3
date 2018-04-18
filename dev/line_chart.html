@@ -27,7 +27,7 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "string"
+const keyType = "number"
 const dataConfig = {
   keyType,
   range: [0, 100],
@@ -94,10 +94,13 @@ const chart1 = mapd3.Chart(chartNode1)
     yTicks: "auto",
     y2Ticks: "auto",
     xTickSkip: "auto",
-    xAxisFormat: "auto",
-    yAxisFormat: "auto",
+    xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
+    yAxisFormat: (d => `${d}km/h`),
     y2AxisFormat: ".2f",
-    tooltipFormat: [".4f", ".6f"],
+    tooltipFormat: [".4f", (d => `avg ${d}`)],
+    // tooltipTitleFormat: "%b %d, %Y",
+    tooltipTitleFormat: (d => `${d}m/s`),
+    // tooltipTitleFormat: ".6f",
     grid: "horizontal",
     axisTransitionDuration: 0,
     labelsAreRotated: false,
@@ -111,7 +114,6 @@ const chart1 = mapd3.Chart(chartNode1)
 
     // format
     dateFormat: "%b %d, %Y",
-    tooltipTitleDateFormat: "%b %d, %Y",
     inputDateFormat: "%m-%d-%Y",
     numberFormat: ".2f",
 
@@ -150,7 +152,7 @@ const chart1 = mapd3.Chart(chartNode1)
 
     // bar
     barSpacingPercent: 10,
-    selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
+    // selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
   })
   .setData(data)
 

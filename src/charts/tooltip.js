@@ -238,7 +238,7 @@ export default function Tooltip (_container, _isLegend = false) {
   function drawTitle () {
     let title = config.tooltipTitle || cache.title
 
-    if (typeof config.tooltipTitleFormat === "function") {
+    if (typeof config.tooltipTitleFormat === "function" && typeof title !== "string") {
       title = config.tooltipTitleFormat(title)
     } else if (title instanceof Date) {
       const {binningResolution} = config

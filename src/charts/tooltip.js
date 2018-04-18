@@ -25,6 +25,7 @@ export default function Tooltip (_container, _isLegend = false) {
     colorSchema: ["skyblue"],
     keyType: "time",
     tooltipFormat: null,
+    tooltipTitleDateFormat: null,
 
     markPanelWidth: null,
     chartWidth: null,
@@ -233,8 +234,9 @@ export default function Tooltip (_container, _isLegend = false) {
     if (title instanceof Date) {
       const {binningResolution} = config
       const specifier = binTranslation[binningResolution]
-
-      if (specifier) {
+      if (config.tooltipTitleDateFormat) {
+        title = d3.utcFormat(config.tooltipTitleDateFormat)(title)
+      } else if (specifier) {
         title = d3.utcFormat(specifier)(title)
       } else if (["1w", "1q", "10y", "1c"].indexOf(binningResolution) > -1) {
         // handle bin translation for bin types not available in d3-time (century, decade, quarter)

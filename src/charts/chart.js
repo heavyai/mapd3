@@ -92,6 +92,7 @@ export default function Chart (_container) {
     dateFormat: "%b %d, %Y",
     inputDateFormat: "%m-%d-%Y",
     numberFormat: ".2f",
+    tooltipTitleDateFormat: null,
 
     // legend
     legendXPosition: "auto",

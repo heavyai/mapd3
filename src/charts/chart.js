@@ -450,7 +450,9 @@ export default function Chart (_container) {
   }
 
   function destroy () {
-    cache.root.on(".", null).remove()
+    if (cache.root) {
+      cache.root.on(".", null).remove()
+    }
   }
 
   return {

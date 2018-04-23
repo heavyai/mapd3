@@ -1,10 +1,10 @@
-const webpack = require("webpack")
-const path = require("path")
-const LiveReloadPlugin = require("webpack-livereload-plugin")
-const ExtractTextPlugin = require("extract-text-webpack-plugin")
-const bundleIndexPath = path.resolve("./src/bundle.js")
+const webpack = require("webpack");
+const path = require("path");
+const LiveReloadPlugin = require("webpack-livereload-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const bundleIndexPath = path.resolve("./src/bundle.js");
 
-const config = (env) => {
+const config = env => {
   if (env.prod) {
     return {
       entry: {
@@ -30,11 +30,7 @@ const config = (env) => {
             test: /\.js$/,
             exclude: /(node_modules)/,
             use: {
-              loader: "babel-loader",
-              options: {
-                presets: ["@babel/preset-env"],
-                cacheDirectory: false
-              }
+              loader: "babel-loader"
             }
           },
           {
@@ -50,7 +46,7 @@ const config = (env) => {
         }),
         new webpack.optimize.UglifyJsPlugin()
       ]
-    }
+    };
   } else if (env.dev) {
     return {
       entry: {
@@ -76,11 +72,7 @@ const config = (env) => {
             test: /\.js$/,
             exclude: /(node_modules)/,
             use: {
-              loader: "babel-loader",
-              options: {
-                presets: ["@babel/preset-env"],
-                cacheDirectory: false
-              }
+              loader: "babel-loader"
             }
           },
           {
@@ -95,10 +87,10 @@ const config = (env) => {
           allChunks: true
         })
       ]
-    }
+    };
   } else {
-    return
+    return;
   }
-}
+};
 
-module.exports = config
+module.exports = config;

@@ -1,24 +1,13 @@
 {
   "presets": [
-    ["@babel/preset-env", {
-      "targets": {
-        "browsers": [
-          "Chrome >= 52",
-          "FireFox >= 44",
-          "Safari >= 7",
-          "Explorer 11",
-          "last 4 Edge versions"
-        ]
-      },
-      "useBuiltIns": true
-    }]
+    [
+      "env",
+      {
+        "modules": false,
+        "useBuiltIns": "entry"
+      }
+    ],
+    "stage-0"
   ],
-  "plugins": [
-    "@babel/plugin-proposal-object-rest-spread"
-  ],
-  "ignore": [
-    "dist/",
-    "doc",
-    "dev"
-  ]
+  "ignore": ["dist/", "doc", "dev"]
 }

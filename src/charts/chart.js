@@ -92,6 +92,7 @@ export default function Chart (_container) {
     dateFormat: "%b %d, %Y",
     inputDateFormat: "%m-%d-%Y",
     numberFormat: ".2f",
+    tooltipTitleFormat: null,
 
     // legend
     legendXPosition: "auto",
@@ -449,7 +450,9 @@ export default function Chart (_container) {
   }
 
   function destroy () {
-    cache.root.on(".", null).remove()
+    if (cache.root) {
+      cache.root.on(".", null).remove()
+    }
   }
 
   return {

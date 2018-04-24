@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
-import {isNumeric, override} from "./helpers/common"
+import {isNumeric, isNumberString, override} from "./helpers/common"
 import {binTranslation, formatOddDateBin, formatTooltipNumber} from "./helpers/formatters"
 
 export default function Tooltip (_container, _isLegend = false) {
@@ -25,6 +25,7 @@ export default function Tooltip (_container, _isLegend = false) {
     colorSchema: ["skyblue"],
     keyType: "time",
     tooltipFormat: null,
+    tooltipTitleFormat: null,
 
     markPanelWidth: null,
     chartWidth: null,
@@ -133,13 +134,21 @@ export default function Tooltip (_container, _isLegend = false) {
     return this
   }
 
-  function formatValue (_value, _format, _index) {
-    if (typeof _format === "string" && _format !== "auto") {
+  function applyFormat (_value, _format) {
+    if (typeof _format === "function") {
+      return _format(_value)
+    } else if (typeof _format === "string" && _format !== "auto") {
       return d3.format(_format)(_value)
-    } else if (Array.isArray(_format)) {
-      return _format[_index] ? d3.format(_format[_index])(_value) : formatTooltipNumber(_value)
     } else {
       return formatTooltipNumber(_value)
+    }
+  }
+
+  function formatValue (_value, _format, _index) {
+    if (Array.isArray(_format) && _format[_index]) {
+      return applyFormat(_value, _format[_index])
+    } else {
+      return applyFormat(_value, _format)
     }
   }
 
@@ -229,12 +238,14 @@ export default function Tooltip (_container, _isLegend = false) {
   function drawTitle () {
     let title = config.tooltipTitle || cache.title
 
-    // format date if we have a date
-    if (title instanceof Date) {
+    if (typeof config.tooltipTitleFormat === "function" && typeof title !== "string") {
+      title = config.tooltipTitleFormat(title)
+    } else if (title instanceof Date) {
       const {binningResolution} = config
       const specifier = binTranslation[binningResolution]
-
-      if (specifier) {
+      if (config.tooltipTitleFormat !== "auto") {
+        title = d3.utcFormat(config.tooltipTitleFormat)(title)
+      } else if (specifier) {
         title = d3.utcFormat(specifier)(title)
       } else if (["1w", "1q", "10y", "1c"].indexOf(binningResolution) > -1) {
         // handle bin translation for bin types not available in d3-time (century, decade, quarter)
@@ -243,7 +254,12 @@ export default function Tooltip (_container, _isLegend = false) {
         title = d3.utcFormat(config.dateFormat)(title)
       }
     } else if (isNumeric(title)) {
-      title = formatTooltipNumber(title)
+      title = Number(parseFloat(title))
+      if (config.tooltipTitleFormat) {
+        title = applyFormat(title, config.tooltipTitleFormat)
+      } else {
+        title = formatTooltipNumber(title)
+      }
     }
 
     cache.tooltipTitle.html(title)
@@ -276,7 +292,12 @@ export default function Tooltip (_container, _isLegend = false) {
     const [tooltipX, tooltipY] = calculateTooltipPosition(_panelXPosition, _yPosition)
     setXPosition(tooltipX)
     setYPosition(tooltipY)
-    setTitle(_dataPoint[keys.KEY])
+
+    let title = _dataPoint[keys.KEY]
+    if (isNumberString(title)) {
+      title = Number(parseFloat(title))
+    }
+    setTitle(title)
     setupContent(_dataPoint[keys.SERIES])
 
     render()

@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const path = require("path");
-const LiveReloadPlugin = require("webpack-livereload-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const bundleIndexPath = path.resolve("./src/bundle.js");
 

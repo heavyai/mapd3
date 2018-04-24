@@ -16,6 +16,13 @@ module.exports = {
   devtool: "inline-cheap-module-source-map",
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|doc|dist|dev)/,
+        use: {
+          loader: "babel-loader"
+        }
+      },
       {test: /\.scss$/, loader: "null-loader"},
       {test: /\.css$/, loader: "null-loader"}
     ]

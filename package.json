@@ -18,7 +18,7 @@
     "prod": "webpack --env.prod --watch",
     "dev": "webpack --env.dev --watch",
     "clean": "yarn cache clean && rm -rf node_modules",
-    "test": "mocha-webpack test/**/*.spec.js --require test/setup.js --webpack-config webpack.config-spec.js --watch",
+    "test": "mocha-webpack test/**/*.spec.js --require test/setup.js --webpack-env.dev --webpack-config webpack.config-spec.js --watch",
     "format": "eslint \"src/**/*.js\" --fix"
   },
   "repository": {

@@ -76,11 +76,34 @@ describe("Automatic Formatter", () => {
 
   })
 
+  describe("Date formatters", () => {
+
+    it("should handle typical date formats", () => {
+      const formatted = autoFormatter("%Y-%m-%d")(BASE_DATE)
+      expect(formatted).to.equal("2018-03-21")
+
+      const formatted2 = autoFormatter("%m/%d/%Y")(BASE_DATE)
+      expect(formatted2).to.equal("03/21/2018")
+
+      const formatted3 = autoFormatter("%c")(BASE_DATE)
+      expect(formatted3).to.equal("3/21/2018, 12:00:00 AM")
+    })
+
+    it("should handle invalid date formats", () => {
+      const formatted = autoFormatter("foo")(BASE_DATE)
+      expect(formatted).to.equal("Wed Mar 21 2018 00:00:00 GMT-0400 (EDT)")
+    })
+
+  })
+
   describe("Value input", () => {
 
     it("should handle array input", () => {
       const formatted = autoFormatter(".2s")([1234.567, 89])
       expect(formatted).to.equal("1.2k - 89")
+
+      const formatted2 = autoFormatter("%Y")([BASE_DATE])
+      expect(formatted2).to.equal("2018")
     })
 
     it("should pass through string input", () => {
@@ -101,11 +124,24 @@ describe("Automatic Formatter", () => {
 
   })
 
-  describe("Date formatters", () => {
+  describe("Format by key", () => {
 
-    it("should handle typical date formats", () => {
-      const formatted = autoFormatter("%Y-%m-%d")(BASE_DATE)
-      expect(formatted).to.equal("AVG -12345.68km/h")
+    const formats = [
+      {key: "foo", format: ".2s"},
+      {key: "bar", format: ".2f"}
+    ]
+
+    it("should pick the format by key", () => {
+      const formatted = autoFormatter(formats)(BASE_NUMBER, "foo")
+      expect(formatted).to.equal("12k")
+
+      const formatted2 = autoFormatter(formats)(BASE_NUMBER, "bar")
+      expect(formatted2).to.equal("12345.68")
+    })
+
+    it("should return null if no match", () => {
+      const formatted2 = autoFormatter(formats)(BASE_NUMBER, "baz")
+      expect(formatted2).to.be.null
     })
 
   })

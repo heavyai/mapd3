@@ -12,6 +12,7 @@ import Brush from "./charts/brush.js"
 import Hover from "./charts/hover.js"
 import Interactors from "./charts/interactors.js"
 import {colors} from "./charts/helpers/colors.js"
+import autoFormatter from "./charts/helpers/auto-format.js"
 require("./styles/mapd3.scss")
 
 export {
@@ -28,5 +29,6 @@ export {
   Hover,
   Interactors,
   colors,
-  d3
+  d3,
+  autoFormatter
 }

@@ -91,21 +91,28 @@ function parseType(format, value) {
 }
 
 export default function autoFormatter(_format) {
+  let format = _format
+  // no format
+  if (!_format || (Array.isArray(_format) && _format.length === 0)) {
+    return null
+  }
+
   return (value, key) => {
-    let format = _format
-    // no format
-    if (!_format) {
-      return null
-    }
+
+    const hasKey = typeof key !== "undefined"
 
     // pick format from key
-    if (Array.isArray(_format) && typeof key !== "undefined") {
-      const match = _format.filter(d => d.key === key)[0]
-      if (match && match.format) {
-        format = match.format
+    if (Array.isArray(_format)) {
+      if (hasKey) {
+        const match = _format.filter(d => d.key === key)[0]
+        if (match && match.format) {
+          format = match.format
+        } else {
+          // no matching format
+          return null
+        }
       } else {
-        // no matching format
-        return null
+        format = _format[0] && _format[0].format
       }
     }
 

@@ -1,5 +1,5 @@
 import {expect} from "chai"
-import {autoFormatter} from "../src/charts/helpers/auto-format"
+import autoFormatter from "../src/charts/helpers/auto-format"
 /* eslint-disable no-unused-expressions, no-undefined */
 
 describe("Automatic Formatter", () => {
@@ -70,7 +70,7 @@ describe("Automatic Formatter", () => {
     })
 
     it("should return null if there's no formatter", () => {
-      const formatted = autoFormatter(null)(BASE_NUMBER)
+      const formatted = autoFormatter(null)
       expect(formatted).to.be.null
     })
 
@@ -140,8 +140,23 @@ describe("Automatic Formatter", () => {
     })
 
     it("should return null if no match", () => {
-      const formatted2 = autoFormatter(formats)(BASE_NUMBER, "baz")
-      expect(formatted2).to.be.null
+      const formatted = autoFormatter(formats)(BASE_NUMBER, "baz")
+      expect(formatted).to.be.null
+    })
+
+    it("should accept a null value, e.g. just to check if format exists for this key", () => {
+      const formatted = autoFormatter(formats)(null, "baz")
+      expect(formatted).to.be.null
+    })
+
+    it("should use the first format if key is not specified", () => {
+      const formatted = autoFormatter(formats)(BASE_NUMBER)
+      expect(formatted).to.equal("12k")
+    })
+
+    it("should return null if format array is empty", () => {
+      const formatted = autoFormatter([])
+      expect(formatted).to.be.null
     })
 
   })

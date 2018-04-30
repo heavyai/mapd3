@@ -208,7 +208,7 @@
     // "space-after-function-name": 0, // removed.
     // "space-after-keywords": 0, // removed.
     "space-before-blocks": 2, // makes things look consistent with keyword spacing.
-    "space-before-function-paren": 2, // distinguishes keyword invocation from function invocation.
+    // "space-before-function-paren": 2, // distinguishes keyword invocation from function invocation.
     // "space-before-function-parentheses": 0, // removed.
     // "space-before-keywords": 0, // removed.
     // "space-in-brackets": 0, // removed.

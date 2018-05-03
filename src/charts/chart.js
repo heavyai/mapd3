@@ -296,6 +296,7 @@ export default function Chart (_container) {
     components.axis
       .setConfig(config)
       .setScales(scales)
+      .setData(dataObject)
       .render()
 
     components.bar

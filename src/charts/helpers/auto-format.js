@@ -90,29 +90,54 @@ function parseType(format, value) {
   }
 }
 
+function getFormatFromKey(cachedFormat, key) {
+  if (Array.isArray(cachedFormat)) {
+    const match = cachedFormat.filter(d => d.key === key)[0]
+    if (match && match.format) {
+      // matching format
+      return match.format
+    } else {
+      // no matching format
+      return null
+    }
+  } else {
+    // no format by key
+    return null
+  }
+}
+
+function hasFormatForKey(cachedFormat, key) {
+  if (Array.isArray(cachedFormat)) {
+    return Boolean(getFormatFromKey(cachedFormat, key))
+  } else {
+    // format for all keys
+    return Boolean(cachedFormat)
+  }
+}
+
 export default function autoFormatter(_format) {
-  let format = _format
   // no format
   if (!_format || (Array.isArray(_format) && _format.length === 0)) {
     return null
   }
 
-  return (value, key) => {
+  const cachedFormat = _format
 
+  return function formatter(value, key) {
     const hasKey = typeof key !== "undefined"
 
+    if (hasKey && !hasFormatForKey(cachedFormat, key)) {
+      return null
+    }
+
+    let format = cachedFormat
+
     // pick format from key
-    if (Array.isArray(_format)) {
+    if (Array.isArray(cachedFormat)) {
       if (hasKey) {
-        const match = _format.filter(d => d.key === key)[0]
-        if (match && match.format) {
-          format = match.format
-        } else {
-          // no matching format
-          return null
-        }
+        format = getFormatFromKey(cachedFormat, key)
       } else {
-        format = _format[0] && _format[0].format
+        format = cachedFormat[0] && cachedFormat[0].format
       }
     }
 

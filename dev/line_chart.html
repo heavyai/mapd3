@@ -27,12 +27,12 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "number"
+const keyType = "time"
 const dataConfig = {
   keyType,
   range: [0, 100],
   pointCount: 20,
-  groupCount: 1,
+  groupCount: 2,
   lineCount: 3,
   stringMinMaxLength: [5, 10]
 }
@@ -46,7 +46,7 @@ const data = dataManager.generateTestDataset()
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-const chartType = "stackedBar"
+const chartType = "line"
 
 console.log("data", data.series)
 
@@ -94,9 +94,11 @@ const chart1 = mapd3.Chart(chartNode1)
     yTicks: "auto",
     y2Ticks: "auto",
     xTickSkip: "auto",
-    xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
+    // xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
+    xAxisFormat: mapd3.autoFormatter("%A"), // "auto", format compatible with d3-format or function
     yAxisFormat: (d => `${d}km/h`),
-    y2AxisFormat: ".2f",
+    // y2AxisFormat: ".2f",
+    y2AxisFormat: mapd3.autoFormatter([{key: "foo", format: ".6f"}]),
     tooltipFormat: [".4f", (d => `avg ${d}`)],
     // tooltipTitleFormat: "%b %d, %Y",
     tooltipTitleFormat: (d => `${d}m/s`),

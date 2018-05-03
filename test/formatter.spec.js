@@ -142,6 +142,9 @@ describe("Automatic Formatter", () => {
     it("should return null if no match", () => {
       const formatted = autoFormatter(formats)(BASE_NUMBER, "baz")
       expect(formatted).to.be.null
+
+      const formatted2 = autoFormatter(formats)(new Date(), "baz")
+      expect(formatted2).to.be.null
     })
 
     it("should accept a null value, e.g. just to check if format exists for this key", () => {

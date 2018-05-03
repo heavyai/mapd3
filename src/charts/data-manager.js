@@ -195,6 +195,12 @@ export default function DataManager () {
 
   function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
     const keyFromInvertedX = invertScale(_scales.xScale, _mouseX, _keyType)
+
+    if (_keyType === "string") {
+      // if we are keying on strings, simply find the value via a key match
+      return _dataObject.dataByKey.find(d => d.key === keyFromInvertedX)
+    }
+
     const bisectLeft = d3.bisector(getKey).left
     const dataEntryIndex = bisectLeft(_dataObject.dataByKey, keyFromInvertedX)
     const dataEntryForXPosition = _dataObject.dataByKey[dataEntryIndex]

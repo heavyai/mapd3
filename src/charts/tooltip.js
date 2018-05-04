@@ -37,6 +37,13 @@ export default function Tooltip (_container, _isLegend = false) {
     styleScale: null
   }
 
+  let data = {
+    dataBySeries: null,
+    groupKeys: null,
+    stack: null,
+    stackData: null
+  }
+
   const cache = {
     container: _container,
     root: null,
@@ -144,14 +151,6 @@ export default function Tooltip (_container, _isLegend = false) {
     }
   }
 
-  function formatValue (_value, _format, _index) {
-    if (Array.isArray(_format) && _format[_index]) {
-      return applyFormat(_value, _format[_index])
-    } else {
-      return applyFormat(_value, _format)
-    }
-  }
-
   function drawContent () {
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
       .data(cache.content)
@@ -161,7 +160,7 @@ export default function Tooltip (_container, _isLegend = false) {
     tooltipItems.exit().remove()
 
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d, i) => {
+      .data((d) => {
         const legendData = [
           {
             key: "tooltip-color",
@@ -175,7 +174,15 @@ export default function Tooltip (_container, _isLegend = false) {
         }
 
         if (typeof d[keys.VALUE] !== "undefined") {
-          const formattedValue = formatValue(d[keys.VALUE], config.tooltipFormat, i)
+          const value = d[keys.VALUE]
+          const measureName = data.dataBySeries[d.id].measureName
+          const hasFormatterForMeasure = config.tooltipFormat(null, measureName)
+          let formattedValue = value
+          if (hasFormatterForMeasure) {
+            formattedValue = config.tooltipFormat(value, measureName)
+          } else {
+            formattedValue = formatTooltipNumber(value)
+          }
           legendData.push({key: "value", value: formattedValue})
         }
         return legendData
@@ -341,6 +348,11 @@ export default function Tooltip (_container, _isLegend = false) {
     return this
   }
 
+  function setData (_data) {
+    data = Object.assign({}, data, _data)
+    return this
+  }
+
   function render () {
     build()
     drawTitle()
@@ -363,6 +375,7 @@ export default function Tooltip (_container, _isLegend = false) {
     setYPosition,
     setContent,
     setTitle,
+    setData,
     hide,
     show,
     render,

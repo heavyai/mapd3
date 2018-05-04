@@ -1,6 +1,5 @@
 import * as d3 from "./helpers/d3-service"
 import {override} from "./helpers/common"
-import {LEFT_AXIS_GROUP_INDEX, RIGHT_AXIS_GROUP_INDEX} from "./helpers/constants"
 import {autoFormat, multiFormat, getExtractFormatter} from "./helpers/formatters"
 
 export default function Axis (_container) {
@@ -44,14 +43,8 @@ export default function Axis (_container) {
     xScale: null,
     yScale: null,
     y2Scale: null,
-    hasSecondAxis: null
-  }
-
-  let data = {
-    dataBySeries: null,
-    groupKeys: null,
-    stack: null,
-    stackData: null
+    hasSecondAxis: null,
+    measureNameLookup: null
   }
 
   const cache = {
@@ -98,7 +91,7 @@ export default function Axis (_container) {
 
   function formatXAxis () {
     if (typeof config.xAxisFormat === "function") {
-      const dimensionName = data.data[0].dimensionName
+      const dimensionName = scales.measureNameLookup("x")
       const hasFormatterForDimension = config.xAxisFormat(null, dimensionName)
       if (hasFormatterForDimension) {
         cache.xAxis.tickFormat(d => config.xAxisFormat(d, dimensionName))
@@ -138,8 +131,7 @@ export default function Axis (_container) {
       return
     }
     if (typeof config.yAxisFormat === "function") {
-      const groupKey = data.groupKeys[LEFT_AXIS_GROUP_INDEX][0]
-      const measureName = data.dataBySeries[groupKey].measureName
+      const measureName = scales.measureNameLookup("y")
       const hasFormatterForMeasure = config.yAxisFormat(null, measureName)
       if (hasFormatterForMeasure) {
         axis.tickFormat(d => config.yAxisFormat(d, measureName))
@@ -166,8 +158,7 @@ export default function Axis (_container) {
       return
     }
     if (typeof config.y2AxisFormat === "function") {
-      const groupKey = data.groupKeys[RIGHT_AXIS_GROUP_INDEX][0]
-      const measureName = data.dataBySeries[groupKey].measureName
+      const measureName = scales.measureNameLookup("y2")
       if (measureName) {
         const hasFormatterForMeasure = config.y2AxisFormat(null, measureName)
         if (hasFormatterForMeasure) {
@@ -342,11 +333,6 @@ export default function Axis (_container) {
     return this
   }
 
-  function setData (_data) {
-    data = Object.assign({}, data, _data)
-    return this
-  }
-
   function render () {
     build()
     buildAxis()
@@ -372,7 +358,6 @@ export default function Axis (_container) {
   return {
     setConfig,
     setScales,
-    setData,
     render,
     destroy
   }

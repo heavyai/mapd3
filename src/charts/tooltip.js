@@ -34,14 +34,8 @@ export default function Tooltip (_container, _isLegend = false) {
 
   let scales = {
     colorScale: null,
-    styleScale: null
-  }
-
-  let data = {
-    dataBySeries: null,
-    groupKeys: null,
-    stack: null,
-    stackData: null
+    styleScale: null,
+    measureNameLookup: null
   }
 
   const cache = {
@@ -175,7 +169,7 @@ export default function Tooltip (_container, _isLegend = false) {
 
         if (typeof d[keys.VALUE] !== "undefined") {
           const value = d[keys.VALUE]
-          const measureName = data.dataBySeries[d.id].measureName
+          const measureName = scales.measureNameLookup(d.id)
           const hasFormatterForMeasure = config.tooltipFormat(null, measureName)
           let formattedValue = value
           if (hasFormatterForMeasure) {
@@ -348,11 +342,6 @@ export default function Tooltip (_container, _isLegend = false) {
     return this
   }
 
-  function setData (_data) {
-    data = Object.assign({}, data, _data)
-    return this
-  }
-
   function render () {
     build()
     drawTitle()
@@ -375,7 +364,6 @@ export default function Tooltip (_container, _isLegend = false) {
     setYPosition,
     setContent,
     setTitle,
-    setData,
     hide,
     show,
     render,

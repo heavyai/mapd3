@@ -96,6 +96,22 @@ export default function Scale () {
     return styleScale
   }
 
+  function buildMeasureNameLookup () {
+    return d => {
+      if (d === "x") {
+        return data.data[0].dimensionName
+      } else if (d === "y") {
+        const groupKey = data.groupKeys[LEFT_AXIS_GROUP_INDEX][0]
+        return data.dataBySeries[groupKey].measureName
+      } else if (d === "y2") {
+        const groupKey = data.groupKeys[RIGHT_AXIS_GROUP_INDEX][0]
+        return data.dataBySeries[groupKey].measureName
+      } else {
+        return data.dataBySeries[d] && data.dataBySeries[d].measureName
+      }
+    }
+  }
+
   function buildChartTypeScale () {
     const ids = data.dataBySeries.map(getID)
     const chartTypeScale = d3.scaleOrdinal()
@@ -131,6 +147,7 @@ export default function Scale () {
     const colorScale = buildColorScale()
     const styleScale = buildStyleScale()
     const chartTypeScale = buildChartTypeScale()
+    const measureNameLookup = buildMeasureNameLookup()
 
     let yDomain = null
     if (config.yDomain === "auto") {
@@ -146,7 +163,8 @@ export default function Scale () {
       yScale,
       colorScale,
       styleScale,
-      chartTypeScale
+      chartTypeScale,
+      measureNameLookup
     }
   }
 
@@ -171,6 +189,7 @@ export default function Scale () {
     const colorScale = buildColorScale()
     const styleScale = buildStyleScale()
     const chartTypeScale = buildChartTypeScale()
+    const measureNameLookup = buildMeasureNameLookup()
 
     let yScale = null
     if (hasLeftAxis) {
@@ -204,7 +223,8 @@ export default function Scale () {
       y2Scale,
       colorScale,
       styleScale,
-      chartTypeScale
+      chartTypeScale,
+      measureNameLookup
     }
   }
 

@@ -198,7 +198,7 @@ export default function DataManager () {
 
     if (_keyType === "string") {
       // if we are keying on strings, simply find the value via a key match
-      return _dataObject.dataByKey.find(d => d.key === keyFromInvertedX)
+      return _dataObject.dataByKey.find(d => d[keys.KEY] === keyFromInvertedX)
     }
 
     const bisectLeft = d3.bisector(getKey).left

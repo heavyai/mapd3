@@ -172,8 +172,7 @@ export default function Tooltip (_container, _isLegend = false) {
           let formattedValue = value
 
           const measureName = scales.measureNameLookup(d.id)
-          const hasFormatterForMeasure = config.tooltipFormat &&
-            typeof config.tooltipFormat === "function" &&
+          const hasFormatterForMeasure = typeof config.tooltipFormat === "function" &&
             config.tooltipFormat(null, measureName)
           if (hasFormatterForMeasure) {
             formattedValue = config.tooltipFormat(value, measureName)

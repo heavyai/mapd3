@@ -169,14 +169,18 @@ export default function Tooltip (_container, _isLegend = false) {
 
         if (typeof d[keys.VALUE] !== "undefined") {
           const value = d[keys.VALUE]
-          const measureName = scales.measureNameLookup(d.id)
-          const hasFormatterForMeasure = config.tooltipFormat(null, measureName)
           let formattedValue = value
+
+          const measureName = scales.measureNameLookup(d.id)
+          const hasFormatterForMeasure = config.tooltipFormat &&
+            typeof config.tooltipFormat === "function" &&
+            config.tooltipFormat(null, measureName)
           if (hasFormatterForMeasure) {
             formattedValue = config.tooltipFormat(value, measureName)
           } else {
             formattedValue = formatTooltipNumber(value)
           }
+
           legendData.push({key: "value", value: formattedValue})
         }
         return legendData

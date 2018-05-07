@@ -145,6 +145,17 @@ export default function Tooltip (_container, _isLegend = false) {
     }
   }
 
+  function formatTooltipValue (_value, _id) {
+    const measureName = scales.measureNameLookup(_id)
+    const hasFormatterForMeasure = typeof config.tooltipFormat === "function" &&
+      config.tooltipFormat(null, measureName)
+    if (hasFormatterForMeasure) {
+      return config.tooltipFormat(_value, measureName)
+    } else {
+      return formatTooltipNumber(_value)
+    }
+  }
+
   function drawContent () {
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
       .data(cache.content)
@@ -169,17 +180,7 @@ export default function Tooltip (_container, _isLegend = false) {
 
         if (typeof d[keys.VALUE] !== "undefined") {
           const value = d[keys.VALUE]
-          let formattedValue = value
-
-          const measureName = scales.measureNameLookup(d.id)
-          const hasFormatterForMeasure = typeof config.tooltipFormat === "function" &&
-            config.tooltipFormat(null, measureName)
-          if (hasFormatterForMeasure) {
-            formattedValue = config.tooltipFormat(value, measureName)
-          } else {
-            formattedValue = formatTooltipNumber(value)
-          }
-
+          const formattedValue = formatTooltipValue(value, d.id)
           legendData.push({key: "value", value: formattedValue})
         }
         return legendData

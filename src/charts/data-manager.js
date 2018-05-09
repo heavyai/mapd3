@@ -82,6 +82,8 @@ export default function DataManager () {
   }
 
   function cleanData (_data, _keyType, _sortBy) {
+    const fillData = false
+
     const dataBySeries = cloneData(_data[keys.SERIES])
     dataBySeries.forEach((serie) => {
       // convert type
@@ -89,7 +91,9 @@ export default function DataManager () {
         if (_keyType === "time") {
           d[keys.KEY] = convertToDate(d[keys.KEY])
         }
-        d[keys.VALUE] = Number(d[keys.VALUE])
+        if (fillData) {
+          d[keys.VALUE] = Number(d[keys.VALUE])
+        }
       })
     })
     const flatData = []
@@ -107,10 +111,14 @@ export default function DataManager () {
         keyValues[d.key] = d.value
       })
       // fill data
-      const filled = allKeys.map(d => ({
-        key: d,
-        value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
-      }))
+      let filled = serie[keys.VALUES]
+      if (fillData) {
+        filled = allKeys.map(d => ({
+          key: d,
+          value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
+        }))
+      }
+
       // sort
       serie[keys.VALUES] = sortData(filled, _keyType)
     })

@@ -1,5 +1,10 @@
-.vertical-marker {
-    stroke: $grey-300;
-    stroke-width: 1;
-    fill: none;
+.hover-group {
+  .vertical-marker {
+      stroke: $grey-300;
+      stroke-width: 1;
+      fill: none;
+  }
+  .dot.hidden {
+    visibility: hidden;
+  }
 }

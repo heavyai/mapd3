@@ -111,6 +111,7 @@ export default function Hover (_container) {
       .attr("r", config.dotRadius)
       .style("stroke", "none")
       .style("fill", getColor)
+      .classed("hidden", d => d[keys.VALUE] === null)
 
     dots.exit().remove()
   }

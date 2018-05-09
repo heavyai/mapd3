@@ -190,10 +190,13 @@
   .mapd3 .binning-group .bin-label {
     font-weight: bold; }
 
-.mapd3 .vertical-marker {
+.mapd3 .hover-group .vertical-marker {
   stroke: #D2D6DF;
   stroke-width: 1;
   fill: none; }
+
+.mapd3 .hover-group .dot.hidden {
+  visibility: hidden; }
 
 .mapd3 .domain-input-group .domain-input {
   font-size: 10px;

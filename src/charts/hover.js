@@ -102,10 +102,10 @@ export default function Hover (_container) {
       .merge(dots)
       .attr("cy", (d) => {
         const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
-        if (leftAxisGroup && leftAxisGroup.indexOf(d[keys.ID]) > -1) {
-          return scales.yScale(d[keys.VALUE])
+        if (leftAxisGroup && leftAxisGroup.indexOf(d.group) > -1) {
+          return scales.yScale(d.value)
         } else {
-          return scales.y2Scale ? scales.y2Scale(d[keys.VALUE]) : scales.yScale(d[keys.VALUE])
+          return scales.y2Scale ? scales.y2Scale(d.value) : scales.yScale(d.value)
         }
       })
       .attr("r", config.dotRadius)
@@ -125,8 +125,9 @@ export default function Hover (_container) {
 
     const dotsStack = data.stack([stackedDataPoint])
     const dotsData = dotsStack.map((d) => {
-      const dot = {value: d[0][1]}
-      dot[keys.ID] = d.key
+      const dot = {}
+      dot.value = d[0][1]
+      dot.group = d.key
       return dot
     })
 

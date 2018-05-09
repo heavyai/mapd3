@@ -7,6 +7,12 @@
 .mapd3 [contenteditable]:hover, .mapd3 .axis-label:focus {
   border: 1px solid #ddd; }
 
+.mapd3 .hidden {
+  visibility: hidden; }
+
+.mapd3 div {
+  font-size: 11px; }
+
 .mapd3.mapd3-container {
   display: flex;
   align-items: stretch; }
@@ -194,9 +200,6 @@
   stroke: #D2D6DF;
   stroke-width: 1;
   fill: none; }
-
-.mapd3 .hover-group .dot.hidden {
-  visibility: hidden; }
 
 .mapd3 .domain-input-group .domain-input {
   font-size: 10px;

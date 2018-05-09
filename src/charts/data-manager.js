@@ -12,7 +12,8 @@ export default function DataManager () {
     pointCount: 200,
     groupCount: 2,
     lineCount: 4,
-    stringMinMaxLength: [4, 8]
+    stringMinMaxLength: [4, 8],
+    randomStepSize: 50
   }
   const cache = {
     data: null,
@@ -36,8 +37,7 @@ export default function DataManager () {
 
   function generateSeries (_dataKeys, _range) {
     let value = d3.randomUniform(..._range)()
-    const variabilityDivider = 10
-    const randomWalkStepSize = (_range[1] - _range[0]) / variabilityDivider
+    const randomWalkStepSize = (_range[1] - _range[0]) / config.randomStepSize
     const rnd = d3.randomNormal(0, 1)
     return _dataKeys.map((d) => {
       value = clamp(value + rnd() * randomWalkStepSize, _range)
@@ -81,9 +81,7 @@ export default function DataManager () {
     return new Date(new Date(_date).toString())
   }
 
-  function cleanData (_data, _keyType, _sortBy) {
-    const fillData = false
-
+  function cleanData (_data, _keyType, _sortBy, _fillData) {
     const dataBySeries = cloneData(_data[keys.SERIES])
     dataBySeries.forEach((serie) => {
       // convert type
@@ -91,7 +89,7 @@ export default function DataManager () {
         if (_keyType === "time") {
           d[keys.KEY] = convertToDate(d[keys.KEY])
         }
-        if (fillData) {
+        if (_fillData) {
           d[keys.VALUE] = Number(d[keys.VALUE])
         }
       })
@@ -112,7 +110,7 @@ export default function DataManager () {
       })
       // fill data
       let filled = serie[keys.VALUES]
-      if (fillData) {
+      if (_fillData) {
         filled = allKeys.map(d => ({
           key: d,
           value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]

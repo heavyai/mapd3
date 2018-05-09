@@ -34,9 +34,10 @@ export default function ClipPath (_container) {
         .append("rect")
     }
 
+    const HEIGHT_PADDING = 4
     cache.clipPath
       .attr("width", config.markPanelWidth)
-      .attr("height", config.chartHeight)
+      .attr("height", config.chartHeight + HEIGHT_PADDING)
   }
 
   function setConfig (_config) {

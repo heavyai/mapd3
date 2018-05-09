@@ -8,6 +8,12 @@ export const keys = {
   SERIES: "series"
 }
 
+export const dotsToShow = {
+  ALL: "all",
+  NONE: "none",
+  ISOLATED: "isolated"
+}
+
 export const LEFT_AXIS_GROUP_INDEX = "0"
 export const RIGHT_AXIS_GROUP_INDEX = "1"
 

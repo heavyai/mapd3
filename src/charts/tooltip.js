@@ -34,7 +34,8 @@ export default function Tooltip (_container, _isLegend = false) {
 
   let scales = {
     colorScale: null,
-    styleScale: null
+    styleScale: null,
+    measureNameLookup: null
   }
 
   const cache = {
@@ -144,11 +145,14 @@ export default function Tooltip (_container, _isLegend = false) {
     }
   }
 
-  function formatValue (_value, _format, _index) {
-    if (Array.isArray(_format) && _format[_index]) {
-      return applyFormat(_value, _format[_index])
+  function formatTooltipValue (_value, _id) {
+    const measureName = scales.measureNameLookup(_id)
+    const hasFormatterForMeasure = typeof config.tooltipFormat === "function" &&
+      config.tooltipFormat(null, measureName)
+    if (hasFormatterForMeasure) {
+      return config.tooltipFormat(_value, measureName)
     } else {
-      return applyFormat(_value, _format)
+      return formatTooltipNumber(_value)
     }
   }
 
@@ -161,7 +165,7 @@ export default function Tooltip (_container, _isLegend = false) {
     tooltipItems.exit().remove()
 
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d, i) => {
+      .data((d) => {
         const legendData = [
           {
             key: "tooltip-color",
@@ -175,7 +179,8 @@ export default function Tooltip (_container, _isLegend = false) {
         }
 
         if (typeof d[keys.VALUE] !== "undefined") {
-          const formattedValue = formatValue(d[keys.VALUE], config.tooltipFormat, i)
+          const value = d[keys.VALUE]
+          const formattedValue = formatTooltipValue(value, d.id)
           legendData.push({key: "value", value: formattedValue})
         }
         return legendData

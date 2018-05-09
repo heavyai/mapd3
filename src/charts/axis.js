@@ -43,7 +43,8 @@ export default function Axis (_container) {
     xScale: null,
     yScale: null,
     y2Scale: null,
-    hasSecondAxis: null
+    hasSecondAxis: null,
+    measureNameLookup: null
   }
 
   const cache = {
@@ -90,7 +91,11 @@ export default function Axis (_container) {
 
   function formatXAxis () {
     if (typeof config.xAxisFormat === "function") {
-      cache.xAxis.tickFormat(config.xAxisFormat)
+      const dimensionName = scales.measureNameLookup("x")
+      const hasFormatterForDimension = config.xAxisFormat(null, dimensionName)
+      if (hasFormatterForDimension) {
+        cache.xAxis.tickFormat(d => config.xAxisFormat(d, dimensionName))
+      }
     } else if (config.keyType === "time") {
       if (config.xAxisFormat && config.xAxisFormat !== "auto") {
         const formatter = d3.utcFormat(config.xAxisFormat)
@@ -115,16 +120,26 @@ export default function Axis (_container) {
     }
   }
 
+  function getYAutoFormat () {
+    const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
+    const yFormat = autoFormat(yExtent, config.numberFormat)
+    return d3.format(yFormat)
+  }
+
   function formatYAxis (axis) {
     if (!scales.yScale) {
       return
     }
     if (typeof config.yAxisFormat === "function") {
-      axis.tickFormat(config.yAxisFormat)
+      const measureName = scales.measureNameLookup("y")
+      const hasFormatterForMeasure = config.yAxisFormat(null, measureName)
+      if (hasFormatterForMeasure) {
+        axis.tickFormat(d => config.yAxisFormat(d, measureName))
+      } else {
+        axis.tickFormat(getYAutoFormat())
+      }
     } else if (config.yAxisFormat === "auto") {
-      const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-      const yFormat = autoFormat(yExtent, config.numberFormat)
-      axis.tickFormat(d3.format(yFormat))
+      axis.tickFormat(getYAutoFormat())
     } else if (typeof config.yAxisFormat === "string") {
       axis.tickFormat(d3.format(config.yAxisFormat))
     } else if (Array.isArray(config.yAxisFormat)) {
@@ -132,16 +147,30 @@ export default function Axis (_container) {
     }
   }
 
+  function getY2AutoFormat () {
+    const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
+    const y2Format = autoFormat(y2Extent, config.numberFormat)
+    return d3.format(y2Format)
+  }
+
   function formatY2Axis (axis) {
     if (!scales.y2Scale) {
       return
     }
     if (typeof config.y2AxisFormat === "function") {
-      axis.tickFormat(config.y2AxisFormat)
+      const measureName = scales.measureNameLookup("y2")
+      if (measureName) {
+        const hasFormatterForMeasure = config.y2AxisFormat(null, measureName)
+        if (hasFormatterForMeasure) {
+          axis.tickFormat(d => config.y2AxisFormat(d, measureName))
+        } else {
+          axis.tickFormat(getY2AutoFormat())
+        }
+      } else {
+        axis.tickFormat(d => config.y2AxisFormat(d))
+      }
     } else if (config.y2AxisFormat === "auto") {
-      const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
-      const y2Format = autoFormat(y2Extent, config.numberFormat)
-      axis.tickFormat(d3.format(y2Format))
+      axis.tickFormat(getY2AutoFormat())
     } else if (typeof config.y2AxisFormat === "string") {
       axis.tickFormat(d3.format(config.y2AxisFormat))
     } else if (Array.isArray(config.y2AxisFormat)) {

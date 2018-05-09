@@ -65,7 +65,8 @@ export default function DataManager () {
       label: `Label ${d}`,
       id: d,
       group: d < config.groupCount ? d : 0,
-      values: generateSeries(dataKeys, config.range)
+      values: generateSeries(dataKeys, config.range),
+      measureName: `Measure ${d}`
     }))
 
     cache.data = {series}

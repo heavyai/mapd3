@@ -7,6 +7,12 @@
 .mapd3 [contenteditable]:hover, .mapd3 .axis-label:focus {
   border: 1px solid #ddd; }
 
+.mapd3 .hidden {
+  visibility: hidden; }
+
+.mapd3 div {
+  font-size: 11px; }
+
 .mapd3.mapd3-container {
   display: flex;
   align-items: stretch; }
@@ -190,7 +196,7 @@
   .mapd3 .binning-group .bin-label {
     font-weight: bold; }
 
-.mapd3 .vertical-marker {
+.mapd3 .hover-group .vertical-marker {
   stroke: #D2D6DF;
   stroke-width: 1;
   fill: none; }

@@ -73,6 +73,7 @@ export default function Chart (_container) {
 
     // data
     sortBy: null,
+    fillData: false,
 
     xTitle: "",
     yTitle: "",
@@ -129,7 +130,10 @@ export default function Chart (_container) {
 
     // bar
     barSpacingPercent: 10,
-    selectedKeys: []
+    selectedKeys: [],
+
+    // line
+    dotsToShow: "none"
   }
 
   let scales = {
@@ -356,7 +360,7 @@ export default function Chart (_container) {
 
   function setData (_data) {
     dataObject.data = cloneData(_data[keys.SERIES])
-    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy)
+    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy, config.fillData)
     Object.assign(dataObject, cleanedData)
 
     const autoConfig = autoConfigure(inputConfig, cache, dataObject)

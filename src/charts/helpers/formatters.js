@@ -60,11 +60,11 @@ export function autoFormat (extent, format) {
     format = ".3f"
   } else if ((max - min) <= 1.1) {
     format = ".2f"
-  } else if ((max - min) <= 100) {
+  } else if ((max - min) < 100) {
     format = ".1f"
-  } else if ((max - min) <= 1000) {
+  } else if ((max - min) < 1000) {
     format = ".0f"
-  } else if ((max - min) <= 100000) {
+  } else if ((max - min) < 100000) {
     format = ".2s"
   } else {
     format = ".2s"
@@ -130,6 +130,9 @@ export const binTranslation = {
 }
 
 export function formatTooltipNumber (d) {
+  if (d === null) {
+    return "null"
+  }
   // comma separator, max 2 decimals
   return d3.format(",")(Math.round(d * 100) / 100)
 }

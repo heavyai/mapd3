@@ -12,7 +12,9 @@ export default function DataManager () {
     pointCount: 200,
     groupCount: 2,
     lineCount: 4,
-    stringMinMaxLength: [4, 8]
+    stringMinMaxLength: [4, 8],
+    randomStepSize: 50,
+    nullRatio: null
   }
   const cache = {
     data: null,
@@ -36,13 +38,13 @@ export default function DataManager () {
 
   function generateSeries (_dataKeys, _range) {
     let value = d3.randomUniform(..._range)()
-    const variabilityDivider = 10
-    const randomWalkStepSize = (_range[1] - _range[0]) / variabilityDivider
+    const randomWalkStepSize = (_range[1] - _range[0]) / config.randomStepSize
     const rnd = d3.randomNormal(0, 1)
-    return _dataKeys.map((d) => {
+    return _dataKeys.map(d => {
+      const isRandomNull = config.nullRatio && (Math.random() * 100 / config.nullRatio) < 1
       value = clamp(value + rnd() * randomWalkStepSize, _range)
       return {
-        value,
+        value: isRandomNull ? null : value,
         key: config.keyType === "time" ? d.toISOString() : d
       }
     })
@@ -81,7 +83,7 @@ export default function DataManager () {
     return new Date(new Date(_date).toString())
   }
 
-  function cleanData (_data, _keyType, _sortBy) {
+  function cleanData (_data, _keyType, _sortBy, _fillData) {
     const dataBySeries = cloneData(_data[keys.SERIES])
     dataBySeries.forEach((serie) => {
       // convert type
@@ -89,7 +91,9 @@ export default function DataManager () {
         if (_keyType === "time") {
           d[keys.KEY] = convertToDate(d[keys.KEY])
         }
-        d[keys.VALUE] = Number(d[keys.VALUE])
+        if (_fillData) {
+          d[keys.VALUE] = Number(d[keys.VALUE])
+        }
       })
     })
     const flatData = []
@@ -107,10 +111,14 @@ export default function DataManager () {
         keyValues[d.key] = d.value
       })
       // fill data
-      const filled = allKeys.map(d => ({
-        key: d,
-        value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
-      }))
+      let filled = serie[keys.VALUES]
+      if (_fillData) {
+        filled = allKeys.map(d => ({
+          key: d,
+          value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
+        }))
+      }
+
       // sort
       serie[keys.VALUES] = sortData(filled, _keyType)
     })

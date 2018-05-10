@@ -33,9 +33,10 @@ const dataConfig = {
   range: [0, 100],
   pointCount: 100,
   groupCount: 1,
-  lineCount: 3,
+  lineCount: 1,
   stringMinMaxLength: [5, 10],
-  randomStepSize: 50
+  randomStepSize: 50,
+  nullRatio: 10
 }
 
 const dataManager = mapd3.DataManager()
@@ -44,10 +45,6 @@ const data = dataManager.generateTestDataset()
 // data.series.forEach((d, i) => {
 //   d.values = d.values.slice((i*0.5)*100, (i+1)*100)
 // })
-
-data.series.forEach(d => {
-  d.values = d.values.map(dB => ({...dB, value: !!~~(Math.random() * 8) ? dB.value : null}))
-})
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
@@ -164,7 +161,7 @@ const chart1 = mapd3.Chart(chartNode1)
     // selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
 
     // line
-    dotsToShow: "none" // all, isolated, none
+    dotsToShow: "isolated" // all, isolated, none
   })
   .setData(data)
 

@@ -29,6 +29,9 @@ const dataManager = mapd3.DataManager()
   * @param {number} [config.pointCount=200] The number of points
   * @param {number} [config.groupCount=2] The number of groups, 2 for adding a y2 axis
   * @param {number} [config.lineCount=4] The number of lines
+  * @param {Array.<number>} [config.stringMinMaxLength=[4, 8]] Length of generated strings
+  * @param {number} [config.randomStepSize=50] Random pixel range to step vertically between each generated points
+  * @param {number} [config.nullRatio=null] Percentage of generated values that are null
 
   * @returns {object} The dataManager instance.
   * @memberof DataManager
@@ -48,7 +51,10 @@ dataManager.setConfig({
   range: [0, 100],
   pointCount: 2000,
   groupCount: 1,
-  lineCount: 4
+  lineCount: 4,
+  stringMinMaxLength: [5, 10],
+  randomStepSize: 50,
+  nullRatio: 10
 })
 
 /**
@@ -199,6 +205,9 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {string} [config.yLabel="Y Axis Label"] Y axis label
   * @param {string} [config.y2Label="Y2 Axis Label"] Y2 axis label
 
+  * <line>
+  * @param {string} [config.dotsToShow="none"] Which dots to show on line chart, all, isolated, nonw
+
   * @returns {object} The chart instance.
   * @memberof Chart
   * @instance
@@ -283,7 +292,10 @@ chart.setConfig({
   // label
   xLabel: "X Axis Label",
   yLabel: "Y Axis Label",
-  y2Label: "Y2 Axis Label"
+  y2Label: "Y2 Axis Label",
+
+  // line
+  dotsToShow: "none" // all, isolated, none
 })
 
 /**

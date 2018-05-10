@@ -13,7 +13,8 @@ export default function DataManager () {
     groupCount: 2,
     lineCount: 4,
     stringMinMaxLength: [4, 8],
-    randomStepSize: 50
+    randomStepSize: 50,
+    nullRatio: null
   }
   const cache = {
     data: null,
@@ -39,10 +40,11 @@ export default function DataManager () {
     let value = d3.randomUniform(..._range)()
     const randomWalkStepSize = (_range[1] - _range[0]) / config.randomStepSize
     const rnd = d3.randomNormal(0, 1)
-    return _dataKeys.map((d) => {
+    return _dataKeys.map(d => {
+      const isRandomNull = config.nullRatio && (Math.random() * 100 / config.nullRatio) < 1
       value = clamp(value + rnd() * randomWalkStepSize, _range)
       return {
-        value,
+        value: isRandomNull ? null : value,
         key: config.keyType === "time" ? d.toISOString() : d
       }
     })

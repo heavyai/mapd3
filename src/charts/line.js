@@ -45,7 +45,7 @@ export default function Line (_container) {
     }
   }
 
-  function isNA (d) {
+  function isDefined (d) {
     return typeof d[keys.VALUE] !== "undefined" && d[keys.VALUE] !== null
   }
 
@@ -57,16 +57,16 @@ export default function Line (_container) {
     const seriesLine = d3.line()
       .x(d => scales.xScale(d[keys.KEY]))
       .y(d => scales.yScale(d[keys.VALUE]))
-      .defined(isNA)
+      .defined(isDefined)
 
     const seriesLine2 = d3.line()
       .x(d => scales.xScale(d[keys.KEY]))
       .y(d => scales.y2Scale(d[keys.VALUE]))
-      .defined(isNA)
+      .defined(isDefined)
 
     if (Array.isArray(config.xDomain)) {
-      seriesLine.defined((d) => isNA(d) || isInDomain(d))
-      seriesLine2.defined((d) => isNA(d) || isInDomain(d))
+      seriesLine.defined((d) => isDefined(d) || isInDomain(d))
+      seriesLine2.defined((d) => isDefined(d) || isInDomain(d))
     }
 
     let lineData = data.dataBySeries
@@ -99,8 +99,27 @@ export default function Line (_container) {
     lines.exit().remove()
   }
 
-  function drawDots () {
+  function filterNulls (_data) {
+    return _data.map(d => ({
+      ...d,
+      values: d.values.filter(dB => dB.value !== null)
+    }))
+  }
 
+  function filterIsolated (_data) {
+    return _data.map(d => ({
+      ...d,
+      values: d.values.filter((dB, iB, pD) => {
+        const prevIndex = Math.max(iB - 1, 0)
+        const nextIndex = Math.min(iB + 1, pD.length - 1)
+        return dB.value !== null &&
+          pD[prevIndex].value === null &&
+          pD[nextIndex].value === null
+      })
+    }))
+  }
+
+  function drawDots () {
     const dotData = data.dataBySeries
     let dotDataFiltered = dotData
     if (Array.isArray(config.chartType)) {
@@ -108,21 +127,9 @@ export default function Line (_container) {
     }
 
     if (config.dotsToShow === dotsToShow.ALL) {
-      dotDataFiltered = dotDataFiltered.map(d => ({
-        ...d,
-        values: d.values.filter(dB => dB.value !== null)
-      }))
+      dotDataFiltered = filterNulls(dotDataFiltered)
     } else if (config.dotsToShow === dotsToShow.ISOLATED) {
-      dotDataFiltered = dotDataFiltered.map(d => ({
-        ...d,
-        values: d.values.filter((dB, iB, pD) => {
-          const prevIndex = Math.max(iB - 1, 0)
-          const nextIndex = Math.min(iB + 1, pD.length - 1)
-          return dB.value !== null &&
-            pD[prevIndex].value === null &&
-            pD[nextIndex].value === null
-        })
-      }))
+      dotDataFiltered = filterIsolated(dotDataFiltered)
     } else if (config.dotsToShow === dotsToShow.NONE) {
       cache.root.selectAll(".dot-group").remove()
       return null
@@ -173,14 +180,14 @@ export default function Line (_container) {
       .x((d) => scales.xScale(d[keys.KEY]))
       .y0((d) => scales.yScale(d[keys.VALUE]))
       .y1(() => config.chartHeight)
-      .defined(d => typeof d[keys.VALUE] !== "undefined" && d[keys.VALUE] !== null)
+      .defined(isDefined)
 
     const seriesArea2 = d3.area()
       .x((d) => scales.xScale(d[keys.KEY]))
       .y0((d) => scales.y2Scale(d[keys.VALUE]))
       .y1(() => config.chartHeight)
       .curve(d3.curveCatmullRom)
-      .defined(d => typeof d[keys.VALUE] !== "undefined" && d[keys.VALUE] !== null)
+      .defined(isDefined)
 
     const areas = cache.root.selectAll(".mark.area")
       .data(data.dataBySeries)

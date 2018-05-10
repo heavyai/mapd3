@@ -130,6 +130,9 @@ export const binTranslation = {
 }
 
 export function formatTooltipNumber (d) {
+  if (d === null) {
+    return "null"
+  }
   // comma separator, max 2 decimals
   return d3.format(",")(Math.round(d * 100) / 100)
 }

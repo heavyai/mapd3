@@ -172,6 +172,7 @@ export default function DataManager () {
     // d3 stack
     const stack = d3.stack()
       .keys(dataBySeries.map(getID))
+      .value((d, key) => d[key] || 0)
       .order(d3.stackOrderNone)
       .offset(d3.stackOffsetNone)
 

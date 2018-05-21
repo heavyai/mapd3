@@ -62,7 +62,6 @@ export default function Chart (_container) {
     xAxisFormat: "auto",
     yAxisFormat: ".2f",
     y2AxisFormat: ".2f",
-    tooltipFormat: ".2f",
     tickSizes: 8,
     yTicks: "auto",
     y2Ticks: "auto",
@@ -75,13 +74,12 @@ export default function Chart (_container) {
     sortBy: null,
     fillData: false,
 
-    xTitle: "",
-    yTitle: "",
-
     // hover
     dotRadius: 4,
 
     // tooltip
+    tooltipFormat: ".2f",
+    tooltipTitleFormat: null,
     mouseChaseDuration: 0,
     tooltipEase: d3.easeQuadInOut,
     tooltipHeight: 48,
@@ -93,7 +91,6 @@ export default function Chart (_container) {
     dateFormat: "%b %d, %Y",
     inputDateFormat: "%m-%d-%Y",
     numberFormat: ".2f",
-    tooltipTitleFormat: null,
 
     // legend
     legendXPosition: "auto",

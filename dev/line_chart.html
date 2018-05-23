@@ -48,7 +48,7 @@ const data = dataManager.generateTestDataset()
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-const chartType = "line"
+const chartType = "dot"
 
 console.log("data", data.series)
 
@@ -73,7 +73,7 @@ const chart1 = mapd3.Chart(chartNode1)
       left: 80
     },
     keyType, // time, number, string
-    chartType, // line, area, stackedArea, bar, stackedBar
+    chartType, // line, area, stackedArea, bar, stackedBar, dot
     useScrolling: false,
 
     // intro animation
@@ -161,7 +161,7 @@ const chart1 = mapd3.Chart(chartNode1)
     // selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
 
     // line
-    dotsToShow: "isolated" // all, isolated, none
+    dotsToShow: "all" // all, isolated, none
   })
   .setData(data)
 

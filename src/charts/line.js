@@ -255,6 +255,8 @@ export default function Line (_container) {
     } else if (config.chartType === "line" || Array.isArray(config.chartType)) {
       drawLines()
       drawDots()
+    } else if (config.chartType === "dot") {
+      drawDots()
     } else if (config.chartType === "stackedArea") {
       drawStackedAreas()
     }

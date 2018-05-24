@@ -61,6 +61,8 @@ export default function Axis (_container) {
     verticalGridLines: null
   }
 
+  let xLabelsShouldRotate = false
+
   function build () {
     if (!cache.root) {
       cache.root = cache.container.select("svg.chart > g.chart-group")
@@ -74,6 +76,8 @@ export default function Axis (_container) {
       cache.yAxisRoot.select(".axis-group").append("g").attr("class", "axis y")
       cache.y2AxisRoot.select(".axis-group").append("g").attr("class", "axis y2")
     }
+
+    xLabelsShouldRotate = shouldXLabelsRotate()
 
     const DOMAIN_LINE_WIDTH = 1
     cache.yAxisRoot
@@ -215,6 +219,18 @@ export default function Axis (_container) {
     }
   }
 
+  function shouldXLabelsRotate () {
+    const APPROX_FONT_WIDTH = 5
+    const width = config.markPanelWidth
+    const labels = scales.xScale.domain()
+    const totalLabelsWidth = labels.reduce((total, d) => total + d.length * APPROX_FONT_WIDTH, 0)
+
+    if (totalLabelsWidth >= width) {
+      return true
+    }
+    return false
+  }
+
   function rotateXLabels () {
     cache.xAxisRoot.select(".axis.x").selectAll("text")
       .attr("y", 0)
@@ -226,11 +242,20 @@ export default function Axis (_container) {
     return this
   }
 
+  function unRotateXLabels () {
+    cache.xAxisRoot.select(".axis.x").selectAll("text")
+      .attr("x", 0)
+      .attr("y", 11)
+      .attr("dy", ".71em")
+      .attr("transform", null)
+      .style("text-anchor", "middle")
+  }
+
   function getNumberOfLabelsToSkip () {
     const APPROX_FONT_WIDTH = 5
     const labels = scales.xScale.domain()
     let longestLabelApproxWidth = null
-    if (config.labelsAreRotated) {
+    if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && shouldXLabelsRotate())) {
       longestLabelApproxWidth = APPROX_FONT_WIDTH
     } else {
       const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), {length: 0})
@@ -244,8 +269,10 @@ export default function Axis (_container) {
       .attr("transform", `translate(0, ${config.chartHeight})`)
       .call(cache.xAxis)
 
-    if (config.labelsAreRotated) {
+    if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && xLabelsShouldRotate)) {
       rotateXLabels()
+    } else if (config.labelsAreRotated === "auto" && !xLabelsShouldRotate) {
+      unRotateXLabels()
     }
 
     if (scales.yScale) {

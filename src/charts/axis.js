@@ -27,7 +27,6 @@ export default function Axis (_container) {
     grid: null,
     hoverZoneSize: 30,
     tickSpacing: 40,
-    dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
     extractType: null,
     yDomain: "auto",

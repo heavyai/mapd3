@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>mapd3 0.7.0 | Documentation</title>
+  <title>mapd3 0.15.2 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>mapd3</h3>
-          <div class='mb1'><code>0.7.0</code></div>
+          <div class='mb1'><code>0.15.2</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -89,6 +89,76 @@
                         #render
                       </a></li>
                       
+                      <li><a
+                        href='#Chart#getEvents'
+                        class='regular pre-open'>
+                        #getEvents
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#eventmanager'
+                  class=" toggle-sibling">
+                  EventManager
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#EventManager#onPanel'
+                        class='regular pre-open'>
+                        #onPanel
+                      </a></li>
+                      
+                      <li><a
+                        href='#EventManager#onBrush'
+                        class='regular pre-open'>
+                        #onBrush
+                      </a></li>
+                      
+                      <li><a
+                        href='#EventManager#onBinning'
+                        class='regular pre-open'>
+                        #onBinning
+                      </a></li>
+                      
+                      <li><a
+                        href='#EventManager#onDomainEditor'
+                        class='regular pre-open'>
+                        #onDomainEditor
+                      </a></li>
+                      
+                      <li><a
+                        href='#EventManager#onBrushRangeEditor'
+                        class='regular pre-open'>
+                        #onBrushRangeEditor
+                      </a></li>
+                      
+                      <li><a
+                        href='#EventManager#onLabel'
+                        class='regular pre-open'>
+                        #onLabel
+                      </a></li>
+                      
+                      <li><a
+                        href='#EventManager#onHover'
+                        class='regular pre-open'>
+                        #onHover
+                      </a></li>
+                      
                     </ul>
                   
                   
@@ -141,7 +211,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         The dataManager instance.
 
       
@@ -204,7 +274,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
 	    A config object.
 
           </div>
@@ -223,7 +293,7 @@
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;number&quot;</code>)
                   </td>
@@ -232,7 +302,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.range</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>
+                  <td class='break-word'><span class='code bold'>config.range</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>
                   
                     (default <code>[0,100]</code>)
                   </td>
@@ -241,7 +311,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.pointCount</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.pointCount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>200</code>)
                   </td>
@@ -250,7 +320,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.groupCount</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.groupCount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>2</code>)
                   </td>
@@ -259,11 +329,38 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.lineCount</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.lineCount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>4</code>)
                   </td>
                   <td class='break-word'><span>The number of lines
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.stringMinMaxLength</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>
+                  
+                    (default <code>[4,8]</code>)
+                  </td>
+                  <td class='break-word'><span>Length of generated strings
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.randomStepSize</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>50</code>)
+                  </td>
+                  <td class='break-word'><span>Random pixel range to step vertically between each generated points
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.nullRatio</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>null</code>)
+                  </td>
+                  <td class='break-word'><span>Percentage of generated values that are null
 </span></td>
                 </tr>
               
@@ -280,7 +377,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         The dataManager instance.
 
       
@@ -347,7 +444,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         A data object
 
       
@@ -463,7 +560,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>container</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+            <span class='code bold'>container</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
 	    The DOM element or selector for the container
 
           </div>
@@ -478,7 +575,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         The chart instance.
 
       
@@ -540,7 +637,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
 	    A config object.
 
           </div>
@@ -559,7 +656,7 @@
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.width</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.width</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>800</code>)
                   </td>
@@ -568,7 +665,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.height</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.height</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>500</code>)
                   </td>
@@ -577,7 +674,16 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.margin</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>
+                  
+                    (default <code>margin:{top:48,right:32,bottom:48,left:32}</code>)
+                  </td>
+                  <td class='break-word'><span>Margin object
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.keyType</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;time&quot;</code>)
                   </td>
@@ -586,7 +692,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.chartType</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.chartType</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;line&quot;</code>)
                   </td>
@@ -595,7 +701,34 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.isAnimated</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.extractType</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>null</code>)
+                  </td>
+                  <td class='break-word'><span>The type of date to convert to from a number corresponding to a date part: isodow, month, quarter, hour, minute
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.ease</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a></code>
+                  
+                    (default <code>d3.easeLinear</code>)
+                  </td>
+                  <td class='break-word'><span>Axis transition easing
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.useScrolling</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>false</code>)
+                  </td>
+                  <td class='break-word'><span>If using horizontal scrolling when the bar width gets under a threshold
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.isAnimated</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>false</code>)
                   </td>
@@ -604,7 +737,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.animationDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.animationDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>1500</code>)
                   </td>
@@ -614,14 +747,14 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.colorSchema</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?</code>
+                  <td class='break-word'><span class='code bold'>config.colorSchema</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?</code>
                   </td>
                   <td class='break-word'><span>List of {key, value} colors to use on marks
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.defaultColor</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.defaultColor</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;skyblue&quot;</code>)
                   </td>
@@ -630,7 +763,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.xDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
+                  <td class='break-word'><span class='code bold'>config.xDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -639,7 +772,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
+                  <td class='break-word'><span class='code bold'>config.yDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -648,17 +781,36 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
+                  <td class='break-word'><span class='code bold'>config.yDomain</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <code>"auto"</code>)</code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
                   <td class='break-word'><span>Set 2nd Y axis domain or "auto" for using data extent
+<data>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.sortBy</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>alphaAscending</code>)
+                  </td>
+                  <td class='break-word'><span>Sorting of columns in stack bar: totalAscending, totalDescending, alphaAscending, alphaDescending
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.fillData</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>false</code>)
+                  </td>
+                  <td class='break-word'><span>If replacing nulls with zeroes
 <axis>
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.tickPadding</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.tickPadding</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>5</code>)
                   </td>
@@ -667,7 +819,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.tickSizes</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.tickSizes</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>5</code>)
                   </td>
@@ -676,7 +828,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.xTickSkip</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.xTickSkip</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -685,7 +837,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yTicks</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.yTicks</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -694,7 +846,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.y2Ticks</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.y2Ticks</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -703,34 +855,34 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.xAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.xAxisFormat</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Format string for the X axis or "auto"
+                  <td class='break-word'><span>Format string for the X axis, "auto" or a formatting function
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.yAxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;.2f&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Format string for the Y axis
+                  <td class='break-word'><span>Format string for the Y axis, "auto" or a formatting function
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.y2AxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.y2AxisFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;.2f&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Format string for the Y2 axis
+                  <td class='break-word'><span>Format string for the Y2 axis, "auto" or a formatting function
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.grid</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.grid</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;horizontal&quot;</code>)
                   </td>
@@ -739,17 +891,26 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.axisTransitionDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.axisTransitionDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>0</code>)
                   </td>
                   <td class='break-word'><span>Animated transition duration
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.labelsAreRotated</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>false</code>)
+                  </td>
+                  <td class='break-word'><span>If x axis ticks should be rotated
 <hover>
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.dotRadius</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.dotRadius</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>4</code>)
                   </td>
@@ -759,16 +920,34 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.valueFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.tooltipFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;.2f&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Format string for values in tooltip/legend
+                  <td class='break-word'><span>Format string for the tooltip values, "auto" or a formatting function
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.mouseChaseDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  <td class='break-word'><span class='code bold'>config.tooltipTitleFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>null</code>)
+                  </td>
+                  <td class='break-word'><span>Format string for the tooltip title, "auto" or a formatting function
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.tooltipTitle</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Tooltip title
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.mouseChaseDuration</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
                   
                     (default <code>0</code>)
                   </td>
@@ -777,17 +956,54 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.dateFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.tooltipEase</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a></code>
+                  
+                    (default <code>d3.easeQuadInOut</code>)
+                  </td>
+                  <td class='break-word'><span>Easing function for the tooltip following
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.tooltipIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>&quot;true&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>If tooltip is enabled
+<format>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.dateFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;%b %d, %Y&quot;</code>)
                   </td>
-                  <td class='break-word'><span>Format string for title when it's a date
+                  <td class='break-word'><span>Default format for brush range and tooltip dates
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.inputDateFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;%m-%d-%Y&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Default format for domain input date
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.numberFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>&quot;.2f&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Default format for brush range, domain input and axis numbers
 <legend>
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.legendXPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+                  <td class='break-word'><span class='code bold'>config.legendXPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -796,7 +1012,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.legendYPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+                  <td class='break-word'><span class='code bold'>config.legendYPosition</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
                   
                     (default <code>&quot;auto&quot;</code>)
                   </td>
@@ -805,16 +1021,16 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.legendTitle</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.legendTitle</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
-                    (default <code>&quot;Dataset&quot;</code>)
+                    (default <code>&quot;&quot;</code>)
                   </td>
                   <td class='break-word'><span>Legend title
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.legendIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.legendIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>true</code>)
                   </td>
@@ -824,7 +1040,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.binningResolution</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.binningResolution</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
                     (default <code>&quot;1mo&quot;</code>)
                   </td>
@@ -833,7 +1049,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.binningIsAuto</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.binningIsAuto</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>true</code>)
                   </td>
@@ -842,7 +1058,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.binningIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.binningIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>true</code>)
                   </td>
@@ -852,62 +1068,80 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.xDomainEditorFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.xLock</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
-                    (default <code>&quot;%b %d, %Y&quot;</code>)
+                    (default <code>false</code>)
                   </td>
-                  <td class='break-word'><span>Format string for x domain editor
+                  <td class='break-word'><span>If x axis domain is locked
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yDomainEditorFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.yLock</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
-                    (default <code>&quot;.2f&quot;</code>)
+                    (default <code>false</code>)
                   </td>
-                  <td class='break-word'><span>Format string for y domain editor
+                  <td class='break-word'><span>If y axis domain is locked
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.y2DomainEditorFormat</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.y2Lock</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
-                    (default <code>&quot;.2f&quot;</code>)
+                    (default <code>false</code>)
                   </td>
-                  <td class='break-word'><span>Format string for y domain editor
+                  <td class='break-word'><span>If y2 axis domain is locked
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.domainEditorIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.xDomainEditorIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>true</code>)
                   </td>
-                  <td class='break-word'><span>Enable domain editing
+                  <td class='break-word'><span>Enable x domain editing
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.yDomainEditorIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable y domain editing
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.y2DomainEditorIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  
+                    (default <code>true</code>)
+                  </td>
+                  <td class='break-word'><span>Enable y2 domain editing
 <brush range>
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.brushRangeMin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+                  <td class='break-word'><span class='code bold'>config.brushRangeMin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
                   
-                    (default <code>&quot;Jan 01, 2001&quot;</code>)
+                    (default <code>null</code>)
                   </td>
                   <td class='break-word'><span>Brush min range to display and to set brush
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.brushRangeMax</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+                  <td class='break-word'><span class='code bold'>config.brushRangeMax</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
                   
-                    (default <code>&quot;Jan 02, 2002&quot;</code>)
+                    (default <code>null</code>)
                   </td>
                   <td class='break-word'><span>Brush max range to display and to set brush
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.brushRangeIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.brushRangeIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>true</code>)
                   </td>
@@ -917,7 +1151,7 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.brushIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
+                  <td class='break-word'><span class='code bold'>config.brushIsEnabled</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>
                   
                     (default <code>true</code>)
                   </td>
@@ -927,29 +1161,58 @@
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.xLabel</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.xLabel</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
-                    (default <code>&quot;X Axis Label&quot;</code>)
+                    (default <code>&quot;&quot;</code>)
                   </td>
                   <td class='break-word'><span>X axis label
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.yLabel</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.yLabel</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
-                    (default <code>&quot;Y Axis Label&quot;</code>)
+                    (default <code>&quot;&quot;</code>)
                   </td>
                   <td class='break-word'><span>Y axis label
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>config.y2Label</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  <td class='break-word'><span class='code bold'>config.y2Label</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
                   
-                    (default <code>&quot;Y2 Axis Label&quot;</code>)
+                    (default <code>&quot;&quot;</code>)
                   </td>
                   <td class='break-word'><span>Y2 axis label
+<line>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.dotsToShow</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+                  
+                    (default <code>&quot;none&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Which dots to show on line chart, all, isolated, none
+<bar>
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.barSpacingPercent</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+                  
+                    (default <code>&quot;none&quot;</code>)
+                  </td>
+                  <td class='break-word'><span>Bar charts gutter width as a % of the bar width
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>config.selectedKeys</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>
+                  
+                    (default <code>[]</code>)
+                  </td>
+                  <td class='break-word'><span>Dimming all bars except for those listed in this array. Empty = none dimmed
 </span></td>
                 </tr>
               
@@ -974,7 +1237,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         The chart instance.
 
       
@@ -1037,7 +1300,7 @@
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         The chart instance.
 
       
@@ -1099,7 +1362,7 @@ Automatically called by setData, Uses cached data.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
         The chart instance.
 
       
@@ -1116,6 +1379,735 @@ Automatically called by setData, Uses cached data.</p>
 .setConfig({<span class="hljs-attr">width</span>: <span class="hljs-number">100</span>})
 .render()</pre>
     
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='Chart#getEvents'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getEvents</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get access to the event manager</p>
+
+
+  <div class='pre p1 fill-light mt0'>getEvents</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The EventManager instance
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
+.getEvents()</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='eventmanager'>
+      EventManager
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get access to all exposed events</p>
+
+
+  <div class='pre p1 fill-light mt0'>EventManager</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onBrush</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : brushStart, brushMove, brushEnd
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onBinning</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : change
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onDomainEditor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : domainChange, domainLockToggle
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onBrushRangeEditor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : rangeChange
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onLabel</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : axisLabelChange
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onHover</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : hover
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>onPanel</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
+	    : mouseOverPanel, mouseOutPanel, mouseMovePanel
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='EventManager#onPanel'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onPanel</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Panel mouse events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onPanel</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: mouseOverPanel, mouseOutPanel, mouseMovePanel
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='EventManager#onBrush'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onBrush</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Brush events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onBrush</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: brushStart, brushMove, brushEnd
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>mapd3.Chart(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.chart'</span>))
+.getEvents()
+.onBrush(<span class="hljs-string">"brushStart"</span>, (d) =&gt; <span class="hljs-built_in">console</span>.log(d))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='EventManager#onBinning'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onBinning</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Binning selector events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onBinning</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: change
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='EventManager#onDomainEditor'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onDomainEditor</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Domain editor events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onDomainEditor</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: domainChange, domainLockToggle
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='EventManager#onBrushRangeEditor'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onBrushRangeEditor</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Brush range editor events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onBrushRangeEditor</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: rangeChange
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='EventManager#onLabel'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onLabel</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Label editor events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onLabel</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: axisLabelChange
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='EventManager#onHover'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onHover</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Hover events</p>
+
+
+  <div class='pre p1 fill-light mt0'>onHover</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Event name: hover
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">function</a>?)</code>
+	    Event callback
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></code>:
+        The event instance.
+
+      
+    
+  
+
+  
+
   
 
   

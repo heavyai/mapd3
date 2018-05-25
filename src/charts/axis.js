@@ -58,10 +58,24 @@ export default function Axis (_container) {
     yAxis: null,
     y2Axis: null,
     horizontalGridLines: null,
-    verticalGridLines: null
+    verticalGridLines: null,
+    xLabelsShouldRotate: false
   }
 
-  let xLabelsShouldRotate = false
+  const APPROX_FONT_WIDTH = 5
+
+  const X_TICK_LABEL_SETTINGS = {
+    DEFAULT_XPOS: 0,
+    DEFAULT_YPOS: 11,
+    DEFAULT_DY: ".71em",
+    DEFAULT_TRANSFORM: null,
+    DEFAULT_ANCHOR: "middle",
+    ROTATED_XPOS: 9,
+    ROTATED_YPOS: 0,
+    ROTATED_DY: ".35em",
+    ROTATED_TRANSFORM: "rotate(90)",
+    ROTATED_ANCHOR: "start"
+  }
 
   function build () {
     if (!cache.root) {
@@ -77,7 +91,7 @@ export default function Axis (_container) {
       cache.y2AxisRoot.select(".axis-group").append("g").attr("class", "axis y2")
     }
 
-    xLabelsShouldRotate = shouldXLabelsRotate()
+    cache.xLabelsShouldRotate = shouldXLabelsRotate()
 
     const DOMAIN_LINE_WIDTH = 1
     cache.yAxisRoot
@@ -220,7 +234,6 @@ export default function Axis (_container) {
   }
 
   function shouldXLabelsRotate () {
-    const APPROX_FONT_WIDTH = 5
     const width = config.markPanelWidth
     const labels = scales.xScale.domain()
     const totalLabelsWidth = labels.reduce((total, d) => total + d.length * APPROX_FONT_WIDTH, 0)
@@ -233,26 +246,25 @@ export default function Axis (_container) {
 
   function rotateXLabels () {
     cache.xAxisRoot.select(".axis.x").selectAll("text")
-      .attr("y", 0)
-      .attr("x", 9)
-      .attr("dy", ".35em")
-      .attr("transform", "rotate(90)")
-      .style("text-anchor", "start")
+      .attr("y", X_TICK_LABEL_SETTINGS.ROTATED_YPOS)
+      .attr("x", X_TICK_LABEL_SETTINGS.ROTATED_XPOS)
+      .attr("dy", X_TICK_LABEL_SETTINGS.ROTATED_DY)
+      .attr("transform", X_TICK_LABEL_SETTINGS.ROTATED_TRANSFORM)
+      .style("text-anchor", X_TICK_LABEL_SETTINGS.ROTATED_ANCHOR)
 
     return this
   }
 
   function unRotateXLabels () {
     cache.xAxisRoot.select(".axis.x").selectAll("text")
-      .attr("x", 0)
-      .attr("y", 11)
-      .attr("dy", ".71em")
-      .attr("transform", null)
-      .style("text-anchor", "middle")
+      .attr("x", X_TICK_LABEL_SETTINGS.DEFAULT_XPOS)
+      .attr("y", X_TICK_LABEL_SETTINGS.DEFAULT_YPOS)
+      .attr("dy", X_TICK_LABEL_SETTINGS.DEFAULT_DY)
+      .attr("transform", X_TICK_LABEL_SETTINGS.DEFAULT_TRANSFORM)
+      .style("text-anchor", X_TICK_LABEL_SETTINGS.DEFAULT_ANCHOR)
   }
 
   function getNumberOfLabelsToSkip () {
-    const APPROX_FONT_WIDTH = 5
     const labels = scales.xScale.domain()
     let longestLabelApproxWidth = null
     if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && shouldXLabelsRotate())) {
@@ -269,9 +281,9 @@ export default function Axis (_container) {
       .attr("transform", `translate(0, ${config.chartHeight})`)
       .call(cache.xAxis)
 
-    if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && xLabelsShouldRotate)) {
+    if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && cache.xLabelsShouldRotate)) {
       rotateXLabels()
-    } else if (config.labelsAreRotated === "auto" && !xLabelsShouldRotate) {
+    } else if (config.labelsAreRotated === "auto" && !cache.xLabelsShouldRotate) {
       unRotateXLabels()
     }
 

@@ -1,4 +1,9 @@
 .label-group {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+
     .axis-label {
       position: absolute;
       color: #a7a7a7;
@@ -7,10 +12,15 @@
       overflow: hidden;
     }
 
-    .axis-label.x,
-    .axis-label.y {
+    .axis-label.x {
       transform: translate(-50%);
       -webkit-transform: translate(-50%);
+    }
+
+    .axis-label.y {
+      left: 0;
+      transform: translate(-50%) rotate(90deg);
+      -webkit-transform: translate(-50%) rotate(-90deg);
     }
 
     .axis-label.y2 {

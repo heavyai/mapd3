@@ -37,9 +37,6 @@ export default function Label (_container) {
       cache.root = cache.container
         .append("div")
         .attr("class", "label-group")
-        .style("position", "absolute")
-        .style("top", 0)
-        .style("white-space", "nowrap")
 
       cache.xAxisLabel = cache.root.append("div")
         .attr("class", "axis-label x")
@@ -64,7 +61,6 @@ export default function Label (_container) {
             this.blur()
           }
         })
-        .style("left", 0)
 
       cache.y2AxisLabel = cache.root.append("div")
         .attr("class", "axis-label y2")

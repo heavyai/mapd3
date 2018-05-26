@@ -34,7 +34,24 @@ const config = env => {
           },
           {
             test: /\.(sass|scss)$/,
-            use: ExtractTextPlugin.extract(["css-loader", "sass-loader"])
+            use: ExtractTextPlugin.extract({
+              use: [
+                {
+                  loader: "css-loader"
+                },
+                {
+                  loader: "postcss-loader",
+                  options: {
+                    config: {
+                      path: "postcss.config.js"
+                    }
+                  }
+                },
+                {
+                  loader: "sass-loader"
+                }
+              ]
+            })
           }
         ]
       },

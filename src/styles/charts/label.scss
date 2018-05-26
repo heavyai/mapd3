@@ -1,8 +1,20 @@
 .label-group {
     .axis-label {
+      position: absolute;
       color: #a7a7a7;
       font-weight: bold;
       font-size: 13px;
       overflow: hidden;
+    }
+
+    .axis-label.x,
+    .axis-label.y {
+      transform: translate(-50%);
+      -webkit-transform: translate(-50%);
+    }
+
+    .axis-label.y2 {
+      transform: translate(-50%) rotate(90deg);
+      -webkit-transform: translate(-50%) rotate(90deg);
     }
 }

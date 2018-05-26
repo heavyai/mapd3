@@ -42,8 +42,8 @@
   },
   "homepage": "https://github.com/mapd/mapd3",
   "browserslist": [
-    "> 1%",
-    "IE 11"
+    "last 2 versions",
+    "not ie 10"
   ],
   "dependencies": {
     "base-64": "^0.1.0",

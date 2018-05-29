@@ -233,12 +233,9 @@
     font-size: 13px;
     overflow: hidden; }
   .mapd3 .label-group .axis-label.x {
-    transform: translate(-50%);
-    -webkit-transform: translate(-50%); }
+    transform: translate(-50%); }
   .mapd3 .label-group .axis-label.y {
     left: 0;
-    transform: translate(-50%) rotate(90deg);
-    -webkit-transform: translate(-50%) rotate(-90deg); }
+    transform: translate(-50%) rotate(90deg); }
   .mapd3 .label-group .axis-label.y2 {
-    transform: translate(-50%) rotate(90deg);
-    -webkit-transform: translate(-50%) rotate(90deg); }
+    transform: translate(-50%) rotate(90deg); }

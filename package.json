@@ -41,12 +41,17 @@
     "url": "https://github.com/mapd/mapd3/issues"
   },
   "homepage": "https://github.com/mapd/mapd3",
+  "browserslist": [
+    "last 2 versions",
+    "not ie 10"
+  ],
   "dependencies": {
     "base-64": "^0.1.0",
     "d3": "4.11.0",
     "d3-svg-legend": "^2.25.3"
   },
   "devDependencies": {
+    "autoprefixer": "^8.5.1",
     "babel-cli": "6.24.1",
     "babel-core": "6.26.0",
     "babel-eslint": "7.2.3",
@@ -66,6 +71,7 @@
     "mocha-webpack": "^1.1.0",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
+    "postcss-loader": "^2.1.5",
     "requirejs-plugins": "^1.0.2",
     "sanitize-html": "^1.13.0",
     "sass-loader": "^6.0.6",

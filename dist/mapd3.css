@@ -221,8 +221,21 @@
   .mapd3 .brush-range-input-group .brush-range-input, .mapd3 .brush-range-input-group .separator {
     padding: 0 2px; }
 
-.mapd3 .label-group .axis-label {
-  color: #a7a7a7;
-  font-weight: bold;
-  font-size: 13px;
-  overflow: hidden; }
+.mapd3 .label-group {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap; }
+  .mapd3 .label-group .axis-label {
+    position: absolute;
+    color: #a7a7a7;
+    font-weight: bold;
+    font-size: 13px;
+    overflow: hidden; }
+  .mapd3 .label-group .axis-label.x {
+    transform: translate(-50%); }
+  .mapd3 .label-group .axis-label.y {
+    left: 0;
+    transform: translate(-50%) rotate(90deg); }
+  .mapd3 .label-group .axis-label.y2 {
+    transform: translate(-50%) rotate(90deg); }

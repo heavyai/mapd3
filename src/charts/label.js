@@ -37,13 +37,9 @@ export default function Label (_container) {
       cache.root = cache.container
         .append("div")
         .attr("class", "label-group")
-        .style("position", "absolute")
-        .style("top", 0)
-        .style("white-space", "nowrap")
 
       cache.xAxisLabel = cache.root.append("div")
         .attr("class", "axis-label x")
-        .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "x"})
@@ -53,11 +49,9 @@ export default function Label (_container) {
             this.blur()
           }
         })
-        .style("transform", "translate(-50%)")
 
       cache.yAxisLabel = cache.root.append("div")
         .attr("class", "axis-label y")
-        .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y"})
@@ -67,12 +61,9 @@ export default function Label (_container) {
             this.blur()
           }
         })
-        .style("left", 0)
-        .style("transform", "translate(-50%) rotate(-90deg)")
 
       cache.y2AxisLabel = cache.root.append("div")
         .attr("class", "axis-label y2")
-        .style("position", "absolute")
         .attr("contentEditable", true)
         .on("blur", function blur () {
           dispatcher.call("axisLabelChange", this, {value: this.innerText, type: "y2"})
@@ -82,7 +73,6 @@ export default function Label (_container) {
             this.blur()
           }
         })
-        .style("transform", "translate(-50%) rotate(90deg)")
     }
 
     cache.xAxisLabel

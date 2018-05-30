@@ -235,7 +235,10 @@ export default function Axis (_container) {
   function shouldXLabelsRotate () {
     const width = config.markPanelWidth
     const labels = scales.xScale.domain()
-    const totalLabelsWidth = labels.reduce((total, d) => total + d.length * APPROX_FONT_WIDTH, 0)
+    const totalLabelsWidth = labels.reduce(
+      (total, d) => total + d.length * APPROX_FONT_WIDTH + 2 * APPROX_FONT_WIDTH,
+      0
+    )
 
     if (totalLabelsWidth >= width) {
       return true

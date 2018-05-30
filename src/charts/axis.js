@@ -62,6 +62,7 @@ export default function Axis (_container) {
   }
 
   const APPROX_FONT_WIDTH = 5
+  const LABEL_SPACING = 2
 
   const X_TICK_LABEL_SETTINGS = {
     DEFAULT_XPOS: 0,
@@ -236,7 +237,7 @@ export default function Axis (_container) {
     const width = config.markPanelWidth
     const labels = scales.xScale.domain()
     const totalLabelsWidth = labels.reduce(
-      (total, d) => total + d.length * APPROX_FONT_WIDTH + 2 * APPROX_FONT_WIDTH,
+      (total, d) => total + d.length * APPROX_FONT_WIDTH + LABEL_SPACING * APPROX_FONT_WIDTH,
       0
     )
 

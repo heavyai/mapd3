@@ -32,6 +32,7 @@ export default function Axis (_container) {
     yDomain: "auto",
     y2Domain: "auto",
     labelsAreRotated: false,
+    maxLabelCharCount: null,
 
     chartWidth: null,
     chartHeight: null,
@@ -196,6 +197,19 @@ export default function Axis (_container) {
     }
   }
 
+  function truncateTickText (axisSelection) {
+    if (!config.maxLabelCharCount) {
+      return 
+    }
+    axisSelection.selectAll(".tick text")
+      .each(function (d) {
+        const text = this.textContent
+        if (text.length > config.maxLabelCharCount) {
+          this.textContent = `${text.slice(0, config.maxLabelCharCount)}…`
+        }
+      })
+  }
+
   function buildAxis () {
     cache.xAxis = d3.axisBottom(scales.xScale)
       .tickSize(config.tickSizes, 0)
@@ -290,12 +304,15 @@ export default function Axis (_container) {
       unRotateXLabels()
     }
 
+    truncateTickText(cache.xAxisRoot)
+
     if (scales.yScale) {
       cache.yAxisRoot.select(".axis.y")
         .transition()
         .duration(config.axisTransitionDuration)
         .ease(config.ease)
         .call(cache.yAxis)
+        .on("end", () => truncateTickText(cache.yAxisRoot))
     } else {
       cache.yAxisRoot.select(".axis.y").selectAll("*").remove()
     }
@@ -306,6 +323,7 @@ export default function Axis (_container) {
         .duration(config.axisTransitionDuration)
         .ease(config.ease)
         .call(cache.y2Axis)
+        .on("end", () => truncateTickText(cache.y2AxisRoot))
     } else {
       cache.y2AxisRoot.select(".axis.y2").selectAll("*").remove()
     }

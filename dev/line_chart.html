@@ -27,14 +27,14 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "time"
+const keyType = "string"
 const dataConfig = {
   keyType,
-  range: [0, 100],
-  pointCount: 4,
-  groupCount: 2,
-  lineCount: 2,
-  stringMinMaxLength: [5, 10],
+  range: [100000, 1000000],
+  pointCount: 100,
+  groupCount: 1,
+  lineCount: 1,
+  stringMinMaxLength: [20, 30],
   randomStepSize: 50,
   nullRatio: 0
 }
@@ -69,8 +69,8 @@ const chart1 = mapd3.Chart(chartNode1)
     margin: {
       top: 32,
       right: 70,
-      bottom: 64,
-      left: 80
+      bottom: 75,
+      left: 70
     },
     keyType, // time, number, string
     chartType, // line, area, stackedArea, bar, stackedBar
@@ -96,14 +96,16 @@ const chart1 = mapd3.Chart(chartNode1)
     tickSizes: 8,
     yTicks: "auto",
     y2Ticks: "auto",
-    xTickSkip: "auto",
+    xTickSkip: false,
     // xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
     xAxisFormat: "auto", // "auto", format compatible with d3-format or function
-    yAxisFormat: (d => `${d}km/h`),
+    yAxisFormat: null,
     y2AxisFormat: ".2f",
     grid: "horizontal",
     axisTransitionDuration: 0,
-    labelsAreRotated: false,
+    labelsAreRotated: true,
+    maxLabelCharCount: 5,
+
 
     // hover
     dotRadius: 4,

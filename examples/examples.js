@@ -16,7 +16,7 @@
  */
 
 const keyType = "number" // time, number, string
-const chartType = "line" // line, area, stackedArea
+const chartType = "line" // line, area, stackedArea, bar, stackedBar, dot
 
 const dataManager = mapd3.DataManager()
 
@@ -142,7 +142,7 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {number} [config.height=500] Outer chart height, including margins
   * @param {object} [config.margin=margin: {top: 48, right: 32, bottom: 48, left: 32}] Margin object
   * @param {string} [config.keyType="time"] Data type of x values: time, number, string
-  * @param {string} [config.chartType="line"] The type of marks: line, area, stackedArea, bar, stacked bar
+  * @param {string} [config.chartType="line"] The type of marks: line, area, stackedArea, bar, stacked bar, dot
   * @param {string} [config.extractType=null] The type of date to convert to from a number corresponding to a date part: isodow, month, quarter, hour, minute
   * @param {function} [config.ease=d3.easeLinear] Axis transition easing
   * @param {boolean} [config.useScrolling=false] If using horizontal scrolling when the bar width gets under a threshold

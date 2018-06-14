@@ -19,7 +19,7 @@
   .mapd3.mapd3-container .svg-wrapper {
     display: flex;
     overflow-y: hidden;
-    overflow-x: scroll; }
+    overflow-x: hidden; }
 
 .mapd3 .vertical-grid-line,
 .mapd3 .horizontal-grid-line {

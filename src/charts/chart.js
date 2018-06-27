@@ -270,7 +270,7 @@ export default function Chart (_container) {
     cache.svg
       .style("flex", `0 0 ${config.markPanelWidth}px`)
       .style("height", `${config.chartHeight + config.margin.bottom}`)
-      .attr("transform", `translate(0,${config.margin.top})`)
+      .style("top", `${config.margin.top}px`)
 
     cache.headerGroup
       .style("width", `${config.chartWidth}px`)

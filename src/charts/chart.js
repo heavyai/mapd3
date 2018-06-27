@@ -265,6 +265,7 @@ export default function Chart (_container) {
     cache.svgWrapper
       .style("flex", `0 0 ${config.chartWidth}px`)
       .style("height", `${config.height}px`)
+      .style("overflow-x", config.useScrolling ? "scroll" : "hidden")
 
     cache.svg
       .style("flex", `0 0 ${config.markPanelWidth}px`)

@@ -27,11 +27,6 @@ export function autoConfigure (config, cache, data) {
   if (config.height === "auto" && cache.container) {
     newConfig.height = cache.container && cache.container.clientHeight || 0
   }
-  if (config.useScrolling && cache.svgWrapper) {
-    cache.svgWrapper.style("overflow-x", "scroll")
-  } else if (!config.useScrolling && cache.svgWrapper) {
-    cache.svgWrapper.style("overflow-x", "hidden")
-  }
 
   const sizes = getSizes({...config, ...newConfig}, data)
 

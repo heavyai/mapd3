@@ -14,9 +14,15 @@
   font-size: 11px; }
 
 .mapd3.mapd3-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: stretch; }
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch; }
   .mapd3.mapd3-container .svg-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     overflow-y: hidden;
     overflow-x: hidden; }
@@ -90,9 +96,15 @@
     border-collapse: separate;
     border-spacing: 0 5px; }
   .mapd3 .tooltip-group .tooltip-item, .mapd3 .legend-group .tooltip-item {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: flex-start;
-    align-items: center; }
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
   .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .tooltip-group .section.value, .mapd3 .legend-group .section.tooltip-label, .mapd3 .legend-group .section.value {
     padding-left: 5px;
     white-space: nowrap;
@@ -233,9 +245,12 @@
     font-size: 13px;
     overflow: hidden; }
   .mapd3 .label-group .axis-label.x {
-    transform: translate(-50%); }
+    -webkit-transform: translate(-50%);
+            transform: translate(-50%); }
   .mapd3 .label-group .axis-label.y {
     left: 0;
-    transform: translate(-50%) rotate(-90deg); }
+    -webkit-transform: translate(-50%) rotate(-90deg);
+            transform: translate(-50%) rotate(-90deg); }
   .mapd3 .label-group .axis-label.y2 {
-    transform: translate(-50%) rotate(-90deg); }
+    -webkit-transform: translate(-50%) rotate(-90deg);
+            transform: translate(-50%) rotate(-90deg); }

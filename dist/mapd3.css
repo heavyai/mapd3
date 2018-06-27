@@ -26,6 +26,8 @@
     display: flex;
     overflow-y: hidden;
     overflow-x: hidden; }
+  .mapd3.mapd3-container svg.chart {
+    position: relative; }
 
 .mapd3 .vertical-grid-line,
 .mapd3 .horizontal-grid-line {

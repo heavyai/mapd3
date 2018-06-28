@@ -265,11 +265,12 @@ export default function Chart (_container) {
     cache.svgWrapper
       .style("flex", `0 0 ${config.chartWidth}px`)
       .style("height", `${config.height}px`)
+      .style("overflow-x", config.useScrolling ? "auto" : "hidden")
 
     cache.svg
       .style("flex", `0 0 ${config.markPanelWidth}px`)
       .style("height", `${config.chartHeight + config.margin.bottom}`)
-      .attr("transform", `translate(0,${config.margin.top})`)
+      .style("top", `${config.margin.top}px`)
 
     cache.headerGroup
       .style("width", `${config.chartWidth}px`)

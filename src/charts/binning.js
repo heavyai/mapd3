@@ -75,6 +75,7 @@ export default function Binning (_container) {
       })
       .merge(cache.binningItems)
       .attr("class", (d) => `item item-${d} toggleExclusive`)
+      .classed("selected", (d) => config.binningResolution === d)
       .text((d) => d)
 
     cache.binningItems.exit().remove()

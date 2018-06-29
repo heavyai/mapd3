@@ -89,8 +89,6 @@ export default function DomainEditor (_container) {
       cache.root = cache.container
         .append("div")
         .attr("class", "domain-input-group")
-        .style("position", "absolute")
-        .style("top", 0)
 
       // hit zones
       cache.xHitZone = cache.root.append("div")

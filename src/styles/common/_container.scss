@@ -5,6 +5,10 @@
   .svg-wrapper {
     display: flex;
     overflow-y: hidden;
-    overflow-x: scroll;
+    overflow-x: hidden;
+  }
+
+  svg.chart {
+    position: relative;
   }
 }

@@ -93,14 +93,16 @@ export default function Brush (_container) {
   }
 
   function handleBrushStart () {
-    if (!d3.event.sourceEvent || !d3.event.selection) {
+    if (!d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
     dispatcher.call("brushStart", this, getDataExtent(), config)
   }
 
   function handleBrushMove () {
-    if (!d3.event.sourceEvent || !d3.event.selection) {
+    if (!d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
     dispatcher.call("brushMove", this, getDataExtent(), config)
@@ -108,7 +110,8 @@ export default function Brush (_container) {
 
   function handleBrushEnd () {
     // Skip programatic setting
-    if (!d3.event.sourceEvent) {
+    if (!d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
 
@@ -118,8 +121,7 @@ export default function Brush (_container) {
       return
     }
 
-    const dataExtent = getDataExtent()
-    dispatcher.call("brushEnd", this, dataExtent, config)
+    dispatcher.call("brushEnd", this, getDataExtent(), config)
   }
 
   function on (...args) {

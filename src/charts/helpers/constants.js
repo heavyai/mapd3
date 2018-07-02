@@ -1,6 +1,7 @@
 export const keys = {
   KEY: "key",
   VALUE: "value",
+  COUNTVAL: "countval",
   ID: "id",
   LABEL: "label",
   GROUP: "group",
@@ -30,5 +31,7 @@ export const comparators = {
   TOTAL_ASCENDING: "totalAscending",
   TOTAL_DESCENDING: "totalDescending",
   ALPHA_ASCENDING: "alphaAscending",
-  ALPHA_DESCENDING: "alphaDescending"
+  ALPHA_DESCENDING: "alphaDescending",
+  COUNTVAL_ASCENDING: "countvalAscending",
+  COUNTVAL_DESCENDING: "countvalDescending"
 }

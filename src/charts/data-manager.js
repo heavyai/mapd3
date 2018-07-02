@@ -132,6 +132,7 @@ export default function DataManager () {
         dataPoint[keys.ID] = serie[keys.ID]
         dataPoint[keys.KEY] = d[keys.KEY]
         dataPoint[keys.VALUE] = d[keys.VALUE]
+        dataPoint[keys.COUNTVAL] = d[keys.COUNTVAL]
         flatData.push(dataPoint)
       })
     })
@@ -179,7 +180,8 @@ export default function DataManager () {
     // get stack totals
     const allKeyTotals = dataByKey.map(d => ({
       key: d[keys.KEY],
-      total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE]))
+      total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE])),
+      ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
     }))
 
     // sort
@@ -195,6 +197,12 @@ export default function DataManager () {
       break
     case comparators.ALPHA_DESCENDING:
       allKeyTotals.sort(descendingComparator("key"))
+      break
+    case comparators.COUNTVAL_ASCENDING:
+      allKeyTotals.sort(ascendingComparator("countval"))
+      break
+    case comparators.COUNTVAL_DESCENDING:
+      allKeyTotals.sort(descendingComparator("countval"))
       break
     default:
       break

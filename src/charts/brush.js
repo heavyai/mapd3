@@ -70,10 +70,10 @@ export default function Brush (_container) {
 
   function setBrush () {
     let extent = [config.brushRangeMin, config.brushRangeMax]
-    if (config.keyType === "time") {
-      extent = extent.map(d => new Date(d))
-    }
     if (extendIsValid(extent)) {
+      if (config.keyType === "time") {
+        extent = extent.map(d => new Date(d))
+      }
       cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
     }
     return this

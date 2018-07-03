@@ -60,32 +60,19 @@ export default function Brush (_container) {
     cache.chartBrush.selectAll(".brush-rect")
       .attr("height", config.chartHeight)
 
-    moveBrush()
+    setBrush()
   }
 
-  function getDataExtent () {
+  function getDataExtentUnderBrush () {
     const selection = d3.event.selection
-    const dataExtent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
-    return dataExtent
+    return selection.map((d) => invertScale(scales.xScale, d, config.keyType))
   }
 
-  function clampBrush (_dataExtent) {
+  function setBrush () {
+    let extent = [config.brushRangeMin, config.brushRangeMax]
     if (config.keyType === "time") {
-      return [
-        new Date(clamp(new Date(config.brushRangeMin), _dataExtent)),
-        new Date(clamp(new Date(config.brushRangeMax), _dataExtent))
-      ]
-    } else {
-      return [
-        clamp(config.brushRangeMin, _dataExtent),
-        clamp(config.brushRangeMax, _dataExtent)
-      ]
+      extent = extent.map(d => new Date(d))
     }
-  }
-
-  function moveBrush () {
-    const dataExtent = scales.xScale.domain()
-    const extent = clampBrush(dataExtent)
     if (extendIsValid(extent)) {
       cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
     }
@@ -97,7 +84,7 @@ export default function Brush (_container) {
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
-    dispatcher.call("brushStart", this, getDataExtent(), config)
+    dispatcher.call("brushStart", this, getDataExtentUnderBrush(), config)
   }
 
   function handleBrushMove () {
@@ -105,7 +92,7 @@ export default function Brush (_container) {
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
-    dispatcher.call("brushMove", this, getDataExtent(), config)
+    dispatcher.call("brushMove", this, getDataExtentUnderBrush(), config)
   }
 
   function handleBrushEnd () {
@@ -121,7 +108,7 @@ export default function Brush (_container) {
       return
     }
 
-    dispatcher.call("brushEnd", this, getDataExtent(), config)
+    dispatcher.call("brushEnd", this, getDataExtentUnderBrush(), config)
   }
 
   function on (...args) {

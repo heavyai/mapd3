@@ -65,7 +65,11 @@ export default function Brush (_container) {
 
   function getDataExtentUnderBrush () {
     const selection = d3.event.selection
-    return selection.map((d) => invertScale(scales.xScale, d, config.keyType))
+    if (selection) {
+      return selection.map((d) => invertScale(scales.xScale, d, config.keyType))
+    } else {
+      return null
+    }
   }
 
   function setBrush () {
@@ -75,6 +79,8 @@ export default function Brush (_container) {
         extent = extent.map(d => new Date(d))
       }
       cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
+    } else {
+      cache.root.call(cache.brush.move, null)
     }
     return this
   }

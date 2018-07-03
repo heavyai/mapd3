@@ -60,55 +60,51 @@ export default function Brush (_container) {
     cache.chartBrush.selectAll(".brush-rect")
       .attr("height", config.chartHeight)
 
-    moveBrush()
+    setBrush()
   }
 
-  function getDataExtent () {
+  function getDataExtentUnderBrush () {
     const selection = d3.event.selection
-    const dataExtent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
-    return dataExtent
-  }
-
-  function clampBrush (_dataExtent) {
-    if (config.keyType === "time") {
-      return [
-        new Date(clamp(new Date(config.brushRangeMin), _dataExtent)),
-        new Date(clamp(new Date(config.brushRangeMax), _dataExtent))
-      ]
+    if (selection) {
+      return selection.map((d) => invertScale(scales.xScale, d, config.keyType))
     } else {
-      return [
-        clamp(config.brushRangeMin, _dataExtent),
-        clamp(config.brushRangeMax, _dataExtent)
-      ]
+      return null
     }
   }
 
-  function moveBrush () {
-    const dataExtent = scales.xScale.domain()
-    const extent = clampBrush(dataExtent)
+  function setBrush () {
+    let extent = [config.brushRangeMin, config.brushRangeMax]
     if (extendIsValid(extent)) {
+      if (config.keyType === "time") {
+        extent = extent.map(d => new Date(d))
+      }
       cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
+    } else {
+      cache.root.call(cache.brush.move, null)
     }
     return this
   }
 
   function handleBrushStart () {
-    if (!d3.event.sourceEvent || !d3.event.selection) {
+    if (!d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
-    dispatcher.call("brushStart", this, getDataExtent(), config)
+    dispatcher.call("brushStart", this, getDataExtentUnderBrush(), config)
   }
 
   function handleBrushMove () {
-    if (!d3.event.sourceEvent || !d3.event.selection) {
+    if (!d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
-    dispatcher.call("brushMove", this, getDataExtent(), config)
+    dispatcher.call("brushMove", this, getDataExtentUnderBrush(), config)
   }
 
   function handleBrushEnd () {
     // Skip programatic setting
-    if (!d3.event.sourceEvent) {
+    if (!d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
 
@@ -118,8 +114,7 @@ export default function Brush (_container) {
       return
     }
 
-    const dataExtent = getDataExtent()
-    dispatcher.call("brushEnd", this, dataExtent, config)
+    dispatcher.call("brushEnd", this, getDataExtentUnderBrush(), config)
   }
 
   function on (...args) {

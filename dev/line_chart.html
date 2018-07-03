@@ -144,8 +144,8 @@ const chart1 = mapd3.Chart(chartNode1)
     y2DomainEditorIsEnabled: dataConfig.groupCount > 1,
 
     // brush range
-    // brushRangeMin: "July 01, 2017",
-    // brushRangeMax: "Sept 02, 2017",
+    brushRangeMin: "2018-04-08T04:00:00.000Z",
+    brushRangeMax: "2018-04-16T04:00:00.000Z",
     brushRangeIsEnabled: true,
 
     // brush
@@ -169,7 +169,7 @@ const chart1 = mapd3.Chart(chartNode1)
 chart1.getEvents()
 //   .onBrush("brushStart", (d) => console.log(d))
 //   .onBrush("brushMove", (d) => console.log(d))
-//   .onBrush("brushEnd", (d) => console.log(d))
+  .onBrush("brushEnd", (d) => console.log(d))
   .onBrush("brushClear", (d) => console.log(d))
 //   .onBinning("change", (d) => console.log(d))
 //   .onDomainEditor("domainChange", (d) => console.log(d))

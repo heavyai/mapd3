@@ -3,7 +3,6 @@ import * as d3 from "./helpers/d3-service"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
 import {
-  cloneData,
   override,
   throttle,
   uniqueId

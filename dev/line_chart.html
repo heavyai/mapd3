@@ -32,8 +32,8 @@ const dataConfig = {
   keyType,
   range: [0, 100],
   pointCount: 4,
-  groupCount: 1,
-  lineCount: 1,
+  groupCount: 2,
+  lineCount: 2,
   stringMinMaxLength: [5, 10],
   randomStepSize: 50,
   nullRatio: 0
@@ -184,7 +184,23 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-// setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
+setTimeout(() => {
+  const dataConfig = {
+    keyType,
+    range: [0, 100],
+    pointCount: 4,
+    groupCount: 1,
+    lineCount: 2,
+    stringMinMaxLength: [5, 10],
+    randomStepSize: 50,
+    nullRatio: 0
+  }
+
+  const dataManager = mapd3.DataManager()
+    .setConfig(dataConfig)
+  const data = dataManager.generateTestDataset()
+  chart1.setConfig({chartType: "stackedArea"}).setData(data)
+}, 1000)
 </script>
 </body>
 </html>

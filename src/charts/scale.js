@@ -157,10 +157,12 @@ export default function Scale () {
       yDomain = config.yDomain
     }
     const yScale = buildYScale(yDomain)
+    const y2Scale = null
 
     return {
       xScale,
       yScale,
+      y2Scale,
       colorScale,
       styleScale,
       chartTypeScale,

@@ -54,6 +54,11 @@ export default function Line (_container) {
   }
 
   function drawLines () {
+    if (!Array.isArray(config.chartType) && config.chartType !== "line") {
+      cache.root.selectAll(".mark.line").remove()
+      return null
+    }
+
     const seriesLine = d3.line()
       .x(d => scales.xScale(d[keys.KEY]))
       .y(d => scales.yScale(d[keys.VALUE]))
@@ -120,6 +125,11 @@ export default function Line (_container) {
   }
 
   function drawDots () {
+    if (!Array.isArray(config.chartType) && config.chartType !== "line") {
+      cache.root.selectAll(".dot-group").remove()
+      return null
+    }
+
     const dotData = data.dataBySeries
     let dotDataFiltered = dotData
     if (Array.isArray(config.chartType)) {
@@ -176,6 +186,11 @@ export default function Line (_container) {
   }
 
   function drawAreas () {
+    if (config.chartType !== "area") {
+      cache.root.selectAll(".mark.area").remove()
+      return null
+    }
+
     const seriesArea = d3.area()
       .x((d) => scales.xScale(d[keys.KEY]))
       .y0((d) => scales.yScale(d[keys.VALUE]))
@@ -212,12 +227,17 @@ export default function Line (_container) {
   }
 
   function drawStackedAreas () {
+    if (config.chartType !== "stackedArea") {
+      cache.root.selectAll(".mark.stacked-area").remove()
+      return null
+    }
+
     const seriesLine = d3.area()
       .x((d) => scales.xScale(d.data[keys.KEY]))
       .y0((d) => scales.yScale(d[0]))
       .y1((d) => scales.yScale(d[1]))
 
-    const areas = cache.root.selectAll(".mark")
+    const areas = cache.root.selectAll(".mark.stacked-area")
       .data(data.stack(data.stackData))
 
     areas.enter()
@@ -249,15 +269,10 @@ export default function Line (_container) {
 
   function render () {
     build()
-
-    if (config.chartType === "area") {
-      drawAreas()
-    } else if (config.chartType === "line" || Array.isArray(config.chartType)) {
-      drawLines()
-      drawDots()
-    } else if (config.chartType === "stackedArea") {
-      drawStackedAreas()
-    }
+    drawAreas()
+    drawStackedAreas()
+    drawLines()
+    drawDots()
   }
 
   function destroy () {

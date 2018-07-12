@@ -70,11 +70,11 @@ export default function Axis (_container) {
     DEFAULT_DY: ".71em",
     DEFAULT_TRANSFORM: null,
     DEFAULT_ANCHOR: "middle",
-    ROTATED_XPOS: 9,
+    ROTATED_XPOS: -9,
     ROTATED_YPOS: 0,
     ROTATED_DY: ".35em",
-    ROTATED_TRANSFORM: "rotate(90)",
-    ROTATED_ANCHOR: "start"
+    ROTATED_TRANSFORM: "rotate(-90)",
+    ROTATED_ANCHOR: "end"
   }
 
   function build () {

@@ -31,12 +31,12 @@ const keyType = "time"
 const dataConfig = {
   keyType,
   range: [0, 100],
-  pointCount: 100,
-  groupCount: 1,
-  lineCount: 1,
+  pointCount: 4,
+  groupCount: 2,
+  lineCount: 2,
   stringMinMaxLength: [5, 10],
   randomStepSize: 50,
-  nullRatio: 10
+  nullRatio: 0
 }
 
 const dataManager = mapd3.DataManager()
@@ -144,8 +144,8 @@ const chart1 = mapd3.Chart(chartNode1)
     y2DomainEditorIsEnabled: dataConfig.groupCount > 1,
 
     // brush range
-    // brushRangeMin: "July 01, 2017",
-    // brushRangeMax: "Sept 02, 2017",
+    brushRangeMin: "2018-04-08T04:00:00.000Z",
+    brushRangeMax: "2018-04-16T04:00:00.000Z",
     brushRangeIsEnabled: true,
 
     // brush
@@ -169,7 +169,7 @@ const chart1 = mapd3.Chart(chartNode1)
 chart1.getEvents()
 //   .onBrush("brushStart", (d) => console.log(d))
 //   .onBrush("brushMove", (d) => console.log(d))
-//   .onBrush("brushEnd", (d) => console.log(d))
+  .onBrush("brushEnd", (d) => console.log(d))
   .onBrush("brushClear", (d) => console.log(d))
 //   .onBinning("change", (d) => console.log(d))
 //   .onDomainEditor("domainChange", (d) => console.log(d))
@@ -184,7 +184,23 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-// setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
+setTimeout(() => {
+  const dataConfig = {
+    keyType,
+    range: [0, 100],
+    pointCount: 4,
+    groupCount: 1,
+    lineCount: 2,
+    stringMinMaxLength: [5, 10],
+    randomStepSize: 50,
+    nullRatio: 0
+  }
+
+  const dataManager = mapd3.DataManager()
+    .setConfig(dataConfig)
+  const data = dataManager.generateTestDataset()
+  chart1.setConfig({chartType: "stackedArea"}).setData(data)
+}, 1000)
 </script>
 </body>
 </html>

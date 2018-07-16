@@ -127,7 +127,7 @@ export default function Hover (_container) {
     const dotsData = dotsStack.map((d) => {
       const dot = {}
       dot.value = d[0][1]
-      dot.group = d.key
+      dot.id = d.key
       return dot
     })
 

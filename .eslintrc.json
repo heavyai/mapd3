@@ -16,7 +16,7 @@
     "comma-style": [2, "last"], // improves consistency.
     "complexity": 1, // code with high cyclomatic complexity is difficult to reason about.
     "computed-property-spacing": 2, // usually a typo.
-    "consistent-return": 2, // reduces ambiguity about what gets returned.
+    "consistent-return": 0, // reduces ambiguity about what gets returned.
     "consistent-this": [2, "context"], // enforces a standard var for capturing context (which should be done sparingly).
     "constructor-super": 2, // catches runtime syntax errors.
     "curly": 2, // reduces ambiguity around blocks and line breaks.

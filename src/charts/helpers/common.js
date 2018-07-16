@@ -101,9 +101,10 @@ export function isNumeric (val) {
 export function extendIsValid (extent) {
   return extent
     && extent.length
-    && extent.filter(d => !isNaN(d.valueOf()) // valueOf also catches Invalid Date
-      && typeof d !== "undefined"
+    && extent.filter(d =>
+      typeof d !== "undefined"
       && d !== null
+      && !isNaN(d.valueOf()) // valueOf also catches Invalid Date
     ).length === 2
 }
 

@@ -199,10 +199,10 @@ export default function Axis (_container) {
 
   function truncateTickText (axisSelection) {
     if (!config.maxLabelCharCount) {
-      return 
+      return
     }
     axisSelection.selectAll(".tick text")
-      .each(function (d) {
+      .each(function tick() {
         const text = this.textContent
         if (text.length > config.maxLabelCharCount) {
           this.textContent = `${text.slice(0, config.maxLabelCharCount)}…`

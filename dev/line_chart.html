@@ -27,7 +27,7 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "string"
+const keyType = "time"
 const dataConfig = {
   keyType,
   range: [100000, 1000000],
@@ -96,16 +96,16 @@ const chart1 = mapd3.Chart(chartNode1)
     tickSizes: 8,
     yTicks: "auto",
     y2Ticks: "auto",
-    xTickSkip: false,
+    xTickSkip: "auto",
     // xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
-    xAxisFormat: "auto", // "auto", format compatible with d3-format or function
+    xAxisFormat: "%b %d, %Y", // "auto", format compatible with d3-format or function
     yAxisFormat: null,
     y2AxisFormat: ".2f",
     grid: "horizontal",
     axisTransitionDuration: 0,
-    labelsAreRotated: true,
-    maxLabelCharCount: 5,
-
+    labelsAreRotated: false,
+    maxXLabelCharCount: null,
+    maxYLabelCharCount: 5,
 
     // hover
     dotRadius: 4,
@@ -186,6 +186,7 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
+/*
 setTimeout(() => {
   const dataConfig = {
     keyType,
@@ -203,6 +204,7 @@ setTimeout(() => {
   const data = dataManager.generateTestDataset()
   chart1.setConfig({chartType: "stackedArea"}).setData(data)
 }, 1000)
+*/
 </script>
 </body>
 </html>

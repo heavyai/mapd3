@@ -173,7 +173,8 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {string} [config.grid="horizontal"] Background grid: horizontal, vertical, full
   * @param {number} [config.axisTransitionDuration=0] Animated transition duration
   * @param {boolean} [config.labelsAreRotated=false] If x axis ticks should be rotated
-  * @param {boolean} [config.maxLabelCharCount=null] How many tick text characters before truncating and adding an ellipsis
+  * @param {boolean} [config.maxYLabelCharCount=null] How many x axis tick text characters before truncating and adding an ellipsis
+  * @param {boolean} [config.maxXLabelCharCount=null] How many y axis tick text characters before truncating and adding an ellipsis
 
   * <hover>
   * @param {string} [config.dotRadius=4] Radius of hover dots
@@ -283,7 +284,8 @@ chart.setConfig({
   grid: "horizontal",
   axisTransitionDuration: 0,
   labelsAreRotated: false,
-  maxLabelCharCount: null,
+  maxXLabelCharCount: null,
+  maxYLabelCharCount: null,
 
   // hover
   dotRadius: 4,

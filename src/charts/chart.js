@@ -3,13 +3,12 @@ import * as d3 from "./helpers/d3-service"
 import {colors} from "./helpers/colors"
 import {keys} from "./helpers/constants"
 import {
-  cloneData,
   override,
   throttle,
-  rebind,
   uniqueId
 } from "./helpers/common"
 import {autoConfigure} from "./helpers/auto-config"
+import ComponentRegistry from "./helpers/component-registry"
 
 import Scale from "./scale"
 import Line from "./line"
@@ -29,7 +28,7 @@ import ClipPath from "./clip-path"
 
 export default function Chart (_container) {
 
-  let inputConfig = {
+  let config = {
     // common
     margin: {
       top: 48,
@@ -142,6 +141,8 @@ export default function Chart (_container) {
   }
 
   const cache = {
+    data: null,
+    config,
     container: _container,
     svg: null,
     panel: null,
@@ -152,10 +153,9 @@ export default function Chart (_container) {
     xAxis: null, yAxis: null, yAxis2: null
   }
 
-  const dataObject = {
+  let data = {
     dataBySeries: null,
     dataByKey: null,
-    data: null,
     groupKeys: {},
     hasSecondAxis: false,
     stackData: null,
@@ -164,14 +164,11 @@ export default function Chart (_container) {
     allKeyTotals: null
   }
 
-  let components = {}
-  let eventCollector = {}
-  let config = null
-  setConfig(inputConfig) // init with config = inputConfig
-
   // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel", "mouseClickPanel")
   const dataManager = DataManager()
+  const scale = Scale()
+  const componentRegistry = ComponentRegistry()
 
   const createTemplate = (chartType) => {
     const chartClassName = _chartType => {
@@ -235,8 +232,7 @@ export default function Chart (_container) {
 
       addEvents()
 
-      components = {
-        scale: Scale(),
+      componentRegistry.register({
         axis: Axis(cache.root),
         line: Line(cache.panel),
         bar: Bar(cache.panel),
@@ -249,19 +245,12 @@ export default function Chart (_container) {
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
         label: Label(cache.root),
         clipPath: ClipPath(cache.svg)
-      }
-
-      eventCollector = {
-        onBrush: rebind(components.brush),
-        onHover: rebind(components.hover),
-        onBinning: rebind(components.binning),
-        onDomainEditor: rebind(components.domainEditor),
-        onBrushRangeEditor: rebind(components.brushRangeEditor),
-        onLabel: rebind(components.label),
-        onPanel: rebind(dispatcher)
-      }
+      })
     }
+    return this
+  }
 
+  function update () {
     cache.svgWrapper
       .style("flex", `0 0 ${config.chartWidth}px`)
       .style("height", `${config.height}px`)
@@ -281,108 +270,26 @@ export default function Chart (_container) {
       .style("width", `${config.markPanelWidth}px`)
       .style("height", `${config.chartHeight}px`)
       .attr("fill", "transparent")
-
     return this
   }
 
   function buildChart () {
-    scales = components.scale
+    config = transformConfig(cache.config)
+    data = transformData(cache.data)
+    scales = scale
       .setConfig(config)
-      .setData(dataObject)
+      .setData(data)
       .getScales()
 
-    components.clipPath
-      .setConfig(config)
-      .render()
+    update()
 
-    components.axis
-      .setConfig(config)
-      .setScales(scales)
-      .render()
-
-    components.bar
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .render()
-
-    components.line
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .render()
-
-    components.tooltip
-      .setConfig(config)
-      .setScales(scales)
-      .bindEvents(dispatcher)
-
-    components.legend
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-
-    components.brush
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .render()
-
-    components.hover
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .bindEvents(dispatcher)
-
-    components.binning
-      .setConfig(config)
-      .render()
-
-    components.domainEditor
-      .setConfig(config)
-      .setScales(scales)
-      .render()
-
-    components.brushRangeEditor
-      .setConfig(config)
-      .setScales(scales)
-      .render()
-
-    components.label
-      .setConfig(config)
-      .render()
-
-    triggerIntroAnimation()
+    componentRegistry.render({
+      config,
+      scales,
+      data,
+      dispatcher
+    })
     return this
-  }
-
-  function setData (_data) {
-    dataObject.data = cloneData(_data[keys.SERIES])
-    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy, config.fillData)
-    Object.assign(dataObject, cleanedData)
-
-    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
-    config = Object.assign({}, inputConfig, autoConfig)
-
-    render()
-    return this
-  }
-
-  function triggerIntroAnimation () {
-    if (config.isAnimated) {
-      cache.maskingRectangle = cache.svg.select(".masking-rectangle")
-        .attr("width", cache.chartWidth - 2)
-        .attr("height", cache.chartHeight)
-        .attr("x", config.margin.left + 1)
-        .attr("y", config.margin.top)
-
-      cache.maskingRectangle.transition()
-        .duration(config.animationDuration)
-        .ease(config.ease)
-        .attr("width", 0)
-        .attr("x", config.width - config.margin.right)
-        .on("end", () => cache.maskingRectangle.remove())
-    }
   }
 
   function addEvents () {
@@ -401,9 +308,9 @@ export default function Chart (_container) {
       .on("mousemove.dispatch", () => {
         const [mouseX, mouseY] = d3.mouse(cache.panel.node())
         const [panelMouseX] = d3.mouse(cache.svgWrapper.node())
-        if (!dataObject.data) { return }
+        if (!cache.data) { return }
         const xPosition = mouseX
-        const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
+        const dataPoint = dataManager.getNearestDataPoint(xPosition, data, scales, config.keyType)
 
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
@@ -412,9 +319,9 @@ export default function Chart (_container) {
       })
       .on("click.dispatch", () => {
         const [mouseX] = d3.mouse(cache.panel.node())
-        if (!dataObject.data) { return }
+        if (!cache.data) { return }
         const xPosition = mouseX
-        const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
+        const dataPoint = dataManager.getNearestDataPoint(xPosition, data, scales, config.keyType)
 
         if (dataPoint) {
           throttledDispatch("mouseClickPanel", null, dataPoint)
@@ -426,7 +333,7 @@ export default function Chart (_container) {
     if (!cache.root) {
       render()
     }
-    return eventCollector
+    return componentRegistry.getEvents()
   }
 
   function on (...args) {
@@ -434,18 +341,29 @@ export default function Chart (_container) {
     return this
   }
 
-  function setConfig (_config) {
-    inputConfig = override(inputConfig, _config)
-
-    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
-    config = Object.assign({}, inputConfig, autoConfig)
+  function setData (_data) {
+    cache.data = _data
     return this
+  }
+
+  function transformData (_data) {
+    return dataManager.cleanData(_data, config.keyType, config.sortBy, config.fillData)
+  }
+
+  function setConfig (_config) {
+    cache.config = override(cache.config, _config)
+    return this
+  }
+
+  function transformConfig (_config) {
+    const autoConfig = autoConfigure(_config, cache, data)
+    return Object.assign({}, _config, autoConfig)
   }
 
   function render () {
     build()
 
-    if (dataObject.dataBySeries) {
+    if (cache.data) {
       buildChart()
     }
     return this

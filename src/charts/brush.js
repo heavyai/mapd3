@@ -1,5 +1,5 @@
 import * as d3 from "./helpers/d3-service"
-import {clamp, invertScale, override, extendIsValid} from "./helpers/common"
+import {invertScale, override, extendIsValid} from "./helpers/common"
 
 export default function Brush (_container) {
 

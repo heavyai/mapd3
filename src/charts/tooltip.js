@@ -165,12 +165,13 @@ export default function Tooltip (_container, _isLegend = false) {
     tooltipItems.exit().remove()
 
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d) => {
+      .data((d, i) => {
         const legendData = [
           {
             key: "tooltip-color",
             value: scales.colorScale(d[keys.ID]),
-            style: scales.styleScale(d[keys.ID])
+            style: scales.styleScale(d[keys.ID]),
+            index: i
           }
         ]
 
@@ -199,7 +200,9 @@ export default function Tooltip (_container, _isLegend = false) {
             .attr("width", size)
             .attr("height", size)
 
-          if (config.chartType === "line") {
+          if (config.chartType === "line" ||
+            (Array.isArray(config.chartType) && config.chartType[d.index] === "line")) {
+
             svg
               .append("line")
               .attr("x1", 0)

@@ -33,7 +33,7 @@ const dataConfig = {
   range: [100000, 1000000],
   pointCount: 100,
   groupCount: 1,
-  lineCount: 1,
+  lineCount: 3,
   stringMinMaxLength: [20, 30],
   randomStepSize: 50,
   nullRatio: 0
@@ -47,8 +47,8 @@ const data = dataManager.generateTestDataset()
 // })
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
-// const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-const chartType = "line"
+const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
+// const chartType = "line"
 
 console.log("data", data.series)
 

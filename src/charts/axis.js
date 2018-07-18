@@ -306,7 +306,7 @@ export default function Axis (_container) {
       const labelsText = labels.nodes().map(node => node.textContent)
       xTickSkip = getNumberOfLabelsToSkip(labelsText)
     }
-    labels.style("display", (d, i) => (i % xTickSkip) ? "none" : "block")
+    labels.style("display", (d, i) => ((i % xTickSkip) ? "none" : "block"))
   }
 
   function drawAxis () {

@@ -165,12 +165,13 @@ export default function Tooltip (_container, _isLegend = false) {
     tooltipItems.exit().remove()
 
     const tooltipItem = tooltipItemsUpdate.selectAll(".section")
-      .data((d) => {
+      .data((d, i) => {
         const legendData = [
           {
             key: "tooltip-color",
             value: scales.colorScale(d[keys.ID]),
-            style: scales.styleScale(d[keys.ID])
+            style: scales.styleScale(d[keys.ID]),
+            index: i
           }
         ]
 
@@ -198,8 +199,10 @@ export default function Tooltip (_container, _isLegend = false) {
             .select("svg")
             .attr("width", size)
             .attr("height", size)
-          // Legend icon depends on Chart Style only, maybe need to modify based on individual selection which can be modified as line or bar
-          if (Array.isArray(config.chartType) && config.chartType.indexOf("line") > -1) {
+
+          if (config.chartType === "line" ||
+            (Array.isArray(config.chartType) && config.chartType[d.index] === "line")) {
+
             svg
               .append("line")
               .attr("x1", 0)

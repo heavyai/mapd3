@@ -32,6 +32,8 @@ export default function Axis (_container) {
     yDomain: "auto",
     y2Domain: "auto",
     labelsAreRotated: false,
+    maxXLabelCharCount: null,
+    maxYLabelCharCount: null,
 
     chartWidth: null,
     chartHeight: null,
@@ -124,7 +126,7 @@ export default function Axis (_container) {
     } else if (config.keyType === "string") {
       let xTickSkip = config.xTickSkip
       if (config.xTickSkip === "auto") {
-        xTickSkip = getNumberOfLabelsToSkip()
+        xTickSkip = getNumberOfLabelsToSkip(scales.xScale.domain())
       }
       cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % xTickSkip)))
     } else if (config.keyType === "number") {
@@ -194,6 +196,19 @@ export default function Axis (_container) {
     } else if (Array.isArray(config.y2AxisFormat)) {
       axis.tickFormat(d3.format(config.y2AxisFormat[0]))
     }
+  }
+
+  function truncateTickText (axisSelection, maxCharCount) {
+    if (!maxCharCount) {
+      return
+    }
+    axisSelection.selectAll(".tick text")
+      .each(function tick() {
+        const text = this.textContent
+        if (text.length > maxCharCount) {
+          this.textContent = `${text.slice(0, maxCharCount)}…`
+        }
+      })
   }
 
   function buildAxis () {
@@ -267,8 +282,7 @@ export default function Axis (_container) {
       .style("text-anchor", X_TICK_LABEL_SETTINGS.DEFAULT_ANCHOR)
   }
 
-  function getNumberOfLabelsToSkip () {
-    const labels = scales.xScale.domain()
+  function getNumberOfLabelsToSkip (labels) {
     let longestLabelApproxWidth = null
     if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && shouldXLabelsRotate())) {
       longestLabelApproxWidth = APPROX_FONT_WIDTH
@@ -279,10 +293,28 @@ export default function Axis (_container) {
     return Math.ceil(longestLabelApproxWidth / (config.markPanelWidth / labels.length))
   }
 
+  function skipXLAbels () {
+    if (!config.xTickSkip) {
+      return
+    }
+    const labels = cache.xAxisRoot
+      .select(".axis.x")
+      .selectAll(".tick text")
+
+    let xTickSkip = config.xTickSkip
+    if (config.xTickSkip === "auto") {
+      const labelsText = labels.nodes().map(node => node.textContent)
+      xTickSkip = getNumberOfLabelsToSkip(labelsText)
+    }
+    labels.style("display", (d, i) => ((i % xTickSkip) ? "none" : "block"))
+  }
+
   function drawAxis () {
     cache.xAxisRoot.select(".axis.x")
       .attr("transform", `translate(0, ${config.chartHeight})`)
       .call(cache.xAxis)
+
+    skipXLAbels()
 
     if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && cache.xLabelsShouldRotate)) {
       rotateXLabels()
@@ -290,12 +322,17 @@ export default function Axis (_container) {
       unRotateXLabels()
     }
 
+    truncateTickText(cache.xAxisRoot, config.maxXLabelCharCount)
+
     if (scales.yScale) {
       cache.yAxisRoot.select(".axis.y")
         .transition()
         .duration(config.axisTransitionDuration)
         .ease(config.ease)
         .call(cache.yAxis)
+        .on("end", () => {
+          truncateTickText(cache.yAxisRoot, config.maxYLabelCharCount)
+        })
     } else {
       cache.yAxisRoot.select(".axis.y").selectAll("*").remove()
     }
@@ -306,6 +343,9 @@ export default function Axis (_container) {
         .duration(config.axisTransitionDuration)
         .ease(config.ease)
         .call(cache.y2Axis)
+        .on("end", () => {
+          truncateTickText(cache.y2AxisRoot, config.maxYLabelCharCount)
+        })
     } else {
       cache.y2AxisRoot.select(".axis.y2").selectAll("*").remove()
     }

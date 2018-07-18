@@ -69,6 +69,8 @@ export default function Chart (_container) {
     grid: null,
     axisTransitionDuration: 0,
     labelsAreRotated: "auto",
+    maxXLabelCharCount: null,
+    maxYLabelCharCount: null,
 
     // data
     sortBy: null,

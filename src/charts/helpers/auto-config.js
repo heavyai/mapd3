@@ -1,6 +1,20 @@
 import {MIN_MARK_WIDTH, MAX_MARK_WIDTH} from "./constants"
 import {clamp} from "./common"
 
+function adjustBottomMargin (margin, data) {
+  if (data && data.dataByKey) {
+    const maxLabelLength = data.dataByKey.reduce((max, d) =>
+      (d.key.length * 5 > max ? d.key.length * 5 : max),
+    0)
+
+    if (maxLabelLength > margin.bottom) {
+      margin.bottom = 130
+    }
+  }
+
+  return margin
+}
+
 export function getSizes (config, data) {
   const sizes = {}
   sizes.chartWidth = Math.max(config.width - config.margin.left - config.margin.right, 0)
@@ -29,6 +43,9 @@ export function autoConfigure (config, cache, data) {
   }
 
   const sizes = getSizes({...config, ...newConfig}, data)
+  const margin = adjustBottomMargin({...config.margin}, data)
 
-  return {...newConfig, ...sizes}
+  const configFinal = {...newConfig, ...sizes, margin}
+
+  return configFinal
 }

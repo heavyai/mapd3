@@ -93,7 +93,7 @@ export default function Axis (_container) {
       cache.y2AxisRoot.select(".axis-group").append("g").attr("class", "axis y2")
     }
 
-    cache.xLabelsShouldRotate = config.labelsAreRotated === "auto" ? shouldXLabelsRotate() : config.labelsAreRotated
+    cache.xLabelsShouldRotate = shouldXLabelsRotate()
 
     const DOMAIN_LINE_WIDTH = 1
     cache.yAxisRoot
@@ -249,17 +249,21 @@ export default function Axis (_container) {
   }
 
   function shouldXLabelsRotate () {
-    const width = config.markPanelWidth
-    const labels = scales.xScale.domain()
-    const totalLabelsWidth = labels.reduce(
-      (total, d) => total + d.length * APPROX_FONT_WIDTH + LABEL_SPACING * APPROX_FONT_WIDTH,
-      0
-    )
+    if (config.labelsAreRotated === "auto") {
+      const width = config.markPanelWidth
+      const labels = scales.xScale.domain()
+      const totalLabelsWidth = labels.reduce(
+        (total, d) => total + d.length * APPROX_FONT_WIDTH + LABEL_SPACING * APPROX_FONT_WIDTH,
+        0
+      )
 
-    if (totalLabelsWidth >= width) {
-      return true
+      if (totalLabelsWidth >= width) {
+        return true
+      }
+      return false
+    } else {
+      return config.labelsAreRotated
     }
-    return false
   }
 
   function rotateXLabels () {
@@ -284,7 +288,7 @@ export default function Axis (_container) {
 
   function getNumberOfLabelsToSkip (labels) {
     let longestLabelApproxWidth = null
-    if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && shouldXLabelsRotate())) {
+    if (cache.xLabelsShouldRotate) {
       longestLabelApproxWidth = APPROX_FONT_WIDTH
     } else {
       const longestLabel = labels.reduce((longest, d) => (d.length > longest.length ? d : longest), {length: 0})
@@ -316,9 +320,9 @@ export default function Axis (_container) {
 
     skipXLAbels()
 
-    if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && cache.xLabelsShouldRotate)) {
+    if (cache.xLabelsShouldRotate) {
       rotateXLabels()
-    } else if ((config.labelsAreRotated === "auto" && !cache.xLabelsShouldRotate) || config.labelsAreRotated === false) {
+    } else {
       unRotateXLabels()
     }
 

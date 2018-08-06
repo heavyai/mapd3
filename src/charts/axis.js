@@ -93,7 +93,7 @@ export default function Axis (_container) {
       cache.y2AxisRoot.select(".axis-group").append("g").attr("class", "axis y2")
     }
 
-    cache.xLabelsShouldRotate = shouldXLabelsRotate()
+    cache.xLabelsShouldRotate = config.labelsAreRotated === "auto" ? shouldXLabelsRotate() : config.labelsAreRotated
 
     const DOMAIN_LINE_WIDTH = 1
     cache.yAxisRoot
@@ -318,7 +318,7 @@ export default function Axis (_container) {
 
     if (config.labelsAreRotated === true || (config.labelsAreRotated === "auto" && cache.xLabelsShouldRotate)) {
       rotateXLabels()
-    } else if (config.labelsAreRotated === "auto" && !cache.xLabelsShouldRotate) {
+    } else if ((config.labelsAreRotated === "auto" && !cache.xLabelsShouldRotate) || config.labelsAreRotated === false) {
       unRotateXLabels()
     }
 

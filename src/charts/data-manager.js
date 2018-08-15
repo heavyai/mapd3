@@ -83,8 +83,8 @@ export default function DataManager () {
     return new Date(new Date(_date).toString())
   }
 
-  function cleanData (_data, _keyType, _sortBy, _fillData) {
-    const dataBySeries = cloneData(_data[keys.SERIES])
+  function cleanData (_data, _keyType, _sortBy, _fillData, _yDomain) {
+    const dataBySeries = cloneData(_data)
     dataBySeries.forEach((serie) => {
       // convert type
       serie[keys.VALUES].forEach((d) => {
@@ -158,14 +158,26 @@ export default function DataManager () {
       groupKeys[d[keys.GROUP]].push(d[keys.ID])
     })
 
+    // get stack totals
+    const allKeyTotals = dataByKey.map(d => ({
+      key: d[keys.KEY],
+      total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE])),
+      ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
+    }))
+
     // stack data
     const stackData = dataByKey
-      .map((d) => {
+      .map((d, index) => {
         const points = {
           key: d[keys.KEY]
         }
         d.series.forEach((dB) => {
-          points[dB[keys.ID]] = dB[keys.VALUE]
+          if (_yDomain === "percentage") {
+            const total = allKeyTotals[index].total
+            points[dB[keys.ID]] = total > 0 ? dB[keys.VALUE] / allKeyTotals[index].total : 0
+          } else {
+            points[dB[keys.ID]] = dB[keys.VALUE]
+          }
         })
         return points
       })
@@ -176,13 +188,6 @@ export default function DataManager () {
       .value((d, key) => d[key] || 0)
       .order(d3.stackOrderNone)
       .offset(d3.stackOffsetNone)
-
-    // get stack totals
-    const allKeyTotals = dataByKey.map(d => ({
-      key: d[keys.KEY],
-      total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE])),
-      ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
-    }))
 
     // sort
     switch (_sortBy) {

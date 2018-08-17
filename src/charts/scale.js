@@ -153,8 +153,6 @@ export default function Scale () {
       const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
       const valuesExtent = d3.extent(allStackHeights)
       yDomain = [0, valuesExtent[1]]
-    } else if (config.yDomain === "percentage") {
-      yDomain = [0, 1]
     } else {
       yDomain = config.yDomain
     }

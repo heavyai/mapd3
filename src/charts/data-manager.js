@@ -83,7 +83,7 @@ export default function DataManager () {
     return new Date(new Date(_date).toString())
   }
 
-  function cleanData (_data, _keyType, _sortBy, _fillData, _yDomain) {
+  function cleanData (_data, _keyType, _sortBy, _fillData, _percentageViewEnabled) {
     const dataBySeries = cloneData(_data)
     dataBySeries.forEach((serie) => {
       // convert type
@@ -172,7 +172,7 @@ export default function DataManager () {
           key: d[keys.KEY]
         }
         d.series.forEach((dB) => {
-          if (_yDomain === "percentage") {
+          if (_percentageViewEnabled) {
             const total = allKeyTotals[index].total
             points[dB[keys.ID]] = total > 0 ? dB[keys.VALUE] / allKeyTotals[index].total : 0
           } else {

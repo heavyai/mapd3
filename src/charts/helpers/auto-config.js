@@ -28,6 +28,16 @@ export function autoConfigure (config, cache, data) {
     newConfig.height = cache.container && cache.container.clientHeight || 0
   }
 
+  if (config.percentageViewEnabled) {
+    // Only allow percentage view for supported chart types
+    if (config.chartType === "stackedBar" || config.chartType === "stackedArea") {
+      config.yDomain = [0, 1]
+      config.yDomainEditorIsEnabled = false
+    } else {
+      config.percentageViewEnabled = false
+    }
+  }
+
   const sizes = getSizes({...config, ...newConfig}, data)
 
   return {...newConfig, ...sizes}

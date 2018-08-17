@@ -16,6 +16,7 @@ export default function Hover (_container) {
     height: 500,
     dotRadius: null,
     chartType: null,
+    percentageViewEnabled: false,
 
     chartWidth: null,
     chartHeight: null
@@ -118,15 +119,18 @@ export default function Hover (_container) {
 
   function highlightStackedDataPoints (_dataPoint) {
     const stackedDataPoint = {key: _dataPoint[keys.KEY]}
+    let stackTotal = 0
+
     _dataPoint.series.forEach((d) => {
       const id = d[keys.ID]
       stackedDataPoint[id] = d[keys.VALUE]
+      stackTotal = stackTotal + d[keys.VALUE]
     })
 
     const dotsStack = data.stack([stackedDataPoint])
     const dotsData = dotsStack.map((d) => {
       const dot = {}
-      dot.value = d[0][1]
+      dot.value = config.percentageViewEnabled ? d[0][1] / stackTotal : d[0][1]
       dot.id = d.key
       return dot
     })

@@ -56,6 +56,7 @@ export default function Chart (_container) {
     xDomain: "auto",
     yDomain: "auto",
     y2Domain: "auto",
+    percentageViewEnabled: false,
 
     // axis
     tickPadding: 5,
@@ -370,7 +371,7 @@ export default function Chart (_container) {
   }
 
   function touchData (_dataBySeries) {
-    const cleanedData = dataManager.cleanData(_dataBySeries, config.keyType, config.sortBy, config.fillData, config.yDomain)
+    const cleanedData = dataManager.cleanData(_dataBySeries, config.keyType, config.sortBy, config.fillData, config.percentageViewEnabled)
     Object.assign(dataObject, cleanedData)
   }
 
@@ -444,7 +445,7 @@ export default function Chart (_container) {
     inputConfig = override(inputConfig, _config)
 
     const autoConfig = autoConfigure(inputConfig, cache, dataObject)
-    const shouldTouchData = config && dataObject.data && ((inputConfig.yDomain === "percentage" || config.yDomain === "percentage") && inputConfig.yDomain !== config.yDomain)
+    const shouldTouchData = config && dataObject.data && ((inputConfig.percentageViewEnabled || config.percentageViewEnabled) && inputConfig.percentageViewEnabled !== config.percentageViewEnabled)
 
     config = Object.assign({}, inputConfig, autoConfig)
 

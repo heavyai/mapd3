@@ -1,4 +1,5 @@
 import DataManager from "../src/charts/data-manager"
+import {keys} from "../src/charts/helpers/constants"
 
 export const baseConfig = {
   // common
@@ -112,7 +113,7 @@ export function generateComponentData (_config) {
   const dataManager = DataManager()
     .setConfig(config)
   const inputData = dataManager.generateTestDataset()
-  const cleanData = dataManager.cleanData(inputData, config.keyType)
+  const cleanData = dataManager.cleanData(inputData[keys.SERIES], config.keyType)
 
   return cleanData
 }

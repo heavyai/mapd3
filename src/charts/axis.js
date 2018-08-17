@@ -31,6 +31,7 @@ export default function Axis (_container) {
     extractType: null,
     yDomain: "auto",
     y2Domain: "auto",
+    percentageViewEnabled: false,
     labelsAreRotated: false,
     maxXLabelCharCount: null,
     maxYLabelCharCount: null,
@@ -142,7 +143,7 @@ export default function Axis (_container) {
 
   function getYAutoFormat () {
     const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-    const yFormat = autoFormat(yExtent, config.numberFormat)
+    const yFormat = config.percentageViewEnabled ? ".0%" : autoFormat(yExtent, config.numberFormat)
     return d3.format(yFormat)
   }
 

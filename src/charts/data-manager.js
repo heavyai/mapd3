@@ -176,7 +176,7 @@ export default function DataManager () {
       .keys(dataBySeries.map(getID))
       .value((d, key) => d[key] || 0)
       .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetNone)
+      .offset(d3.stackOffsetExpand)
 
     // get stack totals
     const allKeyTotals = dataByKey.map(d => ({

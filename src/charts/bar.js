@@ -166,14 +166,17 @@ export default function Bar (_container) {
         return datum
       })
 
+    const denormalizingYScale = scales.yScale.copy().domain([0, 1])
     stackedBars.enter()
       .append("rect")
       .attr("class", "mark bar")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
       .attr("x", (d) => scales.xScale(d.data[keys.KEY]) - config.markWidth / 2 + gutterW / 2)
-      .attr("y", (d) => scales.yScale(d[1]))
-      .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
+      // .attr("y", (d) => scales.yScale(d[1]))
+      .attr("y", (d) => denormalizingYScale(d[1]))
+      // .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
+      .attr("height", (d) => Math.max(denormalizingYScale(d[0]) - denormalizingYScale(d[1]), MIN_BAR_HEIGHT))
       .attr("width", config.markWidth - gutterW)
       .attr("fill", getColor)
 

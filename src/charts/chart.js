@@ -1,7 +1,7 @@
 import * as d3 from "./helpers/d3-service"
 
 import {colors} from "./helpers/colors"
-import {keys} from "./helpers/constants"
+import {keys, stackOffset} from "./helpers/constants"
 import {
   cloneData,
   override,
@@ -132,7 +132,10 @@ export default function Chart (_container) {
     selectedKeys: [],
 
     // line
-    dotsToShow: "none"
+    dotsToShow: "none",
+
+    // stacked
+    stackOffset: stackOffset.NONE
   }
 
   let scales = {
@@ -360,7 +363,7 @@ export default function Chart (_container) {
 
   function setData (_data) {
     dataObject.data = cloneData(_data[keys.SERIES])
-    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy, config.fillData)
+    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy, config.fillData, config.stackOffset)
     Object.assign(dataObject, cleanedData)
 
     const autoConfig = autoConfigure(inputConfig, cache, dataObject)

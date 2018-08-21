@@ -61,7 +61,11 @@ export default function Scale () {
       domain = config.xDomain
     }
 
-    const markWidthOffset = ["bar", "stackedBar"].indexOf(config.chartType) > -1 ? config.markWidth / 2 : 0
+    const needsXOuterPadding = config.chartType === "bar"
+      || config.chartType === "stackedBar"
+      || (Array.isArray(config.chartType) && config.chartType.filter(d => d === "bar").length)
+
+    const markWidthOffset = needsXOuterPadding ? config.markWidth / 2 : 0
     xScale.domain(domain)
       .range([markWidthOffset, config.markPanelWidth - markWidthOffset])
 

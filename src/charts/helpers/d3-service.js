@@ -38,6 +38,7 @@ export {
   stackOffsetNone,
   stackOffsetExpand,
   stackOffsetWiggle,
+  stackOffsetSilhouette,
   stackOffsetDiverging,
   stackOrderNone,
   scaleTime,

@@ -83,7 +83,8 @@ export default function DataManager () {
     return new Date(new Date(_date).toString())
   }
 
-  function cleanData (_data, _keyType, _sortBy, _fillData) {
+  function cleanData (_data, _keyType, _sortBy, _fillData, _stackOffset) {
+
     const dataBySeries = cloneData(_data[keys.SERIES])
     dataBySeries.forEach((serie) => {
       // convert type
@@ -176,7 +177,7 @@ export default function DataManager () {
       .keys(dataBySeries.map(getID))
       .value((d, key) => d[key] || 0)
       .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetExpand)
+      .offset(d3[_stackOffset])
 
     // get stack totals
     const allKeyTotals = dataByKey.map(d => ({

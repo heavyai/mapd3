@@ -179,11 +179,24 @@ export default function Tooltip (_container, _isLegend = false) {
           legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
         }
 
-        if (typeof d[keys.VALUE] !== "undefined") {
+        // Check for percentage value (presence of absolute-value metadata)
+        if (typeof d[keys.ABSOLUTEVAL] !== "undefined") {
+          // Assume VALUE is not undefined, since ABSOLUTEVAL is derived from it
+          const percentageValue = d[keys.VALUE]
+          const absoluteValue = d[keys.ABSOLUTEVAL]
+
+          const formattedAbsoluteValue = formatTooltipValue(absoluteValue, d.id)
+          const formattedPercentageValue = applyFormat(percentageValue, ".0%")
+
+          const displayedValue = `${formattedAbsoluteValue} (${formattedPercentageValue})`
+
+          legendData.push({key: "value", value: displayedValue})
+        } else if (typeof d[keys.VALUE] !== "undefined") {
           const value = d[keys.VALUE]
           const formattedValue = formatTooltipValue(value, d.id)
           legendData.push({key: "value", value: formattedValue})
         }
+
         return legendData
       })
     tooltipItem.enter().append("div")

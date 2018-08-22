@@ -144,7 +144,7 @@ export default function Scale () {
   }
 
   function getStackedScales () {
-    const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
+    const stack = data.stack(data.stackData)
     const allKeys = data.allKeyTotals.map(getKey)
 
     const xScale = buildXScale(allKeys)
@@ -155,8 +155,13 @@ export default function Scale () {
 
     let yDomain = null
     if (config.yDomain === "auto") {
-      const valuesExtent = d3.extent(allStackHeights)
-      yDomain = [0, valuesExtent[1]]
+      const valuesExtent = d3.extent(d3.merge(d3.merge(stack)))
+      if (valuesExtent[0] < 0) {
+        yDomain = valuesExtent
+      } else {
+        // force domain to 0 if domain min is positive
+        yDomain = [0, valuesExtent[1]]
+      }
     } else {
       yDomain = config.yDomain
     }

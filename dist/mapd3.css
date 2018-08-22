@@ -215,6 +215,10 @@
   stroke-width: 1;
   fill: none; }
 
+.mapd3 .hover-group .dot {
+  stroke-width: 0.5;
+  stroke: #D2D6DF; }
+
 .mapd3 .domain-input-group {
   position: absolute;
   top: 0;

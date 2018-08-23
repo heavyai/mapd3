@@ -180,15 +180,11 @@ export default function DataManager () {
       .offset(d3[_stackOffset])
 
     // get stack totals
-    const allKeyTotals = dataByKey.map(d => {
-      const extent = d3.extent(d[keys.SERIES].map(dB => dB[keys.VALUE]))
-      const totalSize = extent[1] - extent[0]
-      return {
-        key: d[keys.KEY],
-        total: totalSize,
-        ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
-      }
-    })
+    const allKeyTotals = dataByKey.map(d => ({
+      key: d[keys.KEY],
+      total: d3.sum(d[keys.SERIES].map(dB => Math.abs(dB[keys.VALUE]))),
+      ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
+    }))
 
     // sort
     switch (_sortBy) {

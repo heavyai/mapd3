@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys, dashStylesTranslation, LEFT_AXIS_GROUP_INDEX, dotsToShow} from "./helpers/constants"
+import {keys, dashStylesTranslation, LEFT_AXIS_GROUP_INDEX, dotsToShow, stackOffset} from "./helpers/constants"
 import {override} from "./helpers/common"
 
 export default function Line (_container) {
@@ -12,7 +12,8 @@ export default function Line (_container) {
     xDomain: "auto",
     dotsToShow: "none",
 
-    chartHeight: null
+    chartHeight: null,
+    stackOffset: stackOffset.NONE
   }
 
   let scales = {
@@ -232,10 +233,16 @@ export default function Line (_container) {
       return null
     }
 
+    let yScale = scales.yScale
+    if (config.stackOffset === stackOffset.PERCENT) {
+      const denormalizingYScale = scales.yScale.copy().domain([0, 1])
+      yScale = denormalizingYScale
+    }
+
     const seriesLine = d3.area()
       .x((d) => scales.xScale(d.data[keys.KEY]))
-      .y0((d) => scales.yScale(d[0]))
-      .y1((d) => scales.yScale(d[1]))
+      .y0((d) => yScale(d[0]))
+      .y1((d) => yScale(d[1]))
 
     const areas = cache.root.selectAll(".mark.stacked-area")
       .data(data.stack(data.stackData))

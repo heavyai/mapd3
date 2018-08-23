@@ -232,6 +232,9 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {number} [config.barSpacingPercent="none"] Bar charts gutter width as a % of the bar width
   * @param {Array.<string>} [config.selectedKeys=[]] Dimming all bars except for those listed in this array. Empty = none dimmed
 
+  * <stacked>
+  * @param {string} [config.stackOffset="stackOffsetNone"] Type of offset for stacked chart, coming from d3 stackOffset https://github.com/d3/d3-shape#stack-offsets also available as constants (mapd3.Constants.stackOffset): NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
+
   * @returns {object} The chart instance.
   * @memberof Chart
   * @instance
@@ -343,7 +346,10 @@ chart.setConfig({
   selectedKeys: [],
 
   // line
-  dotsToShow: "none" // all, isolated, none
+  dotsToShow: "none", // all, isolated, none
+
+  // stacked
+  stackOffset: mapd3.Constants.stackOffset.PERCENT // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
 })
 
 /**

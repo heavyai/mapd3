@@ -1,4 +1,4 @@
-import {keys} from "./helpers/constants"
+import {keys, stackOffset} from "./helpers/constants"
 import {override} from "./helpers/common"
 
 export default function Bar (_container) {
@@ -20,7 +20,8 @@ export default function Bar (_container) {
     chartWidth: null,
     chartHeight: null,
     markPanelWidth: null,
-    selectedKeys: []
+    selectedKeys: [],
+    stackOffset: stackOffset.NONE
   }
 
   let scales = {
@@ -81,6 +82,7 @@ export default function Bar (_container) {
     const groupW = markCount ? (config.markPanelWidth / markCount) : 0
     const gutterW = groupW / 100 * config.barSpacingPercent
     const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
+    const hasMultipleBars = (config.chartType === "groupedBar" || barData.length > 1)
 
     const barLayer = cache.root.selectAll(".bar-layer")
       .data(barData)
@@ -110,7 +112,7 @@ export default function Bar (_container) {
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(bars)
       .attr("x", (d) => {
-        if (config.chartType === "groupedBar" || barData.length > 1) {
+        if (hasMultipleBars) {
           const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d.index + gutterW / 2
           return Math.max(x, 0)
         } else {
@@ -118,11 +120,8 @@ export default function Bar (_container) {
         }
       })
       .attr("y", (d) => {
-        if (d[keys.GROUP] === 0) {
-          return Math.min(scales.yScale(d[keys.VALUE]), config.chartHeight - MIN_BAR_HEIGHT)
-        } else {
-          return Math.min(scales.y2Scale(d[keys.VALUE]), config.chartHeight - MIN_BAR_HEIGHT)
-        }
+        const yScale = (d[keys.GROUP] === 0 || hasMultipleBars) ? scales.yScale : scales.y2Scale
+        return yScale(Math.max(0, d[keys.VALUE]))
       })
       .attr("width", () => {
         if (config.chartType === "groupedBar" || barData.length > 1) {
@@ -132,11 +131,8 @@ export default function Bar (_container) {
         }
       })
       .attr("height", (d) => {
-        if (d[keys.GROUP] === 0) {
-          return Math.max(config.chartHeight - scales.yScale(d[keys.VALUE]), MIN_BAR_HEIGHT)
-        } else {
-          return Math.max(config.chartHeight - scales.y2Scale(d[keys.VALUE]), MIN_BAR_HEIGHT)
-        }
+        const yScale = (d[keys.GROUP] === 0 || hasMultipleBars) ? scales.yScale : scales.y2Scale
+        return Math.max(Math.abs(yScale(d[keys.VALUE]) - yScale(0)), MIN_BAR_HEIGHT)
       })
       .style("stroke", "white")
       .style("fill", getColor)
@@ -166,14 +162,19 @@ export default function Bar (_container) {
         return datum
       })
 
+    let yScale = scales.yScale
+    if (config.stackOffset === stackOffset.PERCENT) {
+      const denormalizingYScale = scales.yScale.copy().domain([0, 1])
+      yScale = denormalizingYScale
+    }
     stackedBars.enter()
       .append("rect")
       .attr("class", "mark bar")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
       .attr("x", (d) => scales.xScale(d.data[keys.KEY]) - config.markWidth / 2 + gutterW / 2)
-      .attr("y", (d) => scales.yScale(d[1]))
-      .attr("height", (d) => Math.max(scales.yScale(d[0]) - scales.yScale(d[1]), MIN_BAR_HEIGHT))
+      .attr("y", (d) => yScale(d[1]))
+      .attr("height", (d) => Math.max(yScale(d[0]) - yScale(d[1]), MIN_BAR_HEIGHT))
       .attr("width", config.markWidth - gutterW)
       .attr("fill", getColor)
 

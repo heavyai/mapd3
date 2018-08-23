@@ -10,9 +10,10 @@ import BrushRangeEditor from "./charts/brush-range-editor.js"
 import Label from "./charts/label.js"
 import Brush from "./charts/brush.js"
 import Hover from "./charts/hover.js"
-import Interactors from "./charts/interactors.js"
+import * as Interactors from "./charts/interactors.js"
 import {colors} from "./charts/helpers/colors.js"
 import autoFormatter from "./charts/helpers/auto-format.js"
+import * as Constants from "./charts/helpers/constants"
 require("./styles/mapd3.scss")
 
 export {
@@ -30,5 +31,6 @@ export {
   Interactors,
   colors,
   d3,
-  autoFormatter
+  autoFormatter,
+  Constants
 }

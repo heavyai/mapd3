@@ -36,3 +36,11 @@ export const comparators = {
   COUNTVAL_ASCENDING: "countvalAscending",
   COUNTVAL_DESCENDING: "countvalDescending"
 }
+
+export const stackOffset = {
+  NONE: "stackOffsetNone",
+  PERCENT: "stackOffsetExpand",
+  STREAMGRAPH: "stackOffsetWiggle",
+  CENTERED: "stackOffsetSilhouette",
+  POSITIVE_NEGATIVE: "stackOffsetDiverging"
+}

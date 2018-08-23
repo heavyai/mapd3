@@ -133,6 +133,7 @@ export default function DataManager () {
         dataPoint[keys.KEY] = d[keys.KEY]
         dataPoint[keys.VALUE] = d[keys.VALUE]
         dataPoint[keys.COUNTVAL] = d[keys.COUNTVAL]
+        dataPoint[keys.ABSOLUTEVAL] = d[keys.ABSOLUTEVAL]
         flatData.push(dataPoint)
       })
     })

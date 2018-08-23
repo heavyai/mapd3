@@ -82,7 +82,7 @@ export default function Bar (_container) {
     const groupW = markCount ? (config.markPanelWidth / markCount) : 0
     const gutterW = groupW / 100 * config.barSpacingPercent
     const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
-    const hasMultipleBars =  (config.chartType === "groupedBar" || barData.length > 1)
+    const hasMultipleBars = (config.chartType === "groupedBar" || barData.length > 1)
 
     const barLayer = cache.root.selectAll(".bar-layer")
       .data(barData)
@@ -112,7 +112,6 @@ export default function Bar (_container) {
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(bars)
       .attr("x", (d) => {
-        console.log(hasMultipleBars)
         if (hasMultipleBars) {
           const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d.index + gutterW / 2
           return Math.max(x, 0)
@@ -133,7 +132,7 @@ export default function Bar (_container) {
       })
       .attr("height", (d) => {
         const yScale = (d[keys.GROUP] === 0 || hasMultipleBars) ? scales.yScale : scales.y2Scale
-        return Math.abs(yScale(d[keys.VALUE]) - yScale(0))
+        return Math.max(Math.abs(yScale(d[keys.VALUE]) - yScale(0)), MIN_BAR_HEIGHT)
       })
       .style("stroke", "white")
       .style("fill", getColor)

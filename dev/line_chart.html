@@ -52,8 +52,6 @@ console.log(data)
 // const chartType = ["bar", "bar", "line"]
 const chartType = "stackedBar"
 
-console.log("data", data.series)
-
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "dotted"][i % 3])
 const palette = data.series.map((d, i) => ({

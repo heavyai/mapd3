@@ -63,22 +63,6 @@ const palette = data.series.map((d, i) => ({
 const chartNode1 = document.querySelector(".chart1")
 const chart1 = mapd3.Chart(chartNode1)
   .setConfig({
-    // Vega API
-    data,
-
-    "axes": [
-      {
-        "orient": "bottom",
-        "scale": "x"
-      },
-      {
-        "orient": "left", 
-        "scale": "y",
-        "grid": true,
-        "gridColor": "#eee"
-      }
-    ],
-
     // common
     width: 800,
     height: 400,
@@ -149,20 +133,20 @@ const chart1 = mapd3.Chart(chartNode1)
     binningResolution: "1mo",
     binningIsAuto: true,
     binningToggles: ["10y", "1y", "1q", "1mo"],
-    binningIsEnabled: true,
+    binningIsEnabled: false,
 
     // domain
     xLock: false,
     yLock: false,
     y2Lock: false,
-    xDomainEditorIsEnabled: true,
-    yDomainEditorIsEnabled: true,
-    y2DomainEditorIsEnabled: dataConfig.groupCount > 1,
+    xDomainEditorIsEnabled: false,
+    yDomainEditorIsEnabled: false,
+    y2DomainEditorIsEnabled: false,
 
     // brush range
     // brushRangeMin: "July 01, 2017",
     // brushRangeMax: "Sept 02, 2017",
-    brushRangeIsEnabled: true,
+    brushRangeIsEnabled: false,
 
     // brush
     brushIsEnabled: true,
@@ -179,8 +163,7 @@ const chart1 = mapd3.Chart(chartNode1)
     // line
     dotsToShow: "isolated" // all, isolated, none
   })
-  .render()
-  // .setData(data)
+  .setData(data)
 
 
 chart1.getEvents()

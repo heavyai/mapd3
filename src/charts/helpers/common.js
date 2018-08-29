@@ -146,3 +146,22 @@ export function hasBars (_chartType) {
     || _chartType === "groupedBar"
     || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
 }
+
+export function getChartClass (_chartType) {
+  switch (chartType) {
+  case "bar":
+  case "stackedBar":
+    return "bar"
+
+  case "line":
+  case "stackedArea":
+    return "line"
+
+  // TO DO: handle bar line combo chartType...
+  case Array.isArray(_chartType):
+    return "combo"
+
+  default:
+    return ""
+  }
+}

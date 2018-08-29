@@ -19,7 +19,7 @@ export function getSizes (config, data) {
   return sizes
 }
 
-export function autoConfigure (config, cache, data) {
+export function augmentConfig (config, cache, data) {
   const newConfig = {}
   if (config.width === "auto" && cache.container) {
     newConfig.width = cache.container && cache.container.clientWidth || 0
@@ -30,5 +30,5 @@ export function autoConfigure (config, cache, data) {
 
   const sizes = getSizes({...config, ...newConfig}, data)
 
-  return {...newConfig, ...sizes}
+  return Object.assign({}, config, {...newConfig, ...sizes})
 }

@@ -108,11 +108,12 @@ export default function Hover (_container) {
       .attr("class", "dot")
       .merge(dots)
       .attr("cy", (d) => {
+        const value = d[keys.VALUE]
         const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
         if (leftAxisGroup && leftAxisGroup.indexOf(d.group) > -1) {
-          return yScale(d.value)
+          return yScale(value)
         } else {
-          return scales.y2Scale ? scales.y2Scale(d.value) : scales.yScale(d.value)
+          return scales.y2Scale ? scales.y2Scale(value) : scales.yScale(value)
         }
       })
       .attr("r", config.dotRadius)

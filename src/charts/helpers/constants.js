@@ -1,6 +1,6 @@
 export const keys = {
-  KEY: "key",
-  VALUE: "value",
+  KEY: "x",
+  VALUE: "y",
   ABSOLUTEVAL: "absoluteval",
   COUNTVAL: "countval",
   ID: "id",

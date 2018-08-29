@@ -33,7 +33,7 @@ export default function Scale () {
   }
 
   const getID = (d) => d[keys.ID]
-  const getKey = (d) => d[keys.KEY]
+  const getKey = (d) => d.key
   const getValue = (d) => d[keys.VALUE]
 
   function buildXScale (_allKeys) {

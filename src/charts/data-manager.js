@@ -44,8 +44,8 @@ export default function DataManager () {
       const isRandomNull = config.nullRatio && (Math.random() * 100 / config.nullRatio) < 1
       value = clamp(value + rnd() * randomWalkStepSize, _range)
       return {
-        value: isRandomNull ? null : value,
-        key: config.keyType === "time" ? d.toISOString() : d
+        y: isRandomNull ? null : value,
+        x: config.keyType === "time" ? d.toISOString() : d
       }
     })
   }
@@ -64,6 +64,7 @@ export default function DataManager () {
     }
 
     const series = d3.range(config.lineCount).map((d) => ({
+      name: `Name ${d}`,
       label: `Label ${d}`,
       id: d,
       group: d < config.groupCount ? d : 0,

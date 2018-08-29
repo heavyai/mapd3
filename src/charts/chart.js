@@ -30,6 +30,8 @@ import ClipPath from "./clip-path"
 export default function Chart (_container) {
 
   let inputConfig = {
+    // Vega API
+    data: [],
     // common
     margin: {
       top: 48,
@@ -265,6 +267,8 @@ export default function Chart (_container) {
         onLabel: rebind(components.label),
         onPanel: rebind(dispatcher)
       }
+
+      setData(config.data)
     }
 
     cache.svgWrapper

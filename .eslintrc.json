@@ -31,7 +31,7 @@
     "generator-star-spacing": [2, {"before": false, "after": true}], // standard on MDN docs.
     "global-require": 2, // avoid unexpected sync file load.
     // "global-strict": 0, // removed.
-    "guard-for-in": 2, // protects against looping over props up prototype chain.
+    "guard-for-in": 0, // protects against looping over props up prototype chain.
     "handle-callback-err": [2, "^.*(e|E)rr"], // often omitted in error.
     "id-blacklist": 0, // will add variable names to this list if abused.
     "id-length": 0, // variable naming is difficult enough without limits.

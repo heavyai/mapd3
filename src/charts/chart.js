@@ -71,6 +71,7 @@ export default function Chart (_container) {
     labelsAreRotated: "auto",
     maxXLabelCharCount: null,
     maxYLabelCharCount: null,
+    yAxisPercentage: false,
 
     // data
     sortBy: null,

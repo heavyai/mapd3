@@ -17,8 +17,9 @@ export default function Axis (_container) {
     tickPadding: null,
     xAxisFormat: null,
     yAxisFormat: null,
+    yAxisPercentageFormat: ".0%",
     y2AxisFormat: null,
-    yAxisPercentage: false,
+    yAxisPercentageView: false,
     keyType: null,
     yTicks: null,
     y2Ticks: null,
@@ -152,8 +153,8 @@ export default function Axis (_container) {
       return
     }
 
-    if (config.yAxisPercentage) {
-      axis.tickFormat(d3.format(".0%"))
+    if (config.yAxisPercentageView) {
+      axis.tickFormat(d3.format(config.yAxisPercentageFormat))
     } else if (typeof config.yAxisFormat === "function") {
       const measureName = scales.measureNameLookup("y")
       const hasFormatterForMeasure = config.yAxisFormat(null, measureName)

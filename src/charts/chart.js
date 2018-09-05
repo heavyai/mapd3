@@ -62,7 +62,7 @@ export default function Chart (_container) {
     xAxisFormat: "auto",
     yAxisFormat: ".2f",
     y2AxisFormat: ".2f",
-    yAxisPercentageFormat: ".0%",
+    yAxisPercentageFormat: null,
     tickSizes: 8,
     yTicks: "auto",
     y2Ticks: "auto",
@@ -72,7 +72,6 @@ export default function Chart (_container) {
     labelsAreRotated: "auto",
     maxXLabelCharCount: null,
     maxYLabelCharCount: null,
-    yAxisPercentageView: false,
 
     // data
     sortBy: null,

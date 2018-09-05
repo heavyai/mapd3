@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 import {override} from "./helpers/common"
-import {autoFormat, multiFormat, getExtractFormatter} from "./helpers/formatters"
+import {autoFormat, formatPercentage, multiFormat, getExtractFormatter} from "./helpers/formatters"
 
 export default function Axis (_container) {
 
@@ -17,9 +17,8 @@ export default function Axis (_container) {
     tickPadding: null,
     xAxisFormat: null,
     yAxisFormat: null,
-    yAxisPercentageFormat: ".0%",
+    yAxisPercentageFormat: null,
     y2AxisFormat: null,
-    yAxisPercentageView: false,
     keyType: null,
     yTicks: null,
     y2Ticks: null,
@@ -153,8 +152,8 @@ export default function Axis (_container) {
       return
     }
 
-    if (config.yAxisPercentageView) {
-      axis.tickFormat(d3.format(config.yAxisPercentageFormat))
+    if (config.yAxisPercentageFormat) {
+      axis.tickFormat(formatPercentage(config.yAxisPercentageFormat))
     } else if (typeof config.yAxisFormat === "function") {
       const measureName = scales.measureNameLookup("y")
       const hasFormatterForMeasure = config.yAxisFormat(null, measureName)

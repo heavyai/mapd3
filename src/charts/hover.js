@@ -134,7 +134,7 @@ export default function Hover (_container) {
     const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
     const dotsData = dotsStack.map((d) => {
       const dot = {}
-      dot.value = d[0][1]
+      dot[keys.VALUE] = d[0][1]
       dot.id = d.key
       dot.group = leftAxisGroup[0] // set to 1st left axis group as stacked is always single axis
       return dot

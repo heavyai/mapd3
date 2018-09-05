@@ -172,7 +172,7 @@ export default function Bar (_container) {
       .attr("class", "mark bar")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
-      .attr("x", (d) => scales.xScale(d.data[keys.KEY]) - config.markWidth / 2 + gutterW / 2)
+      .attr("x", (d) => scales.xScale(d.data.key) - config.markWidth / 2 + gutterW / 2)
       .attr("y", (d) => yScale(d[1]))
       .attr("height", (d) => Math.max(yScale(d[0]) - yScale(d[1]), MIN_BAR_HEIGHT))
       .attr("width", config.markWidth - gutterW)

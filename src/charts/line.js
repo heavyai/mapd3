@@ -240,7 +240,7 @@ export default function Line (_container) {
     }
 
     const seriesLine = d3.area()
-      .x((d) => scales.xScale(d.data[keys.KEY]))
+      .x((d) => scales.xScale(d.data.key))
       .y0((d) => yScale(d[0]))
       .y1((d) => yScale(d[1]))
 

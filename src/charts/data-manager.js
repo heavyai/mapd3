@@ -202,10 +202,10 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset) 
     allKeyTotals.sort(descendingComparator("total"))
     break
   case comparators.ALPHA_ASCENDING:
-    allKeyTotals.sort(ascendingComparator("key"))
+    allKeyTotals.sort(ascendingComparator(keys.KEY))
     break
   case comparators.ALPHA_DESCENDING:
-    allKeyTotals.sort(descendingComparator("key"))
+    allKeyTotals.sort(descendingComparator(keys.KEY))
     break
   case comparators.COUNTVAL_ASCENDING:
     allKeyTotals.sort(ascendingComparator("countval"))
@@ -235,8 +235,8 @@ export function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
 
   let nearestDataPoint = null
   if (keyFromInvertedX && dataEntryForXPosition && dataEntryForXPositionPrev) {
-    if ((keyFromInvertedX - dataEntryForXPositionPrev.key)
-        < (dataEntryForXPosition.key - keyFromInvertedX)) {
+    if ((keyFromInvertedX - dataEntryForXPositionPrev[keys.KEY])
+        < (dataEntryForXPosition[keys.KEY] - keyFromInvertedX)) {
       nearestDataPoint = dataEntryForXPositionPrev
     } else {
       nearestDataPoint = dataEntryForXPosition

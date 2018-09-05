@@ -148,7 +148,7 @@ export function hasBars (_chartType) {
 }
 
 export function getChartClass (_chartType) {
-  switch (chartType) {
+  switch (_chartType) {
   case "bar":
   case "stackedBar":
     return "bar"

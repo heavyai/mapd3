@@ -6,7 +6,8 @@ import {
   override,
   throttle,
   uniqueId,
-  getChartClass
+  getChartClass,
+  rebind
 } from "./helpers/common"
 import {augmentConfig} from "./helpers/auto-config"
 import ComponentRegistry from "./helpers/component-registry"
@@ -161,16 +162,7 @@ export default function Chart (_container) {
 
   let config = {}
 
-  let data = {
-    dataBySeries: null,
-    dataByKey: null,
-    groupKeys: {},
-    hasSecondAxis: false,
-    stackData: null,
-    stack: null,
-    flatDataSorted: null,
-    allKeyTotals: null
-  }
+  let data = {}
 
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel", "mouseClickPanel")
   const scale = Scale()
@@ -259,17 +251,18 @@ export default function Chart (_container) {
 
   function build () {
     config = transformConfig(cache.originalConfig)
-    data = transformData(cache.originalData)
-    scales = computeScales(config, data)
-
     buildChart()
 
-    componentRegistry.render({
-      config,
-      scales,
-      data,
-      dispatcher
-    })
+    if (cache.originalData) {
+      scales = computeScales(config, data)
+
+      componentRegistry.render({
+        config,
+        scales,
+        data,
+        dispatcher
+      })
+    }
 
     return this
   }
@@ -312,7 +305,7 @@ export default function Chart (_container) {
   }
 
   function transformData (_data) {
-    return augmentData(_data, config.keyType, config.sortBy, config.fillData)
+    return augmentData(_data, config.keyType, config.sortBy, config.fillData, config.stackOffset)
   }
 
   function transformConfig (_config) {
@@ -330,7 +323,9 @@ export default function Chart (_container) {
     if (!cache.root) {
       render()
     }
-    return componentRegistry.getEvents()
+    const events = componentRegistry.getEvents()
+    events.onPanel = rebind(dispatcher) // adding chart dispatcher
+    return events
   }
 
   function on (...args) {
@@ -340,11 +335,14 @@ export default function Chart (_container) {
 
   function setData (_data) {
     cache.originalData = _data
+    data = transformData(cache.originalData)
+    render()
     return this
   }
 
   function setConfig (_config) {
     cache.originalConfig = override(cache.originalConfig, _config)
+    config = transformConfig(cache.originalConfig)
     return this
   }
 

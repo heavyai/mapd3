@@ -33,7 +33,7 @@ const dataConfig = {
   range: [0, 100],
   pointCount: 4,
   groupCount: 1,
-  lineCount: 1,
+  lineCount: 3,
   stringMinMaxLength: [5, 10],
   randomStepSize: 50,
   nullRatio: 0
@@ -49,7 +49,7 @@ const data = dataManager.generateTestDataset()
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
 // const chartType = ["bar", "bar", "line"]
-const chartType = "stackedBar"
+const chartType = "area"
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "dotted"][i % 3])
@@ -165,7 +165,7 @@ const chart1 = mapd3.Chart(chartNode1)
     dotsToShow: "isolated", // all, isolated, none
 
     // stacked
-    stackOffset: mapd3.Constants.stackOffset.PERCENT // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
+    stackOffset: mapd3.Constants.stackOffset.NONE // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
   })
   .setData(data)
 

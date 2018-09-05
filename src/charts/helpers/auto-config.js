@@ -7,7 +7,7 @@ export function getSizes (config, data) {
   sizes.chartHeight = Math.max(config.height - config.margin.top - config.margin.bottom, 0)
   sizes.markPanelWidth = sizes.chartWidth
 
-  if (data) {
+  if (data.allKeyTotals) {
     const markCount = data && data.allKeyTotals && data.allKeyTotals.length || 0
     const minMarkWidth = config.useScrolling ? MIN_MARK_WIDTH : 0
     const minMarkPanelWidth = markCount * minMarkWidth

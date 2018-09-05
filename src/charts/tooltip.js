@@ -2,7 +2,7 @@ import * as d3 from "./helpers/d3-service"
 
 import {keys, dashStylesTranslation} from "./helpers/constants"
 import {isNumeric, isNumberString, override} from "./helpers/common"
-import {binTranslation, formatOddDateBin, formatTooltipNumber} from "./helpers/formatters"
+import {binTranslation, formatPercentage, formatOddDateBin, formatTooltipNumber} from "./helpers/formatters"
 
 export default function Tooltip (_container, _isLegend = false) {
 
@@ -25,6 +25,7 @@ export default function Tooltip (_container, _isLegend = false) {
     colorSchema: ["skyblue"],
     keyType: "time",
     tooltipFormat: null,
+    yAxisPercentageFormat: null,
     tooltipTitleFormat: null,
 
     markPanelWidth: null,
@@ -186,7 +187,8 @@ export default function Tooltip (_container, _isLegend = false) {
           const absoluteValue = d[keys.ABSOLUTEVAL]
 
           const formattedAbsoluteValue = formatTooltipValue(absoluteValue, d.id)
-          const formattedPercentageValue = applyFormat(percentageValue, ".0%")
+          const formattedPercentageValue =
+            applyFormat(percentageValue, formatPercentage(config.yAxisPercentageFormat))
 
           const displayedValue = `${formattedAbsoluteValue} (${formattedPercentageValue})`
 

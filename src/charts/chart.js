@@ -62,6 +62,7 @@ export default function Chart (_container) {
     xAxisFormat: "auto",
     yAxisFormat: ".2f",
     y2AxisFormat: ".2f",
+    yAxisPercentageFormat: null,
     tickSizes: 8,
     yTicks: "auto",
     y2Ticks: "auto",

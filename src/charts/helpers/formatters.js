@@ -136,3 +136,11 @@ export function formatTooltipNumber (d) {
   // comma separator, max 2 decimals
   return d3.format(",")(Math.round(d * 100) / 100)
 }
+
+export function formatPercentage (format) {
+  if (format === "auto") {
+    return d3.format(".0%")
+  } else {
+    return d3.format(format)
+  }
+}

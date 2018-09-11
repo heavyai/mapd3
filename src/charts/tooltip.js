@@ -147,11 +147,17 @@ export default function Tooltip (_container, _isLegend = false) {
   }
 
   function formatTooltipValue (_value, _id) {
+    const format = config.tooltipFormat
     const measureName = scales.measureNameLookup(_id)
-    const hasFormatterForMeasure = typeof config.tooltipFormat === "function" &&
+    const hasFunctionFormatterForMeasure = typeof format === "function" &&
       config.tooltipFormat(null, measureName)
-    if (hasFormatterForMeasure) {
-      return config.tooltipFormat(_value, measureName)
+    const hasStringFormatterForMeasure = typeof format === "string" &&
+      format !== "auto"
+
+    if (hasFunctionFormatterForMeasure) {
+      return format(_value, measureName)
+    } else if (hasStringFormatterForMeasure) {
+      return d3.format(format)(_value)
     } else {
       return formatTooltipNumber(_value)
     }
@@ -260,14 +266,15 @@ export default function Tooltip (_container, _isLegend = false) {
 
   function drawTitle () {
     let title = config.tooltipTitle || cache.title
+    const format = config.tooltipTitleFormat
 
-    if (typeof config.tooltipTitleFormat === "function" && typeof title !== "string") {
-      title = config.tooltipTitleFormat(title)
+    if (typeof format === "function" && typeof title !== "string") {
+      title = format(title)
     } else if (title instanceof Date) {
       const {binningResolution} = config
       const specifier = binTranslation[binningResolution]
-      if (config.tooltipTitleFormat !== "auto") {
-        title = d3.utcFormat(config.tooltipTitleFormat)(title)
+      if (format && format !== "auto") {
+        title = d3.utcFormat(format)(title)
       } else if (specifier) {
         title = d3.utcFormat(specifier)(title)
       } else if (["1w", "1q", "10y", "1c"].indexOf(binningResolution) > -1) {
@@ -278,8 +285,8 @@ export default function Tooltip (_container, _isLegend = false) {
       }
     } else if (isNumeric(title)) {
       title = Number(parseFloat(title))
-      if (config.tooltipTitleFormat) {
-        title = applyFormat(title, config.tooltipTitleFormat)
+      if (format) {
+        title = applyFormat(title, format)
       } else {
         title = formatTooltipNumber(title)
       }

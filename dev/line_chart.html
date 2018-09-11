@@ -112,9 +112,11 @@ const chart1 = mapd3.Chart(chartNode1)
 
     // tooltip
     // tooltipFormat: [".4f", (d => `avg ${d}`)],
-    tooltipFormat: mapd3.autoFormatter([{key: "Measure 0", format: ".6f"}]),
+    // tooltipFormat: mapd3.autoFormatter([{key: "Measure 0", format: ".6f"}]),
+    tooltipFormat: ".30f",
     // tooltipTitleFormat: "%b %d, %Y",
-    tooltipTitleFormat: (d => `${d}m/s`),
+    // tooltipTitleFormat: (d => `${d}m/s`),
+    tooltipTitleFormat: null,
     // tooltipTitleFormat: "auto",
     // tooltipTitleFormat: ".6f",
     mouseChaseDuration: 0,

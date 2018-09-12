@@ -68,7 +68,6 @@
   background: white;
   opacity: 0.9;
   padding: 0 4px 0 4px;
-  max-width: 250px;
   overflow: hidden; }
   .mapd3 .tooltip-group .tooltip-title-section, .mapd3 .legend-group .tooltip-title-section {
     display: table;
@@ -110,7 +109,6 @@
   .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .tooltip-group .section.value, .mapd3 .legend-group .section.tooltip-label, .mapd3 .legend-group .section.value {
     padding-left: 5px;
     white-space: nowrap;
-    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis; }
   .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .legend-group .section.tooltip-label {
@@ -261,5 +259,3 @@
   .mapd3 .label-group .axis-label.y2 {
     -webkit-transform: translate(-50%) rotate(-90deg);
             transform: translate(-50%) rotate(-90deg); }
-
-/*# sourceMappingURL=mapd3.css.map*/

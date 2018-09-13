@@ -22,7 +22,8 @@ export default function Line (_container) {
     chartTypeScale: null,
     xScale: null,
     yScale: null,
-    y2Scale: null
+    y2Scale: null,
+    yDomainSign: "++"
   }
 
   const cache = {
@@ -195,7 +196,7 @@ export default function Line (_container) {
     const seriesArea = d3.area()
       .x((d) => scales.xScale(d[keys.KEY]))
       .y0((d) => scales.yScale(d[keys.VALUE]))
-      .y1(() => config.chartHeight)
+      .y1(() => scales.yDomainSign === "+-" ? 0 : config.chartHeight)
       .defined(isDefined)
 
     const seriesArea2 = d3.area()

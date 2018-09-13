@@ -162,7 +162,7 @@
   fill-opacity: 0.5; }
 
 .mapd3 .chart .stacked-area {
-  fill-opacity: 0.5; }
+  fill-opacity: 1; }
 
 .mapd3 .chart .bar {
   stroke-width: 0.5; }

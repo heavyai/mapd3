@@ -5,7 +5,7 @@ import {
   LEFT_AXIS_GROUP_INDEX,
   RIGHT_AXIS_GROUP_INDEX
 } from "./helpers/constants"
-import {override} from "./helpers/common"
+import {override, getDomainSign} from "./helpers/common"
 
 export default function Scale () {
 
@@ -165,6 +165,12 @@ export default function Scale () {
     } else {
       yDomain = config.yDomain
     }
+
+    const yDomainSign = getDomainSign(yDomain)
+    if (yDomainSign === "--") {
+      yDomain.reverse()
+    }
+
     const yScale = buildYScale(yDomain)
     const y2Scale = null
 
@@ -175,7 +181,8 @@ export default function Scale () {
       colorScale,
       styleScale,
       chartTypeScale,
-      measureNameLookup
+      measureNameLookup,
+      yDomainSign
     }
   }
 
@@ -201,6 +208,8 @@ export default function Scale () {
     const styleScale = buildStyleScale()
     const chartTypeScale = buildChartTypeScale()
     const measureNameLookup = buildMeasureNameLookup()
+    
+    let yDomainSign = "++"
 
     let yScale = null
     if (hasLeftAxis) {
@@ -211,6 +220,12 @@ export default function Scale () {
       } else {
         yDomain = config.yDomain
       }
+
+      yDomainSign = getDomainSign(yDomain)
+      if (yDomainSign === "--") {
+        yDomain.reverse()
+      }
+
       yScale = buildYScale(validateDomain(yDomain))
     }
 
@@ -229,6 +244,7 @@ export default function Scale () {
 
     return {
       hasSecondAxis: hasRightAxis,
+      yDomainSign,
       xScale,
       yScale,
       y2Scale,

@@ -29,7 +29,8 @@ export default function Bar (_container) {
     chartTypeScale: null,
     xScale: null,
     yScale: null,
-    y2Scale: null
+    y2Scale: null,
+    yDomainSign: "++"
   }
 
   const cache = {
@@ -121,7 +122,7 @@ export default function Bar (_container) {
       })
       .attr("y", (d) => {
         const yScale = (d[keys.GROUP] === 0 || hasMultipleBars) ? scales.yScale : scales.y2Scale
-        return yScale(Math.max(0, d[keys.VALUE]))
+        return scales.yDomainSign === "--" ? yScale(d[keys.VALUE]) : yScale(Math.max(0, d[keys.VALUE]))
       })
       .attr("width", () => {
         if (config.chartType === "groupedBar" || barData.length > 1) {
@@ -173,8 +174,8 @@ export default function Bar (_container) {
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(stackedBars)
       .attr("x", (d) => scales.xScale(d.data.key) - config.markWidth / 2 + gutterW / 2)
-      .attr("y", (d) => yScale(d[1]))
-      .attr("height", (d) => Math.max(yScale(d[0]) - yScale(d[1]), MIN_BAR_HEIGHT))
+      .attr("y", (d) => Math.min(yScale(d[0]), yScale(d[1])))
+      .attr("height", (d) => Math.max(Math.abs(yScale(d[0]) - yScale(d[1]))), MIN_BAR_HEIGHT)
       .attr("width", config.markWidth - gutterW)
       .attr("fill", getColor)
 

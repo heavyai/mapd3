@@ -165,3 +165,15 @@ export function getChartClass (_chartType) {
     return ""
   }
 }
+
+export function getDomainSign (domain) {
+  let domainSign = null
+  if (domain[0] >= 0 && domain[1] >= 0) {
+    domainSign = "++"
+  } else if (domain[0] <= 0 && domain[1] <= 0) {
+    domainSign = "--"
+  } else {
+    domainSign = domain.map(d => d >= 0 ? "+" : "-").join("")
+  }
+  return domainSign
+}

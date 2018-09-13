@@ -27,11 +27,10 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "time"
+const keyType = "string"
 const dataConfig = {
   keyType,
-  // range: [0, 100],
-  range: [-100, 0],
+  range: [0, 100],
   pointCount: 4,
   groupCount: 1,
   lineCount: 3,
@@ -50,7 +49,7 @@ const data = dataManager.generateTestDataset()
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
 // const chartType = ["bar", "bar", "line"]
-const chartType = "stackedBar"
+const chartType = "line"
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "dotted"][i % 3])
@@ -98,10 +97,10 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Ticks: "auto",
     xTickSkip: "auto",
     // xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
-    xAxisFormat: "%b %d, %Y", // "auto", format compatible with d3-format or function
+    // xAxisFormat: "%b %d, %Y", // "auto", format compatible with d3-format or function
     yAxisFormat: null,
     y2AxisFormat: ".2f",
-    grid: "horizontal",
+    grid: "full",
     axisTransitionDuration: 0,
     labelsAreRotated: false,
     maxXLabelCharCount: null,

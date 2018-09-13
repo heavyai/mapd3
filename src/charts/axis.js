@@ -392,9 +392,10 @@ export default function Axis (_container) {
     }
 
     if (config.grid === "vertical" || config.grid === "full") {
+      const ticks = config.keyType === "string" ? cache.xAxis.tickValues() : scales.xScale.ticks()
       cache.verticalGridLines = cache.xAxisRoot.select(".grid-lines-group")
         .selectAll("line.vertical-grid-line")
-        .data(cache.xAxis.tickValues())
+        .data(ticks)
 
       cache.verticalGridLines.enter()
         .append("line")

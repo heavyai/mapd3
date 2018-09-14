@@ -33,7 +33,7 @@ const dataConfig = {
   range: [0, 100],
   pointCount: 100,
   groupCount: 1,
-  lineCount: 1,
+  lineCount: 4,
   stringMinMaxLength: [5, 10],
   randomStepSize: 50,
   nullRatio: 0
@@ -49,7 +49,7 @@ const data = dataManager.generateTestDataset()
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
 // const chartType = ["bar", "bar", "line"]
-const chartType = "line"
+const chartType = "stackedBar"
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "dotted"][i % 3])
@@ -58,6 +58,8 @@ const palette = data.series.map((d, i) => ({
   value: colors[i],
   style: styles[i]
 }))
+
+console.log(palette)
 
 const chartNode1 = document.querySelector(".chart1")
 const chart1 = mapd3.Chart(chartNode1)
@@ -73,7 +75,7 @@ const chart1 = mapd3.Chart(chartNode1)
     },
     keyType, // time, number, string
     chartType, // line, area, stackedArea, bar, stackedBar
-    useScrolling: true,
+    useScrolling: false,
 
     // intro animation
     isAnimated: false,
@@ -87,7 +89,7 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Domain: "auto",
 
     // data
-    sortBy: "alphaAscending", // totalAscending, totalDescending, alphaAscending, alphaDescending
+    sortBy: "totalDescending", // totalAscending, totalDescending, alphaAscending, alphaDescending
     fillData: false,
 
     // axis

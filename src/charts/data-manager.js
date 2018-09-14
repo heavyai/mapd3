@@ -196,22 +196,22 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset) 
   // sort
   switch (_sortBy) {
   case comparators.TOTAL_ASCENDING:
-    allKeyTotals.sort(ascendingComparator("total"))
+    allKeyTotals.sort(ascendingComparator("total", _keyType))
     break
   case comparators.TOTAL_DESCENDING:
-    allKeyTotals.sort(descendingComparator("total"))
+    allKeyTotals.sort(descendingComparator("total", _keyType))
     break
   case comparators.ALPHA_ASCENDING:
-    allKeyTotals.sort(ascendingComparator(keys.KEY))
+    allKeyTotals.sort(ascendingComparator("key", _keyType))
     break
   case comparators.ALPHA_DESCENDING:
-    allKeyTotals.sort(descendingComparator(keys.KEY))
+    allKeyTotals.sort(descendingComparator("key", _keyType))
     break
   case comparators.COUNTVAL_ASCENDING:
-    allKeyTotals.sort(ascendingComparator("countval"))
+    allKeyTotals.sort(ascendingComparator("countval", _keyType))
     break
   case comparators.COUNTVAL_DESCENDING:
-    allKeyTotals.sort(descendingComparator("countval"))
+    allKeyTotals.sort(descendingComparator("countval", _keyType))
     break
   default:
     break

@@ -112,27 +112,35 @@ export function uniqueId () {
   return `id-${Math.random().toString(36).substr(2, 16)}`
 }
 
-export function ascendingComparator (key) {
-  return (a, b) => {
-    if (a[key] < b[key]) {
-      return -1
+export function ascendingComparator (key, keyType) {
+  if (keyType === "string") {
+    return (a, b) => a[key].localeCompare(b[key], "en", {numeric: false})
+  } else {
+    return (a, b) => {
+      if (a[key] < b[key]) {
+        return -1
+      }
+      if (a[key] > b[key]) {
+        return 1
+      }
+      return 0
     }
-    if (a[key] > b[key]) {
-      return 1
-    }
-    return 0
   }
 }
 
 export function descendingComparator (key) {
-  return (a, b) => {
-    if (b[key] < a[key]) {
-      return -1
+   if (keyType === "string") {
+    return (a, b) => b[key].localeCompare(a[key], "en", {numeric: false})
+  } else {
+    return (a, b) => {
+      if (b[key] < a[key]) {
+        return -1
+      }
+      if (b[key] > a[key]) {
+        return 1
+      }
+      return 0
     }
-    if (b[key] > a[key]) {
-      return 1
-    }
-    return 0
   }
 }
 

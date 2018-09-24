@@ -30,12 +30,12 @@
 const keyType = "string"
 const dataConfig = {
   keyType,
-  range: [0, 100],
-  pointCount: 100,
+  range: [-100, 100],
+  pointCount: 20,
   groupCount: 1,
-  lineCount: 4,
+  lineCount: 3,
   stringMinMaxLength: [5, 10],
-  randomStepSize: 50,
+  randomStepSize: 5,
   nullRatio: 0
 }
 
@@ -89,7 +89,7 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Domain: "auto",
 
     // data
-    sortBy: "totalDescending", // totalAscending, totalDescending, alphaAscending, alphaDescending
+    // sortBy: "totalDescending", // totalAscending, totalDescending, alphaAscending, alphaDescending
     fillData: false,
 
     // axis
@@ -169,7 +169,8 @@ const chart1 = mapd3.Chart(chartNode1)
     dotsToShow: "isolated", // all, isolated, none
 
     // stacked
-    stackOffset: mapd3.Constants.stackOffset.NONE // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
+    percentageViewEnabled: true,
+    stackOffset: mapd3.Constants.stackOffset.POSITIVE_NEGATIVE // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
   })
   .setData(data)
 

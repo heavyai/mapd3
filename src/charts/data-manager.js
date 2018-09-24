@@ -189,7 +189,7 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset) 
   // get stack totals
   const allKeyTotals = dataByKey.map(d => ({
     key: d[keys.KEY],
-    total: d3.sum(d[keys.SERIES].map(dB => Math.abs(dB[keys.VALUE]))),
+    total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE])),
     ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
   }))
 

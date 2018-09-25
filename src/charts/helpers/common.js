@@ -198,20 +198,17 @@ export function filterByKey (_data, _extent) {
     const extentMaxIndex = allKeys.indexOf(_extent[1])
     series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
   })
-
   return data
 }
 
-export function filterByDate (_data, _dateExtent) {
+export function filterByDate (_data, _extent) {
   const data = cloneData(_data)
 
   data[keys.SERIES].forEach((series) => {
-    series[keys.VALUES] = series[keys.VALUES].filter((d) => {
-      const epoch = new Date(d[keys.KEY]).getTime()
-      return epoch >= _dateExtent[0].getTime()
-        && epoch <= _dateExtent[1].getTime()
+    series[keys.VALUES] = series[keys.VALUES].filter(d => {
+      const date = new Date(d[keys.KEY])
+      return date >= _extent[0] && date <= _extent[1]
     })
   })
-
   return data
 }

@@ -19,13 +19,7 @@ mapd3.Chart(document.querySelector('.chart'))
     })
     .setData(data)
 ```
-A complete example, including the use of a data generator, is available in the [/dev](dev/line_chart.html) folder.
+A complete set of examples is available on [this Observable Notebook](https://beta.observablehq.com/@biovisualize/mapd3-test-sheet).
 
 ## Development
-Look in [/package.json](package.json) for the build scripts. It is available as an [npm](https://www.npmjs.com/package/mapd3) package.
-
-## TO DO
-* Finish the Immerse integration
-* Unit test suite
-* Polish bar charts, add grouped bar
-* Release 1.0.0
+Look in [/package.json](package.json) for the build scripts. It is also available as an [npm](https://www.npmjs.com/package/mapd3) package.

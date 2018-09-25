@@ -27,13 +27,13 @@
 /* eslint-disable no-magic-numbers */
 
 // time, number, string
-const keyType = "string"
+const keyType = "time"
 const dataConfig = {
   keyType,
-  range: [-100, 100],
-  pointCount: 20,
+  range: [0, 100],
+  pointCount: 100,
   groupCount: 1,
-  lineCount: 3,
+  lineCount: 1,
   stringMinMaxLength: [5, 10],
   randomStepSize: 5,
   nullRatio: 0
@@ -178,7 +178,10 @@ const chart1 = mapd3.Chart(chartNode1)
 chart1.getEvents()
 //   .onBrush("brushStart", (d) => console.log(d))
 //   .onBrush("brushMove", (d) => console.log(d))
-  .onBrush("brushEnd", (d) => console.log(d))
+  .onBrush("brushEnd", (d) => {
+    const test = mapd3._Utils.filterByDate(data, d)
+    console.log(test.series[0].values)
+  })
   .onBrush("brushClear", (d) => console.log(d))
 //   .onBinning("change", (d) => console.log(d))
 //   .onDomainEditor("domainChange", (d) => console.log(d))

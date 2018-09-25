@@ -245,35 +245,6 @@ export function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
   return nearestDataPoint
 }
 
-export function filterByKey (_extent) {
-  const data = cloneData(cache.data)
-
-  data[keys.SERIES].forEach((series) => {
-    const values = series[keys.VALUES]
-    const allKeys = values.map(d => d[keys.KEY])
-    const extentMinIndex = allKeys.indexOf(_extent[0])
-    const extentMaxIndex = allKeys.indexOf(_extent[1])
-    series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
-  })
-
-  return data
-}
-
-export function filterByDate (_dateExtent) {
-  const data = cloneData(cache.data)
-
-  data[keys.SERIES].forEach((series) => {
-    series[keys.VALUES] = series[keys.VALUES].filter((d) => {
-      const epoch = new Date(d[keys.KEY]).getTime()
-      return epoch >= _dateExtent[0].getTime()
-        && epoch <= _dateExtent[1].getTime()
-    })
-  })
-
-  return data
-}
-
-
 function convertToDate (_date) {
   // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
   return new Date(new Date(_date).toString())

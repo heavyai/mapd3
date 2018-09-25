@@ -187,3 +187,31 @@ export function getDomainSign (domain) {
   }
   return domainSign
 }
+
+export function filterByKey (_data, _extent) {
+  const data = cloneData(_data)
+
+  data[keys.SERIES].forEach((series) => {
+    const values = series[keys.VALUES]
+    const allKeys = values.map(d => d[keys.KEY])
+    const extentMinIndex = allKeys.indexOf(_extent[0])
+    const extentMaxIndex = allKeys.indexOf(_extent[1])
+    series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
+  })
+
+  return data
+}
+
+export function filterByDate (_data, _dateExtent) {
+  const data = cloneData(_data)
+
+  data[keys.SERIES].forEach((series) => {
+    series[keys.VALUES] = series[keys.VALUES].filter((d) => {
+      const epoch = new Date(d[keys.KEY]).getTime()
+      return epoch >= _dateExtent[0].getTime()
+        && epoch <= _dateExtent[1].getTime()
+    })
+  })
+
+  return data
+}

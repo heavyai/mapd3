@@ -2,7 +2,7 @@ import * as d3 from "./charts/helpers/d3-service"
 import Chart from "./charts/chart.js"
 import Tooltip from "./charts/tooltip.js"
 import Legend from "./charts/legend.js"
-import DataManager from "./charts/data-manager.js"
+import DataGenerator from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
 import Binning from "./charts/binning.js"
 import DomainEditor from "./charts/domain-editor.js"
@@ -20,7 +20,7 @@ export {
   Chart,
   Tooltip,
   Legend,
-  DataManager,
+  DataGenerator,
   Observer,
   Binning,
   DomainEditor,

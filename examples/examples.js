@@ -1,10 +1,10 @@
 /**
   * A data generator for MapD3 charts
-  * @namespace DataManager
-  * @name DataManager
-  * @returns {object} The dataManager instance.
+  * @namespace DataGenerator
+  * @name DataGenerator
+  * @returns {object} The dataGenerator instance.
   * @example
-  * mapd3.DataManager()
+  * mapd3.DataGenerator()
   *   .setConfig({
   *     keyType: "time",
   *     range: [0, 100],
@@ -18,7 +18,7 @@
 const keyType = "number" // time, number, string
 const chartType = "line" // line, area, stackedArea
 
-const dataManager = mapd3.DataManager()
+const dataGenerator = mapd3.DataGenerator()
 
 /**
   * Configure the data manager
@@ -33,11 +33,11 @@ const dataManager = mapd3.DataManager()
   * @param {number} [config.randomStepSize=50] Random pixel range to step vertically between each generated points
   * @param {number} [config.nullRatio=null] Percentage of generated values that are null
 
-  * @returns {object} The dataManager instance.
-  * @memberof DataManager
+  * @returns {object} The dataGenerator instance.
+  * @memberof DataGenerator
   * @instance
   * @example
-  * mapd3.DataManager()
+  * mapd3.DataGenerator()
   *   .setConfig({
   *     keyType,
   *     range: [0, 100],
@@ -46,7 +46,7 @@ const dataManager = mapd3.DataManager()
   *     lineCount: 4
   *   })
   */
-dataManager.setConfig({
+dataGenerator.setConfig({
   keyType,
   range: [0, 100],
   pointCount: 2000,
@@ -62,10 +62,10 @@ dataManager.setConfig({
   * @name generateTestDataset
 
   * @returns {object} A data object
-  * @memberof DataManager
+  * @memberof DataGenerator
   * @instance
   * @example
-  * mapd3.DataManager()
+  * mapd3.DataGenerator()
   *   .setConfig({
   *     keyType: "time",
   *     range: [0, 100],
@@ -114,7 +114,7 @@ dataManager.setConfig({
   * }
   *
   */
-const data = dataManager.generateTestDataset()
+const data = dataGenerator.generateTestDataset()
 
 /**
  * A base chart for line/area/stacked area/bar/stacked bar charts.

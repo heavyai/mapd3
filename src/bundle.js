@@ -14,6 +14,7 @@ import * as Interactors from "./charts/interactors.js"
 import {colors} from "./charts/helpers/colors.js"
 import autoFormatter from "./charts/helpers/auto-format.js"
 import * as Constants from "./charts/helpers/constants"
+import * as _Utils from "./charts/helpers/common"
 require("./styles/mapd3.scss")
 
 export {
@@ -32,5 +33,6 @@ export {
   colors,
   d3,
   autoFormatter,
-  Constants
+  Constants,
+  _Utils
 }

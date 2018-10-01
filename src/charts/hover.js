@@ -14,7 +14,7 @@ export default function Hover (_container) {
     },
     width: 800,
     height: 500,
-    dotRadius: null,
+    hoverDotRadius: null,
     chartType: null,
 
     chartWidth: null,
@@ -116,7 +116,7 @@ export default function Hover (_container) {
           return scales.y2Scale ? scales.y2Scale(value) : scales.yScale(value)
         }
       })
-      .attr("r", config.dotRadius)
+      .attr("r", config.hoverDotRadius)
       .style("fill", getColor)
       .classed("hidden", d => d[keys.VALUE] === null)
 

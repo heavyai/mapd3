@@ -11,6 +11,7 @@ export default function Line (_container) {
     colorSchema: ["skyblue"],
     xDomain: "auto",
     dotsToShow: "none",
+    lineDotRadius: 4,
 
     chartHeight: null,
     stackOffset: stackOffset.NONE
@@ -85,6 +86,7 @@ export default function Line (_container) {
 
     lines.enter()
       .append("path")
+      .attr("filter", "url(#shadow)")
       .merge(lines)
       .attr("class", "mark line")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
@@ -179,7 +181,7 @@ export default function Line (_container) {
           return scales.y2Scale ? scales.y2Scale(d.value) : scales.yScale(d.value)
         }
       })
-      .attr("r", 2)
+      .attr("r", config.lineDotRadius)
       .style("fill", getColor)
 
     dots.exit().remove()

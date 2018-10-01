@@ -11,6 +11,7 @@ import {
 } from "./helpers/common"
 import {augmentConfig} from "./helpers/auto-config"
 import ComponentRegistry from "./helpers/component-registry"
+import * as StyleFilters from "./helpers/filters"
 
 import {augmentData, getNearestDataPoint} from "./data-manager"
 import Scale from "./scale"
@@ -79,7 +80,8 @@ export default function Chart (_container) {
     fillData: false,
 
     // hover
-    dotRadius: 4,
+    lineDotRadius: 4,
+    hoverDotRadius: 5,
 
     // tooltip
     tooltipFormat: ".2f",
@@ -180,6 +182,10 @@ export default function Chart (_container) {
         </div>
         <div class="svg-wrapper">
           <svg class="chart ${className}">
+            <defs>
+            ${StyleFilters.underline}
+            ${StyleFilters.shadow}
+            </defs>
             <g class="chart-group"></g>
             <g class="panel-group">
               <rect class="panel-background"></rect>
@@ -214,8 +220,8 @@ export default function Chart (_container) {
 
       componentRegistry.register({
         axis: Axis(cache.root),
-        line: Line(cache.panel),
         bar: Bar(cache.panel),
+        line: Line(cache.panel),
         tooltip: Tooltip(cache.root),
         legend: Legend(cache.root),
         brush: Brush(cache.panel),

@@ -177,7 +177,7 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {boolean} [config.maxXLabelCharCount=null] How many y axis tick text characters before truncating and adding an ellipsis
 
   * <hover>
-  * @param {string} [config.dotRadius=4] Radius of hover dots
+  * @param {string} [config.hoverDotRadius=4] Radius of hover dots
 
   * <tooltip>
   * @param {string} [config.tooltipFormat=".2f"] Format string for the tooltip values, "auto" or a formatting function
@@ -227,6 +227,7 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
 
   * <line>
   * @param {string} [config.dotsToShow="none"] Which dots to show on line chart, all, isolated, none
+  * @param {string} [config.lineDotRadius=4] Radius of line dots, if enabled
 
   * <bar>
   * @param {number} [config.barSpacingPercent="none"] Bar charts gutter width as a % of the bar width
@@ -291,7 +292,8 @@ chart.setConfig({
   maxYLabelCharCount: null,
 
   // hover
-  dotRadius: 4,
+  lineDotRadius: 4,
+  hoverDotRadius: 5,
 
   // tooltip
   tooltipFormat: ".2f",

@@ -48,7 +48,7 @@ const data = dataManager.generateTestDataset()
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
 // const chartType = ["bar", "bar", "bar", "line"]
-const chartType = "line"
+const chartType = "stackedArea"
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "solid"][i % 3])

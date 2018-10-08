@@ -208,8 +208,9 @@ export default function Scale () {
     const styleScale = buildStyleScale()
     const chartTypeScale = buildChartTypeScale()
     const measureNameLookup = buildMeasureNameLookup()
-    
+
     let yDomainSign = "++"
+    let y2DomainSign = "++"
 
     let yScale = null
     if (hasLeftAxis) {
@@ -239,12 +240,18 @@ export default function Scale () {
         y2Domain = config.y2Domain
       }
 
+      y2DomainSign = getDomainSign(y2Domain)
+      if (y2DomainSign === "--") {
+        y2Domain.reverse()
+      }
+
       y2Scale = buildYScale(y2Domain)
     }
 
     return {
       hasSecondAxis: hasRightAxis,
       yDomainSign,
+      y2DomainSign,
       xScale,
       yScale,
       y2Scale,

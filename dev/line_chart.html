@@ -29,10 +29,10 @@
 const keyType = "time"
 const dataConfig = {
   keyType,
-  range: [0, 100],
+  range: [-100, 100],
   pointCount: 10,
   groupCount: 1,
-  lineCount: 5,
+  lineCount: 4,
   stringMinMaxLength: [5, 10],
   randomStepSize: 10,
   nullRatio: 0
@@ -48,7 +48,7 @@ const data = dataManager.generateTestDataset()
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
 // const chartType = ["bar", "bar", "bar", "line"]
-const chartType = "stackedArea"
+const chartType = ["bar", "bar", "bar", "line"]
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "solid"][i % 3])
@@ -57,8 +57,6 @@ const palette = data.series.map((d, i) => ({
   value: colors[i],
   style: styles[i]
 }))
-
-console.log(palette)
 
 const chartNode1 = document.querySelector(".chart1")
 const chart1 = mapd3.Chart(chartNode1)
@@ -165,8 +163,8 @@ const chart1 = mapd3.Chart(chartNode1)
     // selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
 
     // line
-    dotsToShow: "all", // all, isolated, none
-    hoverDotRadius: 5,
+    dotsToShow: "isolated", // all, isolated, none
+    hoverDotRadius: 4,
 
     // stacked
     percentageViewEnabled: true,

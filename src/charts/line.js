@@ -24,7 +24,8 @@ export default function Line (_container) {
     xScale: null,
     yScale: null,
     y2Scale: null,
-    yDomainSign: "++"
+    yDomainSign: "++",
+    y2DomainSign: "++"
   }
 
   const cache = {
@@ -197,15 +198,8 @@ export default function Line (_container) {
 
     const seriesArea = d3.area()
       .x((d) => scales.xScale(d[keys.KEY]))
-      .y0((d) => scales.yScale(d[keys.VALUE]))
-      .y1(() => scales.yDomainSign === "+-" ? 0 : config.chartHeight)
-      .defined(isDefined)
-
-    const seriesArea2 = d3.area()
-      .x((d) => scales.xScale(d[keys.KEY]))
-      .y0((d) => scales.y2Scale(d[keys.VALUE]))
-      .y1(() => config.chartHeight)
-      .curve(d3.curveCatmullRom)
+      .y0(() => scales.yDomainSign === "+-" ? 0 : config.chartHeight)
+      .y1((d) => scales.yScale(d[keys.VALUE]))
       .defined(isDefined)
 
     const areas = cache.root.selectAll(".mark.area")
@@ -217,13 +211,7 @@ export default function Line (_container) {
       .attr("class", "mark area")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .classed("y2-area", (d) => d[keys.GROUP] > 0)
-      .attr("d", (d) => {
-        if (d[keys.GROUP] === 0) {
-          return seriesArea(d[keys.VALUES])
-        } else {
-          return seriesArea2(d[keys.VALUES])
-        }
-      })
+      .attr("d", (d) => seriesArea(d[keys.VALUES]))
       .style("stroke", getColor)
       .style("fill", getColor)
 

@@ -30,7 +30,8 @@ export default function Bar (_container) {
     xScale: null,
     yScale: null,
     y2Scale: null,
-    yDomainSign: "++"
+    yDomainSign: "++",
+    y2DomainSign: "++"
   }
 
   const cache = {
@@ -79,11 +80,13 @@ export default function Bar (_container) {
       barData = data.dataBySeries
     }
 
+    const hasMultipleAxes = Object.values(data.groupKeys).length > 1
+    const isGrouped = (Array.isArray(config.chartType) && !hasMultipleAxes) || config.chartType === "groupedBar"
+
     const groupMemberCount = barData.length
     const groupW = markCount ? (config.markPanelWidth / markCount) : 0
     const gutterW = groupW / 100 * config.barSpacingPercent
     const groupedBarW = groupMemberCount ? ((groupW - gutterW) / groupMemberCount) : 0
-    const hasMultipleBars = (config.chartType === "groupedBar" || barData.length > 1)
 
     const barLayer = cache.root.selectAll(".bar-layer")
       .data(barData)
@@ -113,7 +116,7 @@ export default function Bar (_container) {
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .merge(bars)
       .attr("x", (d) => {
-        if (hasMultipleBars) {
+        if (isGrouped) {
           const x = scales.xScale(d[keys.KEY]) - groupW / 2 + groupedBarW * d.index + gutterW / 2
           return Math.max(x, 0)
         } else {
@@ -121,8 +124,11 @@ export default function Bar (_container) {
         }
       })
       .attr("y", (d) => {
-        const yScale = (d[keys.GROUP] === 0 || hasMultipleBars) ? scales.yScale : scales.y2Scale
-        return scales.yDomainSign === "--" ? yScale(d[keys.VALUE]) : yScale(Math.max(0, d[keys.VALUE]))
+        if (d[keys.GROUP] === 0) {
+          return scales.yDomainSign === "--" ? scales.yScale(d[keys.VALUE]) : scales.yScale(Math.max(0, d[keys.VALUE]))
+        } else {
+          return scales.y2DomainSign === "--" ? scales.y2Scale(d[keys.VALUE]) : scales.y2Scale(Math.max(0, d[keys.VALUE]))
+        }
       })
       .attr("width", () => {
         if (config.chartType === "groupedBar" || barData.length > 1) {
@@ -132,8 +138,11 @@ export default function Bar (_container) {
         }
       })
       .attr("height", (d) => {
-        const yScale = (d[keys.GROUP] === 0 || hasMultipleBars) ? scales.yScale : scales.y2Scale
-        return Math.max(Math.abs(yScale(d[keys.VALUE]) - yScale(0)), MIN_BAR_HEIGHT)
+        if (d[keys.GROUP] === 0) {
+          return Math.max(Math.abs(scales.yScale(d[keys.VALUE]) - scales.yScale(0)), MIN_BAR_HEIGHT)
+        } else {
+          return Math.max(Math.abs(scales.y2Scale(d[keys.VALUE]) - scales.y2Scale(0)), MIN_BAR_HEIGHT)
+        }
       })
       .style("stroke", "white")
       .style("fill", getColor)

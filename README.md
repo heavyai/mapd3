@@ -1,8 +1,8 @@
 # MapD3
 
-MapD3 is a D3v4 charts library developed for [MapD Immerse](https://www.mapd.com/platform/immerse/). It is in active development, currently at 0.7.0. We will accept PRs and bug reports once we reach 1.0.0.
+MapD3 is a D3v4 charts library developed for [MapD Immerse](https://www.omnisci.com/platform/immerse/). It is in active development, currently at 0.16. We will accept PRs and bug reports once we reach 1.0.0.
 
-The main component is `mapd3.chart`, which is a wrapper for a suite of sub-components, like axis, tooltip, marks, labels, etc. The chart type is nothing more than a configuration option (currently line, area, stacked area, bar, stacked bar).
+The main component is `mapd3.chart`, which is a wrapper for a suite of sub-components, like axis, tooltip, marks, labels, etc. The chart type is nothing more than a configuration option (currently line, area, bar and variants of those).
 
 ## Documentation
 The [documentation](https://mapd.github.io/mapd3/doc/) is generated with [documentationjs](http://documentation.js.org/).
@@ -19,7 +19,7 @@ mapd3.Chart(document.querySelector('.chart'))
     })
     .setData(data)
 ```
-A complete set of examples is available on [this Observable Notebook](https://beta.observablehq.com/@biovisualize/mapd3-test-sheet).
+A complete example, including the use of a data generator, is available in this ObservaleHQ Notebook: https://beta.observablehq.com/@biovisualize/mapd3-test-sheet.
 
 ## Development
-Look in [/package.json](package.json) for the build scripts. It is also available as an [npm](https://www.npmjs.com/package/mapd3) package.
+Look in [/package.json](package.json) for the build scripts. It is available as an [npm](https://www.npmjs.com/package/mapd3) package.

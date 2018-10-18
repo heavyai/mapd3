@@ -112,27 +112,37 @@ export function uniqueId () {
   return `id-${Math.random().toString(36).substr(2, 16)}`
 }
 
-export function ascendingComparator (key) {
-  return (a, b) => {
-    if (a[key] < b[key]) {
-      return -1
+export function ascendingComparator (key, keyType) {
+  if (keyType === "string"&& key === "key") {
+    return (a, b) => a[key].localeCompare(b[key], "en", {numeric: false})
+  } else {
+    return (a, b) => {
+      if (a[key] < b[key]) {
+        return -1
+      }
+      if (a[key] > b[key]) {
+        return 1
+      }
+      return 0
     }
-    if (a[key] > b[key]) {
-      return 1
-    }
-    return 0
   }
 }
 
-export function descendingComparator (key) {
-  return (a, b) => {
-    if (b[key] < a[key]) {
-      return -1
+export function descendingComparator (key, keyType) {
+   if (keyType === "string" && key === "key") {
+    return (a, b) => {
+      return b[key].localeCompare(a[key], "en", {numeric: false})
     }
-    if (b[key] > a[key]) {
-      return 1
+  } else {
+    return (a, b) => {
+      if (b[key] < a[key]) {
+        return -1
+      }
+      if (b[key] > a[key]) {
+        return 1
+      }
+      return 0
     }
-    return 0
   }
 }
 
@@ -145,4 +155,60 @@ export function hasBars (_chartType) {
     || _chartType === "stackedBar"
     || _chartType === "groupedBar"
     || (Array.isArray(_chartType) && _chartType.filter(d => d === "bar").length > 0)
+}
+
+export function getChartClass (_chartType) {
+  switch (_chartType) {
+  case "bar":
+  case "stackedBar":
+    return "bar"
+
+  case "line":
+  case "stackedArea":
+    return "line"
+
+  // TO DO: handle bar line combo chartType...
+  case Array.isArray(_chartType):
+    return "combo"
+
+  default:
+    return ""
+  }
+}
+
+export function getDomainSign (domain) {
+  let domainSign = null
+  if (domain[0] >= 0 && domain[1] >= 0) {
+    domainSign = "++"
+  } else if (domain[0] <= 0 && domain[1] <= 0) {
+    domainSign = "--"
+  } else {
+    domainSign = domain.map(d => d >= 0 ? "+" : "-").join("")
+  }
+  return domainSign
+}
+
+export function filterByKey (_data, _extent) {
+  const data = cloneData(_data)
+
+  data[keys.SERIES].forEach((series) => {
+    const values = series[keys.VALUES]
+    const allKeys = values.map(d => d[keys.KEY])
+    const extentMinIndex = allKeys.indexOf(_extent[0])
+    const extentMaxIndex = allKeys.indexOf(_extent[1])
+    series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
+  })
+  return data
+}
+
+export function filterByDate (_data, _extent) {
+  const data = cloneData(_data)
+
+  data[keys.SERIES].forEach((series) => {
+    series[keys.VALUES] = series[keys.VALUES].filter(d => {
+      const date = new Date(d[keys.KEY])
+      return date >= _extent[0] && date <= _extent[1]
+    })
+  })
+  return data
 }

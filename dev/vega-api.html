@@ -20,6 +20,7 @@
 </style>
 </head><body>
 <div class="chart1"></div>
+<div class="chart2"></div>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script> -->
 <script src="../dist/mapd3.js"></script>
 <script>
@@ -29,16 +30,16 @@
 const keyType = "time"
 const dataConfig = {
   keyType,
-  range: [-100, 100],
-  pointCount: 10,
+  range: [0, 100],
+  pointCount: 100,
   groupCount: 1,
-  lineCount: 3,
+  lineCount: 1,
   stringMinMaxLength: [5, 10],
-  randomStepSize: 10,
-  nullRatio: 0
+  randomStepSize: 50,
+  nullRatio: 10
 }
 
-const dataManager = mapd3.DataGenerator()
+const dataManager = mapd3.DataManager()
   .setConfig(dataConfig)
 const data = dataManager.generateTestDataset()
 // data.series.forEach((d, i) => {
@@ -47,11 +48,12 @@ const data = dataManager.generateTestDataset()
 
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
-// const chartType = ["bar", "bar", "bar", "line"]
-const chartType = "stackedArea"
+const chartType = "line"
+
+console.log("data", data.series)
 
 const colors = mapd3.colors.mapdColors
-const styles = data.series.map((d, i) => ["solid", "dashed", "solid"][i % 3])
+const styles = data.series.map((d, i) => ["solid", "dashed", "dotted"][i % 3])
 const palette = data.series.map((d, i) => ({
   key: d.id,
   value: colors[i],
@@ -67,8 +69,8 @@ const chart1 = mapd3.Chart(chartNode1)
     margin: {
       top: 32,
       right: 70,
-      bottom: 75,
-      left: 70
+      bottom: 64,
+      left: 80
     },
     keyType, // time, number, string
     chartType, // line, area, stackedArea, bar, stackedBar
@@ -86,7 +88,7 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Domain: "auto",
 
     // data
-    // sortBy: "totalDescending", // totalAscending, totalDescending, alphaAscending, alphaDescending
+    sortBy: "alphaAscending", // totalAscending, totalDescending, alphaAscending, alphaDescending
     fillData: false,
 
     // axis
@@ -96,25 +98,21 @@ const chart1 = mapd3.Chart(chartNode1)
     y2Ticks: "auto",
     xTickSkip: "auto",
     // xAxisFormat: (d => `${d}%`), // "auto", format compatible with d3-format or function
-    // xAxisFormat: "%b %d, %Y", // "auto", format compatible with d3-format or function
-    yAxisFormat: null,
+    xAxisFormat: "auto", // "auto", format compatible with d3-format or function
+    yAxisFormat: (d => `${d}km/h`),
     y2AxisFormat: ".2f",
-    grid: "full",
+    grid: "horizontal",
     axisTransitionDuration: 0,
     labelsAreRotated: false,
-    maxXLabelCharCount: null,
-    maxYLabelCharCount: 5,
 
     // hover
-    lineDotRadius: 4,
+    dotRadius: 4,
 
     // tooltip
     // tooltipFormat: [".4f", (d => `avg ${d}`)],
-    // tooltipFormat: mapd3.autoFormatter([{key: "Measure 0", format: ".6f"}]),
-    tooltipFormat: ".30f",
+    tooltipFormat: mapd3.autoFormatter([{key: "Measure 0", format: ".6f"}]),
     // tooltipTitleFormat: "%b %d, %Y",
-    // tooltipTitleFormat: (d => `${d}m/s`),
-    tooltipTitleFormat: null,
+    tooltipTitleFormat: (d => `${d}m/s`),
     // tooltipTitleFormat: "auto",
     // tooltipTitleFormat: ".6f",
     mouseChaseDuration: 0,
@@ -135,20 +133,20 @@ const chart1 = mapd3.Chart(chartNode1)
     binningResolution: "1mo",
     binningIsAuto: true,
     binningToggles: ["10y", "1y", "1q", "1mo"],
-    binningIsEnabled: true,
+    binningIsEnabled: false,
 
     // domain
     xLock: false,
     yLock: false,
     y2Lock: false,
-    xDomainEditorIsEnabled: true,
-    yDomainEditorIsEnabled: true,
-    y2DomainEditorIsEnabled: dataConfig.groupCount > 1,
+    xDomainEditorIsEnabled: false,
+    yDomainEditorIsEnabled: false,
+    y2DomainEditorIsEnabled: false,
 
     // brush range
-    brushRangeMin: "2018-04-08T04:00:00.000Z",
-    brushRangeMax: "2018-04-16T04:00:00.000Z",
-    brushRangeIsEnabled: true,
+    // brushRangeMin: "July 01, 2017",
+    // brushRangeMax: "Sept 02, 2017",
+    brushRangeIsEnabled: false,
 
     // brush
     brushIsEnabled: true,
@@ -163,12 +161,7 @@ const chart1 = mapd3.Chart(chartNode1)
     // selectedKeys: data.series[0].values.map(d => d.key).slice(0, 3)
 
     // line
-    dotsToShow: "isolated", // all, isolated, none
-    hoverDotRadius: 4,
-
-    // stacked
-    percentageViewEnabled: true,
-    stackOffset: mapd3.Constants.stackOffset.POSITIVE_NEGATIVE // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
+    dotsToShow: "isolated" // all, isolated, none
   })
   .setData(data)
 
@@ -176,10 +169,7 @@ const chart1 = mapd3.Chart(chartNode1)
 chart1.getEvents()
 //   .onBrush("brushStart", (d) => console.log(d))
 //   .onBrush("brushMove", (d) => console.log(d))
-  .onBrush("brushEnd", (d) => {
-    const test = mapd3._Utils.filterByDate(data, d)
-    console.log(test.series[0].values)
-  })
+//   .onBrush("brushEnd", (d) => console.log(d))
   .onBrush("brushClear", (d) => console.log(d))
 //   .onBinning("change", (d) => console.log(d))
 //   .onDomainEditor("domainChange", (d) => console.log(d))
@@ -194,25 +184,7 @@ chart1.getEvents()
 // setTimeout(() => chart1.setConfig({
 //   xDomain: [new Date("2017-08-18T04:00:00.000Z"), new Date("2017-09-10T04:00:00.000Z")]
 // }).render(), 500)
-/*
-setTimeout(() => {
-  const dataConfig = {
-    keyType,
-    range: [0, 100],
-    pointCount: 4,
-    groupCount: 1,
-    lineCount: 2,
-    stringMinMaxLength: [5, 10],
-    randomStepSize: 50,
-    nullRatio: 0
-  }
-
-  const dataManager = mapd3.DataManager()
-    .setConfig(dataConfig)
-  const data = dataManager.generateTestDataset()
-  chart1.setConfig({chartType: "stackedArea"}).setData(data)
-}, 1000)
-*/
+// setTimeout(() => chart1.setConfig({sortBy: "alphaDescending"}).setData(data), 1000)
 </script>
 </body>
 </html>

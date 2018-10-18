@@ -1,16 +1,19 @@
 import * as d3 from "./helpers/d3-service"
 
 import {colors} from "./helpers/colors"
-import {keys} from "./helpers/constants"
+import {keys, stackOffset} from "./helpers/constants"
 import {
-  cloneData,
   override,
   throttle,
-  rebind,
-  uniqueId
+  uniqueId,
+  getChartClass,
+  rebind
 } from "./helpers/common"
-import {autoConfigure} from "./helpers/auto-config"
+import {augmentConfig} from "./helpers/auto-config"
+import ComponentRegistry from "./helpers/component-registry"
+import * as StyleFilters from "./helpers/filters"
 
+import {augmentData, getNearestDataPoint} from "./data-manager"
 import Scale from "./scale"
 import Line from "./line"
 import Bar from "./bar"
@@ -23,13 +26,12 @@ import Binning from "./binning"
 import DomainEditor from "./domain-editor"
 import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
-import DataManager from "./data-manager"
 import ClipPath from "./clip-path"
 
 
 export default function Chart (_container) {
 
-  let inputConfig = {
+  const defaultConfig = {
     // common
     margin: {
       top: 48,
@@ -78,7 +80,8 @@ export default function Chart (_container) {
     fillData: false,
 
     // hover
-    dotRadius: 4,
+    lineDotRadius: 4,
+    hoverDotRadius: 5,
 
     // tooltip
     tooltipFormat: ".2f",
@@ -105,20 +108,20 @@ export default function Chart (_container) {
     binningResolution: "1mo",
     binningIsAuto: true,
     binningToggles: ["10y", "1y", "1q", "1mo"],
-    binningIsEnabled: true,
+    binningIsEnabled: false,
 
     // domain
     xLock: false,
     yLock: false,
     y2Lock: false,
-    xDomainEditorIsEnabled: true,
-    yDomainEditorIsEnabled: true,
-    y2DomainEditorIsEnabled: true,
+    xDomainEditorIsEnabled: false,
+    yDomainEditorIsEnabled: false,
+    y2DomainEditorIsEnabled: false,
 
     // brush range
     brushRangeMin: null,
     brushRangeMax: null,
-    brushRangeIsEnabled: true,
+    brushRangeIsEnabled: false,
 
     // brush
     brushIsEnabled: true,
@@ -133,7 +136,10 @@ export default function Chart (_container) {
     selectedKeys: [],
 
     // line
-    dotsToShow: "none"
+    dotsToShow: "none",
+
+    // stacked
+    stackOffset: stackOffset.NONE
   }
 
   let scales = {
@@ -145,6 +151,8 @@ export default function Chart (_container) {
   }
 
   const cache = {
+    originalData: null,
+    originalConfig: defaultConfig,
     container: _container,
     svg: null,
     panel: null,
@@ -155,48 +163,16 @@ export default function Chart (_container) {
     xAxis: null, yAxis: null, yAxis2: null
   }
 
-  const dataObject = {
-    dataBySeries: null,
-    dataByKey: null,
-    data: null,
-    groupKeys: {},
-    hasSecondAxis: false,
-    stackData: null,
-    stack: null,
-    flatDataSorted: null,
-    allKeyTotals: null
-  }
+  let config = {}
 
-  let components = {}
-  let eventCollector = {}
-  let config = null
-  setConfig(inputConfig) // init with config = inputConfig
+  let data = {}
 
-  // events
   const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel", "mouseClickPanel")
-  const dataManager = DataManager()
+  const scale = Scale()
+  const componentRegistry = ComponentRegistry()
 
   const createTemplate = (chartType) => {
-    const chartClassName = _chartType => {
-      switch (chartType) {
-      case "bar":
-      case "stackedBar":
-        return "bar"
-
-      case "line":
-      case "stackedArea":
-        return "line"
-
-      // TO DO: handle bar line combo chartType...
-      case Array.isArray(_chartType):
-        return "combo"
-
-      default:
-        return ""
-      }
-    }
-
-    const className = chartClassName(chartType)
+    const className = getChartClass(chartType)
     return `<div class="mapd3 mapd3-container ${className}">
         <div class="header-group"></div>
         <div class="y-axis-container">
@@ -206,6 +182,10 @@ export default function Chart (_container) {
         </div>
         <div class="svg-wrapper">
           <svg class="chart ${className}">
+            <defs>
+            ${StyleFilters.underline}
+            ${StyleFilters.shadow}
+            </defs>
             <g class="chart-group"></g>
             <g class="panel-group">
               <rect class="panel-background"></rect>
@@ -221,7 +201,7 @@ export default function Chart (_container) {
       </div>`
   }
 
-  function build () {
+  function buildChart () {
     if (!cache.root) {
       const base = d3.select(cache.container)
         .html(createTemplate(config.chartType))
@@ -238,11 +218,10 @@ export default function Chart (_container) {
 
       addEvents()
 
-      components = {
-        scale: Scale(),
+      componentRegistry.register({
         axis: Axis(cache.root),
-        line: Line(cache.panel),
         bar: Bar(cache.panel),
+        line: Line(cache.panel),
         tooltip: Tooltip(cache.root),
         legend: Legend(cache.root),
         brush: Brush(cache.panel),
@@ -252,17 +231,7 @@ export default function Chart (_container) {
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
         label: Label(cache.root),
         clipPath: ClipPath(cache.svg)
-      }
-
-      eventCollector = {
-        onBrush: rebind(components.brush),
-        onHover: rebind(components.hover),
-        onBinning: rebind(components.binning),
-        onDomainEditor: rebind(components.domainEditor),
-        onBrushRangeEditor: rebind(components.brushRangeEditor),
-        onLabel: rebind(components.label),
-        onPanel: rebind(dispatcher)
-      }
+      })
     }
 
     cache.svgWrapper
@@ -284,108 +253,25 @@ export default function Chart (_container) {
       .style("width", `${config.markPanelWidth}px`)
       .style("height", `${config.chartHeight}px`)
       .attr("fill", "transparent")
-
     return this
   }
 
-  function buildChart () {
-    scales = components.scale
-      .setConfig(config)
-      .setData(dataObject)
-      .getScales()
+  function build () {
+    config = transformConfig(cache.originalConfig)
+    buildChart()
 
-    components.clipPath
-      .setConfig(config)
-      .render()
+    if (cache.originalData) {
+      scales = computeScales(config, data)
 
-    components.axis
-      .setConfig(config)
-      .setScales(scales)
-      .render()
-
-    components.bar
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .render()
-
-    components.line
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .render()
-
-    components.tooltip
-      .setConfig(config)
-      .setScales(scales)
-      .bindEvents(dispatcher)
-
-    components.legend
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-
-    components.brush
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .render()
-
-    components.hover
-      .setConfig(config)
-      .setScales(scales)
-      .setData(dataObject)
-      .bindEvents(dispatcher)
-
-    components.binning
-      .setConfig(config)
-      .render()
-
-    components.domainEditor
-      .setConfig(config)
-      .setScales(scales)
-      .render()
-
-    components.brushRangeEditor
-      .setConfig(config)
-      .setScales(scales)
-      .render()
-
-    components.label
-      .setConfig(config)
-      .render()
-
-    triggerIntroAnimation()
-    return this
-  }
-
-  function setData (_data) {
-    dataObject.data = cloneData(_data[keys.SERIES])
-    const cleanedData = dataManager.cleanData(_data, config.keyType, config.sortBy, config.fillData)
-    Object.assign(dataObject, cleanedData)
-
-    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
-    config = Object.assign({}, inputConfig, autoConfig)
-
-    render()
-    return this
-  }
-
-  function triggerIntroAnimation () {
-    if (config.isAnimated) {
-      cache.maskingRectangle = cache.svg.select(".masking-rectangle")
-        .attr("width", cache.chartWidth - 2)
-        .attr("height", cache.chartHeight)
-        .attr("x", config.margin.left + 1)
-        .attr("y", config.margin.top)
-
-      cache.maskingRectangle.transition()
-        .duration(config.animationDuration)
-        .ease(config.ease)
-        .attr("width", 0)
-        .attr("x", config.width - config.margin.right)
-        .on("end", () => cache.maskingRectangle.remove())
+      componentRegistry.render({
+        config,
+        scales,
+        data,
+        dispatcher
+      })
     }
+
+    return this
   }
 
   function addEvents () {
@@ -404,9 +290,9 @@ export default function Chart (_container) {
       .on("mousemove.dispatch", () => {
         const [mouseX, mouseY] = d3.mouse(cache.panel.node())
         const [panelMouseX] = d3.mouse(cache.svgWrapper.node())
-        if (!dataObject.data) { return }
+        if (!cache.originalData) { return }
         const xPosition = mouseX
-        const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
+        const dataPoint = getNearestDataPoint(xPosition, data, scales, config.keyType)
 
         if (dataPoint) {
           const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
@@ -415,9 +301,9 @@ export default function Chart (_container) {
       })
       .on("click.dispatch", () => {
         const [mouseX] = d3.mouse(cache.panel.node())
-        if (!dataObject.data) { return }
+        if (!cache.originalData) { return }
         const xPosition = mouseX
-        const dataPoint = dataManager.getNearestDataPoint(xPosition, dataObject, scales, config.keyType)
+        const dataPoint = getNearestDataPoint(xPosition, data, scales, config.keyType)
 
         if (dataPoint) {
           throttledDispatch("mouseClickPanel", null, dataPoint)
@@ -425,11 +311,28 @@ export default function Chart (_container) {
       })
   }
 
+  function transformData (_data) {
+    return augmentData(_data, config.keyType, config.sortBy, config.fillData, config.stackOffset)
+  }
+
+  function transformConfig (_config) {
+    return augmentConfig(_config, cache, data)
+  }
+
+  function computeScales (_config, _data) {
+    return scale
+      .setConfig(_config)
+      .setData(_data)
+      .getScales()
+  }
+
   function getEvents () {
     if (!cache.root) {
       render()
     }
-    return eventCollector
+    const events = componentRegistry.getEvents()
+    events.onPanel = rebind(dispatcher) // adding chart dispatcher
+    return events
   }
 
   function on (...args) {
@@ -437,20 +340,21 @@ export default function Chart (_container) {
     return this
   }
 
-  function setConfig (_config) {
-    inputConfig = override(inputConfig, _config)
+  function setData (_data) {
+    cache.originalData = _data
+    data = transformData(cache.originalData)
+    render()
+    return this
+  }
 
-    const autoConfig = autoConfigure(inputConfig, cache, dataObject)
-    config = Object.assign({}, inputConfig, autoConfig)
+  function setConfig (_config) {
+    cache.originalConfig = override(cache.originalConfig, _config)
+    config = transformConfig(cache.originalConfig)
     return this
   }
 
   function render () {
     build()
-
-    if (dataObject.dataBySeries) {
-      buildChart()
-    }
     return this
   }
 

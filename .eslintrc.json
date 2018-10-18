@@ -31,7 +31,7 @@
     "generator-star-spacing": [2, {"before": false, "after": true}], // standard on MDN docs.
     "global-require": 2, // avoid unexpected sync file load.
     // "global-strict": 0, // removed.
-    "guard-for-in": 2, // protects against looping over props up prototype chain.
+    "guard-for-in": 0, // protects against looping over props up prototype chain.
     "handle-callback-err": [2, "^.*(e|E)rr"], // often omitted in error.
     "id-blacklist": 0, // will add variable names to this list if abused.
     "id-length": 0, // variable naming is difficult enough without limits.
@@ -185,7 +185,7 @@
     // "no-wrap-func": 0, // removed.
     "object-curly-spacing": 2, // helps differentiate blocks (spaced) from objects (not spaced).
     "object-shorthand": 2, // increases consistency. #ES6only
-    "one-var": [2, "never"], // grouped statement types are more consistent and readable.
+    "one-var": 0, // grouped statement types are more consistent and readable.
     "one-var-declaration-per-line": 0, // superceded by one-var.
     "operator-assignment": [2, "never"], // better to be explicit about what is happening than relying on shorthand.
     "operator-linebreak": [0],

@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys, LEFT_AXIS_GROUP_INDEX} from "./helpers/constants"
+import {keys, LEFT_AXIS_GROUP_INDEX, stackOffset} from "./helpers/constants"
 import {override} from "./helpers/common"
 
 export default function Hover (_container) {
@@ -14,11 +14,12 @@ export default function Hover (_container) {
     },
     width: 800,
     height: 500,
-    dotRadius: null,
+    hoverDotRadius: null,
     chartType: null,
 
     chartWidth: null,
-    chartHeight: null
+    chartHeight: null,
+    stackOffset: stackOffset.NONE
   }
 
   let scales = {
@@ -96,20 +97,26 @@ export default function Hover (_container) {
     const dots = cache.root.selectAll(".dot")
       .data(_dotsData)
 
+    let yScale = scales.yScale
+    if (config.stackOffset === stackOffset.PERCENT) {
+      const denormalizingYScale = scales.yScale.copy().domain([0, 1])
+      yScale = denormalizingYScale
+    }
+
     dots.enter()
       .append("circle")
       .attr("class", "dot")
       .merge(dots)
       .attr("cy", (d) => {
+        const value = d[keys.VALUE]
         const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
         if (leftAxisGroup && leftAxisGroup.indexOf(d.group) > -1) {
-          return scales.yScale(d.value)
+          return yScale(value)
         } else {
-          return scales.y2Scale ? scales.y2Scale(d.value) : scales.yScale(d.value)
+          return scales.y2Scale ? scales.y2Scale(value) : scales.yScale(value)
         }
       })
-      .attr("r", config.dotRadius)
-      .style("stroke", "none")
+      .attr("r", config.hoverDotRadius)
       .style("fill", getColor)
       .classed("hidden", d => d[keys.VALUE] === null)
 
@@ -124,10 +131,12 @@ export default function Hover (_container) {
     })
 
     const dotsStack = data.stack([stackedDataPoint])
+    const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
     const dotsData = dotsStack.map((d) => {
       const dot = {}
-      dot.value = d[0][1]
+      dot[keys.VALUE] = d[0][0] < 0 ? d[0][0] : d[0][1]
       dot.id = d.key
+      dot.group = leftAxisGroup[0] // set to 1st left axis group as stacked is always single axis
       return dot
     })
 

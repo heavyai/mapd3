@@ -368,6 +368,7 @@ export default function Tooltip (_container, _isLegend = false) {
 
   function setContent (_content) {
     cache.content = _content
+    render()
     return this
   }
 
@@ -395,7 +396,6 @@ export default function Tooltip (_container, _isLegend = false) {
     setTitle,
     hide,
     show,
-    render,
     setConfig,
     setScales,
     destroy

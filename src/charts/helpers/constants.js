@@ -1,6 +1,6 @@
 export const keys = {
-  KEY: "key",
-  VALUE: "value",
+  KEY: "x",
+  VALUE: "y",
   ABSOLUTEVAL: "absoluteval",
   COUNTVAL: "countval",
   ID: "id",
@@ -35,4 +35,12 @@ export const comparators = {
   ALPHA_DESCENDING: "alphaDescending",
   COUNTVAL_ASCENDING: "countvalAscending",
   COUNTVAL_DESCENDING: "countvalDescending"
+}
+
+export const stackOffset = {
+  NONE: "stackOffsetNone",
+  PERCENT: "stackOffsetExpand",
+  STREAMGRAPH: "stackOffsetWiggle",
+  CENTERED: "stackOffsetSilhouette",
+  POSITIVE_NEGATIVE: "stackOffsetDiverging"
 }

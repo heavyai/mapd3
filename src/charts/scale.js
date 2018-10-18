@@ -5,7 +5,7 @@ import {
   LEFT_AXIS_GROUP_INDEX,
   RIGHT_AXIS_GROUP_INDEX
 } from "./helpers/constants"
-import {override} from "./helpers/common"
+import {override, getDomainSign} from "./helpers/common"
 
 export default function Scale () {
 
@@ -33,7 +33,7 @@ export default function Scale () {
   }
 
   const getID = (d) => d[keys.ID]
-  const getKey = (d) => d[keys.KEY]
+  const getKey = (d) => d.key
   const getValue = (d) => d[keys.VALUE]
 
   function buildXScale (_allKeys) {
@@ -61,7 +61,11 @@ export default function Scale () {
       domain = config.xDomain
     }
 
-    const markWidthOffset = ["bar", "stackedBar"].indexOf(config.chartType) > -1 ? config.markWidth / 2 : 0
+    const needsXOuterPadding = config.chartType === "bar"
+      || config.chartType === "stackedBar"
+      || (Array.isArray(config.chartType) && config.chartType.filter(d => d === "bar").length)
+
+    const markWidthOffset = needsXOuterPadding ? config.markWidth / 2 : 0
     xScale.domain(domain)
       .range([markWidthOffset, config.markPanelWidth - markWidthOffset])
 
@@ -140,7 +144,7 @@ export default function Scale () {
   }
 
   function getStackedScales () {
-    const allStackHeights = data.dataByKey.map((d) => d3.sum(d.series.map((dB) => dB.value)))
+    const stack = data.stack(data.stackData)
     const allKeys = data.allKeyTotals.map(getKey)
 
     const xScale = buildXScale(allKeys)
@@ -151,11 +155,22 @@ export default function Scale () {
 
     let yDomain = null
     if (config.yDomain === "auto") {
-      const valuesExtent = d3.extent(allStackHeights)
-      yDomain = [0, valuesExtent[1]]
+      const valuesExtent = d3.extent(d3.merge(d3.merge(stack)))
+      if (valuesExtent[0] < 0) {
+        yDomain = valuesExtent
+      } else {
+        // force domain to 0 if domain min is positive
+        yDomain = [0, valuesExtent[1]]
+      }
     } else {
       yDomain = config.yDomain
     }
+
+    const yDomainSign = getDomainSign(yDomain)
+    if (yDomainSign === "--") {
+      yDomain.reverse()
+    }
+
     const yScale = buildYScale(yDomain)
     const y2Scale = null
 
@@ -166,7 +181,8 @@ export default function Scale () {
       colorScale,
       styleScale,
       chartTypeScale,
-      measureNameLookup
+      measureNameLookup,
+      yDomainSign
     }
   }
 
@@ -193,6 +209,9 @@ export default function Scale () {
     const chartTypeScale = buildChartTypeScale()
     const measureNameLookup = buildMeasureNameLookup()
 
+    let yDomainSign = "++"
+    let y2DomainSign = "++"
+
     let yScale = null
     if (hasLeftAxis) {
       let yDomain = null
@@ -202,6 +221,12 @@ export default function Scale () {
       } else {
         yDomain = config.yDomain
       }
+
+      yDomainSign = getDomainSign(yDomain)
+      if (yDomainSign === "--") {
+        yDomain.reverse()
+      }
+
       yScale = buildYScale(validateDomain(yDomain))
     }
 
@@ -215,11 +240,18 @@ export default function Scale () {
         y2Domain = config.y2Domain
       }
 
+      y2DomainSign = getDomainSign(y2Domain)
+      if (y2DomainSign === "--") {
+        y2Domain.reverse()
+      }
+
       y2Scale = buildYScale(y2Domain)
     }
 
     return {
       hasSecondAxis: hasRightAxis,
+      yDomainSign,
+      y2DomainSign,
       xScale,
       yScale,
       y2Scale,

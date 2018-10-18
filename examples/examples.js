@@ -1,10 +1,10 @@
 /**
   * A data generator for MapD3 charts
-  * @namespace DataManager
-  * @name DataManager
-  * @returns {object} The dataManager instance.
+  * @namespace DataGenerator
+  * @name DataGenerator
+  * @returns {object} The dataGenerator instance.
   * @example
-  * mapd3.DataManager()
+  * mapd3.DataGenerator()
   *   .setConfig({
   *     keyType: "time",
   *     range: [0, 100],
@@ -18,7 +18,7 @@
 const keyType = "number" // time, number, string
 const chartType = "line" // line, area, stackedArea
 
-const dataManager = mapd3.DataManager()
+const dataGenerator = mapd3.DataGenerator()
 
 /**
   * Configure the data manager
@@ -33,11 +33,11 @@ const dataManager = mapd3.DataManager()
   * @param {number} [config.randomStepSize=50] Random pixel range to step vertically between each generated points
   * @param {number} [config.nullRatio=null] Percentage of generated values that are null
 
-  * @returns {object} The dataManager instance.
-  * @memberof DataManager
+  * @returns {object} The dataGenerator instance.
+  * @memberof DataGenerator
   * @instance
   * @example
-  * mapd3.DataManager()
+  * mapd3.DataGenerator()
   *   .setConfig({
   *     keyType,
   *     range: [0, 100],
@@ -46,7 +46,7 @@ const dataManager = mapd3.DataManager()
   *     lineCount: 4
   *   })
   */
-dataManager.setConfig({
+dataGenerator.setConfig({
   keyType,
   range: [0, 100],
   pointCount: 2000,
@@ -62,10 +62,10 @@ dataManager.setConfig({
   * @name generateTestDataset
 
   * @returns {object} A data object
-  * @memberof DataManager
+  * @memberof DataGenerator
   * @instance
   * @example
-  * mapd3.DataManager()
+  * mapd3.DataGenerator()
   *   .setConfig({
   *     keyType: "time",
   *     range: [0, 100],
@@ -114,7 +114,7 @@ dataManager.setConfig({
   * }
   *
   */
-const data = dataManager.generateTestDataset()
+const data = dataGenerator.generateTestDataset()
 
 /**
  * A base chart for line/area/stacked area/bar/stacked bar charts.
@@ -177,7 +177,7 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {boolean} [config.maxXLabelCharCount=null] How many y axis tick text characters before truncating and adding an ellipsis
 
   * <hover>
-  * @param {string} [config.dotRadius=4] Radius of hover dots
+  * @param {string} [config.hoverDotRadius=4] Radius of hover dots
 
   * <tooltip>
   * @param {string} [config.tooltipFormat=".2f"] Format string for the tooltip values, "auto" or a formatting function
@@ -227,10 +227,14 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
 
   * <line>
   * @param {string} [config.dotsToShow="none"] Which dots to show on line chart, all, isolated, none
+  * @param {string} [config.lineDotRadius=4] Radius of line dots, if enabled
 
   * <bar>
   * @param {number} [config.barSpacingPercent="none"] Bar charts gutter width as a % of the bar width
   * @param {Array.<string>} [config.selectedKeys=[]] Dimming all bars except for those listed in this array. Empty = none dimmed
+
+  * <stacked>
+  * @param {string} [config.stackOffset="stackOffsetNone"] Type of offset for stacked chart, coming from d3 stackOffset https://github.com/d3/d3-shape#stack-offsets also available as constants (mapd3.Constants.stackOffset): NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
 
   * @returns {object} The chart instance.
   * @memberof Chart
@@ -288,7 +292,8 @@ chart.setConfig({
   maxYLabelCharCount: null,
 
   // hover
-  dotRadius: 4,
+  lineDotRadius: 4,
+  hoverDotRadius: 5,
 
   // tooltip
   tooltipFormat: ".2f",
@@ -343,7 +348,10 @@ chart.setConfig({
   selectedKeys: [],
 
   // line
-  dotsToShow: "none" // all, isolated, none
+  dotsToShow: "none", // all, isolated, none
+
+  // stacked
+  stackOffset: mapd3.Constants.stackOffset.PERCENT // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
 })
 
 /**

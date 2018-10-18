@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {keys, dashStylesTranslation, LEFT_AXIS_GROUP_INDEX, dotsToShow} from "./helpers/constants"
+import {keys, dashStylesTranslation, LEFT_AXIS_GROUP_INDEX, dotsToShow, stackOffset} from "./helpers/constants"
 import {override} from "./helpers/common"
 
 export default function Line (_container) {
@@ -11,8 +11,10 @@ export default function Line (_container) {
     colorSchema: ["skyblue"],
     xDomain: "auto",
     dotsToShow: "none",
+    lineDotRadius: 4,
 
-    chartHeight: null
+    chartHeight: null,
+    stackOffset: stackOffset.NONE
   }
 
   let scales = {
@@ -21,7 +23,9 @@ export default function Line (_container) {
     chartTypeScale: null,
     xScale: null,
     yScale: null,
-    y2Scale: null
+    y2Scale: null,
+    yDomainSign: "++",
+    y2DomainSign: "++"
   }
 
   const cache = {
@@ -83,6 +87,7 @@ export default function Line (_container) {
 
     lines.enter()
       .append("path")
+      .attr("filter", "url(#shadow)")
       .merge(lines)
       .attr("class", "mark line")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
@@ -177,7 +182,7 @@ export default function Line (_container) {
           return scales.y2Scale ? scales.y2Scale(d.value) : scales.yScale(d.value)
         }
       })
-      .attr("r", 2)
+      .attr("r", config.lineDotRadius)
       .style("fill", getColor)
 
     dots.exit().remove()
@@ -193,15 +198,8 @@ export default function Line (_container) {
 
     const seriesArea = d3.area()
       .x((d) => scales.xScale(d[keys.KEY]))
-      .y0((d) => scales.yScale(d[keys.VALUE]))
-      .y1(() => config.chartHeight)
-      .defined(isDefined)
-
-    const seriesArea2 = d3.area()
-      .x((d) => scales.xScale(d[keys.KEY]))
-      .y0((d) => scales.y2Scale(d[keys.VALUE]))
-      .y1(() => config.chartHeight)
-      .curve(d3.curveCatmullRom)
+      .y0(() => scales.yDomainSign === "+-" ? 0 : config.chartHeight)
+      .y1((d) => scales.yScale(d[keys.VALUE]))
       .defined(isDefined)
 
     const areas = cache.root.selectAll(".mark.area")
@@ -213,13 +211,7 @@ export default function Line (_container) {
       .attr("class", "mark area")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)
       .classed("y2-area", (d) => d[keys.GROUP] > 0)
-      .attr("d", (d) => {
-        if (d[keys.GROUP] === 0) {
-          return seriesArea(d[keys.VALUES])
-        } else {
-          return seriesArea2(d[keys.VALUES])
-        }
-      })
+      .attr("d", (d) => seriesArea(d[keys.VALUES]))
       .style("stroke", getColor)
       .style("fill", getColor)
 
@@ -232,10 +224,16 @@ export default function Line (_container) {
       return null
     }
 
+    let yScale = scales.yScale
+    if (config.stackOffset === stackOffset.PERCENT) {
+      const denormalizingYScale = scales.yScale.copy().domain([0, 1])
+      yScale = denormalizingYScale
+    }
+
     const seriesLine = d3.area()
-      .x((d) => scales.xScale(d.data[keys.KEY]))
-      .y0((d) => scales.yScale(d[0]))
-      .y1((d) => scales.yScale(d[1]))
+      .x((d) => scales.xScale(d.data.key))
+      .y0((d) => yScale(d[0]))
+      .y1((d) => yScale(d[1]))
 
     const areas = cache.root.selectAll(".mark.stacked-area")
       .data(data.stack(data.stackData))

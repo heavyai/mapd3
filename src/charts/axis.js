@@ -221,6 +221,12 @@ export default function Axis (_container) {
       .tickPadding(config.tickPadding)
       .tickSizeOuter(0)
 
+    if (config.keyType !== "string") {
+      const ticks = scales.xScale.ticks()
+      const preferredTickCount = ticks.length / config.chartWidth * config.markPanelWidth
+      cache.xAxis.ticks(preferredTickCount)
+    }
+
     formatXAxis()
 
     if (scales.yScale) {
@@ -301,7 +307,7 @@ export default function Axis (_container) {
     return Math.ceil(longestLabelApproxWidth / (config.markPanelWidth / labels.length))
   }
 
-  function skipXLAbels () {
+  function skipXLabels () {
     if (!config.xTickSkip) {
       return
     }
@@ -322,7 +328,7 @@ export default function Axis (_container) {
       .attr("transform", `translate(0, ${config.chartHeight})`)
       .call(cache.xAxis)
 
-    skipXLAbels()
+    skipXLabels()
 
     if (cache.xLabelsShouldRotate) {
       rotateXLabels()
@@ -392,9 +398,10 @@ export default function Axis (_container) {
     }
 
     if (config.grid === "vertical" || config.grid === "full") {
+      const ticks = config.keyType === "string" ? scales.xScale.domain() : scales.xScale.ticks()
       cache.verticalGridLines = cache.xAxisRoot.select(".grid-lines-group")
         .selectAll("line.vertical-grid-line")
-        .data(cache.xAxis.tickValues())
+        .data(ticks)
 
       cache.verticalGridLines.enter()
         .append("line")

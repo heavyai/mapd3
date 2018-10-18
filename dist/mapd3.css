@@ -213,6 +213,10 @@
   stroke-width: 1;
   fill: none; }
 
+.mapd3 .hover-group .dot {
+  stroke-width: 0.5;
+  stroke: #D2D6DF; }
+
 .mapd3 .domain-input-group {
   position: absolute;
   top: 0;
@@ -255,5 +259,3 @@
   .mapd3 .label-group .axis-label.y2 {
     -webkit-transform: translate(-50%) rotate(-90deg);
             transform: translate(-50%) rotate(-90deg); }
-
-/*# sourceMappingURL=mapd3.css.map*/

@@ -4,7 +4,7 @@ import {comparators, keys} from "./helpers/constants"
 import {ascendingComparator, descendingComparator, clamp, invertScale, sortData, cloneData, getUnique} from "./helpers/common"
 
 
-export default function DataManager () {
+export default function DataGenerator () {
   /* eslint-disable no-magic-numbers */
   let config = {
     keyType: "number", // number, string, time,
@@ -20,10 +20,6 @@ export default function DataManager () {
     data: null,
     baseDate: null
   }
-
-  // accessors
-  const getKey = (d) => d[keys.KEY]
-  const getID = (d) => d[keys.ID]
 
   const DAY_IN_MS = 1000 * 60 * 60 * 24
 
@@ -44,8 +40,8 @@ export default function DataManager () {
       const isRandomNull = config.nullRatio && (Math.random() * 100 / config.nullRatio) < 1
       value = clamp(value + rnd() * randomWalkStepSize, _range)
       return {
-        value: isRandomNull ? null : value,
-        key: config.keyType === "time" ? d.toISOString() : d
+        y: isRandomNull ? null : value,
+        x: config.keyType === "time" ? d.toISOString() : d
       }
     })
   }
@@ -64,6 +60,7 @@ export default function DataManager () {
     }
 
     const series = d3.range(config.lineCount).map((d) => ({
+      name: `Name ${d}`,
       label: `Label ${d}`,
       id: d,
       group: d < config.groupCount ? d : 0,
@@ -78,193 +75,6 @@ export default function DataManager () {
     return cache.data
   }
 
-  function convertToDate (_date) {
-    // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
-    return new Date(new Date(_date).toString())
-  }
-
-  function cleanData (_data, _keyType, _sortBy, _fillData) {
-    const dataBySeries = cloneData(_data[keys.SERIES])
-    dataBySeries.forEach((serie) => {
-      // convert type
-      serie[keys.VALUES].forEach((d) => {
-        if (_keyType === "time") {
-          d[keys.KEY] = convertToDate(d[keys.KEY])
-        }
-        if (_fillData) {
-          d[keys.VALUE] = Number(d[keys.VALUE])
-        }
-      })
-    })
-    const flatData = []
-
-    // get all unique keys
-    let allKeys = []
-    dataBySeries.forEach(d => { allKeys = allKeys.concat(d.values) })
-    allKeys = allKeys.map(d => d.key)
-    allKeys = getUnique(allKeys, _keyType)
-
-    // Normalize dataBySeries
-    dataBySeries.forEach((serie) => {
-      const keyValues = {}
-      serie[keys.VALUES].forEach(d => {
-        keyValues[d.key] = d.value
-      })
-      // fill data
-      let filled = serie[keys.VALUES]
-      if (_fillData) {
-        filled = allKeys.map(d => ({
-          key: d,
-          value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
-        }))
-      }
-
-      // sort
-      serie[keys.VALUES] = sortData(filled, _keyType)
-    })
-
-    // flatten data
-    dataBySeries.forEach((serie) => {
-      serie[keys.VALUES].forEach((d) => {
-        const dataPoint = {}
-        dataPoint[keys.LABEL] = serie[keys.LABEL]
-        dataPoint[keys.GROUP] = serie[keys.GROUP]
-        dataPoint[keys.ID] = serie[keys.ID]
-        dataPoint[keys.KEY] = d[keys.KEY]
-        dataPoint[keys.VALUE] = d[keys.VALUE]
-        dataPoint[keys.COUNTVAL] = d[keys.COUNTVAL]
-        dataPoint[keys.ABSOLUTEVAL] = d[keys.ABSOLUTEVAL]
-        flatData.push(dataPoint)
-      })
-    })
-    // sort flat data
-    const flatDataSorted = sortData(flatData, _keyType)
-
-    const dataByKey = d3.nest()
-      .key(getKey)
-      .entries(flatDataSorted)
-      .map((d) => {
-        const dataPoint = {}
-        dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
-        dataPoint[keys.SERIES] = d.values
-        return dataPoint
-      })
-
-    // get group keys
-    const groupKeys = {}
-    dataBySeries.forEach((d) => {
-      if (!groupKeys[d[keys.GROUP]]) {
-        groupKeys[d[keys.GROUP]] = []
-      }
-      groupKeys[d[keys.GROUP]].push(d[keys.ID])
-    })
-
-    // stack data
-    const stackData = dataByKey
-      .map((d) => {
-        const points = {
-          key: d[keys.KEY]
-        }
-        d.series.forEach((dB) => {
-          points[dB[keys.ID]] = dB[keys.VALUE]
-        })
-        return points
-      })
-
-    // d3 stack
-    const stack = d3.stack()
-      .keys(dataBySeries.map(getID))
-      .value((d, key) => d[key] || 0)
-      .order(d3.stackOrderNone)
-      .offset(d3.stackOffsetNone)
-
-    // get stack totals
-    const allKeyTotals = dataByKey.map(d => ({
-      key: d[keys.KEY],
-      total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE])),
-      ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
-    }))
-
-    // sort
-    switch (_sortBy) {
-    case comparators.TOTAL_ASCENDING:
-      allKeyTotals.sort(ascendingComparator("total"))
-      break
-    case comparators.TOTAL_DESCENDING:
-      allKeyTotals.sort(descendingComparator("total"))
-      break
-    case comparators.ALPHA_ASCENDING:
-      allKeyTotals.sort(ascendingComparator("key"))
-      break
-    case comparators.ALPHA_DESCENDING:
-      allKeyTotals.sort(descendingComparator("key"))
-      break
-    case comparators.COUNTVAL_ASCENDING:
-      allKeyTotals.sort(ascendingComparator("countval"))
-      break
-    case comparators.COUNTVAL_DESCENDING:
-      allKeyTotals.sort(descendingComparator("countval"))
-      break
-    default:
-      break
-    }
-
-    return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys, allKeyTotals}
-  }
-
-  function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
-    const keyFromInvertedX = invertScale(_scales.xScale, _mouseX, _keyType)
-
-    if (_keyType === "string") {
-      // if we are keying on strings, simply find the value via a key match
-      return _dataObject.dataByKey.find(d => d[keys.KEY] === keyFromInvertedX)
-    }
-
-    const bisectLeft = d3.bisector(getKey).left
-    const dataEntryIndex = bisectLeft(_dataObject.dataByKey, keyFromInvertedX)
-    const dataEntryForXPosition = _dataObject.dataByKey[dataEntryIndex]
-    const dataEntryForXPositionPrev = _dataObject.dataByKey[Math.max(dataEntryIndex - 1, 0)]
-
-    let nearestDataPoint = null
-    if (keyFromInvertedX && dataEntryForXPosition && dataEntryForXPositionPrev) {
-      if ((keyFromInvertedX - dataEntryForXPositionPrev.key)
-          < (dataEntryForXPosition.key - keyFromInvertedX)) {
-        nearestDataPoint = dataEntryForXPositionPrev
-      } else {
-        nearestDataPoint = dataEntryForXPosition
-      }
-    }
-    return nearestDataPoint
-  }
-
-  function filterByKey (_extent) {
-    const data = cloneData(cache.data)
-
-    data[keys.SERIES].forEach((series) => {
-      const values = series[keys.VALUES]
-      const allKeys = values.map(d => d[keys.KEY])
-      const extentMinIndex = allKeys.indexOf(_extent[0])
-      const extentMaxIndex = allKeys.indexOf(_extent[1])
-      series[keys.VALUES] = series[keys.VALUES].slice(extentMinIndex, extentMaxIndex)
-    })
-
-    return data
-  }
-
-  function filterByDate (_dateExtent) {
-    const data = cloneData(cache.data)
-
-    data[keys.SERIES].forEach((series) => {
-      series[keys.VALUES] = series[keys.VALUES].filter((d) => {
-        const epoch = new Date(d[keys.KEY]).getTime()
-        return epoch >= _dateExtent[0].getTime()
-          && epoch <= _dateExtent[1].getTime()
-      })
-    })
-
-    return data
-  }
-
   function setConfig (_config) {
     config = Object.assign({}, config, _config)
     return this
@@ -273,10 +83,169 @@ export default function DataManager () {
   return {
     generateTestDataset,
     generateSeries,
-    cleanData,
-    getNearestDataPoint,
-    filterByDate,
-    filterByKey,
     setConfig
   }
+}
+
+// accessors
+const getKey = (d) => d[keys.KEY]
+const getID = (d) => d[keys.ID]
+  
+export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset) {
+  const dataBySeries = cloneData(_data[keys.SERIES])
+  dataBySeries.forEach((serie) => {
+    // convert type
+    serie[keys.VALUES].forEach((d) => {
+      if (_keyType === "time") {
+        d[keys.KEY] = convertToDate(d[keys.KEY])
+      }
+      if (_fillData) {
+        d[keys.VALUE] = Number(d[keys.VALUE])
+      }
+    })
+  })
+  const flatData = []
+
+  // get all unique keys
+  let allKeys = []
+  dataBySeries.forEach(d => { allKeys = allKeys.concat(d.values) })
+  allKeys = allKeys.map(d => d.key)
+  allKeys = getUnique(allKeys, _keyType)
+
+  // Normalize dataBySeries
+  dataBySeries.forEach((serie) => {
+    const keyValues = {}
+    serie[keys.VALUES].forEach(d => {
+      keyValues[d.key] = d.value
+    })
+    // fill data
+    let filled = serie[keys.VALUES]
+    if (_fillData) {
+      filled = allKeys.map(d => ({
+        key: d,
+        value: (typeof keyValues[d] === "undefined") ? null : keyValues[d]
+      }))
+    }
+
+    // sort
+    serie[keys.VALUES] = sortData(filled, _keyType)
+  })
+
+  // flatten data
+  dataBySeries.forEach((serie) => {
+    serie[keys.VALUES].forEach((d) => {
+      const dataPoint = {}
+      dataPoint[keys.LABEL] = serie[keys.LABEL]
+      dataPoint[keys.GROUP] = serie[keys.GROUP]
+      dataPoint[keys.ID] = serie[keys.ID]
+      dataPoint[keys.KEY] = d[keys.KEY]
+      dataPoint[keys.VALUE] = d[keys.VALUE]
+      dataPoint[keys.COUNTVAL] = d[keys.COUNTVAL]
+      dataPoint[keys.ABSOLUTEVAL] = d[keys.ABSOLUTEVAL]
+      flatData.push(dataPoint)
+    })
+  })
+  // sort flat data
+  const flatDataSorted = sortData(flatData, _keyType)
+
+  const dataByKey = d3.nest()
+    .key(getKey)
+    .entries(flatDataSorted)
+    .map((d) => {
+      const dataPoint = {}
+      dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
+      dataPoint[keys.SERIES] = d.values
+      return dataPoint
+    })
+
+  // get group keys
+  const groupKeys = {}
+  dataBySeries.forEach((d) => {
+    if (!groupKeys[d[keys.GROUP]]) {
+      groupKeys[d[keys.GROUP]] = []
+    }
+    groupKeys[d[keys.GROUP]].push(d[keys.ID])
+  })
+
+  // stack data
+  const stackData = dataByKey
+    .map((d) => {
+      const points = {
+        key: d[keys.KEY]
+      }
+      d.series.forEach((dB) => {
+        points[dB[keys.ID]] = dB[keys.VALUE]
+      })
+      return points
+    })
+
+  // d3 stack
+  const stack = d3.stack()
+    .keys(dataBySeries.map(getID))
+    .value((d, key) => d[key] || 0)
+    .order(d3.stackOrderNone)
+    .offset(d3[_stackOffset])
+
+  // get stack totals
+  const allKeyTotals = dataByKey.map(d => ({
+    key: d[keys.KEY],
+    total: d3.sum(d[keys.SERIES].map(dB => dB[keys.VALUE])),
+    ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
+  }))
+
+  // sort
+  switch (_sortBy) {
+  case comparators.TOTAL_ASCENDING:
+    allKeyTotals.sort(ascendingComparator("total", _keyType))
+    break
+  case comparators.TOTAL_DESCENDING:
+    allKeyTotals.sort(descendingComparator("total", _keyType))
+    break
+  case comparators.ALPHA_ASCENDING:
+    allKeyTotals.sort(ascendingComparator("key", _keyType))
+    break
+  case comparators.ALPHA_DESCENDING:
+    allKeyTotals.sort(descendingComparator("key", _keyType))
+    break
+  case comparators.COUNTVAL_ASCENDING:
+    allKeyTotals.sort(ascendingComparator("countval", _keyType))
+    break
+  case comparators.COUNTVAL_DESCENDING:
+    allKeyTotals.sort(descendingComparator("countval", _keyType))
+    break
+  default:
+    break
+  }
+
+  return {dataBySeries, dataByKey, stack, stackData, flatDataSorted, groupKeys, allKeyTotals}
+}
+
+export function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
+  const keyFromInvertedX = invertScale(_scales.xScale, _mouseX, _keyType)
+
+  if (_keyType === "string") {
+    // if we are keying on strings, simply find the value via a key match
+    return _dataObject.dataByKey.find(d => d[keys.KEY] === keyFromInvertedX)
+  }
+
+  const bisectLeft = d3.bisector(getKey).left
+  const dataEntryIndex = bisectLeft(_dataObject.dataByKey, keyFromInvertedX)
+  const dataEntryForXPosition = _dataObject.dataByKey[dataEntryIndex]
+  const dataEntryForXPositionPrev = _dataObject.dataByKey[Math.max(dataEntryIndex - 1, 0)]
+
+  let nearestDataPoint = null
+  if (keyFromInvertedX && dataEntryForXPosition && dataEntryForXPositionPrev) {
+    if ((keyFromInvertedX - dataEntryForXPositionPrev[keys.KEY])
+        < (dataEntryForXPosition[keys.KEY] - keyFromInvertedX)) {
+      nearestDataPoint = dataEntryForXPositionPrev
+    } else {
+      nearestDataPoint = dataEntryForXPosition
+    }
+  }
+  return nearestDataPoint
+}
+
+function convertToDate (_date) {
+  // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
+  return new Date(new Date(_date).toString())
 }

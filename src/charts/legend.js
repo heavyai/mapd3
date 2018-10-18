@@ -32,7 +32,6 @@ export default function Legend (_container) {
 
     cache.legendComponent
       .setContent(legendContent)
-      .render()
     return this
   }
 

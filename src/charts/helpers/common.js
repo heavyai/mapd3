@@ -26,11 +26,7 @@ export function sortData (_data, _keyType) {
 }
 
 export function getUnique (arr, _keyType) {
-  const obj = {}
-  arr.forEach(d => {
-    obj[d] = null
-  })
-  const allKeys = Object.keys(obj)
+  const allKeys = Array.from(new Set(arr))
   if (_keyType === "time") {
     return allKeys.map(d => new Date(d))
   } else {

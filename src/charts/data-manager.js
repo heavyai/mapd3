@@ -152,7 +152,11 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset) 
 
   const dataByKey = d3.nest()
     .key(getKey)
-    .entries(flatDataSorted.map(d => ({x: d.x.toISOString(), y: d.y})))
+    .entries(flatDataSorted.map(d => ({
+      x: _keyType === "time" ? d.x.toISOString() : d.x,
+      y: d.y,
+      id: d[keys.ID]
+    })))
     .map((d) => {
       const dataPoint = {}
       dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key

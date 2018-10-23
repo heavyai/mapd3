@@ -12,6 +12,7 @@ export default function Line (_container) {
     xDomain: "auto",
     dotsToShow: "none",
     lineDotRadius: 4,
+    lineFx: null,
 
     chartHeight: null,
     stackOffset: stackOffset.NONE
@@ -87,7 +88,7 @@ export default function Line (_container) {
 
     lines.enter()
       .append("path")
-      .attr("filter", "url(#shadow)")
+      .attr("filter", config.lineFx ? `url(#${config.lineFx})` : null)
       .merge(lines)
       .attr("class", "mark line")
       .attr("clip-path", `url(#mark-clip-${config.chartId})`)

@@ -137,6 +137,7 @@ export default function Chart (_container) {
 
     // line
     dotsToShow: "none",
+    lineFx: null,
 
     // stacked
     stackOffset: stackOffset.NONE

@@ -1,7 +1,7 @@
 import {expect} from "chai"
 import Scale from "../src/charts/scale"
 import {baseConfig, generateComponentData} from "./test-utils"
-import {autoConfigure} from "../src/charts/helpers/auto-config"
+import {augmentConfig} from "../src/charts/helpers/auto-config"
 
 describe("Scales", () => {
 
@@ -19,7 +19,7 @@ describe("Scales", () => {
   before(() => {
     data = generateComponentData(dataConfig)
 
-    const autoConfig = autoConfigure(baseConfig, null, data)
+    const autoConfig = augmentConfig(baseConfig, null, data)
     const config = Object.assign({}, baseConfig, autoConfig)
 
     scale = Scale()

@@ -227,6 +227,7 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
 
   * <line>
   * @param {string} [config.dotsToShow="none"] Which dots to show on line chart, all, isolated, none
+  * @param {string} [config.lineFx=null] Effect on the line to make it stand out, shadow, underline
   * @param {string} [config.lineDotRadius=4] Radius of line dots, if enabled
 
   * <bar>
@@ -349,6 +350,7 @@ chart.setConfig({
 
   // line
   dotsToShow: "none", // all, isolated, none
+  lineFx: null, // underline, shadow
 
   // stacked
   stackOffset: mapd3.Constants.stackOffset.PERCENT // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE

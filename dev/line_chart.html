@@ -48,7 +48,7 @@ const data = dataManager.generateTestDataset()
 // line, area, stackedArea, bar, stackedBar or array of [line,bar]
 // const chartType = data.series.map((d, i) => ["line", "bar"][i % 2])
 // const chartType = ["bar", "bar", "bar", "line"]
-const chartType = "stackedArea"
+const chartType = "line"
 
 const colors = mapd3.colors.mapdColors
 const styles = data.series.map((d, i) => ["solid", "dashed", "solid"][i % 3])
@@ -165,6 +165,7 @@ const chart1 = mapd3.Chart(chartNode1)
     // line
     dotsToShow: "isolated", // all, isolated, none
     hoverDotRadius: 4,
+    lineFx: "shadow", // underline, shadow
 
     // stacked
     percentageViewEnabled: true,

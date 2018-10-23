@@ -1,4 +1,4 @@
-import DataManager from "../src/charts/data-manager"
+import DataGenerator, {augmentData} from "../src/charts/data-manager"
 
 export const baseConfig = {
   // common
@@ -109,10 +109,10 @@ export function generateComponentData (_config) {
 
   const config = Object.assign({}, baseDataConfig, _config)
 
-  const dataManager = DataManager()
+  const dataManager = DataGenerator()
     .setConfig(config)
   const inputData = dataManager.generateTestDataset()
-  const cleanData = dataManager.cleanData(inputData, config.keyType)
+  const cleanData = augmentData(inputData, config.keyType)
 
   return cleanData
 }

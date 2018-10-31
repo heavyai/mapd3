@@ -5,7 +5,7 @@ MapD3 is a D3v4 charts library developed for [MapD Immerse](https://www.omnisci.
 The main component is `mapd3.chart`, which is a wrapper for a suite of sub-components, like axis, tooltip, marks, labels, etc. The chart type is nothing more than a configuration option (currently line, area, bar and variants of those).
 
 ## Documentation
-The [documentation](https://mapd.github.io/mapd3/doc/) is generated with [documentationjs](http://documentation.js.org/).
+The [documentation](https://omnisci.github.io/mapd3/doc/index.html) is generated with [documentationjs](http://documentation.js.org/).
 
 The chart API is very simple: instantiate a chart, set configuration, set data, which automatically triggers a render, otherwise explicitely call render.
 

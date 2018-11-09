@@ -5,7 +5,7 @@ import autoFormatter from "../src/charts/helpers/auto-format"
 describe("Automatic Formatter", () => {
 
   const BASE_NUMBER = 12345.678
-  const BASE_DATE = new Date("3/21/2018")
+  const BASE_DATE = new Date('Wed, 21 March 2018 00:00:00 GMT')
 
   describe("Number formatters", () => {
 
@@ -89,9 +89,15 @@ describe("Automatic Formatter", () => {
       expect(formatted3).to.equal("3/21/2018, 12:00:00 AM")
     })
 
-    it("should handle invalid date formats", () => {
+    it("should handle invalid date formats using js Date default", () => {
       const formatted = autoFormatter("foo")(BASE_DATE)
-      expect(formatted).to.equal("Wed Mar 21 2018 00:00:00 GMT-0400 (EDT)")
+      expect(formatted).to.equal("Tue Mar 20 2018 20:00:00 GMT-0400 (EDT)")
+    })
+
+    it("should format using UTC", () => {
+      const date = new Date('Sun, 31 Dec 2017 00:00:00 GMT')
+      const formatted = autoFormatter("%Y-%m-%d")(date)
+      expect(formatted).to.equal("2017-12-31")
     })
 
   })

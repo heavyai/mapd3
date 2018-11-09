@@ -64,7 +64,7 @@ export function formatNumber(format, value) {
 }
 
 function validateDateFormat(format, value) {
-  const formatted = d3.timeFormat(format)(value)
+  const formatted = d3.utcFormat(format)(value)
 
   return formatted !== format
 }
@@ -73,7 +73,7 @@ function applyDateFormat(format, value) {
   if (!validateDateFormat(format, value)) {
     return String(value)
   }
-  return d3.timeFormat(format)(value)
+  return d3.utcFormat(format)(value)
 }
 
 function formatDate(format, value) {

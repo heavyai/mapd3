@@ -51,25 +51,32 @@ export function getExtractFormatter (extractType) {
   }
 }
 
-export function autoFormat (extent, format) {
+export function autoFormat (extent) {
   const max = extent[1]
   const min = extent[0]
+  let formatter = (d => d)
   if ((max - min) <= 0.02) {
-    format = ".4f"
+    formatter = d3.format(".4f")
   } else if ((max - min) <= 0.2) {
-    format = ".3f"
+    formatter = d3.format(".3f")
   } else if ((max - min) <= 1.1) {
-    format = ".2f"
+    formatter = d3.format(".2f")
   } else if ((max - min) < 100) {
-    format = ".1f"
+    formatter = d3.format(".1f")
   } else if ((max - min) < 1000) {
-    format = ".0f"
-  } else if ((max - min) < 100000) {
-    format = ".2s"
+    formatter = d3.format(".0f")
   } else {
-    format = ".2s"
+    formatter = d => {
+      if (d < 1000) {
+        return d3.format(",.2f")(d)
+      } else if (d < 1000000) {
+        return d3.format(",.2s")(d)
+      } else {
+        return `${Math.round(d / 1000000)}B`
+      }
+    }
   }
-  return format
+  return formatter
 }
 
 // slightly modified version of d3's default time-formatting to always use abbrev month names

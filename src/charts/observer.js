@@ -2,9 +2,8 @@ import * as d3 from "./helpers/d3-service"
 
 import {filterByDate, filterByKey} from "./helpers/common"
 
-export default function Observer (_dataManager) {
+export default function Observer () {
   const dispatcher = d3.dispatch("brushChange", "dataFilter")
-  const dataManager = _dataManager
 
   dispatcher.on("brushChange.observer", (_e, _brushConfig) => {
     const filtered = _brushConfig.keyType === "time" ? filterByDate(_e)

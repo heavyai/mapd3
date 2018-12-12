@@ -72,7 +72,7 @@ export function autoFormat (extent) {
       } else if (d < 1000000) {
         return d3.format(",.2s")(d)
       } else {
-        return `${Math.round(d / 1000000)}B`
+        return `${d3.format(",.0f")(Math.round(d / 1000000))}B`
       }
     }
   }

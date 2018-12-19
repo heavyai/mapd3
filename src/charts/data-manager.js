@@ -90,7 +90,7 @@ export default function DataGenerator () {
 // accessors
 const getKey = (d) => d[keys.KEY]
 const getID = (d) => d[keys.ID]
-
+  
 export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset) {
   const dataBySeries = cloneData(_data[keys.SERIES])
   dataBySeries.forEach((serie) => {

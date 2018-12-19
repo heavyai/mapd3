@@ -199,7 +199,7 @@ export default function Line (_container) {
 
     const seriesArea = d3.area()
       .x((d) => scales.xScale(d[keys.KEY]))
-      .y0(() => (scales.yDomainSign === "+-" ? 0 : config.chartHeight))
+      .y0(() => scales.yDomainSign === "+-" ? 0 : config.chartHeight)
       .y1((d) => scales.yScale(d[keys.VALUE]))
       .defined(isDefined)
 

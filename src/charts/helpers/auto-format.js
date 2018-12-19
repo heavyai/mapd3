@@ -2,10 +2,13 @@ import * as d3 from "./d3-service"
 
 /* eslint-disable no-magic-numbers */
 const prefixTranslation = {
+  k: Math.pow(10, 3),
   K: Math.pow(10, 3),
+  m: Math.pow(10, 6),
   M: Math.pow(10, 6),
+  g: Math.pow(10, 9),
   G: Math.pow(10, 9),
-  B: Math.pow(10, 9),
+  t: Math.pow(10, 12),
   T: Math.pow(10, 12)
 }
 
@@ -22,15 +25,10 @@ function applyNumberFormat(format, value) {
 function applyNumberFormatWithSuffix(tokens, value) {
   if (
     tokens.length === 2 &&
-    prefixTranslation[tokens[1].toUpperCase()]
+    prefixTranslation[tokens[1]]
   ) {
     try {
-      const prefixUppercase = tokens[1].toUpperCase()
-      let formatted = d3.formatPrefix(tokens[0], prefixTranslation[prefixUppercase])(value)
-      if (prefixUppercase === "B") {
-        formatted = formatted.replace("G", tokens[1])
-      }
-      return formatted
+      return d3.formatPrefix(tokens[0], prefixTranslation[tokens[1]])(value)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn("Invalid format", tokens)

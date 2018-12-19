@@ -113,7 +113,7 @@ export function uniqueId () {
 }
 
 export function ascendingComparator (key, keyType) {
-  if (keyType === "string" && key === "key") {
+  if (keyType === "string"&& key === "key") {
     return (a, b) => a[key].localeCompare(b[key], "en", {numeric: false})
   } else {
     return (a, b) => {
@@ -129,8 +129,10 @@ export function ascendingComparator (key, keyType) {
 }
 
 export function descendingComparator (key, keyType) {
-  if (keyType === "string" && key === "key") {
-    return (a, b) => b[key].localeCompare(a[key], "en", {numeric: false})
+   if (keyType === "string" && key === "key") {
+    return (a, b) => {
+      return b[key].localeCompare(a[key], "en", {numeric: false})
+    }
   } else {
     return (a, b) => {
       if (b[key] < a[key]) {
@@ -181,7 +183,7 @@ export function getDomainSign (domain) {
   } else if (domain[0] <= 0 && domain[1] <= 0) {
     domainSign = "--"
   } else {
-    domainSign = domain.map(d => (d >= 0 ? "+" : "-")).join("")
+    domainSign = domain.map(d => d >= 0 ? "+" : "-").join("")
   }
   return domainSign
 }

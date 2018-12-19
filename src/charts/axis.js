@@ -141,10 +141,10 @@ export default function Axis (_container) {
     }
   }
 
-  function getYAutoFormatter () {
+  function getYAutoFormat () {
     const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-    const yFormatter = autoFormat(yExtent, config.numberFormat)
-    return yFormatter
+    const yFormat = autoFormat(yExtent, config.numberFormat)
+    return d3.format(yFormat)
   }
 
   function formatYAxis (axis) {
@@ -160,10 +160,10 @@ export default function Axis (_container) {
       if (hasFormatterForMeasure) {
         axis.tickFormat(d => config.yAxisFormat(d, measureName))
       } else {
-        axis.tickFormat(getYAutoFormatter())
+        axis.tickFormat(getYAutoFormat())
       }
     } else if (config.yAxisFormat === "auto") {
-      axis.tickFormat(getYAutoFormatter())
+      axis.tickFormat(getYAutoFormat())
     } else if (typeof config.yAxisFormat === "string") {
       axis.tickFormat(d3.format(config.yAxisFormat))
     } else if (Array.isArray(config.yAxisFormat)) {
@@ -171,10 +171,10 @@ export default function Axis (_container) {
     }
   }
 
-  function getY2AutoFormatter () {
+  function getY2AutoFormat () {
     const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
-    const y2Formatter = autoFormat(y2Extent, config.numberFormat)
-    return y2Formatter
+    const y2Format = autoFormat(y2Extent, config.numberFormat)
+    return d3.format(y2Format)
   }
 
   function formatY2Axis (axis) {
@@ -188,13 +188,13 @@ export default function Axis (_container) {
         if (hasFormatterForMeasure) {
           axis.tickFormat(d => config.y2AxisFormat(d, measureName))
         } else {
-          axis.tickFormat(getY2AutoFormatter())
+          axis.tickFormat(getY2AutoFormat())
         }
       } else {
         axis.tickFormat(d => config.y2AxisFormat(d))
       }
     } else if (config.y2AxisFormat === "auto") {
-      axis.tickFormat(getY2AutoFormatter())
+      axis.tickFormat(getY2AutoFormat())
     } else if (typeof config.y2AxisFormat === "string") {
       axis.tickFormat(d3.format(config.y2AxisFormat))
     } else if (Array.isArray(config.y2AxisFormat)) {

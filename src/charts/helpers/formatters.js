@@ -55,24 +55,26 @@ export function autoFormat (extent) {
   const max = extent[1]
   const min = extent[0]
   let formatter = (d => d)
-  if ((max - min) <= 0.02) {
-    formatter = d3.format(".4f")
-  } else if ((max - min) <= 0.2) {
-    formatter = d3.format(".3f")
-  } else if ((max - min) <= 1.1) {
-    formatter = d3.format(".2f")
-  } else if ((max - min) < 100) {
-    formatter = d3.format(".1f")
-  } else if ((max - min) < 1000) {
-    formatter = d3.format(".0f")
+  if (Math.abs(max) < 1000) {
+    if ((max - min) <= 0.02) {
+      formatter = d3.format(".4f")
+    } else if ((max - min) <= 0.2) {
+      formatter = d3.format(".3f")
+    } else if ((max - min) <= 1.1) {
+      formatter = d3.format(".2f")
+    } else if ((max - min) < 100) {
+      formatter = d3.format(".1f")
+    } else if ((max - min) < 1000) {
+      formatter = d3.format(".0f")
+    } 
   } else {
     formatter = d => {
-      if (d < 1000) {
+      const abs = Math.abs(d)
+      if (abs < 1000) {
         return d3.format(",.2f")(d)
-      } else if (d < 1000000) {
-        return d3.format(",.2s")(d)
       } else {
-        return `${d3.format(",.0f")(Math.round(d / 1000000))}B`
+        const formatted = d3.format(",.2s")(d)
+        return formatted.replace("G", "B")
       }
     }
   }
@@ -140,8 +142,8 @@ export function formatTooltipNumber (d) {
   if (d === null) {
     return "null"
   }
-  // comma separator, max 2 decimals
-  return d3.format(",")(Math.round(d * 100) / 100)
+  // tooltip use en-us locale format
+  return d.toLocaleString("en-us")
 }
 
 export function formatPercentage (format) {

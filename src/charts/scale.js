@@ -106,10 +106,12 @@ export default function Scale () {
         return data.dataBySeries[0].dimensionName
       } else if (d === "y") {
         const groupKey = data.groupKeys[LEFT_AXIS_GROUP_INDEX][0]
-        return data.dataBySeries[groupKey].measureName
+        const groupData = data.dataBySeries.find(ds => ds.id === groupKey)
+        return groupData.measureName
       } else if (d === "y2") {
         const groupKey = data.groupKeys[RIGHT_AXIS_GROUP_INDEX][0]
-        return data.dataBySeries[groupKey].measureName
+        const groupData = data.dataBySeries.find(ds => ds.id === groupKey)
+        return groupData.measureName
       } else {
         return data.dataBySeries[d] && data.dataBySeries[d].measureName
       }

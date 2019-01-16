@@ -143,8 +143,7 @@ export default function Axis (_container) {
 
   function getYAutoFormatter () {
     const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-    const yFormatter = autoFormat(yExtent, config.numberFormat)
-    return yFormatter
+    return autoFormat(yExtent, config.numberFormat)
   }
 
   function formatYAxis (axis) {

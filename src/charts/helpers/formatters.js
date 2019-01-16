@@ -73,8 +73,7 @@ export function autoFormat (extent) {
       if (abs < 1000) {
         return d3.format(",.2f")(d)
       } else {
-        const formatted = d3.format(",.2s")(d)
-        return formatted.replace("G", "B")
+        return d3.format(",.2s")(d)
       }
     }
   }

@@ -77,7 +77,6 @@ export function autoFormat (extent) {
       }
     }
   }
-  return formatter
 }
 
 // slightly modified version of d3's default time-formatting to always use abbrev month names

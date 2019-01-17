@@ -66,7 +66,7 @@ export function autoFormat (extent) {
       formatter = d3.format(".1f")
     } else if ((max - min) < 1000) {
       formatter = d3.format(".0f")
-    } 
+    }
   } else {
     formatter = d => {
       const abs = Math.abs(d)
@@ -77,6 +77,7 @@ export function autoFormat (extent) {
       }
     }
   }
+  return formatter
 }
 
 // slightly modified version of d3's default time-formatting to always use abbrev month names

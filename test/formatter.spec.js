@@ -76,6 +76,25 @@ describe("Automatic Formatter", () => {
 
   })
 
+  describe.only("Custom number formatter", () => {
+    it("should properly format Imperial custom format", () => {
+      let formatted = autoFormatter("custom-imperial")(10)
+      expect(formatted).to.equal("10.00")
+      formatted = autoFormatter("custom-imperial")(10000)
+      expect(formatted).to.equal("10K")
+      formatted = autoFormatter("custom-imperial")(10000000)
+      expect(formatted).to.equal("10M")
+      formatted = autoFormatter("custom-imperial")(10000000000)
+      expect(formatted).to.equal("10B")
+      formatted = autoFormatter("custom-imperial")(10000000000000)
+      expect(formatted).to.equal("10T")
+      formatted = autoFormatter("custom-imperial")(10000000000000000)
+      expect(formatted).to.equal("10,000T")
+      formatted = autoFormatter("custom-imperial")(-10000000000000000)
+      expect(formatted).to.equal("-10,000T")
+    })
+  })
+
   describe("Date formatters", () => {
 
     it("should handle typical date formats", () => {

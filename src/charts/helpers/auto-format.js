@@ -61,14 +61,14 @@ function formatImperial(value) {
     const formatted = d3.format(",.2s")(value)
     return formatted.replace("G", "B").replace("k", "K")
   } else {
-    return d3.formatPrefix(",.0", prefixTranslation["T"])(value)
+    return d3.formatPrefix(",.0", prefixTranslation.T)(value)
   }
 }
 
 export function formatNumber(format, value) {
   if (/custom-/.test(format)) {
     const formatName = format.replace("custom-", "")
-    if(formatName === "imperial") {
+    if (formatName === "imperial") {
       return formatImperial(value)
     } else {
       return value

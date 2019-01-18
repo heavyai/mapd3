@@ -143,8 +143,7 @@ export default function Axis (_container) {
 
   function getYAutoFormat () {
     const yExtent = config.yDomain === "auto" ? scales.yScale.domain() : config.yDomain
-    const yFormat = autoFormat(yExtent, config.numberFormat)
-    return d3.format(yFormat)
+    return autoFormat(yExtent)
   }
 
   function formatYAxis (axis) {
@@ -173,8 +172,7 @@ export default function Axis (_container) {
 
   function getY2AutoFormat () {
     const y2Extent = config.y2Domain === "auto" ? scales.y2Scale.domain() : config.y2Domain
-    const y2Format = autoFormat(y2Extent, config.numberFormat)
-    return d3.format(y2Format)
+    return autoFormat(y2Extent)
   }
 
   function formatY2Axis (axis) {

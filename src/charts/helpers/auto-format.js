@@ -53,8 +53,27 @@ function formatForcedSuffix(format, value) {
   return applyNumberFormatWithSuffix(tokens, value)
 }
 
+function formatImperial(value) {
+  const abs = Math.abs(value)
+  if (abs < 1000) {
+    return d3.format(",.2f")(value)
+  } else if (abs < 1000000000000) {
+    const formatted = d3.format(",.2s")(value)
+    return formatted.replace("G", "B").replace("k", "K")
+  } else {
+    return d3.formatPrefix(",.0", prefixTranslation.T)(value)
+  }
+}
+
 export function formatNumber(format, value) {
-  if (/[{}]/.test(format)) {
+  if (/custom-/.test(format)) {
+    const formatName = format.replace("custom-", "")
+    if (formatName === "imperial") {
+      return formatImperial(value)
+    } else {
+      return value
+    }
+  } else if (/[{}]/.test(format)) {
     return formatPrefixSuffix(format, value)
   } else if (/\|/.test(format)) {
     return formatForcedSuffix(format, value)

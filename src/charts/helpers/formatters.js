@@ -51,25 +51,33 @@ export function getExtractFormatter (extractType) {
   }
 }
 
-export function autoFormat (extent, format) {
+export function autoFormat (extent) {
   const max = extent[1]
   const min = extent[0]
-  if ((max - min) <= 0.02) {
-    format = ".4f"
-  } else if ((max - min) <= 0.2) {
-    format = ".3f"
-  } else if ((max - min) <= 1.1) {
-    format = ".2f"
-  } else if ((max - min) < 100) {
-    format = ".1f"
-  } else if ((max - min) < 1000) {
-    format = ".0f"
-  } else if ((max - min) < 100000) {
-    format = ".2s"
+  let formatter = (d => d)
+  if (Math.abs(max) < 1000) {
+    if ((max - min) <= 0.02) {
+      formatter = d3.format(".4f")
+    } else if ((max - min) <= 0.2) {
+      formatter = d3.format(".3f")
+    } else if ((max - min) <= 1.1) {
+      formatter = d3.format(".2f")
+    } else if ((max - min) < 100) {
+      formatter = d3.format(".1f")
+    } else if ((max - min) < 1000) {
+      formatter = d3.format(".0f")
+    }
   } else {
-    format = ".2s"
+    formatter = d => {
+      const abs = Math.abs(d)
+      if (abs < 1000) {
+        return d3.format(",.2f")(d)
+      } else {
+        return d3.format(",.2s")(d)
+      }
+    }
   }
-  return format
+  return formatter
 }
 
 // slightly modified version of d3's default time-formatting to always use abbrev month names
@@ -133,8 +141,8 @@ export function formatTooltipNumber (d) {
   if (d === null) {
     return "null"
   }
-  // comma separator, max 2 decimals
-  return d3.format(",")(Math.round(d * 100) / 100)
+  // tooltip use en-us locale format
+  return d.toLocaleString("en-us")
 }
 
 export function formatPercentage (format) {

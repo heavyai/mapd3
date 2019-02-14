@@ -1,4 +1,5 @@
 import * as d3 from "./helpers/d3-service"
+import {d3TimeTranslation} from "./helpers/constants"
 import {invertScale, override, extendIsValid} from "./helpers/common"
 
 export default function Brush (_container) {
@@ -16,6 +17,7 @@ export default function Brush (_container) {
     brushRangeMin: null,
     brushRangeMax: null,
     brushIsEnabled: true,
+    binningResolution: "1mo",
 
     markPanelWidth: null,
     chartHeight: null
@@ -63,10 +65,19 @@ export default function Brush (_container) {
     setBrush()
   }
 
+  function clampExtentToDateBin (extent) {
+    return extent.map(d3TimeTranslation[config.binningResolution])
+  }
+
   function getDataExtentUnderBrush () {
     const selection = d3.event.selection
     if (selection) {
-      return selection.map((d) => invertScale(scales.xScale, d, config.keyType))
+      const extent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
+      if (config.keyType === "time") {
+        return clampExtentToDateBin(extent)
+      } else {
+        return extent
+      }
     } else {
       return null
     }
@@ -98,6 +109,8 @@ export default function Brush (_container) {
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
+    const extentClamped = getDataExtentUnderBrush()
+    cache.root.call(d3.event.target.move, extentClamped.map((d) => scales.xScale(d)));
     dispatcher.call("brushMove", this, getDataExtentUnderBrush(), config)
   }
 

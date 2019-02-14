@@ -82,7 +82,7 @@ export function rebind (target) {
 export function stringToType (str, type) {
   let converted = str
   if (type === "time") {
-    converted = d3.timeParse("%m-%d-%Y")(str)
+    converted = d3.utcParse("%m-%d-%Y")(str)
   } else if (type === "number") {
     converted = Number(str)
   }

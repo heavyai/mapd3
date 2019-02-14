@@ -51,7 +51,7 @@ export default function DataGenerator () {
     if (config.keyType === "time") {
       cache.baseDate = new Date()
       const previousDate = new Date(cache.baseDate.getTime() - DAY_IN_MS * config.pointCount)
-      dataKeys = d3.timeDay.range(previousDate, cache.baseDate)
+      dataKeys = d3.utcDay.range(previousDate, cache.baseDate)
     } else if (config.keyType === "string") {
       dataKeys = d3.range(0, config.pointCount).map(() => generateRandomString())
       dataKeys.sort((a, b) => a.localeCompare(b, "en", {numeric: false}))

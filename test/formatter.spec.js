@@ -76,7 +76,7 @@ describe("Automatic Formatter", () => {
 
   })
 
-  describe.only("Custom number formatter", () => {
+  describe("Custom number formatter", () => {
     it("should properly format Imperial custom format", () => {
       let formatted = autoFormatter("custom-imperial")(10)
       expect(formatted).to.equal("10.00")

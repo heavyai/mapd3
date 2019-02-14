@@ -31,9 +31,9 @@ export default function BrushRangeEditor (_container) {
   function handleFocus (selection) {
     return () => {
       let text = selection.text()
-      const parsed = d3.timeParse(config.dateFormat)(text)
+      const parsed = d3.utcParse(config.dateFormat)(text)
       if (parsed instanceof Date) {
-        text = d3.timeFormat("%m-%d-%Y")(parsed)
+        text = d3.utcFormat("%m-%d-%Y")(parsed)
         selection.text(text)
       }
     }

@@ -353,7 +353,7 @@ export default function DomainEditor (_container) {
 
   function validateType (_input, _type) {
     if (_type === "time") {
-      const date = d3.timeParse(config.inputDateFormat)(_input)
+      const date = d3.utcParse(config.inputDateFormat)(_input)
       return Boolean(date)
     } else {
       return !isNaN(_input)
@@ -364,7 +364,7 @@ export default function DomainEditor (_container) {
     // TO DO: range; ordinal
     let input = _input
     if (_type === "time") {
-      input = d3.timeParse(config.inputDateFormat)(_input)
+      input = d3.utcParse(config.inputDateFormat)(_input)
     }
     if (_minOrMax === "min") {
       return input <= _domain[1]

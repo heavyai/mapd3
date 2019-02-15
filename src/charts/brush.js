@@ -110,7 +110,7 @@ export default function Brush (_container) {
       return
     }
     const extentClamped = getDataExtentUnderBrush()
-    cache.root.call(d3.event.target.move, extentClamped.map((d) => scales.xScale(d)));
+    cache.root.call(d3.event.target.move, extentClamped.map((d) => scales.xScale(d)))
     dispatcher.call("brushMove", this, getDataExtentUnderBrush(), config)
   }
 

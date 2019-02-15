@@ -159,12 +159,12 @@ export default function Axis (_container) {
         ? "y2"
         : "y"
       const yAxisFormatFunction = scales.hasSecondAxis
-        ? "y2AxisFormat"
-        : "yAxisFormat"
+        ? config.y2AxisFormat
+        : config.yAxisFormat
       const measureName = scales.measureNameLookup(axisKey)
-      const hasFormatterForMeasure = config[yAxisFormatFunction](null, measureName)
+      const hasFormatterForMeasure = yAxisFormatFunction(null, measureName)
       if (hasFormatterForMeasure) {
-        axis.tickFormat(d => config[yAxisFormatFunction](d, measureName))
+        axis.tickFormat(d => yAxisFormatFunction(d, measureName))
       } else {
         axis.tickFormat(getYAutoFormat())
       }

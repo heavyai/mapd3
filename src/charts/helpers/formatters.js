@@ -80,15 +80,15 @@ export function autoFormat (extent) {
   return formatter
 }
 
-// slightly modified version of d3's default time-formatting to always use abbrev month names
-const formatMillisecond = d3.timeFormat(".%L")
-const formatSecond = d3.timeFormat(":%S")
-const formatMinute = d3.timeFormat("%I:%M")
-const formatHour = d3.timeFormat("%I %p")
-const formatDay = d3.timeFormat("%a %d")
-const formatWeek = d3.timeFormat("%b %d")
-const formatMonth = d3.timeFormat("%b")
-const formatYear = d3.timeFormat("%Y")
+// slightly modified version of d3's default time-formatting to always use abbrev month names and in UTC
+const formatMillisecond = d3.utcFormat(".%L")
+const formatSecond = d3.utcFormat(":%S")
+const formatMinute = d3.utcFormat("%I:%M")
+const formatHour = d3.utcFormat("%I %p")
+const formatDay = d3.utcFormat("%a %d")
+const formatWeek = d3.utcFormat("%b %d")
+const formatMonth = d3.utcFormat("%b")
+const formatYear = d3.utcFormat("%Y")
 
 /**
  * auto formats a date obj to a string using d3-time-format
@@ -97,12 +97,12 @@ const formatYear = d3.timeFormat("%Y")
 */
 export function multiFormat (date) {
   /* eslint-disable no-nested-ternary */
-  return (d3.timeSecond(date) < date ? formatMillisecond
-    : d3.timeMinute(date) < date ? formatSecond
-      : d3.timeHour(date) < date ? formatMinute
-        : d3.timeDay(date) < date ? formatHour
-          : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
-            : d3.timeYear(date) < date ? formatMonth
+  return (d3.utcSecond(date) < date ? formatMillisecond
+    : d3.utcMinute(date) < date ? formatSecond
+      : d3.utcHour(date) < date ? formatMinute
+        : d3.utcDay(date) < date ? formatHour
+          : d3.utcMonth(date) < date ? (d3.utcWeek(date) < date ? formatDay : formatWeek)
+            : d3.utcYear(date) < date ? formatMonth
               : formatYear)(date)
   /* eslint-enable no-nested-ternary */
 }

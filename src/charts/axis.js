@@ -154,10 +154,17 @@ export default function Axis (_container) {
     if (config.yAxisPercentageFormat) {
       axis.tickFormat(formatPercentage(config.yAxisPercentageFormat))
     } else if (typeof config.yAxisFormat === "function") {
-      const measureName = scales.measureNameLookup("y")
-      const hasFormatterForMeasure = config.yAxisFormat(null, measureName)
+
+      const axisKey = scales.hasSecondAxis
+        ? "y2"
+        : "y"
+      const yAxisFormatFunction = scales.hasSecondAxis
+        ? "y2AxisFormat"
+        : "yAxisFormat"
+      const measureName = scales.measureNameLookup(axisKey)
+      const hasFormatterForMeasure = config[yAxisFormatFunction](null, measureName)
       if (hasFormatterForMeasure) {
-        axis.tickFormat(d => config.yAxisFormat(d, measureName))
+        axis.tickFormat(d => config[yAxisFormatFunction](d, measureName))
       } else {
         axis.tickFormat(getYAutoFormat())
       }

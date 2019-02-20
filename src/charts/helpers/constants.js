@@ -1,3 +1,5 @@
+import * as d3 from "./d3-service"
+
 export const keys = {
   KEY: "x",
   VALUE: "y",
@@ -43,4 +45,17 @@ export const stackOffset = {
   STREAMGRAPH: "stackOffsetWiggle",
   CENTERED: "stackOffsetSilhouette",
   POSITIVE_NEGATIVE: "stackOffsetDiverging"
+}
+
+export const d3TimeTranslation = {
+  "1c": d3.utcYear.round,
+  "10y": d3.utcYear.round,
+  "1y": d3.utcYear.round,
+  "1q": d3.utcMonth.round,
+  "1mo": d3.utcMonth.round,
+  "1s": d3.utcSecond.round,
+  "1m": d3.utcMinute.round,
+  "1h": d3.utcHour.round,
+  "1d": d3.utcDay.round,
+  "1w": d3.utcWeek.round
 }

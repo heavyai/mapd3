@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 import {d3TimeTranslation} from "./helpers/constants"
-import {invertScale, override, extendIsValid} from "./helpers/common"
+import {invertScale, override, extentIsValid} from "./helpers/common"
 
 export default function Brush (_container) {
 
@@ -85,7 +85,7 @@ export default function Brush (_container) {
 
   function setBrush () {
     let extent = [config.brushRangeMin, config.brushRangeMax]
-    if (extendIsValid(extent)) {
+    if (extentIsValid(extent)) {
       if (config.keyType === "time") {
         extent = extent.map(d => new Date(d))
       }
@@ -109,10 +109,10 @@ export default function Brush (_container) {
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
-    
+
     const extentClamped = getDataExtentUnderBrush()
 
-    if (extentClamped) {
+    if (extentIsValid(extentClamped)) {
       cache.root.call(d3.event.target.move, extentClamped.map((d) => scales.xScale(d)))
       dispatcher.call("brushMove", this, extentClamped, config)
     }

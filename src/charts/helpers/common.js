@@ -98,7 +98,7 @@ export function isNumeric (val) {
   return Number(parseFloat(val)) === val
 }
 
-export function extendIsValid (extent) {
+export function extentIsValid (extent) {
   return extent
     && extent.length
     && extent.filter(d =>

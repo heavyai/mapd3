@@ -1,6 +1,6 @@
 import * as d3 from "./helpers/d3-service"
 
-import {override, stringToType, extendIsValid} from "./helpers/common"
+import {override, stringToType, extentIsValid} from "./helpers/common"
 import {blurOnEnter} from "./interactors"
 
 export default function BrushRangeEditor (_container) {
@@ -121,7 +121,7 @@ export default function BrushRangeEditor (_container) {
 
     const domain = scales.xScale.domain()
 
-    if (extendIsValid(domain)) {
+    if (extentIsValid(domain)) {
       let rangeMin = config.brushRangeMin === null ? domain[0] : config.brushRangeMin
       let rangeMax = config.brushRangeMax === null ? domain[1] : config.brushRangeMax
 

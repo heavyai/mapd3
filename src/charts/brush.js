@@ -71,13 +71,16 @@ export default function Brush (_container) {
 
   function getDataExtentUnderBrush () {
     const selection = d3.event.selection
-    if (selection) {
+    if (extentIsValid(selection)) {
       const extent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
       if (config.keyType === "time") {
-        return clampExtentToDateBin(extent)
-      } else {
-        return extent
+        const clampedExtent = clampExtentToDateBin(extent)
+        // prevent clamping to a span of 0
+        if (clampedExtent[0].getTime() !== clampedExtent[1].getTime()) {
+          return clampedExtent
+        }
       }
+      return extent
     } else {
       return null
     }
@@ -110,11 +113,11 @@ export default function Brush (_container) {
       return
     }
 
-    const extentClamped = getDataExtentUnderBrush()
+    let extent = getDataExtentUnderBrush()
 
-    if (extentIsValid(extentClamped)) {
-      cache.root.call(d3.event.target.move, extentClamped.map((d) => scales.xScale(d)))
-      dispatcher.call("brushMove", this, extentClamped, config)
+    if (extentIsValid(extent)) {
+      cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))
+      dispatcher.call("brushMove", this, extent, config)
     }
   }
 

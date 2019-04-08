@@ -27,7 +27,7 @@ const config = env => {
         rules: [
           {
             test: /\.js$/,
-            exclude: /(node_modules|doc|dist|dev)/,
+            exclude: /(node_modules|doc|dist)/,
             use: {
               loader: "babel-loader"
             }
@@ -86,7 +86,7 @@ const config = env => {
         rules: [
           {
             test: /\.js$/,
-            exclude: /(node_modules|doc|dist|dev)/,
+            exclude: /(node_modules|doc|dist)/,
             use: {
               loader: "babel-loader"
             }

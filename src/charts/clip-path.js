@@ -28,7 +28,10 @@ export default function ClipPath (_container) {
 
   function build () {
     if (!cache.clipPath) {
-      cache.clipPath = cache.container.append("defs")
+      const defs = cache.container.selectAll("defs")
+        .data([0])
+      cache.clipPath = defs.enter().append("defs")
+        .merge(defs)
         .append("clipPath")
         .attr("id", `mark-clip-${config.chartId}`)
         .append("rect")

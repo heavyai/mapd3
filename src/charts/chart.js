@@ -313,7 +313,7 @@ export default function Chart (_container) {
   }
 
   function transformData (_data) {
-    return augmentData(_data, config.keyType, config.sortBy, config.fillData, config.stackOffset)
+    return augmentData(_data, config.keyType, config.sortBy, config.fillData, config.stackOffset, config.yAxisPercentageFormat)
   }
 
   function transformConfig (_config) {

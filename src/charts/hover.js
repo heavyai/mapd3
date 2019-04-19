@@ -109,14 +109,14 @@ export default function Hover (_container) {
       .merge(dots)
       .attr("cy", (d) => {
         const value = d[keys.VALUE]
-        const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
-        if (leftAxisGroup && leftAxisGroup.indexOf(d.group) > -1) {
+        if (parseInt(d.group, 10) === parseInt(LEFT_AXIS_GROUP_INDEX, 10)) {
           return yScale(value)
         } else {
           return scales.y2Scale ? scales.y2Scale(value) : scales.yScale(value)
         }
       })
       .attr("r", config.hoverDotRadius)
+
       .style("fill", getColor)
       .classed("hidden", d => d[keys.VALUE] === null)
 

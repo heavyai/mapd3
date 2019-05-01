@@ -23,3 +23,5 @@ A complete example, including the use of a data generator, is available in this 
 
 ## Development
 Look in [/package.json](package.json) for the build scripts. It is available as an [npm](https://www.npmjs.com/package/mapd3) package.
+
+If, for some reason, you get errors about `d3/build/d3.js` missing, try running `yarn run clean` and `yarn install`.

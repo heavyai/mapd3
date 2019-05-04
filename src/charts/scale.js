@@ -113,6 +113,10 @@ export default function Scale () {
         const groupData = data.dataBySeries.find(ds => ds.id === groupKey)
         return groupData.measureName
       } else {
+        const groupData = data.dataBySeries.find(ds => ds.id === d)
+        if (groupData) {
+          return groupData.measureName
+        }
         return data.dataBySeries[d] && data.dataBySeries[d].measureName
       }
     }

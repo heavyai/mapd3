@@ -363,30 +363,6 @@ export default function DomainEditor (_container) {
     }
   }
 
-  function showYEditor () {
-    cache.yHitZone.style("opacity", "1")
-  }
-
-  function hideYEditor () {
-    cache.yHitZone.style("opacity", "0")
-  }
-
-  function showY2Editor () {
-    cache.y2HitZone.style("opacity", "1")
-  }
-
-  function hideY2Editor () {
-    cache.y2HitZone.style("opacity", "0")
-  }
-
-  function showXEditor () {
-    cache.xHitZone.style("opacity", "1")
-  }
-
-  function hideXEditor () {
-    cache.xHitZone.style("opacity", "0")
-  }
-
   function on (...args) {
     dispatcher.on(...args)
     return this

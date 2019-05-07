@@ -95,22 +95,16 @@ export default function DomainEditor (_container) {
         .attr("class", "hit-zone x")
         .style("pointer-events", "all")
         .style("position", "absolute")
-        .on("mouseover.dispatch", showXEditor)
-        .on("mouseout.dispatch", hideXEditor)
 
       cache.yHitZone = cache.root.append("div")
         .attr("class", "hit-zone y")
         .style("pointer-events", "all")
         .style("position", "absolute")
-        .on("mouseover.dispatch", showYEditor)
-        .on("mouseout.dispatch", hideYEditor)
 
       cache.y2HitZone = cache.root.append("div")
         .attr("class", "hit-zone y2")
         .style("pointer-events", "all")
         .style("position", "absolute")
-        .on("mouseover.dispatch", showY2Editor)
-        .on("mouseout.dispatch", hideY2Editor)
 
       // y input group
       cache.yMaxInput = cache.yHitZone.append("div")
@@ -260,10 +254,6 @@ export default function DomainEditor (_container) {
           const domain = scales.xScale.domain()
           dispatcher.call("domainLockToggle", this, {isLocked: !isLocked, axis: "x", extent: domain})
         })
-
-      hideYEditor()
-      hideY2Editor()
-      hideXEditor()
     }
 
     if (config.xDomainEditorIsEnabled) {
@@ -371,30 +361,6 @@ export default function DomainEditor (_container) {
     } else {
       return input >= _domain[0]
     }
-  }
-
-  function showYEditor () {
-    cache.yHitZone.style("opacity", "1")
-  }
-
-  function hideYEditor () {
-    cache.yHitZone.style("opacity", "0")
-  }
-
-  function showY2Editor () {
-    cache.y2HitZone.style("opacity", "1")
-  }
-
-  function hideY2Editor () {
-    cache.y2HitZone.style("opacity", "0")
-  }
-
-  function showXEditor () {
-    cache.xHitZone.style("opacity", "1")
-  }
-
-  function hideXEditor () {
-    cache.xHitZone.style("opacity", "0")
   }
 
   function on (...args) {

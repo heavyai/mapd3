@@ -297,7 +297,7 @@ export default function Tooltip (_container, _isLegend = false) {
   }
 
   function setupContent (_series) {
-    cache.content = sortSeries(_series)
+    cache.content = [..._series]
     return this
   }
 

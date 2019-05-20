@@ -1,6 +1,6 @@
 import * as d3 from "./charts/helpers/d3-service"
 import Chart from "./charts/chart.js"
-import Tooltip from "./charts/tooltip.js"
+import Tooltip, {formatTooltipTitle} from "./charts/tooltip.js"
 import Legend from "./charts/legend.js"
 import DataGenerator from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
@@ -34,5 +34,6 @@ export {
   d3,
   autoFormatter,
   Constants,
-  _Utils
+  _Utils,
+  formatTooltipTitle
 }

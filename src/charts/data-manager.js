@@ -134,10 +134,7 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, 
   // flatten data
   dataBySeries.forEach((serie) => {
     serie[keys.VALUES].forEach((d) => {
-      const dataPoint = {}
-      dataPoint[keys.LABEL] = serie[keys.LABEL]
-      dataPoint[keys.GROUP] = serie[keys.GROUP]
-      dataPoint[keys.ID] = serie[keys.ID]
+      const dataPoint = {...serie}
       dataPoint[keys.KEY] = d[keys.KEY]
       dataPoint[keys.VALUE] = d[keys.VALUE]
       dataPoint[keys.COUNTVAL] = d[keys.COUNTVAL]

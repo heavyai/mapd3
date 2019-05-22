@@ -14,6 +14,18 @@ export const applyFormat = (_value, _format) => {
   }
 }
 
+const getMeasureFormatter = (tooltipFormatter, measureName) => {
+  // Running a function, _just_ to test to see if one of it's inputs are valid is _insane_.
+  // But alas, that's what's happening here just to see if we have a specific measure formatter. So we should
+  // prolly think about not doing this at some point.
+  if (
+    typeof tooltipFormatter === "function" &&
+    tooltipFormatter(null, measureName)
+  ) {
+    return v => tooltipFormatter(v, measureName)
+  }
+}
+
 export const formatTooltipTitle = (
   title,
   format,
@@ -46,6 +58,42 @@ export const formatTooltipTitle = (
     }
   }
   return title
+}
+
+const formatTooltipValue = (_value, tooltipFormat, measureFormatter) => {
+  const hasStringFormatterForMeasure = typeof tooltipFormat === "string" &&
+    tooltipFormat !== "auto"
+
+  if (typeof measureFormatter === "function") {
+    return measureFormatter(_value)
+  } else if (hasStringFormatterForMeasure) {
+    return d3.format(tooltipFormat)(_value)
+  } else {
+    return formatTooltipNumber(_value)
+  }
+}
+
+export const formatDataPoint = (
+  d,
+  tooltipFormat,
+  yAxisPercentageFormat,
+  measureFormatter
+) => {
+  // Check for percentage value (presence of absolute-value metadata)
+  if (typeof d[keys.ABSOLUTEVAL] !== "undefined") {
+    // Assume VALUE is not undefined, since ABSOLUTEVAL is derived from it
+    const percentageValue = d[keys.VALUE]
+    const absoluteValue = d[keys.ABSOLUTEVAL]
+
+    const formattedAbsoluteValue = formatTooltipValue(absoluteValue, tooltipFormat, measureFormatter)
+    const formattedPercentageValue =
+      applyFormat(percentageValue, formatPercentage(yAxisPercentageFormat))
+
+    return `${formattedAbsoluteValue} (${formattedPercentageValue})`
+  } else if (typeof d[keys.VALUE] !== "undefined") {
+    const value = d[keys.VALUE]
+    return formatTooltipValue(value, tooltipFormat, measureFormatter)
+  }
 }
 
 export default function Tooltip (_container, _isLegend = false) {
@@ -179,23 +227,6 @@ export default function Tooltip (_container, _isLegend = false) {
     return this
   }
 
-  function formatTooltipValue (_value, _id) {
-    const format = config.tooltipFormat
-    const measureName = scales.measureNameLookup(_id)
-    const hasFunctionFormatterForMeasure = typeof format === "function" &&
-      config.tooltipFormat(null, measureName)
-    const hasStringFormatterForMeasure = typeof format === "string" &&
-      format !== "auto"
-
-    if (hasFunctionFormatterForMeasure) {
-      return format(_value, measureName)
-    } else if (hasStringFormatterForMeasure) {
-      return d3.format(format)(_value)
-    } else {
-      return formatTooltipNumber(_value)
-    }
-  }
-
   function drawContent () {
     const tooltipItems = cache.tooltipBody.selectAll(".tooltip-item")
       .data(cache.content)
@@ -219,23 +250,25 @@ export default function Tooltip (_container, _isLegend = false) {
           legendData.push({key: "tooltip-label", value: d[keys.LABEL]})
         }
 
-        // Check for percentage value (presence of absolute-value metadata)
-        if (typeof d[keys.ABSOLUTEVAL] !== "undefined") {
-          // Assume VALUE is not undefined, since ABSOLUTEVAL is derived from it
-          const percentageValue = d[keys.VALUE]
-          const absoluteValue = d[keys.ABSOLUTEVAL]
-
-          const formattedAbsoluteValue = formatTooltipValue(absoluteValue, d.id)
-          const formattedPercentageValue =
-            applyFormat(percentageValue, formatPercentage(config.yAxisPercentageFormat))
-
-          const displayedValue = `${formattedAbsoluteValue} (${formattedPercentageValue})`
-
-          legendData.push({key: "value", value: displayedValue})
-        } else if (typeof d[keys.VALUE] !== "undefined") {
-          const value = d[keys.VALUE]
-          const formattedValue = formatTooltipValue(value, d.id)
-          legendData.push({key: "value", value: formattedValue})
+        if (
+          typeof d[keys.ABSOLUTEVAL] !== "undefined" ||
+          typeof d[keys.VALUE] !== "undefined"
+        ) {
+          const measureName = scales.measureNameLookup(d.id)
+          const measureFormatter = getMeasureFormatter(config.tooltipFormat, measureName)
+          const {
+            tooltipFormat,
+            yAxisPercentageFormat
+          } = config
+          legendData.push({
+            key: "value",
+            value: formatDataPoint(
+              d,
+              tooltipFormat,
+              yAxisPercentageFormat,
+              measureFormatter
+            )
+          })
         }
 
         return legendData

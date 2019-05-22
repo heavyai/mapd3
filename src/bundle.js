@@ -1,6 +1,6 @@
 import * as d3 from "./charts/helpers/d3-service"
 import Chart from "./charts/chart.js"
-import Tooltip, {formatTooltipTitle} from "./charts/tooltip.js"
+import Tooltip, {formatTooltipTitle, formatDataPoint} from "./charts/tooltip.js"
 import Legend from "./charts/legend.js"
 import DataGenerator from "./charts/data-manager.js"
 import Observer from "./charts/observer.js"
@@ -15,6 +15,7 @@ import {colors} from "./charts/helpers/colors.js"
 import autoFormatter from "./charts/helpers/auto-format.js"
 import * as Constants from "./charts/helpers/constants"
 import * as _Utils from "./charts/helpers/common"
+import Scale from "./charts/scale"
 require("./styles/mapd3.scss")
 
 export {
@@ -35,5 +36,7 @@ export {
   autoFormatter,
   Constants,
   _Utils,
-  formatTooltipTitle
+  formatTooltipTitle,
+  formatDataPoint,
+  Scale
 }

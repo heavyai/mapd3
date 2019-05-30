@@ -31,7 +31,7 @@ export default function Line (_container) {
 
   const cache = {
     container: _container,
-    svg: null
+    xScale: null
   }
 
   let data = {
@@ -65,12 +65,12 @@ export default function Line (_container) {
     }
 
     const seriesLine = d3.line()
-      .x(d => scales.xScale(d[keys.KEY]))
+      .x(d => cache.xScale(d[keys.KEY]))
       .y(d => scales.yScale(d[keys.VALUE]))
       .defined(isDefined)
 
     const seriesLine2 = d3.line()
-      .x(d => scales.xScale(d[keys.KEY]))
+      .x(d => cache.xScale(d[keys.KEY]))
       .y(d => scales.y2Scale(d[keys.VALUE]))
       .defined(isDefined)
 
@@ -130,6 +130,11 @@ export default function Line (_container) {
     }))
   }
 
+  function zoom (transform) {
+    cache.xScale = transform.rescaleX(scales.xScale)
+    render()
+  }
+
   function drawDots () {
     if (!Array.isArray(config.chartType) && config.chartType !== "line") {
       cache.root.selectAll(".dot-group").remove()
@@ -174,7 +179,7 @@ export default function Line (_container) {
       .append("circle")
       .merge(dots)
       .attr("class", "mark dot")
-      .attr("cx", (d) => scales.xScale(d.key))
+      .attr("cx", (d) => cache.xScale(d.key))
       .attr("cy", (d) => {
         const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
         if (leftAxisGroup && leftAxisGroup.indexOf(d.group) > -1) {
@@ -198,7 +203,7 @@ export default function Line (_container) {
     }
 
     const seriesArea = d3.area()
-      .x((d) => scales.xScale(d[keys.KEY]))
+      .x((d) => cache.xScale(d[keys.KEY]))
       .y0(() => (scales.yDomainSign === "+-" ? 0 : config.chartHeight))
       .y1((d) => scales.yScale(d[keys.VALUE]))
       .defined(isDefined)
@@ -232,7 +237,7 @@ export default function Line (_container) {
     }
 
     const seriesLine = d3.area()
-      .x((d) => scales.xScale(d.data.key))
+      .x((d) => cache.xScale(d.data.key))
       .y0((d) => yScale(d[0]))
       .y1((d) => yScale(d[1]))
 
@@ -258,11 +263,17 @@ export default function Line (_container) {
 
   function setScales (_scales) {
     scales = override(scales, _scales)
+    cache.xScale = scales.xScale.copy()
     return this
   }
 
   function setData (_data) {
     data = Object.assign({}, data, _data)
+    return this
+  }
+
+  function bindEvents (_dispatcher) {
+    _dispatcher.on("scrollZoomPanel.line", zoom)
     return this
   }
 
@@ -286,6 +297,7 @@ export default function Line (_container) {
     setConfig,
     setScales,
     setData,
+    bindEvents,
     render,
     destroy
   }

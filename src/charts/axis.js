@@ -52,6 +52,7 @@ export default function Axis (_container) {
   const cache = {
     container: _container,
     root: null,
+    xScale: null,
     xAxisRoot: null,
     yAxisRoot: null,
     y2AxisRoot: null,
@@ -83,6 +84,7 @@ export default function Axis (_container) {
   function build () {
     if (!cache.root) {
       cache.root = cache.container.select("svg.chart > g.chart-group")
+
       cache.xAxisRoot = cache.root.append("g")
         .classed("axis-group", true)
         .style("pointer-events", "none")
@@ -127,9 +129,9 @@ export default function Axis (_container) {
     } else if (config.keyType === "string") {
       let xTickSkip = config.xTickSkip
       if (config.xTickSkip === "auto") {
-        xTickSkip = getNumberOfLabelsToSkip(scales.xScale.domain())
+        xTickSkip = getNumberOfLabelsToSkip(cache.xScale.domain())
       }
-      cache.xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % xTickSkip)))
+      cache.xAxis.tickValues(cache.xScale.domain().filter((d, i) => !(i % xTickSkip)))
     } else if (config.keyType === "number") {
       if (config.extractType) {
         const formatter = getExtractFormatter(config.extractType)
@@ -214,13 +216,13 @@ export default function Axis (_container) {
   }
 
   function buildAxis () {
-    cache.xAxis = d3.axisBottom(scales.xScale)
+    cache.xAxis = d3.axisBottom(cache.xScale)
       .tickSize(config.tickSizes, 0)
       .tickPadding(config.tickPadding)
       .tickSizeOuter(0)
 
     if (config.keyType !== "string") {
-      const ticks = scales.xScale.ticks()
+      const ticks = cache.xScale.ticks()
       const preferredTickCount = ticks.length / config.chartWidth * config.markPanelWidth
       cache.xAxis.ticks(preferredTickCount)
     }
@@ -259,7 +261,7 @@ export default function Axis (_container) {
   function shouldXLabelsRotate () {
     if (config.labelsAreRotated === "auto") {
       const width = config.markPanelWidth
-      const labels = scales.xScale.domain()
+      const labels = cache.xScale.domain()
       const totalLabelsWidth = labels.reduce(
         (total, d) => total + d.length * APPROX_FONT_WIDTH + LABEL_SPACING * APPROX_FONT_WIDTH,
         0
@@ -319,6 +321,11 @@ export default function Axis (_container) {
       xTickSkip = getNumberOfLabelsToSkip(labelsText)
     }
     labels.style("display", (d, i) => ((i % xTickSkip) ? "none" : "block"))
+  }
+
+  function zoom (transform) {
+    cache.xScale = transform.rescaleX(scales.xScale)
+    render()
   }
 
   function drawAxis () {
@@ -396,7 +403,7 @@ export default function Axis (_container) {
     }
 
     if (config.grid === "vertical" || config.grid === "full") {
-      const ticks = config.keyType === "string" ? scales.xScale.domain() : scales.xScale.ticks()
+      const ticks = config.keyType === "string" ? cache.xScale.domain() : cache.xScale.ticks()
       cache.verticalGridLines = cache.xAxisRoot.select(".grid-lines-group")
         .selectAll("line.vertical-grid-line")
         .data(ticks)
@@ -409,8 +416,8 @@ export default function Axis (_container) {
         .duration(config.axisTransitionDuration)
         .attr("y1", 0)
         .attr("y2", config.chartHeight)
-        .attr("x1", scales.xScale)
-        .attr("x2", scales.xScale)
+        .attr("x1", cache.xScale)
+        .attr("x2", cache.xScale)
 
       cache.verticalGridLines.exit().remove()
     }
@@ -425,6 +432,12 @@ export default function Axis (_container) {
 
   function setScales (_scales) {
     scales = override(scales, _scales)
+    cache.xScale = scales.xScale.copy()
+    return this
+  }
+
+  function bindEvents (_dispatcher) {
+    _dispatcher.on("scrollZoomPanel.axis", zoom)
     return this
   }
 
@@ -453,6 +466,7 @@ export default function Axis (_container) {
   return {
     setConfig,
     setScales,
+    bindEvents,
     render,
     destroy
   }

@@ -35,8 +35,7 @@ export default function Bar (_container) {
   }
 
   const cache = {
-    container: _container,
-    svg: null
+    container: _container
   }
 
   let data = {

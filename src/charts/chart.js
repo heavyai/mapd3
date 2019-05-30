@@ -161,14 +161,21 @@ export default function Chart (_container) {
     maskingRectangle: null,
     width: null, height: null,
     chartWidth: null, chartHeight: null,
-    xAxis: null, yAxis: null, yAxis2: null
+    xAxis: null, yAxis: null, yAxis2: null,
+    xScale: null
   }
 
   let config = {}
 
   let data = {}
 
-  const dispatcher = d3.dispatch("mouseOverPanel", "mouseOutPanel", "mouseMovePanel", "mouseClickPanel")
+  const dispatcher = d3.dispatch(
+    "mouseOverPanel",
+    "mouseOutPanel",
+    "mouseMovePanel",
+    "mouseClickPanel",
+    "scrollZoomPanel"
+  )
   const scale = Scale()
   const componentRegistry = ComponentRegistry()
 
@@ -293,10 +300,10 @@ export default function Chart (_container) {
         const [panelMouseX] = d3.mouse(cache.svgWrapper.node())
         if (!cache.originalData) { return }
         const xPosition = mouseX
-        const dataPoint = getNearestDataPoint(xPosition, data, scales, config.keyType)
+        const dataPoint = getNearestDataPoint(xPosition, data, {...scales, xScale: cache.xScale }, config.keyType)
 
         if (dataPoint) {
-          const dataPointXPosition = scales.xScale(dataPoint[keys.KEY])
+          const dataPointXPosition = cache.xScale(dataPoint[keys.KEY])
           throttledDispatch("mouseMovePanel", null, dataPoint, dataPointXPosition, mouseY, panelMouseX)
         }
       })
@@ -310,6 +317,16 @@ export default function Chart (_container) {
           throttledDispatch("mouseClickPanel", null, dataPoint)
         }
       })
+
+      cache.panel.call(d3.zoom()
+        .scaleExtent([1, Infinity])
+        .translateExtent([[0,0], [config.markPanelWidth, config.markPanelHeight]])
+        .extent([[0, 0], [config.markPanelWidth, config.markPanelHeight]])
+        .on("zoom", () => {
+          cache.xScale = d3.event.transform.rescaleX(scales.xScale)
+          dispatcher.call("scrollZoomPanel", null, d3.event.transform)
+        })
+      )
   }
 
   function transformData (_data) {
@@ -321,10 +338,12 @@ export default function Chart (_container) {
   }
 
   function computeScales (_config, _data) {
-    return scale
+    const scales = scale
       .setConfig(_config)
       .setData(_data)
       .getScales()
+    cache.xScale = scales.xScale.copy()
+    return scales
   }
 
   function getEvents () {

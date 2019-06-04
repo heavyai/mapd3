@@ -113,7 +113,7 @@ export default function Brush (_container) {
       return
     }
 
-    let extent = getDataExtentUnderBrush()
+    const extent = getDataExtentUnderBrush()
 
     if (extentIsValid(extent)) {
       cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))

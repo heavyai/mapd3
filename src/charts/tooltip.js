@@ -345,10 +345,6 @@ export default function Tooltip (_container, _isLegend = false) {
     return this
   }
 
-  function sortSeries (_series) {
-    return [..._series].sort((a, b) => b[keys.VALUE] - a[keys.VALUE])
-  }
-
   function hide () {
     if (!cache.root) { return null }
     cache.root.style("display", "none")

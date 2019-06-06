@@ -103,7 +103,7 @@ export default function Scale () {
   function buildMeasureNameLookup () {
     return d => {
       if (d === "x") {
-        return data.dataBySeries[0].dimensionName
+        return data.dataBySeries[0] && data.dataBySeries[0].dimensionName
       } else if (d === "y") {
         const groupKey = data.groupKeys[LEFT_AXIS_GROUP_INDEX][0]
         const groupData = data.dataBySeries.find(ds => ds.id === groupKey)

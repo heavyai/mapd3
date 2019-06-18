@@ -1,7 +1,8 @@
 import * as d3 from "./helpers/d3-service"
 
 import {comparators, keys} from "./helpers/constants"
-import {ascendingComparator, descendingComparator, clamp, invertScale, sortData, cloneData, getUnique} from "./helpers/common"
+import {ascendingComparator, descendingComparator, clamp, invertScale, sortData, getUnique} from "./helpers/common"
+import cloneDeep from "lodash.clonedeep"
 
 
 export default function DataGenerator () {
@@ -92,7 +93,7 @@ const getKey = (d) => d[keys.KEY]
 const getID = (d) => d[keys.ID]
 
 export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, _yAxisPercentageFormat) {
-  const dataBySeries = cloneData(_data[keys.SERIES])
+  const dataBySeries = cloneDeep(_data[keys.SERIES])
   dataBySeries.forEach((serie) => {
     // convert type
     serie[keys.VALUES].forEach((d) => {

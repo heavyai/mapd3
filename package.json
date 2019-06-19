@@ -12,12 +12,12 @@
   "scripts": {
     "docs:build": "documentation build -f \"html\" examples/examples.js -o doc",
     "docs:serve": "documentation serve --watch examples/examples.js -o doc",
-    "build": "yarn build:prod && yarn build:dev",
+    "build": "npm run build:prod && npm run build:dev",
     "build:prod": "webpack --env.prod",
     "build:dev": "webpack --env.dev",
     "prod": "webpack --env.prod --watch",
     "dev": "webpack --env.dev --watch",
-    "clean": "yarn cache clean && rm -rf node_modules",
+    "clean": "npm run cache clean && rm -rf node_modules",
     "test": "mocha-webpack test/**/*.spec.js --require test/setup.js --webpack-env.dev --webpack-config webpack.config-spec.js --watch",
     "format": "eslint \"src/**/*.js\" --fix"
   },

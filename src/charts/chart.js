@@ -224,7 +224,7 @@ export default function Chart (_container) {
       cache.chart = cache.svg.select(".chart-group")
 
       addEvents()
-console.log("REGISTERS BRUSH WITH : ", cache.panel);
+
       componentRegistry.register({
         axis: Axis(cache.root),
         bar: Bar(cache.panel),
@@ -241,7 +241,6 @@ console.log("REGISTERS BRUSH WITH : ", cache.panel);
         //zoom: Zoom(cache.panel, brush)
       })
 
-      console.log("CR IS : ", componentRegistry.getEvents());
     }
 
     cache.svgWrapper
@@ -358,7 +357,6 @@ console.log("REGISTERS BRUSH WITH : ", cache.panel);
   }
 
   function setConfig (_config) {
-    console.log("ZOOM CHART SETS CONFIG : ", _config);
     cache.originalConfig = override(cache.originalConfig, _config)
     config = transformConfig(cache.originalConfig)
     return this

@@ -68,31 +68,27 @@ export default function Brush (_container) {
 
   function buildBrush () {
     cache.brush.extent([[0, 0], [config.markPanelWidth, config.chartHeight]])
-console.log("BUILDS BRUSH WITH : ", config);
+
     cache.chartBrush = cache.root.call(cache.brush)
-cache.root.call(cache.zoom);
+    cache.root.call(cache.zoom);
+
     cache.chartBrush.selectAll(".brush-rect")
       .attr("height", config.chartHeight)
 
-    //cache.root.selectAll('.overlay').call(cache.zoom)
-console.log("OVERLAY IS : ", cache.root.selectAll('.overlay'));
     setBrush()
   }
 
   function handleZoom () {
-console.log("HZ 1 : ", d3.event.sourceEvent.type, config, scales);
 
     if (! config.zoomIsEnabled) { return }
 
     if (!d3.event.sourceEvent ||
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "mousemove")) {
-        console.log("I NEED TO BRUSH THIS : ", brush);
       return
     }
 
     const zoomScale = scales.xScale;//.copy().domain([config.zoomRangeMin, config.zoomRangeMax]);
 
-console.log("ZOOMS FROM : ", config.zoomRangeMin, config.zoomRangeMax, config, zoomScale, zoomScale.domain, zoomScale.domain());
     const step = d3.event.sourceEvent.deltaY;
 
     const [chartMin, chartMax] = zoomScale.range();
@@ -113,46 +109,9 @@ console.log("ZOOMS FROM : ", config.zoomRangeMin, config.zoomRangeMax, config, z
     if (newZmin > newZmax) { return }
 
     const coords = [
-      //zoomScale.invert( Math.min( Math.max(chartMin, newZmin), chartMax) ),
-      //zoomScale.invert( Math.max( Math.min(chartMax, newZmax), chartMin) )
       zoomScale.invert( newZmin ),
       zoomScale.invert( newZmax ),
     ];
-
-
-    console.log("ZOOM DATES : ",
-    [chartMin, chartMax],
-    [newZmin, newZmax],
-    Math.max(chartMin, newZmin),
-    Math.min(chartMax, newZmax),
-    [zoomScale.invert( chartMin ),zoomScale.invert( newZmin ),],
-    [zoomScale.invert( chartMax ),zoomScale.invert( newZmax ),]
-  );
-
-console.log("ZOOM COORDS IN  : ", xCoord, zmin, zmax, d3.event.sourceEvent.deltaY, coordPercentage, newZmin, newZmax, coords, chartMin, chartMax);
-
-console.log("ZOOM MODS : ",
-  zmin, newZmin,
-  zmax, newZmax,
-  coordPercentage,
-  config.zoomRangeMin, config.zoomRangeMax,
-  ['INVERTED MIN/MAX', zoomScale(config.zoomRangeMin), zoomScale(config.zoomRangeMax)],
-  xCoord,
-d3.event.sourceEvent.deltaY)
-
-
-console.log("ZOOM : ", config.brushRangeMin, config.brushRangeMax, zmin, zmax);
-    console.log("HANDLES ZOOM : ", d3.event, d3.event.sourceEvent.type);
-
-    //const invertedScale = invertScale(zoomScale);
-
-    //dispatcher.call("zoom", this, [config.markPanelWidth - 10, config.chartHeight])
-console.log("ZOOM COMPARE 1 : ",
-  coords[0], config.zoomRangeMin, coords[0] === config.zoomRangeMin,
-  coords[1], config.zoomRangeMax, coords[1] === config.zoomRangeMax,
-);
-
-console.log("UPDATED COORDS : ", coords, config.binExtent);
 
   if (coords[0] < config.binExtent[0]) {
     coords[0] = config.binExtent[0];
@@ -161,28 +120,8 @@ console.log("UPDATED COORDS : ", coords, config.binExtent);
     coords[1] = config.binExtent[1];
   }
 
-  console.log("UPDATED COORDS 2 : ", coords, config.binExtent);
+  dispatcher.call("zoom", this, coords, config)
 
-    if (coords[0] !== config.zoomRangeMin || coords[1] !== config.zoomRangeMax) {
-      dispatcher.call("zoom", this, coords, config)
-    }
-
-
-
-    return;
-
-    if (!d3.event.sourceEvent ||
-      (d3.event.sourceEvent && d3.event.sourceEvent.type === "mousemove")) {
-      return
-    }
-
-    let extent = getDataExtentUnderZoom()
-
-    if (extentIsValid(extent)) {
-      cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))
-      console.log("HBM : ", extent);
-      dispatcher.call("zoomMove", this, extent, config)
-    }
   }
 
   function clampExtentToDateBin (extent) {
@@ -209,7 +148,7 @@ console.log("UPDATED COORDS : ", coords, config.binExtent);
 
   function getDataExtentUnderBrush () {
     const selection = d3.event.selection
-    console.log("GDEU : ", selection, config, d3.event);
+
     if (extentIsValid(selection)) {
       const extent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
       if (config.keyType === "time") {
@@ -226,7 +165,7 @@ console.log("UPDATED COORDS : ", coords, config.binExtent);
   }
 
   function setBrush () {
-    console.log("SET BRUSH");
+
     let extent = [config.brushRangeMin, config.brushRangeMax]
     if (extentIsValid(extent)) {
       if (config.keyType === "time") {
@@ -244,25 +183,23 @@ console.log("UPDATED COORDS : ", coords, config.binExtent);
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
-    console.log("HBS HERE : ", d3.event);
-    console.log("HBS : ", getDataExtentUnderBrush());
+
     dispatcher.call("brushStart", this, getDataExtentUnderBrush(), config)
   }
 
   function handleBrushMove () {
-    console.log("HBM");
+
     if (!d3.event.sourceEvent ||
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
     }
 
     let extent = getDataExtentUnderBrush()
-console.log("WITH EXTENT : ", extent);
+
     if (extentIsValid(extent)) {
       cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))
-      console.log("HBM : ", extent);
       dispatcher.call("brushMove", this, extent, config)
-console.log('dispatched hbm');
+
     }
   }
 
@@ -278,7 +215,7 @@ console.log('dispatched hbm');
       dispatcher.call("brushClear", this, config)
       return
     }
-console.log("HBE : ", getDataExtentUnderBrush());
+
     dispatcher.call("brushEnd", this, getDataExtentUnderBrush(), config)
   }
 

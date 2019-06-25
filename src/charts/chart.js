@@ -27,6 +27,7 @@ import DomainEditor from "./domain-editor"
 import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
 import ClipPath from "./clip-path"
+//import Zoom from './zoom'
 
 
 export default function Chart (_container) {
@@ -126,6 +127,11 @@ export default function Chart (_container) {
     // brush
     brushIsEnabled: true,
 
+    zoomRangeMin: null,
+    zoomRangeMax: null,
+    zoomIsEnabled: true,
+    binExtent: null,
+
     // label
     xLabel: "",
     yLabel: "",
@@ -218,7 +224,7 @@ export default function Chart (_container) {
       cache.chart = cache.svg.select(".chart-group")
 
       addEvents()
-
+console.log("REGISTERS BRUSH WITH : ", cache.panel);
       componentRegistry.register({
         axis: Axis(cache.root),
         bar: Bar(cache.panel),
@@ -231,8 +237,11 @@ export default function Chart (_container) {
         domainEditor: DomainEditor(cache.root),
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
         label: Label(cache.root),
-        clipPath: ClipPath(cache.svg)
+        clipPath: ClipPath(cache.svg),
+        //zoom: Zoom(cache.panel, brush)
       })
+
+      console.log("CR IS : ", componentRegistry.getEvents());
     }
 
     cache.svgWrapper
@@ -349,6 +358,7 @@ export default function Chart (_container) {
   }
 
   function setConfig (_config) {
+    console.log("ZOOM CHART SETS CONFIG : ", _config);
     cache.originalConfig = override(cache.originalConfig, _config)
     config = transformConfig(cache.originalConfig)
     return this

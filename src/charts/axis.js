@@ -150,7 +150,6 @@ export default function Axis (_container) {
     if (!scales.yScale) {
       return
     }
-
     if (config.yAxisPercentageFormat) {
       axis.tickFormat(formatPercentage(config.yAxisPercentageFormat))
     } else if (typeof config.yAxisFormat === "function") {

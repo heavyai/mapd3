@@ -125,9 +125,34 @@ function getFormatFromKey(cachedFormat, key) {
   }
 }
 
+function getFormatFromMeasureName(cachedFormat, measureName) {
+  if (Array.isArray(cachedFormat)) {
+    const match = cachedFormat.filter(d => d.measureName === measureName)[0]
+    if (match && match.format) {
+      // matching format
+      return match.format
+    } else {
+      // no matching format
+      return null
+    }
+  } else {
+    // no format by key
+    return null
+  }
+}
+
 function hasFormatForKey(cachedFormat, key) {
   if (Array.isArray(cachedFormat)) {
     return Boolean(getFormatFromKey(cachedFormat, key))
+  } else {
+    // format for all keys
+    return Boolean(cachedFormat)
+  }
+}
+
+function hasFormatForMeasureName(cachedFormat, measureName) {
+  if (Array.isArray(cachedFormat)) {
+    return Boolean(getFormatFromMeasureName(cachedFormat, measureName))
   } else {
     // format for all keys
     return Boolean(cachedFormat)
@@ -144,8 +169,7 @@ export default function autoFormatter(_format) {
 
   return function formatter(value, key) {
     const hasKey = typeof key !== "undefined"
-
-    if (hasKey && !hasFormatForKey(cachedFormat, key)) {
+    if (hasKey && !hasFormatForKey(cachedFormat, key) && !hasFormatForMeasureName(cachedFormat, key)) {
       return null
     }
 
@@ -154,7 +178,7 @@ export default function autoFormatter(_format) {
     // pick format from key
     if (Array.isArray(cachedFormat)) {
       if (hasKey) {
-        format = getFormatFromKey(cachedFormat, key)
+        format = getFormatFromKey(cachedFormat, key) || getFormatFromMeasureName(cachedFormat, key)
       } else {
         format = cachedFormat[0] && cachedFormat[0].format
       }

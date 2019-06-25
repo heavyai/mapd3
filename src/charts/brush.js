@@ -91,6 +91,8 @@ export default function Brush (_container) {
 
     const step = d3.event.sourceEvent.deltaY;
 
+    if (step === 0) { return }
+
     const [chartMin, chartMax] = zoomScale.range();
 
     const zmin = config.zoomRangeMin

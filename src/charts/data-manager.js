@@ -1,7 +1,8 @@
 import * as d3 from "./helpers/d3-service"
 
 import {comparators, keys} from "./helpers/constants"
-import {ascendingComparator, descendingComparator, clamp, invertScale, sortData, cloneData, getUnique} from "./helpers/common"
+import {ascendingComparator, descendingComparator, clamp, invertScale, sortData, getUnique} from "./helpers/common"
+import cloneDeep from "lodash.clonedeep"
 
 
 export default function DataGenerator () {
@@ -92,7 +93,7 @@ const getKey = (d) => d[keys.KEY]
 const getID = (d) => d[keys.ID]
 
 export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, _yAxisPercentageFormat) {
-  const dataBySeries = cloneData(_data[keys.SERIES])
+  const dataBySeries = cloneDeep(_data[keys.SERIES])
   dataBySeries.forEach((serie) => {
     // convert type
     serie[keys.VALUES].forEach((d) => {
@@ -134,10 +135,7 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, 
   // flatten data
   dataBySeries.forEach((serie) => {
     serie[keys.VALUES].forEach((d) => {
-      const dataPoint = {}
-      dataPoint[keys.LABEL] = serie[keys.LABEL]
-      dataPoint[keys.GROUP] = serie[keys.GROUP]
-      dataPoint[keys.ID] = serie[keys.ID]
+      const dataPoint = {...serie}
       dataPoint[keys.KEY] = d[keys.KEY]
       dataPoint[keys.VALUE] = d[keys.VALUE]
       dataPoint[keys.COUNTVAL] = d[keys.COUNTVAL]
@@ -189,9 +187,7 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, 
   // get stack totals
   const allKeyTotals = dataByKey.map(d => ({
     key: d[keys.KEY],
-    total: d3.sum(d[keys.SERIES].map(dB => {
-      return dB[typeof _yAxisPercentageFormat === 'string' ? keys.ABSOLUTEVAL : keys.VALUE]
-    })),
+    total: d3.sum(d[keys.SERIES].map(dB => dB[typeof _yAxisPercentageFormat === "string" ? keys.ABSOLUTEVAL : keys.VALUE])),
     ...(d[keys.SERIES][0][keys.COUNTVAL] && {countval: d3.sum(d[keys.SERIES].map(dB => dB[keys.COUNTVAL]))})
   }))
 

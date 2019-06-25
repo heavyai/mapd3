@@ -4,11 +4,11 @@ import {colors} from "./helpers/colors"
 import {keys, stackOffset} from "./helpers/constants"
 import {
   override,
-  throttle,
   uniqueId,
   getChartClass,
   rebind
 } from "./helpers/common"
+import throttle from "lodash.throttle"
 import {augmentConfig} from "./helpers/auto-config"
 import ComponentRegistry from "./helpers/component-registry"
 import * as StyleFilters from "./helpers/filters"
@@ -279,7 +279,10 @@ export default function Chart (_container) {
     const THROTTLE_DELAY = 20
     const throttledDispatch = throttle((...args) => {
       dispatcher.call(...args)
-    }, THROTTLE_DELAY)
+    }, THROTTLE_DELAY, {
+      leading: true,
+      trailing: false
+    })
 
     cache.panel
       .on("mouseover.dispatch", () => {

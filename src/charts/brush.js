@@ -58,10 +58,21 @@ export default function Brush (_container) {
         .on("brush", handleBrushMove)
         .on("end", handleBrushEnd)
 
-        cache.zoom = d3.zoom()
-          .on("zoom", handleZoom);
+      /* okay, this is a little esoteric - in an ideal world, we'd probably have a separate "Zoom"
+         component that would live alongside our "Brush" component here and handle the zooming. the
+         problem is that d3.zoom swallows all mousemove events, which prevents us from brushing on the chart.
+         (and you'll recall that we need to brush on the chart to set a filter, in addition to zooming in and out).
 
-        cache.root.call(cache.zoom);
+         So the solution is twofold - first of all, we do the zooming in here, and secondly we attach the zoom
+         event to the <g> tag brush container. d3.brush adds on a few elements that directly handle the interaction,
+         so we let them absorb the mousemove events for the brushing and bubble up the wheel events to the zoom
+         in the container tag.
+
+      */
+      cache.zoom = d3.zoom()
+        .on("zoom", handleZoom)
+
+      cache.root.call(cache.zoom)
 
     }
   }
@@ -80,17 +91,25 @@ export default function Brush (_container) {
 
   function handleZoom () {
 
+    // this is a little sloppy - we're always going to attach and consume the zoom events, but
+    // this will govern if we actually do anything with them.
     if (! config.zoomIsEnabled) { return }
 
+    // ensure we ignore mousemoves.
     if (!d3.event.sourceEvent ||
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "mousemove")) {
       return
     }
 
+    // a zoom action will assume that we have a change in y value - meaning we scrolled up
+    // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
+
     const step = d3.event.sourceEvent.deltaY;
 
     if (step === 0) { return }
 
+    // Look at the CURRENT min/max values of the chart. If we've got a pre-existing zoom min/max,
+    // use those. Otherwise, use the min/max of the current chart.
     const [chartMin, chartMax] = scales.xScale.range();
 
     const zmin = config.zoomRangeMin
@@ -100,32 +119,42 @@ export default function Brush (_container) {
       ? scales.xScale(config.zoomRangeMax)
       : chartMax;
 
+    // we should zoom in from the left and right at different speeds. If the user is positioned far to the edge,
+    // they want to keep their zoomed view oriented in the same manner. So we figure out how far along the chart
+    // we are and use that percentage to figure out how to distribute the step amount to the left and right sides.
     const xCoord = d3.mouse(this)[0];
     const coordPercentage = (xCoord - chartMin) / (chartMax - chartMin);
 
+    // This is the _assumed_ new min/max extent range on the chart after the zoom. It needs a few corrections.
     const newZmin = zmin + coordPercentage * d3.event.sourceEvent.deltaY;
     const newZmax = zmax - (1 - coordPercentage) * d3.event.sourceEvent.deltaY;
 
+    // if we're trying to zoom down to nothing so the min > max, then that's undefined. Bow out and do nothing.
     if (newZmin > newZmax) { return }
 
+    // re-map our coordinates from numeric chart points to dates/bins/times/whatever.
     const coords = [
       scales.xScale.invert( newZmin ),
       scales.xScale.invert( newZmax ),
     ];
 
-  if (coords[0] < config.binExtent[0]) {
-    coords[0] = config.binExtent[0];
-  }
-  if (coords[1] > config.binExtent[1]) {
-    coords[1] = config.binExtent[1];
-  }
+    // a little more correction - if we've zoomed outside the bounds, then we should clamp down on the edges instead.
+    if (coords[0] < config.binExtent[0]) {
+      coords[0] = config.binExtent[0];
+    }
+    if (coords[1] > config.binExtent[1]) {
+      coords[1] = config.binExtent[1];
+    }
 
-  if ( coords[0] === config.binExtent[0] && coords[1] === config.binExtent[1] ) {
-    dispatcher.call("zoomClear", this, config)
-  }
-  else {
-    dispatcher.call("zoom", this, coords, config)
-  }
+    // and finally, if our new zoom range is the literal min and max values of the entire chart, we've "zoomed" to the entire
+    // data set, so we should actually just clear the zoom filter.
+    if ( coords[0] === config.binExtent[0] && coords[1] === config.binExtent[1] ) {
+      dispatcher.call("zoomClear", this, config)
+    }
+    // otherwise, we've zoomed to some other range, so we just dispatch a zoom event.
+    else {
+      dispatcher.call("zoom", this, coords, config)
+    }
 
 
   }

@@ -127,9 +127,11 @@ export default function Chart (_container) {
     // brush
     brushIsEnabled: true,
 
+    // zooming is controllec by the brush
     zoomRangeMin: null,
     zoomRangeMax: null,
     zoomIsEnabled: true,
+    // the original range is used as bounds by the zoom
     binExtent: null,
 
     // label

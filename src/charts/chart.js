@@ -27,7 +27,6 @@ import DomainEditor from "./domain-editor"
 import BrushRangeEditor from "./brush-range-editor"
 import Label from "./label"
 import ClipPath from "./clip-path"
-// import Zoom from './zoom'
 
 
 export default function Chart (_container) {

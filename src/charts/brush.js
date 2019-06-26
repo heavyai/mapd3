@@ -164,7 +164,6 @@ export default function Brush (_container) {
 
   function getDataExtentUnderBrush () {
     const selection = d3.event.selection
-
     if (extentIsValid(selection)) {
       const extent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
       if (config.keyType === "time") {
@@ -181,7 +180,6 @@ export default function Brush (_container) {
   }
 
   function setBrush () {
-
     let extent = [config.brushRangeMin, config.brushRangeMax]
     if (extentIsValid(extent)) {
       if (config.keyType === "time") {
@@ -204,7 +202,6 @@ export default function Brush (_container) {
   }
 
   function handleBrushMove () {
-
     if (!d3.event.sourceEvent ||
       (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
       return
@@ -215,7 +212,6 @@ export default function Brush (_container) {
     if (extentIsValid(extent)) {
       cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))
       dispatcher.call("brushMove", this, extent, config)
-
     }
   }
 

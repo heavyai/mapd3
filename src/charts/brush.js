@@ -46,7 +46,7 @@ export default function Brush (_container) {
   }
 
   // events
-  const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd", "brushClear", "zoom")
+  const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd", "brushClear", "zoom", "zoomClear")
 
   function buildSVG () {
     if (!cache.root) {
@@ -87,19 +87,17 @@ export default function Brush (_container) {
       return
     }
 
-    const zoomScale = scales.xScale;//.copy().domain([config.zoomRangeMin, config.zoomRangeMax]);
-
     const step = d3.event.sourceEvent.deltaY;
 
     if (step === 0) { return }
 
-    const [chartMin, chartMax] = zoomScale.range();
+    const [chartMin, chartMax] = scales.xScale.range();
 
     const zmin = config.zoomRangeMin
-      ? zoomScale(config.zoomRangeMin)
+      ? scales.xScale(config.zoomRangeMin)
       : chartMin;
     const zmax = config.zoomRangeMax
-      ? zoomScale(config.zoomRangeMax)
+      ? scales.xScale(config.zoomRangeMax)
       : chartMax;
 
     const xCoord = d3.mouse(this)[0];
@@ -111,8 +109,8 @@ export default function Brush (_container) {
     if (newZmin > newZmax) { return }
 
     const coords = [
-      zoomScale.invert( newZmin ),
-      zoomScale.invert( newZmax ),
+      scales.xScale.invert( newZmin ),
+      scales.xScale.invert( newZmax ),
     ];
 
   if (coords[0] < config.binExtent[0]) {
@@ -122,30 +120,18 @@ export default function Brush (_container) {
     coords[1] = config.binExtent[1];
   }
 
-  dispatcher.call("zoom", this, coords, config)
+  if ( coords[0] === config.binExtent[0] && coords[1] === config.binExtent[1] ) {
+    dispatcher.call("zoomClear", this, config)
+  }
+  else {
+    dispatcher.call("zoom", this, coords, config)
+  }
+
 
   }
 
   function clampExtentToDateBin (extent) {
     return extent.map(d3TimeTranslation[config.binningResolution])
-  }
-
-  function getDataExtentUnderZoom () {
-    const halfStep = d3.event.sourceEvent.deltaY / 2;
-    const selection = [400, config.markPanelWidth]
-    if (extentIsValid(selection)) {
-      const extent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
-      if (config.keyType === "time") {
-        const clampedExtent = clampExtentToDateBin(extent)
-        // prevent clamping to a span of 0
-        if (clampedExtent[0].getTime() !== clampedExtent[1].getTime()) {
-          return clampedExtent
-        }
-      }
-      return extent
-    } else {
-      return null
-    }
   }
 
   function getDataExtentUnderBrush () {

@@ -19,14 +19,14 @@ export default function Brush (_container) {
     brushIsEnabled: true,
     binningResolution: "1mo",
 
-    zoomRangeMin : null,
-    zoomRangeMax : null,
-    zoomIsEnabled : true,
+    zoomRangeMin: null,
+    zoomRangeMax: null,
+    zoomIsEnabled: true,
 
     markPanelWidth: null,
     chartHeight: null,
 
-    binExtent : null,
+    binExtent: null
   }
 
   let scales = {
@@ -81,7 +81,7 @@ export default function Brush (_container) {
     cache.brush.extent([[0, 0], [config.markPanelWidth, config.chartHeight]])
 
     cache.chartBrush = cache.root.call(cache.brush)
-    cache.root.call(cache.zoom);
+    cache.root.call(cache.zoom)
 
     cache.chartBrush.selectAll(".brush-rect")
       .attr("height", config.chartHeight)
@@ -93,7 +93,7 @@ export default function Brush (_container) {
 
     // this is a little sloppy - we're always going to attach and consume the zoom events, but
     // this will govern if we actually do anything with them.
-    if (! config.zoomIsEnabled) { return }
+    if (!config.zoomIsEnabled) { return }
 
     // ensure we ignore mousemoves.
     if (!d3.event.sourceEvent ||
@@ -104,55 +104,54 @@ export default function Brush (_container) {
     // a zoom action will assume that we have a change in y value - meaning we scrolled up
     // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
 
-    const step = d3.event.sourceEvent.deltaY;
+    const step = d3.event.sourceEvent.deltaY
 
     if (step === 0) { return }
 
     // Look at the CURRENT min/max values of the chart. If we've got a pre-existing zoom min/max,
     // use those. Otherwise, use the min/max of the current chart.
-    const [chartMin, chartMax] = scales.xScale.range();
+    const [chartMin, chartMax] = scales.xScale.range()
 
     const zmin = config.zoomRangeMin
       ? scales.xScale(config.zoomRangeMin)
-      : chartMin;
+      : chartMin
     const zmax = config.zoomRangeMax
       ? scales.xScale(config.zoomRangeMax)
-      : chartMax;
+      : chartMax
 
     // we should zoom in from the left and right at different speeds. If the user is positioned far to the edge,
     // they want to keep their zoomed view oriented in the same manner. So we figure out how far along the chart
     // we are and use that percentage to figure out how to distribute the step amount to the left and right sides.
-    const xCoord = d3.mouse(this)[0];
-    const coordPercentage = (xCoord - chartMin) / (chartMax - chartMin);
+    const xCoord = d3.mouse(this)[0]
+    const coordPercentage = (xCoord - chartMin) / (chartMax - chartMin)
 
     // This is the _assumed_ new min/max extent range on the chart after the zoom. It needs a few corrections.
-    const newZmin = zmin + coordPercentage * d3.event.sourceEvent.deltaY;
-    const newZmax = zmax - (1 - coordPercentage) * d3.event.sourceEvent.deltaY;
+    const newZmin = zmin + coordPercentage * d3.event.sourceEvent.deltaY
+    const newZmax = zmax - (1 - coordPercentage) * d3.event.sourceEvent.deltaY
 
     // if we're trying to zoom down to nothing so the min > max, then that's undefined. Bow out and do nothing.
     if (newZmin > newZmax) { return }
 
     // re-map our coordinates from numeric chart points to dates/bins/times/whatever.
     const coords = [
-      scales.xScale.invert( newZmin ),
-      scales.xScale.invert( newZmax ),
-    ];
+      scales.xScale.invert(newZmin),
+      scales.xScale.invert(newZmax)
+    ]
 
     // a little more correction - if we've zoomed outside the bounds, then we should clamp down on the edges instead.
     if (coords[0] < config.binExtent[0]) {
-      coords[0] = config.binExtent[0];
+      coords[0] = config.binExtent[0]
     }
     if (coords[1] > config.binExtent[1]) {
-      coords[1] = config.binExtent[1];
+      coords[1] = config.binExtent[1]
     }
 
     // and finally, if our new zoom range is the literal min and max values of the entire chart, we've "zoomed" to the entire
     // data set, so we should actually just clear the zoom filter.
-    if ( coords[0] === config.binExtent[0] && coords[1] === config.binExtent[1] ) {
+    if (coords[0] === config.binExtent[0] && coords[1] === config.binExtent[1]) {
       dispatcher.call("zoomClear", this, config)
-    }
-    // otherwise, we've zoomed to some other range, so we just dispatch a zoom event.
-    else {
+    } else {
+      // otherwise, we've zoomed to some other range, so we just dispatch a zoom event.
       dispatcher.call("zoom", this, coords, config)
     }
 
@@ -211,7 +210,7 @@ export default function Brush (_container) {
       return
     }
 
-    let extent = getDataExtentUnderBrush()
+    const extent = getDataExtentUnderBrush()
 
     if (extentIsValid(extent)) {
       cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))

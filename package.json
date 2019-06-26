@@ -48,7 +48,9 @@
   "dependencies": {
     "base-64": "^0.1.0",
     "d3": "4.11.0",
-    "d3-svg-legend": "^2.25.3"
+    "d3-svg-legend": "^2.25.3",
+    "lodash.clonedeep": "^4.1.1",
+    "lodash.throttle": "^4.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^8.5.1",

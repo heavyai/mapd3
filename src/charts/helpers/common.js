@@ -1,17 +1,9 @@
 import {keys} from "./constants"
 import * as d3 from "./d3-service"
-
-/**
- * Clones the passed array of data
- * @param  {Object[]} dataToClone Data to clone
- * @return {Object[]}             Cloned data
- */
-export function cloneData (_dataToClone) {
-  return JSON.parse(JSON.stringify(_dataToClone))
-}
+import cloneDeep from "lodash.clonedeep"
 
 export function sortData (_data, _keyType) {
-  const sortedData = cloneData(_data)
+  const sortedData = cloneDeep(_data)
   if (_keyType === "time") {
     sortedData.forEach((d) => {
       d[keys.KEY] = new Date(d[keys.KEY])
@@ -55,21 +47,6 @@ export function override (a, b) {
     }
   }
   return accum
-}
-
-export function throttle (callback, limit) {
-  let wait = false
-  let timer = null
-  return function throttleFn (...args) {
-    if (!wait) {
-      wait = true
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        wait = false
-        callback(...args)
-      }, limit)
-    }
-  }
 }
 
 export function rebind (target) {
@@ -187,7 +164,7 @@ export function getDomainSign (domain) {
 }
 
 export function filterByKey (_data, _extent) {
-  const data = cloneData(_data)
+  const data = cloneDeep(_data)
 
   data[keys.SERIES].forEach((series) => {
     const values = series[keys.VALUES]
@@ -200,7 +177,7 @@ export function filterByKey (_data, _extent) {
 }
 
 export function filterByDate (_data, _extent) {
-  const data = cloneData(_data)
+  const data = cloneDeep(_data)
 
   data[keys.SERIES].forEach((series) => {
     series[keys.VALUES] = series[keys.VALUES].filter(d => {

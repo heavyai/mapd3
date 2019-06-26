@@ -239,9 +239,7 @@ export default function Chart (_container) {
         brushRangeEditor: BrushRangeEditor(cache.headerGroup),
         label: Label(cache.root),
         clipPath: ClipPath(cache.svg)
-        // zoom: Zoom(cache.panel, brush)
       })
-
     }
 
     cache.svgWrapper

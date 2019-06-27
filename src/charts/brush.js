@@ -103,8 +103,9 @@ export default function Brush (_container) {
 
     // a zoom action will assume that we have a change in y value - meaning we scrolled up
     // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
+    // we step in the opposite direction of our scroll, since that's more standard.
 
-    const step = d3.event.sourceEvent.deltaY
+    const step = -d3.event.sourceEvent.deltaY
 
     if (step === 0) { return }
 
@@ -126,8 +127,8 @@ export default function Brush (_container) {
     const coordPercentage = (xCoord - chartMin) / (chartMax - chartMin)
 
     // This is the _assumed_ new min/max extent range on the chart after the zoom. It needs a few corrections.
-    const newZmin = zmin + coordPercentage * d3.event.sourceEvent.deltaY
-    const newZmax = zmax - (1 - coordPercentage) * d3.event.sourceEvent.deltaY
+    const newZmin = zmin + coordPercentage * step
+    const newZmax = zmax - (1 - coordPercentage) * step
 
     // if we're trying to zoom down to nothing so the min > max, then that's undefined. Bow out and do nothing.
     if (newZmin > newZmax) { return }

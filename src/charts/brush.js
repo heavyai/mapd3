@@ -101,10 +101,14 @@ export default function Brush (_container) {
       return
     }
 
+    // we're gonna allow the user to zoom in/out with a scroll, or pan left/right with option + scroll
+    const dir = d3.event.sourceEvent.altKey
+      ? "h"
+      : "v"
+
     // a zoom action will assume that we have a change in y value - meaning we scrolled up
     // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
     // we step in the opposite direction of our scroll, since that's more standard.
-
     const step = -d3.event.sourceEvent.deltaY
 
     if (step === 0) { return }
@@ -124,11 +128,18 @@ export default function Brush (_container) {
     // they want to keep their zoomed view oriented in the same manner. So we figure out how far along the chart
     // we are and use that percentage to figure out how to distribute the step amount to the left and right sides.
     const xCoord = d3.mouse(this)[0]
-    const coordPercentage = (xCoord - chartMin) / (chartMax - chartMin)
+    // BUT...if we're panning left/right, we actually want to move both the left and right edges by the same amount,
+    // so we cheat and claim that we're actually halfway.
+    const coordPercentage = dir === "v"
+      ? (xCoord - chartMin) / (chartMax - chartMin)
+      : 0.5
 
     // This is the _assumed_ new min/max extent range on the chart after the zoom. It needs a few corrections.
     const newZmin = zmin + coordPercentage * step
-    const newZmax = zmax - (1 - coordPercentage) * step
+    // if it's a zoom action, then we're moving the edges closer/farther apart from each other.
+    // but if it's a pan action, then they move in the same direction.
+    // so flip how we change the max value based upon the scroll direction.
+    const newZmax = zmax + (1 - coordPercentage) * step * (dir === "v" ? -1 : 1)
 
     // if we're trying to zoom down to nothing so the min > max, then that's undefined. Bow out and do nothing.
     if (newZmin > newZmax) { return }

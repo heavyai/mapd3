@@ -54,6 +54,7 @@ export const d3TimeTranslation = {
   "1q": d3.utcMonth.round,
   "1mo": d3.utcMonth.round,
   "1s": d3.utcSecond.round,
+  "1ms": d3.utcMillisecond.round,
   "1m": d3.utcMinute.round,
   "1h": d3.utcHour.round,
   "1d": d3.utcDay.round,

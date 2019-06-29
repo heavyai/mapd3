@@ -146,8 +146,8 @@ export default function Brush (_container) {
 
     // scale the full domain of all the data to the current coords
     const binBounds = [
-      scales.xScale( config.binExtent[0] ),
-      scales.xScale( config.binExtent[1] )
+      scales.xScale(config.binExtent[0]),
+      scales.xScale(config.binExtent[1])
     ]
 
     // re-map our coordinates from numeric chart points to dates/bins/times/whatever.
@@ -158,23 +158,23 @@ export default function Brush (_container) {
     ]
 
     // if we're attempting to pan...
-    if (scrollAction === 'pan') {
+    if (scrollAction === "pan") {
       // and our min coord is at the bin bounds AND we were not previously at the bin bounds, then
       // don't move our nax coord
       if (coords[0] === binBounds[0] && zmin !== binBounds[0]) {
-        coords[1] = zmax;
+        coords[1] = zmax
       }
 
       // and our max coord is at the bin bounds AND we were not previously at the bin bounds, then
       // don't move our min coord
       if (coords[1] === binBounds[1] && zmax !== binBounds[1]) {
-        coords[0] = zmin;
+        coords[0] = zmin
       }
     }
 
-    //map our correct coordinates back along the inverted scale.
-    coords[0] = scales.xScale.invert( coords[0] )
-    coords[1] = scales.xScale.invert( coords[1] )
+    // map our correct coordinates back along the inverted scale.
+    coords[0] = scales.xScale.invert(coords[0])
+    coords[1] = scales.xScale.invert(coords[1])
 
     // and finally, if our new zoom range is the literal min and max values of the entire chart, we've "zoomed" to the entire
     // data set, so we should actually just clear the zoom filter.

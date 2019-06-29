@@ -101,10 +101,10 @@ export default function Brush (_container) {
       return
     }
 
-    // we're gonna allow the user to zoom in/out with a scroll, or pan left/right with option + scroll
-    const dir = d3.event.sourceEvent.altKey
-      ? "h"
-      : "v"
+    // we're gonna allow the user to zoom in/out with a scroll, or pan left/right with shift + scroll
+    const scrollAction = d3.event.sourceEvent.shiftKey
+      ? "pan"
+      : "zoom"
 
     // a zoom action will assume that we have a change in y value - meaning we scrolled up
     // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
@@ -130,7 +130,7 @@ export default function Brush (_container) {
     const xCoord = d3.mouse(this)[0]
     // BUT...if we're panning left/right, we actually want to move both the left and right edges by the same amount,
     // so we cheat and claim that we're actually halfway.
-    const coordPercentage = dir === "v"
+    const coordPercentage = scrollAction === "zoom"
       ? (xCoord - chartMin) / (chartMax - chartMin)
       : 0.5
 
@@ -139,28 +139,46 @@ export default function Brush (_container) {
     // if it's a zoom action, then we're moving the edges closer/farther apart from each other.
     // but if it's a pan action, then they move in the same direction.
     // so flip how we change the max value based upon the scroll direction.
-    const newZmax = zmax + (1 - coordPercentage) * step * (dir === "v" ? -1 : 1)
+    const newZmax = zmax + (1 - coordPercentage) * step * (scrollAction === "zoom" ? -1 : 1)
 
     // if we're trying to zoom down to nothing so the min > max, then that's undefined. Bow out and do nothing.
     if (newZmin > newZmax) { return }
 
-    // re-map our coordinates from numeric chart points to dates/bins/times/whatever.
-    const coords = [
-      scales.xScale.invert(newZmin),
-      scales.xScale.invert(newZmax)
+    // scale the full domain of all the data to the current coords
+    const binBounds = [
+      scales.xScale( config.binExtent[0] ),
+      scales.xScale( config.binExtent[1] )
     ]
 
-    // a little more correction - if we've zoomed outside the bounds, then we should clamp down on the edges instead.
-    if (coords[0] < config.binExtent[0]) {
-      coords[0] = config.binExtent[0]
+    // re-map our coordinates from numeric chart points to dates/bins/times/whatever.
+    // if we're trying to map outside of the bin range, then force ourselves back into it.
+    const coords = [
+      Math.max(newZmin, binBounds[0]),
+      Math.min(newZmax, binBounds[1])
+    ]
+
+    // if we're attempting to pan...
+    if (scrollAction === 'pan') {
+      // and our min coord is at the bin bounds AND we were not previously at the bin bounds, then
+      // don't move our nax coord
+      if (coords[0] === binBounds[0] && zmin !== binBounds[0]) {
+        coords[1] = zmax;
+      }
+
+      // and our max coord is at the bin bounds AND we were not previously at the bin bounds, then
+      // don't move our min coord
+      if (coords[1] === binBounds[1] && zmax !== binBounds[1]) {
+        coords[0] = zmin;
+      }
     }
-    if (coords[1] > config.binExtent[1]) {
-      coords[1] = config.binExtent[1]
-    }
+
+    //map our correct coordinates back along the inverted scale.
+    coords[0] = scales.xScale.invert( coords[0] )
+    coords[1] = scales.xScale.invert( coords[1] )
 
     // and finally, if our new zoom range is the literal min and max values of the entire chart, we've "zoomed" to the entire
     // data set, so we should actually just clear the zoom filter.
-    if (coords[0] === config.binExtent[0] && coords[1] === config.binExtent[1]) {
+    if (newZmin <= binBounds[0] && newZmax >= binBounds[1]) {
       dispatcher.call("zoomClear", this, config)
     } else {
       // otherwise, we've zoomed to some other range, so we just dispatch a zoom event.

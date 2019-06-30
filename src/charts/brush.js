@@ -117,11 +117,13 @@ export default function Brush (_container) {
     // use those. Otherwise, use the min/max of the current chart.
     const [chartMin, chartMax] = scales.xScale.range()
 
+    // because of re-scaling, it's possible that the zoom min/max are now outside the chart's bin extent
+    // correct that to use the proper value so zoom doesn't go beyond the actual edges.
     const zmin = config.zoomRangeMin
-      ? scales.xScale(config.zoomRangeMin)
+      ? scales.xScale(Math.max(config.zoomRangeMin, config.binExtent[0]))
       : chartMin
     const zmax = config.zoomRangeMax
-      ? scales.xScale(config.zoomRangeMax)
+      ? scales.xScale(Math.min(config.zoomRangeMax, config.binExtent[1]))
       : chartMax
 
     // we should zoom in from the left and right at different speeds. If the user is positioned far to the edge,
@@ -159,17 +161,22 @@ export default function Brush (_container) {
 
     // if we're attempting to pan...
     if (scrollAction === "pan") {
-      // and our min coord is at the bin bounds AND we were not previously at the bin bounds, then
-      // don't move our nax coord
-      if (coords[0] === binBounds[0] && zmin !== binBounds[0]) {
+      // and our min coord is at the bin bounds AND was not previously at the bin bounds, then
+      // don't move our max coord
+      if (coords[0] === binBounds[0] && zmin <= binBounds[0]) {
         coords[1] = zmax
       }
 
-      // and our max coord is at the bin bounds AND we were not previously at the bin bounds, then
+      // and our max coord is at the bin bounds AND was not previously at the bin bounds, then
       // don't move our min coord
-      if (coords[1] === binBounds[1] && zmax !== binBounds[1]) {
+      if (coords[1] === binBounds[1] && zmax >= binBounds[1]) {
         coords[0] = zmin
       }
+    }
+
+    // there's no need to do -anything- if we haven't actually changed our zoom levels. Bow out.
+    if (coords[0] === zmin && coords[1] === zmax) {
+      return;
     }
 
     // map our correct coordinates back along the inverted scale.

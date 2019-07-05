@@ -91,6 +91,9 @@ export default function Brush (_container) {
 
   function handleZoom () {
 
+    // this is just an inherently complex (and yet self-contained!) function. Sorry.
+    /* eslint complexity: ["error", 30] */
+
     // this is a little sloppy - we're always going to attach and consume the zoom events, but
     // this will govern if we actually do anything with them.
     if (!config.zoomIsEnabled) { return }

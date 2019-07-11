@@ -105,7 +105,10 @@ export default function Brush (_container) {
     }
 
     // we're gonna allow the user to zoom in/out with a scroll, or pan left/right with shift + scroll
-    const scrollAction = d3.event.sourceEvent.shiftKey
+    // XXX - this is _stupid_. We only want to pan with the shift key, but apparently some (but not all!)
+    // mice will not pass through a shift+scroll event. Until we've got it figured out, we're gonna allow
+    // holding down shift OR option to pan.
+    const scrollAction = d3.event.sourceEvent.shiftKey || d3.event.sourceEvent.altKey
       ? "pan"
       : "zoom"
 

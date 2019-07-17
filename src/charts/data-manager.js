@@ -109,7 +109,9 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, 
 
   // get all unique keys
   let allKeys = []
-  dataBySeries.forEach(d => { allKeys = allKeys.concat(d.values) })
+  dataBySeries.forEach(d => {
+    allKeys = allKeys.concat(d.values)
+  })
   allKeys = allKeys.map(d => d.key)
   allKeys = getUnique(allKeys, _keyType)
 
@@ -148,7 +150,10 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, 
 
   const dataByKey = d3.nest()
     .key(getKey)
-    .entries(flatDataSorted)
+    .entries(flatDataSorted.map(d => ({
+      ...d,
+      x: _keyType === "time" ? d.x.toISOString() : d.x
+    })))
     .map((d) => {
       const dataPoint = {}
       dataPoint[keys.KEY] = _keyType === "time" ? new Date(d.key) : d.key
@@ -245,5 +250,5 @@ export function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
 
 function convertToDate (_date) {
   // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
-  return new Date(new Date(_date).toString())
+  return new Date(new Date(_date).toISOString())
 }

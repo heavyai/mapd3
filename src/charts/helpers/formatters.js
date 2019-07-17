@@ -114,7 +114,7 @@ export function formatOddDateBin (specifier, value) {
   switch (specifier) {
   // reproducing the old line chart behavior, even if it's wrong
   case "1w":
-    return `${d3.utcFormat("%b %d")(value)} - ${d3.utcFormat("%b %d,")(d3.utcDay.offset(value, 6))}`
+    return `${d3.utcFormat("%b %d")(value)} - ${d3.utcFormat("%b %d")(d3.timeDay.offset(value, 6))}, ${d3.utcFormat("%Y")(value)}`
   case "1c":
     return `${d3.utcFormat("%Y")(value)} - ${d3.utcFormat("%Y")(d3.utcYear.offset(value, 99))}`
   case "10y":
@@ -134,7 +134,8 @@ export const binTranslation = {
   "1s": "%b %d, %Y %H:%M:%S",
   "1m": "%b %d, %Y %H:%M",
   "1h": "%b %d, %Y %H:%M",
-  "1d": "%b %d, %Y"
+  "1d": "%b %d, %Y",
+  "1w": "%b %d - %b %d, %Y"
 }
 
 export function formatTooltipNumber (d) {

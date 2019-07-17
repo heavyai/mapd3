@@ -41,9 +41,9 @@ export const formatTooltipTitle = (
     const specifier = binTranslation[binningResolution]
     if (format && format !== "auto") {
       title = d3.utcFormat(format)(title)
-    } else if (specifier) {
+    } else if (specifier && !["1w", "1q", "10y", "1c"].includes(binningResolution)) {
       title = d3.utcFormat(specifier)(title)
-    } else if (["1w", "1q", "10y", "1c"].indexOf(binningResolution) > -1) {
+    } else if (["1w", "1q", "10y", "1c"].includes(binningResolution)) {
       // handle bin translation for bin types not available in d3-time (century, decade, quarter)
       title = formatOddDateBin(binningResolution, title)
     } else {

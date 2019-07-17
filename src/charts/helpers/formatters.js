@@ -131,6 +131,7 @@ export function formatOddDateBin (specifier, value) {
 export const binTranslation = {
   "1y": "%Y",
   "1mo": "%b %Y",
+  "1ms": "%b %d, %Y %H:%M:%S.%L",
   "1s": "%b %d, %Y %H:%M:%S",
   "1m": "%b %d, %Y %H:%M",
   "1h": "%b %d, %Y %H:%M",

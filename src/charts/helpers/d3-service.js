@@ -28,6 +28,8 @@ export {
   utcHour,
   utcMinute,
   utcSecond,
+  utcMillisecond,
+  timeMillisecond,
   timeSecond,
   timeMinute,
   timeHour,

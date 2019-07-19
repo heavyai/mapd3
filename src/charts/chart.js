@@ -131,7 +131,7 @@ export default function Chart (_container) {
     zoomRangeMax: null,
     zoomIsEnabled: true,
     // the original range is used as bounds by the zoom
-    binExtent: null,
+    fullXDomain: null,
 
     // label
     xLabel: "",

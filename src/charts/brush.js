@@ -26,7 +26,7 @@ export default function Brush (_container) {
     markPanelWidth: null,
     chartHeight: null,
 
-    binExtent: null
+    fullXDomain: null
   }
 
   let scales = {
@@ -104,8 +104,13 @@ export default function Brush (_container) {
       return
     }
 
+    // the zoomScale maps the FULL X Domain (which is the min -> max across all VDF dimensions)
+    // to the chart's coordinate range.
+    const zoomScale = scales.xScale.copy()
+    zoomScale.domain(config.fullXDomain)
+
     // we're gonna allow the user to zoom in/out with a scroll, or pan left/right with shift + scroll
-    // XXX - this is _stupid_. We only want to pan with the shift key, but apparently some (but not all!)
+    // This is _stupid_. We only want to pan with the shift key, but apparently some (but not all!)
     // mice will not pass through a shift+scroll event. Until we've got it figured out, we're gonna allow
     // holding down shift OR option to pan.
     const scrollAction = d3.event.sourceEvent.shiftKey || d3.event.sourceEvent.altKey
@@ -121,15 +126,15 @@ export default function Brush (_container) {
 
     // Look at the CURRENT min/max values of the chart. If we've got a pre-existing zoom min/max,
     // use those. Otherwise, use the min/max of the current chart.
-    const [chartMin, chartMax] = scales.xScale.range()
+    const [chartMin, chartMax] = zoomScale.range()
 
     // because of re-scaling, it's possible that the zoom min/max are now outside the chart's bin extent
     // correct that to use the proper value so zoom doesn't go beyond the actual edges.
     const zmin = config.zoomRangeMin
-      ? scales.xScale(Math.max(config.zoomRangeMin, config.binExtent[0]))
+      ? zoomScale(Math.max(config.zoomRangeMin, config.fullXDomain[0]))
       : chartMin
     const zmax = config.zoomRangeMax
-      ? scales.xScale(Math.min(config.zoomRangeMax, config.binExtent[1]))
+      ? zoomScale(Math.min(config.zoomRangeMax, config.fullXDomain[1]))
       : chartMax
 
     // we should zoom in from the left and right at different speeds. If the user is positioned far to the edge,
@@ -154,8 +159,8 @@ export default function Brush (_container) {
 
     // scale the full domain of all the data to the current coords
     const binBounds = [
-      scales.xScale(config.binExtent[0]),
-      scales.xScale(config.binExtent[1])
+      zoomScale(config.fullXDomain[0]),
+      zoomScale(config.fullXDomain[1])
     ]
 
     // re-map our coordinates from numeric chart points to dates/bins/times/whatever.
@@ -182,12 +187,12 @@ export default function Brush (_container) {
 
     // there's no need to do -anything- if we haven't actually changed our zoom levels. Bow out.
     if (coords[0] === zmin && coords[1] === zmax) {
-      return;
+      return
     }
 
     // map our correct coordinates back along the inverted scale.
-    coords[0] = scales.xScale.invert(coords[0])
-    coords[1] = scales.xScale.invert(coords[1])
+    coords[0] = zoomScale.invert(coords[0])
+    coords[1] = zoomScale.invert(coords[1])
 
     // and finally, if our new zoom range is the literal min and max values of the entire chart, we've "zoomed" to the entire
     // data set, so we should actually just clear the zoom filter.

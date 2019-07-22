@@ -120,9 +120,9 @@ export default function Brush (_container) {
     // a zoom action will assume that we have a change in y value - meaning we scrolled up
     // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
     // we step in the opposite direction of our scroll, since that's more standard.
-    const step = -d3.event.sourceEvent.deltaY
+    const unadjustedStep = -d3.event.sourceEvent.deltaY
 
-    if (step === 0) { return }
+    if (unadjustedStep === 0) { return }
 
     // Look at the CURRENT min/max values of the chart. If we've got a pre-existing zoom min/max,
     // use those. Otherwise, use the min/max of the current chart.
@@ -136,6 +136,25 @@ export default function Brush (_container) {
     const zmax = config.zoomRangeMax
       ? zoomScale(Math.min(config.zoomRangeMax, config.fullXDomain[1]))
       : chartMax
+
+    /* okay, this is pretty epic. The actual pixel coordinates we moved by scrolling needs to be
+       adjusted for the scale we're operating at. When we're fully zoomed out, a step on the wheel
+       is 3-5px or so. But as we get zoomed in farther, the distance between the low and high bars
+       on our zoom brush could be < 3-5px and as a result if we tried to zoom in that far we'd overzoom
+       so our min > max and it'd fail and prevent it.
+
+       Instead, we adjust our step value - it should be proportional to the ratio of our current zoomed
+       range to the overall chart range. So if we moved the wheel by 2px and our chart range is 0->100,
+       that's cool - adjust our step by 2px. If we've already zoomed in to a range of 0->1, then don't
+       step by 2px at a time, only step by 0.02px (1 / 100).
+
+       This has two effects -
+       * we zoom in at a constant speed. Previously we'd zoom faster as we got closer in.
+       * We can zoom into much finer resolutions than we previously could.
+
+    */
+    const stepAdjustment = (zmax - zmin) / (chartMax - chartMin)
+    const step = unadjustedStep * stepAdjustment;
 
     // we should zoom in from the left and right at different speeds. If the user is positioned far to the edge,
     // they want to keep their zoomed view oriented in the same manner. So we figure out how far along the chart

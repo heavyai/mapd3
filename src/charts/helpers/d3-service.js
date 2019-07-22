@@ -53,5 +53,6 @@ export {
   scaleOrdinal,
   symbol,
   symbolTriangle,
-  brushX
+  brushX,
+  zoom
 } from "d3/build/d3"

@@ -220,11 +220,10 @@ export default function Brush (_container) {
        and see if the difference is small enough. If it is, then we bow out and refuse to
        zoom in any farther.
 
-       The magic number here is approximately the value of 1/86,400,000, or 1ms in a day.
-       Seemed like a good threshold.
+       The magic number here is 1/10ms, which seemed like a good threshold.
 
     */
-    if (coords[1] - coords[0] < 0.00000001) {
+    if (coords[1] - coords[0] < 0.0001) {
       return
     }
 

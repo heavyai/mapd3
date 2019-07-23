@@ -154,7 +154,7 @@ export default function Brush (_container) {
 
     */
     const stepAdjustment = (zmax - zmin) / (chartMax - chartMin)
-    const step = unadjustedStep * stepAdjustment;
+    const step = unadjustedStep * stepAdjustment
 
     // we should zoom in from the left and right at different speeds. If the user is positioned far to the edge,
     // they want to keep their zoomed view oriented in the same manner. So we figure out how far along the chart
@@ -212,6 +212,21 @@ export default function Brush (_container) {
     // map our correct coordinates back along the inverted scale.
     coords[0] = zoomScale.invert(coords[0])
     coords[1] = zoomScale.invert(coords[1])
+
+    /* Yet another correction we need. After all of that, it's possible that we've managed
+       to zoom down to a zero width area. That's an error and would prevent the user from
+       zooming back out. BUT - the actual pixel coordinates on the chart may be different,
+       but end up at the same place when the d3 scale is inverted. So map back to the domain
+       and see if the difference is small enough. If it is, then we bow out and refuse to
+       zoom in any farther.
+
+       The magic number here is approximately the value of 1/86,400,000, or 1ms in a day.
+       Seemed like a good threshold.
+
+    */
+    if (coords[1] - coords[0] < 0.00000001) {
+      return
+    }
 
     // and finally, if our new zoom range is the literal min and max values of the entire chart, we've "zoomed" to the entire
     // data set, so we should actually just clear the zoom filter.

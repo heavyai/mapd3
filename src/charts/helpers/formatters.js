@@ -97,12 +97,12 @@ const formatYear = d3.utcFormat("%Y")
 */
 export function multiFormat (date) {
   /* eslint-disable no-nested-ternary */
-  return (d3.timeSecond(date) < date ? formatMillisecond
-    : d3.timeMinute(date) < date ? formatSecond
-      : d3.timeHour(date) < date ? formatMinute
-        : d3.timeDay(date) < date ? formatHour
-          : d3.timeMonth(date) < date ? (d3.utcWeek(date) < date ? formatDay : formatWeek)
-            : d3.timeYear(date) < date ? formatMonth
+  return (d3.utcSecond(date) < date ? formatMillisecond
+    : d3.utcMinute(date) < date ? formatSecond
+      : d3.utcHour(date) < date ? formatMinute
+        : d3.utcDay(date) < date ? formatHour
+          : d3.utcMonth(date) < date ? (d3.utcWeek(date) < date ? formatDay : formatWeek)
+            : d3.utcYear(date) < date ? formatMonth
               : formatYear)(date)
   /* eslint-enable no-nested-ternary */
 }

@@ -41,7 +41,7 @@ export default function Scale () {
     let domain = null
 
     if (config.keyType === "time") {
-      xScale = d3.scaleTime()
+      xScale = d3.scaleUtc()
     } else if (config.keyType === "number") {
       xScale = d3.scaleLinear()
     } else {

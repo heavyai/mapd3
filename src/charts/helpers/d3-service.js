@@ -47,6 +47,7 @@ export {
   stackOffsetDiverging,
   stackOrderNone,
   scaleTime,
+  scaleUtc,
   scalePoint,
   scaleBand,
   scaleLinear,

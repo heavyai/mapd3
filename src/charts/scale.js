@@ -173,9 +173,6 @@ export default function Scale () {
     }
 
     const yDomainSign = getDomainSign(yDomain)
-    if (yDomainSign === "--") {
-      yDomain.reverse()
-    }
 
     const yScale = buildYScale(yDomain)
     const y2Scale = null
@@ -229,10 +226,6 @@ export default function Scale () {
       }
 
       yDomainSign = getDomainSign(yDomain)
-      if (yDomainSign === "--") {
-        yDomain.reverse()
-      }
-
       yScale = buildYScale(validateDomain(yDomain))
     }
 
@@ -247,9 +240,6 @@ export default function Scale () {
       }
 
       y2DomainSign = getDomainSign(y2Domain)
-      if (y2DomainSign === "--") {
-        y2Domain.reverse()
-      }
 
       y2Scale = buildYScale(y2Domain)
     }

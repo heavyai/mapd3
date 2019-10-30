@@ -21,7 +21,8 @@ export default function Bar (_container) {
     chartHeight: null,
     markPanelWidth: null,
     selectedKeys: [],
-    stackOffset: stackOffset.NONE
+    stackOffset: stackOffset.NONE,
+    forceGroupedBars: false
   }
 
   let scales = {
@@ -81,7 +82,7 @@ export default function Bar (_container) {
     }
 
     const hasMultipleAxes = Object.values(data.groupKeys).length > 1
-    const isGrouped = (Array.isArray(config.chartType) && !hasMultipleAxes) || config.chartType === "groupedBar"
+    const isGrouped = config.forceGroupedBars || (Array.isArray(config.chartType) && !hasMultipleAxes) || config.chartType === "groupedBar"
 
     const groupMemberCount = barData.length
     const groupW = markCount ? (config.markPanelWidth / markCount) : 0

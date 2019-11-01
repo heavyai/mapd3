@@ -141,6 +141,7 @@ export default function Chart (_container) {
     // bar
     barSpacingPercent: 10,
     selectedKeys: [],
+    forceGroupedBars: false,
 
     // line
     dotsToShow: "none",

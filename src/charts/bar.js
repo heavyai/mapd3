@@ -126,9 +126,11 @@ export default function Bar (_container) {
       })
       .attr("y", (d) => {
         if (d[keys.GROUP] === 0) {
-          return scales.yDomainSign === "--" ? scales.yScale(d[keys.VALUE]) : scales.yScale(Math.max(0, d[keys.VALUE]))
+          // when all values are negative, the bars should align with the top of the chart
+          // note that we don't force combo bar chart scale to start at 0
+          return scales.yDomainSign === "--" ? 0 : scales.yScale(Math.max(0, d[keys.VALUE]))
         } else {
-          return scales.y2DomainSign === "--" ? scales.y2Scale(d[keys.VALUE]) : scales.y2Scale(Math.max(0, d[keys.VALUE]))
+          return scales.y2DomainSign === "--" ? 0 : scales.y2Scale(Math.max(0, d[keys.VALUE]))
         }
       })
       .attr("width", () => {
@@ -140,9 +142,19 @@ export default function Bar (_container) {
       })
       .attr("height", (d) => {
         if (d[keys.GROUP] === 0) {
-          return Math.max(Math.abs(scales.yScale(d[keys.VALUE]) - scales.yScale(0)), MIN_BAR_HEIGHT)
+          // negative bars just need to compute the height
+          // negative-positive bars needs height between value and 0
+          if (scales.yDomainSign === "--") {
+            return scales.yScale(d[keys.VALUE])
+          } else {
+            return Math.max(Math.abs(scales.yScale(d[keys.VALUE]) - scales.yScale(0)), MIN_BAR_HEIGHT)
+          }
         } else {
-          return Math.max(Math.abs(scales.y2Scale(d[keys.VALUE]) - scales.y2Scale(0)), MIN_BAR_HEIGHT)
+          if (scales.y2DomainSign === "--") {
+            return scales.y2Scale(d[keys.VALUE])
+          } else {
+            return Math.max(Math.abs(scales.y2Scale(d[keys.VALUE]) - scales.y2Scale(0)), MIN_BAR_HEIGHT)
+          }
         }
       })
       .style("stroke", "white")

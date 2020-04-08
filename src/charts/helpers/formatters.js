@@ -51,10 +51,26 @@ export function getExtractFormatter (extractType) {
   }
 }
 
+// Copied from a more recent version of d3-format
+// Trims insignificant zeros, e.g., replaces 1.2000k with 1.2k.
+// https://github.com/d3/d3-format/blob/4d504d0252d94735bfb9a00c0c6900efb52ab9bc/src/formatTrim.js
+function trimSigFigs(s) {
+  out: for (var n = s.length, i = 1, i0 = -1, i1; i < n; ++i) {
+    switch (s[i]) {
+      case ".": i0 = i1 = i; break;
+      case "0": if (i0 === 0) i0 = i; i1 = i; break;
+      default: if (!+s[i]) break out; if (i0 > 0) i0 = 0; break;
+    }
+  }
+  return i0 > 0 ? s.slice(0, i0) + s.slice(i1 + 1) : s;
+}
+
 export function autoFormat (extent) {
   const max = extent[1]
   const min = extent[0]
   let formatter = (d => d)
+  // [FE-10936] investigate whether this `if` block can be replaced with
+  // solution on line 86 / using trimSigFigs function
   if (Math.abs(max) < 1000) {
     if ((max - min) <= 0.02) {
       formatter = d3.format(".4f")
@@ -68,14 +84,7 @@ export function autoFormat (extent) {
       formatter = d3.format(".0f")
     }
   } else {
-    formatter = d => {
-      const abs = Math.abs(d)
-      if (abs < 1000) {
-        return d3.format(",.2f")(d)
-      } else {
-        return d3.format(",.2s")(d)
-      }
-    }
+    formatter = d => trimSigFigs(d3.format("s")(d))
   }
   return formatter
 }

@@ -69,6 +69,8 @@ export function autoFormat (extent) {
   const max = extent[1]
   const min = extent[0]
   let formatter = (d => d)
+  // [FE-10936] investigate whether this `if` block can be replaced with
+  // solution on line 86 / using trimSigFigs function
   if (Math.abs(max) < 1000) {
     if ((max - min) <= 0.02) {
       formatter = d3.format(".4f")

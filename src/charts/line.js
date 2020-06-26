@@ -6,6 +6,7 @@ import {override} from "./helpers/common"
 export default function Line (_container) {
 
   let config = {
+    annotationPoints: [],
     chartId: null,
     chartType: null,
     colorSchema: ["skyblue"],
@@ -191,6 +192,43 @@ export default function Line (_container) {
     return this
   }
 
+  function drawAnnotationPoints () {
+    const dotGroups = cache.root.selectAll(".annotation-group")
+      .data([config.annotationPoints])
+
+    const dotGroupsSelection = dotGroups.enter()
+      .append("g")
+      .merge(dotGroups)
+      .attr("class", "annotation-group")
+      .attr("clip-path", `url(#mark-clip-${config.chartId})`)
+
+    dotGroups.exit().remove()
+
+    const dots = dotGroupsSelection.selectAll(".annotation")
+      .data(d => d)
+
+    dots.enter()
+      .append("circle")
+      .merge(dots)
+      .attr("class", "annotation")
+      .attr("cx", (d) => scales.xScale(d.x))
+      .attr("cy", (d) => {
+        console.log(d)
+        const leftAxisGroup = data.groupKeys[LEFT_AXIS_GROUP_INDEX]
+        if (leftAxisGroup && leftAxisGroup.indexOf(d.group) > -1) {
+          return scales.yScale(d[keys.VALUE])
+        } else {
+          return scales.y2Scale ? scales.y2Scale(d.y) : scales.yScale(d.y)
+        }
+      })
+      .attr("r", "10")
+      .style("fill", "red")
+
+    dots.exit().remove()
+
+    return this
+  }
+
   function drawAreas () {
     if (config.chartType !== "area") {
       cache.root.selectAll(".mark.area").remove()
@@ -272,6 +310,7 @@ export default function Line (_container) {
     drawStackedAreas()
     drawLines()
     drawDots()
+    drawAnnotationPoints()
   }
 
   function destroy () {

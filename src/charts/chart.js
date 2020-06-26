@@ -32,6 +32,7 @@ import ClipPath from "./clip-path"
 export default function Chart (_container) {
 
   const defaultConfig = {
+    annotationPoints: [],
     // common
     margin: {
       top: 48,

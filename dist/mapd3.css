@@ -255,7 +255,6 @@
   .mapd3 .label-group .axis-label {
     position: absolute;
     color: #a7a7a7;
-    font-weight: bold;
     font-size: 13px;
     overflow: hidden; }
   .mapd3 .label-group .axis-label.x {

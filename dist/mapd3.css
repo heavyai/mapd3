@@ -205,8 +205,6 @@
     border-bottom: none; }
   .mapd3 .binning-group .dimmed {
     font-weight: normal; }
-  .mapd3 .binning-group .bin-label {
-    font-weight: bold; }
 
 .mapd3 .hover-group .vertical-marker {
   stroke: #D2D6DF;
@@ -242,8 +240,7 @@
 
 .mapd3 .brush-range-input-group {
   white-space: nowrap;
-  color: #868686;
-  font-weight: bold; }
+  color: #868686; }
   .mapd3 .brush-range-input-group .brush-range-input, .mapd3 .brush-range-input-group .separator {
     padding: 0 2px; }
 

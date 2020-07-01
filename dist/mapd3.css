@@ -90,8 +90,7 @@
     opacity: 0; }
   .mapd3 .tooltip-group .tooltip-title, .mapd3 .legend-group .tooltip-title {
     display: table-cell;
-    font-size: 11px;
-    font-weight: bold; }
+    font-size: 11px; }
   .mapd3 .tooltip-group .tooltip-body, .mapd3 .legend-group .tooltip-body {
     display: table;
     border-collapse: separate;

@@ -90,8 +90,7 @@
     opacity: 0; }
   .mapd3 .tooltip-group .tooltip-title, .mapd3 .legend-group .tooltip-title {
     display: table-cell;
-    font-size: 11px;
-    font-weight: bold; }
+    font-size: 11px; }
   .mapd3 .tooltip-group .tooltip-body, .mapd3 .legend-group .tooltip-body {
     display: table;
     border-collapse: separate;
@@ -205,8 +204,6 @@
     border-bottom: none; }
   .mapd3 .binning-group .dimmed {
     font-weight: normal; }
-  .mapd3 .binning-group .bin-label {
-    font-weight: bold; }
 
 .mapd3 .hover-group .vertical-marker {
   stroke: #D2D6DF;
@@ -242,8 +239,7 @@
 
 .mapd3 .brush-range-input-group {
   white-space: nowrap;
-  color: #868686;
-  font-weight: bold; }
+  color: #868686; }
   .mapd3 .brush-range-input-group .brush-range-input, .mapd3 .brush-range-input-group .separator {
     padding: 0 2px; }
 
@@ -255,7 +251,6 @@
   .mapd3 .label-group .axis-label {
     position: absolute;
     color: #a7a7a7;
-    font-weight: bold;
     font-size: 13px;
     overflow: hidden; }
   .mapd3 .label-group .axis-label.x {

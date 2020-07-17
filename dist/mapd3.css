@@ -56,7 +56,7 @@
 
 .mapd3 .axis-group .axis .tick text {
   font-size: 10px;
-  fill: #a7a7a7;
+  fill: #868686;
   padding: 12px; }
 
 .mapd3 .axis-group .y-title, .mapd3 .axis-group .x-title {
@@ -73,7 +73,7 @@
     display: table;
     border-bottom: 1px solid #ddd;
     width: 100%;
-    color: #a7a7a7; }
+    color: #868686; }
   .mapd3 .tooltip-group .tooltip-title-section.collapsed:hover, .mapd3 .legend-group .tooltip-title-section.collapsed:hover {
     cursor: pointer;
     color: #22A7F0; }
@@ -250,7 +250,7 @@
   white-space: nowrap; }
   .mapd3 .label-group .axis-label {
     position: absolute;
-    color: #a7a7a7;
+    color: #868686;
     font-size: 13px;
     overflow: hidden; }
   .mapd3 .label-group .axis-label.x {

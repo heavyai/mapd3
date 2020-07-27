@@ -10,6 +10,7 @@ export default function BrushRangeEditor (_container) {
     dateFormat: "%b %d, %Y",
     numberFormat: ".2f",
     brushRangeIsEnabled: true,
+    brushRangeLabelIsEditable: true,
     brushRangeMin: null,
     brushRangeMax: null
   }
@@ -49,7 +50,7 @@ export default function BrushRangeEditor (_container) {
 
       cache.inputMax = cache.root.append("div")
         .attr("class", "brush-range-input max")
-        .attr("contentEditable", true)
+        .attr("contentEditable", config.brushRangeLabelIsEditable)
 
       const handleMaxFocus = handleFocus(cache.inputMax)
 
@@ -87,7 +88,7 @@ export default function BrushRangeEditor (_container) {
 
       cache.inputMin = cache.root.append("div")
         .attr("class", "brush-range-input min")
-        .attr("contentEditable", true)
+        .attr("contentEditable", config.brushRangeLabelIsEditable)
 
       const handleMinFocus = handleFocus(cache.inputMin)
 

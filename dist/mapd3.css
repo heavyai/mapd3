@@ -1,10 +1,10 @@
-.mapd3 [contenteditable]:focus {
+.mapd3 [contenteditable=true]:focus {
   outline: 1px solid #ddd; }
 
-.mapd3 [contenteditable] {
+.mapd3 [contenteditable=true] {
   border: 1px solid transparent; }
 
-.mapd3 [contenteditable]:hover, .mapd3 .axis-label:focus {
+.mapd3 [contenteditable=true]:hover, .mapd3 .axis-label:focus {
   border: 1px solid #ddd; }
 
 .mapd3 .hidden {

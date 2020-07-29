@@ -20,7 +20,7 @@ export default function Brush(_container) {
 
     zoomRangeMin: null,
     zoomRangeMax: null,
-    zoomIsEnabled: true,
+    zoomIsEnabled: () => true,
 
     markPanelWidth: null,
     chartHeight: null,
@@ -100,7 +100,7 @@ export default function Brush(_container) {
 
     // this is a little sloppy - we're always going to attach and consume the zoom events, but
     // this will govern if we actually do anything with them.
-    if (!config.zoomIsEnabled) {
+    if (!config.zoomIsEnabled()) {
       return
     }
 

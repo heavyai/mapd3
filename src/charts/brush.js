@@ -100,7 +100,7 @@ export default function Brush(_container) {
 
     // this is a little sloppy - we're always going to attach and consume the zoom events, but
     // this will govern if we actually do anything with them.
-    if (!config.zoomIsEnabled()) {
+    if (!config.zoomIsEnabled(d3.event.sourceEvent)) {
       return
     }
 

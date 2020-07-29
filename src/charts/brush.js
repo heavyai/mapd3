@@ -2,8 +2,7 @@ import * as d3 from "./helpers/d3-service"
 import {d3TimeTranslation} from "./helpers/constants"
 import {invertScale, override, extentIsValid} from "./helpers/common"
 
-export default function Brush (_container) {
-
+export default function Brush(_container) {
   let config = {
     margin: {
       top: 60,
@@ -46,14 +45,21 @@ export default function Brush (_container) {
   }
 
   // events
-  const dispatcher = d3.dispatch("brushStart", "brushMove", "brushEnd", "brushClear", "zoom", "zoomClear")
+  const dispatcher = d3.dispatch(
+    "brushStart",
+    "brushMove",
+    "brushEnd",
+    "brushClear",
+    "zoom",
+    "zoomClear"
+  )
 
-  function buildSVG () {
+  function buildSVG() {
     if (!cache.root) {
-      cache.root = cache.container.append("g")
-        .classed("brush-group", true)
+      cache.root = cache.container.append("g").classed("brush-group", true)
 
-      cache.brush = d3.brushX()
+      cache.brush = d3
+        .brushX()
         .on("start", handleBrushStart)
         .on("brush", handleBrushMove)
         .on("end", handleBrushEnd)
@@ -69,38 +75,40 @@ export default function Brush (_container) {
          in the container tag.
 
       */
-      cache.zoom = d3.zoom()
-        .on("zoom", handleZoom)
+      cache.zoom = d3.zoom().on("zoom", handleZoom)
 
       cache.root.call(cache.zoom)
-
     }
   }
 
-  function buildBrush () {
+  function buildBrush() {
     cache.brush.extent([[0, 0], [config.markPanelWidth, config.chartHeight]])
 
     cache.chartBrush = cache.root.call(cache.brush)
     cache.root.call(cache.zoom)
 
-    cache.chartBrush.selectAll(".brush-rect")
+    cache.chartBrush
+      .selectAll(".brush-rect")
       .attr("height", config.chartHeight)
 
     setBrush()
   }
 
-  function handleZoom () {
-
+  function handleZoom() {
     // this is just an inherently complex (and yet self-contained!) function. Sorry.
     /* eslint complexity: ["error", 30] */
 
     // this is a little sloppy - we're always going to attach and consume the zoom events, but
     // this will govern if we actually do anything with them.
-    if (!config.zoomIsEnabled) { return }
+    if (!config.zoomIsEnabled) {
+      return
+    }
 
     // ensure we ignore mousemoves.
-    if (!d3.event.sourceEvent ||
-      (d3.event.sourceEvent && d3.event.sourceEvent.type === "mousemove")) {
+    if (
+      !d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "mousemove")
+    ) {
       return
     }
 
@@ -113,16 +121,16 @@ export default function Brush (_container) {
     // This is _stupid_. We only want to pan with the shift key, but apparently some (but not all!)
     // mice will not pass through a shift+scroll event. Until we've got it figured out, we're gonna allow
     // holding down shift OR option to pan.
-    const scrollAction = d3.event.sourceEvent.shiftKey || d3.event.sourceEvent.altKey
-      ? "pan"
-      : "zoom"
+    const scrollAction = d3.event.sourceEvent.altKey ? "pan" : "zoom"
 
     // a zoom action will assume that we have a change in y value - meaning we scrolled up
     // or down. If no scroll occurred (such as if the user scrolled left or right), we ignore
     // we step in the opposite direction of our scroll, since that's more standard.
     const unadjustedStep = -d3.event.sourceEvent.deltaY
 
-    if (unadjustedStep === 0) { return }
+    if (unadjustedStep === 0) {
+      return
+    }
 
     // Look at the CURRENT min/max values of the chart. If we've got a pre-existing zoom min/max,
     // use those. Otherwise, use the min/max of the current chart.
@@ -162,19 +170,23 @@ export default function Brush (_container) {
     const xCoord = d3.mouse(this)[0]
     // BUT...if we're panning left/right, we actually want to move both the left and right edges by the same amount,
     // so we cheat and claim that we're actually halfway.
-    const coordPercentage = scrollAction === "zoom"
-      ? (xCoord - chartMin) / (chartMax - chartMin)
-      : 0.5
+    const coordPercentage =
+      scrollAction === "zoom"
+        ? (xCoord - chartMin) / (chartMax - chartMin)
+        : 0.5
 
     // This is the _assumed_ new min/max extent range on the chart after the zoom. It needs a few corrections.
     const newZmin = zmin + coordPercentage * step
     // if it's a zoom action, then we're moving the edges closer/farther apart from each other.
     // but if it's a pan action, then they move in the same direction.
     // so flip how we change the max value based upon the scroll direction.
-    const newZmax = zmax + (1 - coordPercentage) * step * (scrollAction === "zoom" ? -1 : 1)
+    const newZmax =
+      zmax + (1 - coordPercentage) * step * (scrollAction === "zoom" ? -1 : 1)
 
     // if we're trying to zoom down to nothing so the min > max, then that's undefined. Bow out and do nothing.
-    if (newZmin > newZmax) { return }
+    if (newZmin > newZmax) {
+      return
+    }
 
     // scale the full domain of all the data to the current coords
     const binBounds = [
@@ -235,18 +247,18 @@ export default function Brush (_container) {
       // otherwise, we've zoomed to some other range, so we just dispatch a zoom event.
       dispatcher.call("zoom", this, coords, config)
     }
-
-
   }
 
-  function clampExtentToDateBin (extent) {
+  function clampExtentToDateBin(extent) {
     return extent.map(d3TimeTranslation[config.binningResolution])
   }
 
-  function getDataExtentUnderBrush () {
+  function getDataExtentUnderBrush() {
     const selection = d3.event.selection
     if (extentIsValid(selection)) {
-      const extent = selection.map((d) => invertScale(scales.xScale, d, config.keyType))
+      const extent = selection.map(d =>
+        invertScale(scales.xScale, d, config.keyType)
+      )
       if (config.keyType === "time") {
         const clampedExtent = clampExtentToDateBin(extent)
         // prevent clamping to a span of 0
@@ -260,46 +272,52 @@ export default function Brush (_container) {
     }
   }
 
-  function setBrush () {
+  function setBrush() {
     let extent = [config.brushRangeMin, config.brushRangeMax]
     if (extentIsValid(extent)) {
       if (config.keyType === "time") {
         extent = extent.map(d => new Date(d))
       }
-      cache.root.call(cache.brush.move, extent.map((d) => scales.xScale(d)))
+      cache.root.call(cache.brush.move, extent.map(d => scales.xScale(d)))
     } else {
       cache.root.call(cache.brush.move, null)
     }
     return this
   }
 
-  function handleBrushStart () {
-    if (!d3.event.sourceEvent ||
-      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
+  function handleBrushStart() {
+    if (
+      !d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")
+    ) {
       return
     }
 
     dispatcher.call("brushStart", this, getDataExtentUnderBrush(), config)
   }
 
-  function handleBrushMove () {
-    if (!d3.event.sourceEvent ||
-      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
+  function handleBrushMove() {
+    if (
+      !d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")
+    ) {
       return
     }
 
     const extent = getDataExtentUnderBrush()
 
     if (extentIsValid(extent)) {
-      cache.root.call(d3.event.target.move, extent.map((d) => scales.xScale(d)))
+      cache.root.call(d3.event.target.move, extent.map(d => scales.xScale(d)))
       dispatcher.call("brushMove", this, extent, config)
     }
   }
 
-  function handleBrushEnd () {
+  function handleBrushEnd() {
     // Skip programatic setting
-    if (!d3.event.sourceEvent ||
-      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")) {
+    if (
+      !d3.event.sourceEvent ||
+      (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush")
+    ) {
       return
     }
 
@@ -312,27 +330,27 @@ export default function Brush (_container) {
     dispatcher.call("brushEnd", this, getDataExtentUnderBrush(), config)
   }
 
-  function on (...args) {
+  function on(...args) {
     dispatcher.on(...args)
     return this
   }
 
-  function setConfig (_config) {
+  function setConfig(_config) {
     config = override(config, _config)
     return this
   }
 
-  function setScales (_scales) {
+  function setScales(_scales) {
     scales = override(scales, _scales)
     return this
   }
 
-  function setData (_data) {
+  function setData(_data) {
     data = Object.assign({}, data, _data)
     return this
   }
 
-  function render () {
+  function render() {
     if (!config.brushIsEnabled) {
       destroy()
     }
@@ -348,7 +366,7 @@ export default function Brush (_container) {
     return this
   }
 
-  function destroy () {
+  function destroy() {
     if (cache.root) {
       cache.root.remove()
       cache.root = null

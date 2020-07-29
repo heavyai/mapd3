@@ -20,7 +20,6 @@ export default function Brush(_container) {
 
     zoomRangeMin: null,
     zoomRangeMax: null,
-    zoomIsEnabled: () => true,
 
     markPanelWidth: null,
     chartHeight: null,

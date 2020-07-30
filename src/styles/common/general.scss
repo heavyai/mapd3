@@ -1,11 +1,11 @@
-[contenteditable]:focus {
+[contenteditable=true]:focus {
     outline: 1px solid #ddd;
 }
 
-[contenteditable] {
+[contenteditable=true] {
     border: 1px solid transparent;
 }
-[contenteditable]:hover, .axis-label:focus {
+[contenteditable=true]:hover, .axis-label:focus {
     border: 1px solid #ddd;
 }
 

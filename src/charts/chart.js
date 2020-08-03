@@ -115,6 +115,7 @@ export default function Chart(_container) {
     brushRangeMin: null,
     brushRangeMax: null,
     brushRangeIsEnabled: false,
+    brushRangeLabelIsEditable: true,
 
     // brush
     brushIsEnabled: true,

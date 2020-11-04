@@ -42,7 +42,7 @@ export default function DataGenerator () {
       value = clamp(value + rnd() * randomWalkStepSize, _range)
       return {
         y: isRandomNull ? null : value,
-        x: config.keyType === "time" ? d.toISOString() : d
+        x: config.keyType === "time" ? isoStr(d) : d
       }
     })
   }
@@ -152,7 +152,7 @@ export function augmentData (_data, _keyType, _sortBy, _fillData, _stackOffset, 
     .key(getKey)
     .entries(flatDataSorted.map(d => ({
       ...d,
-      x: _keyType === "time" ? d.x.toISOString() : d.x
+      x: _keyType === "time" ? isoStr(d.x) : d.x
     })))
     .map((d) => {
       const dataPoint = {}
@@ -249,6 +249,22 @@ export function getNearestDataPoint (_mouseX, _dataObject, _scales, _keyType) {
 }
 
 function convertToDate (_date) {
-  // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
-  return new Date(new Date(_date).toISOString())
+  try {
+    // hacks to handle invalid date like "0014-06-08T00:00:00.000Z"
+    return new Date(new Date(_date).toISOString())
+  }
+  catch (e) {
+    console.warn(e + ": " + _date)
+    return _date
+  }
+}
+
+function isoStr (d) {
+  try {
+    return d.toISOString()
+  }
+  catch (e) {
+    console.warn(e + ": " + d)
+    return d
+  }
 }

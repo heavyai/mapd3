@@ -1,4 +1,12 @@
 import * as d3 from "./d3-service"
+import moment from "moment"
+
+const commafy = d3.format(",")
+const momentUTCFormat = (d, f) =>
+  moment
+    .utc(d)
+    .locale("en")
+    .format(f)
 
 /* eslint-disable no-magic-numbers */
 const prefixTranslation = {
@@ -65,11 +73,25 @@ function formatImperial(value) {
   }
 }
 
+function formatNumberBasic(value) {
+  if (typeof value !== "number") {
+    return value
+  }
+
+  if (value.toString().match(/e/)) {
+    return value.toPrecision(2)
+  } else {
+    return commafy(parseFloat(value.toFixed(2)))
+  }
+}
+
 export function formatNumber(format, value) {
   if (/custom-/.test(format)) {
     const formatName = format.replace("custom-", "")
     if (formatName === "imperial") {
       return formatImperial(value)
+    } else if (formatName === "basic") {
+      return formatNumberBasic(value)
     } else {
       return value
     }
@@ -95,7 +117,28 @@ function applyDateFormat(format, value) {
   return d3.utcFormat(format)(value)
 }
 
+function formatDateBasic(value) {
+  if (value.getMilliseconds() === 0) {
+    return `${momentUTCFormat(value, "MMM D, YYYY")} \u205F${momentUTCFormat(
+      value,
+      "HH:mm:ss"
+    )}`
+  }
+  return `${momentUTCFormat(value, "MMM D, YYYY")} \u205F${momentUTCFormat(
+    value,
+    "HH:mm:ss.SSS"
+  )}`
+}
+
 function formatDate(format, value) {
+  if (/custom-/.test(format)) {
+    const formatName = format.replace("custom-", "")
+    if (formatName === "basic") {
+      return formatDateBasic(value)
+    } else {
+      return value
+    }
+  }
   return applyDateFormat(format, value)
 }
 

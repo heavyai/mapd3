@@ -1,101 +1,101 @@
-.mapd3 [contenteditable=true]:focus {
+.d3-combo-chart [contenteditable=true]:focus {
   outline: 1px solid #ddd; }
 
-.mapd3 [contenteditable=true] {
+.d3-combo-chart [contenteditable=true] {
   border: 1px solid transparent; }
 
-.mapd3 [contenteditable=true]:hover, .mapd3 .axis-label:focus {
+.d3-combo-chart [contenteditable=true]:hover, .d3-combo-chart .axis-label:focus {
   border: 1px solid #ddd; }
 
-.mapd3 .hidden {
+.d3-combo-chart .hidden {
   visibility: hidden; }
 
-.mapd3 div {
+.d3-combo-chart div {
   font-size: 11px; }
 
-.mapd3.mapd3-container {
+.d3-combo-chart.d3-combo-chart-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: stretch;
       -ms-flex-align: stretch;
           align-items: stretch; }
-  .mapd3.mapd3-container .svg-wrapper {
+  .d3-combo-chart.d3-combo-chart-container .svg-wrapper {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     overflow-y: hidden;
     overflow-x: hidden; }
-  .mapd3.mapd3-container svg.chart {
+  .d3-combo-chart.d3-combo-chart-container svg.chart {
     position: relative; }
 
-.mapd3 .vertical-grid-line,
-.mapd3 .horizontal-grid-line {
+.d3-combo-chart .vertical-grid-line,
+.d3-combo-chart .horizontal-grid-line {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #EFF2F5;
   stroke-width: 1;
   stroke-dasharray: 4, 4; }
 
-.mapd3 .extended-y-line,
-.mapd3 .extended-x-line {
+.d3-combo-chart .extended-y-line,
+.d3-combo-chart .extended-x-line {
   fill: none;
   shape-rendering: crispEdges;
   stroke: #D2D6DF;
   stroke-width: 1; }
 
-.mapd3 .axis-group .domain {
+.d3-combo-chart .axis-group .domain {
   fill: none;
   stroke: #c7c7c7; }
 
-.mapd3 .axis-group .axis .tick line {
+.d3-combo-chart .axis-group .axis .tick line {
   fill: none;
   stroke: #c7c7c7;
   stroke-width: 1;
   shape-rendering: crispEdges; }
 
-.mapd3 .axis-group .axis .tick text {
+.d3-combo-chart .axis-group .axis .tick text {
   font-size: 10px;
   fill: #868686;
   padding: 12px; }
 
-.mapd3 .axis-group .y-title, .mapd3 .axis-group .x-title {
+.d3-combo-chart .axis-group .y-title, .d3-combo-chart .axis-group .x-title {
   font-size: 0.8em; }
 
-.mapd3 .tooltip-group, .mapd3 .legend-group {
+.d3-combo-chart .tooltip-group, .d3-combo-chart .legend-group {
   border: 1px solid #ddd;
   border-radius: 4px;
   background: white;
   opacity: 0.9;
   padding: 0 4px 0 4px;
   overflow: hidden; }
-  .mapd3 .tooltip-group .tooltip-title-section, .mapd3 .legend-group .tooltip-title-section {
+  .d3-combo-chart .tooltip-group .tooltip-title-section, .d3-combo-chart .legend-group .tooltip-title-section {
     display: table;
     border-bottom: 1px solid #ddd;
     width: 100%;
     color: #868686; }
-  .mapd3 .tooltip-group .tooltip-title-section.collapsed:hover, .mapd3 .legend-group .tooltip-title-section.collapsed:hover {
+  .d3-combo-chart .tooltip-group .tooltip-title-section.collapsed:hover, .d3-combo-chart .legend-group .tooltip-title-section.collapsed:hover {
     cursor: pointer;
     color: #22A7F0; }
-  .mapd3 .tooltip-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover, .mapd3 .legend-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover {
+  .d3-combo-chart .tooltip-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover, .d3-combo-chart .legend-group .tooltip-title-section:not(.collapsed) .tooltip-collapse:hover {
     cursor: pointer;
     color: #22A7F0; }
-  .mapd3 .tooltip-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse, .mapd3 .legend-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse {
+  .d3-combo-chart .tooltip-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse, .d3-combo-chart .legend-group .tooltip-title-section:hover:not(.collapsed) .tooltip-collapse {
     opacity: 1; }
-  .mapd3 .tooltip-group .tooltip-title-section.collapsed .tooltip-collapse, .mapd3 .legend-group .tooltip-title-section.collapsed .tooltip-collapse {
+  .d3-combo-chart .tooltip-group .tooltip-title-section.collapsed .tooltip-collapse, .d3-combo-chart .legend-group .tooltip-title-section.collapsed .tooltip-collapse {
     display: none; }
-  .mapd3 .tooltip-group .tooltip-collapse, .mapd3 .legend-group .tooltip-collapse {
+  .d3-combo-chart .tooltip-group .tooltip-collapse, .d3-combo-chart .legend-group .tooltip-collapse {
     display: table-cell;
     text-align: right;
     opacity: 0; }
-  .mapd3 .tooltip-group .tooltip-title, .mapd3 .legend-group .tooltip-title {
+  .d3-combo-chart .tooltip-group .tooltip-title, .d3-combo-chart .legend-group .tooltip-title {
     display: table-cell;
     font-size: 11px; }
-  .mapd3 .tooltip-group .tooltip-body, .mapd3 .legend-group .tooltip-body {
+  .d3-combo-chart .tooltip-group .tooltip-body, .d3-combo-chart .legend-group .tooltip-body {
     display: table;
     border-collapse: separate;
     border-spacing: 0 5px; }
-  .mapd3 .tooltip-group .tooltip-item, .mapd3 .legend-group .tooltip-item {
+  .d3-combo-chart .tooltip-group .tooltip-item, .d3-combo-chart .legend-group .tooltip-item {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -105,161 +105,161 @@
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center; }
-  .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .tooltip-group .section.value, .mapd3 .legend-group .section.tooltip-label, .mapd3 .legend-group .section.value {
+  .d3-combo-chart .tooltip-group .section.tooltip-label, .d3-combo-chart .tooltip-group .section.value, .d3-combo-chart .legend-group .section.tooltip-label, .d3-combo-chart .legend-group .section.value {
     padding-left: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; }
-  .mapd3 .tooltip-group .section.tooltip-label, .mapd3 .legend-group .section.tooltip-label {
+  .d3-combo-chart .tooltip-group .section.tooltip-label, .d3-combo-chart .legend-group .section.tooltip-label {
     font-size: 12px;
     font-weight: bold; }
-  .mapd3 .tooltip-group .section.value, .mapd3 .legend-group .section.value {
+  .d3-combo-chart .tooltip-group .section.value, .d3-combo-chart .legend-group .section.value {
     text-align: right;
     font-size: 13px; }
 
-.mapd3 .tooltip-group .tooltip-item {
+.d3-combo-chart .tooltip-group .tooltip-item {
   height: 18px; }
 
-.mapd3 .legend-group {
+.d3-combo-chart .legend-group {
   overflow-y: auto;
   font-size: 11px; }
-  .mapd3 .legend-group .section.tooltip-label {
+  .d3-combo-chart .legend-group .section.tooltip-label {
     font-weight: normal; }
 
-.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-name,
-.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-value,
-.mapd3 .mapd3-legend .legend-entry.is-faded .legend-circle {
+.d3-combo-chart .d3-combo-chart-legend .legend-entry.is-faded .legend-entry-name,
+.d3-combo-chart .d3-combo-chart-legend .legend-entry.is-faded .legend-entry-value,
+.d3-combo-chart .d3-combo-chart-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.97;
   transition: opacity .2s ease-out;
   -moz-transition: opacity .2s ease-out;
   -webkit-transition: opacity .2s ease-out; }
 
-.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-name,
-.mapd3 .mapd3-legend .legend-entry.is-faded .legend-entry-value,
-.mapd3 .mapd3-legend .legend-entry.is-faded .legend-circle {
+.d3-combo-chart .d3-combo-chart-legend .legend-entry.is-faded .legend-entry-name,
+.d3-combo-chart .d3-combo-chart-legend .legend-entry.is-faded .legend-entry-value,
+.d3-combo-chart .d3-combo-chart-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.2; }
 
-.mapd3 .bar .axis.x > path.domain,
-.mapd3 .stackedBar .axis.x > path.domain {
+.d3-combo-chart .bar .axis.x > path.domain,
+.d3-combo-chart .stackedBar .axis.x > path.domain {
   display: none; }
 
-.mapd3 .chart .masking-rectangle {
+.d3-combo-chart .chart .masking-rectangle {
   fill: #ffffff; }
 
-.mapd3 .chart .vertical-grid-line, .mapd3 .chart .horizontal-grid-line {
+.d3-combo-chart .chart .vertical-grid-line, .d3-combo-chart .chart .horizontal-grid-line {
   stroke-dasharray: none; }
 
-.mapd3 .chart .line, .mapd3 .chart .area, .mapd3 .chart .stacked-area {
+.d3-combo-chart .chart .line, .d3-combo-chart .chart .area, .d3-combo-chart .chart .stacked-area {
   stroke-width: 1.5px;
   stroke-linecap: round;
   stroke-linejoin: round; }
 
-.mapd3 .chart .line {
+.d3-combo-chart .chart .line {
   fill: none; }
 
-.mapd3 .chart .area {
+.d3-combo-chart .chart .area {
   fill-opacity: 0.5; }
 
-.mapd3 .chart .stacked-area {
+.d3-combo-chart .chart .stacked-area {
   fill-opacity: 0.5; }
 
-.mapd3 .chart .bar {
+.d3-combo-chart .chart .bar {
   stroke-width: 0.5; }
 
-.mapd3 .brush-chart .brush-area {
+.d3-combo-chart .brush-chart .brush-area {
   fill: #EFF2F5; }
 
-.mapd3 .brush-chart rect.brush-rect.selection {
+.d3-combo-chart .brush-chart rect.brush-rect.selection {
   fill-opacity: 0.08;
   fill: url("#brush-area-gradient");
   stroke-linejoin: round; }
 
-.mapd3 .brush-chart rect.brush-rect.handle {
+.d3-combo-chart .brush-chart rect.brush-rect.handle {
   fill: #00d8d2;
   width: 0.2rem; }
 
-.mapd3 .brush-chart .axis path {
+.d3-combo-chart .brush-chart .axis path {
   display: none; }
 
-.mapd3 .brush-group .selection {
+.d3-combo-chart .brush-group .selection {
   fill: #22A7F0; }
 
-.mapd3 .brush-group .handle {
+.d3-combo-chart .brush-group .handle {
   fill: #eee; }
 
-.mapd3 .binning-group {
+.d3-combo-chart .binning-group {
   font-size: 11px;
   color: #868686; }
-  .mapd3 .binning-group .item, .mapd3 .binning-group .bin-label {
+  .d3-combo-chart .binning-group .item, .d3-combo-chart .binning-group .bin-label {
     float: left;
     padding-right: 4px; }
-  .mapd3 .binning-group .item {
+  .d3-combo-chart .binning-group .item {
     cursor: pointer; }
-  .mapd3 .binning-group .item.selected {
+  .d3-combo-chart .binning-group .item.selected {
     color: #22A7F0;
     font-weight: bold;
     border-bottom: #22A7F0 2px solid;
     text-decoration: none; }
-  .mapd3 .binning-group .item.selected.item-auto {
+  .d3-combo-chart .binning-group .item.selected.item-auto {
     border-bottom: none; }
-  .mapd3 .binning-group .dimmed {
+  .d3-combo-chart .binning-group .dimmed {
     font-weight: normal; }
 
-.mapd3 .hover-group .vertical-marker {
+.d3-combo-chart .hover-group .vertical-marker {
   stroke: #D2D6DF;
   stroke-width: 1;
   fill: none; }
 
-.mapd3 .hover-group .dot {
+.d3-combo-chart .hover-group .dot {
   stroke-width: 0.5;
   stroke: #D2D6DF; }
 
-.mapd3 .domain-input-group {
+.d3-combo-chart .domain-input-group {
   position: absolute;
   top: 0;
   left: 0; }
-  .mapd3 .domain-input-group .domain-input {
+  .d3-combo-chart .domain-input-group .domain-input {
     font-size: 10px;
     background: white; }
-  .mapd3 .domain-input-group .domain-lock.locked {
+  .d3-combo-chart .domain-input-group .domain-lock.locked {
     opacity: 1;
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0E3QTdBNzt9LnN0MXtmaWxsOiNGRkZGRkY7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTcsNDFWMTloNnYtM2MwLTYuMSw0LjktMTEsMTEtMTFzMTEsNC45LDExLDExdjNoNnYyMkg3eiBNMjksMTl2LTNjMC0yLjgtMi4yLTUtNS01cy01LDIuMi01LDV2M0gyOXoiLz48cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjQsNmM1LjUsMCwxMCw0LjUsMTAsMTB2NGg2djIwSDhWMjBoNnYtNEMxNCwxMC41LDE4LjUsNiwyNCw2IE0xOCwyMGgxMnYtNGMwLTMuMy0yLjctNi02LTZzLTYsMi43LTYsNlYyMCBNMjQsNGMtNi42LDAtMTIsNS40LTEyLDEydjJIOEg2djJ2MjB2MmgyaDMyaDJ2LTJWMjB2LTJoLTJoLTR2LTJDMzYsOS40LDMwLjYsNCwyNCw0TDI0LDR6IE0yMCwxOHYtMmMwLTIuMiwxLjgtNCw0LTRzNCwxLjgsNCw0djJIMjBMMjAsMTh6Ii8+PC9nPjwvc3ZnPg==); }
-  .mapd3 .domain-input-group .domain-lock {
+  .d3-combo-chart .domain-input-group .domain-lock {
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0E3QTdBNzt9LnN0MXtmaWxsOiNGRkZGRkY7fTwvc3R5bGU+PGc+PHBhdGggY2xhc3M9InN0MCIgZD0iTTcsNDFWMTloNnYtN2MwLTYuMSw0LjktMTEsMTEtMTFzMTEsNC45LDExLDExdjNoLTZ2LTNjMC0yLjgtMi4yLTUtNS01cy01LDIuMi01LDV2N2gyMnYyMkg3eiIvPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNCwyYzUuNSwwLDEwLDQuNSwxMCwxMHYyaC00di0yYzAtMy4zLTIuNy02LTYtNnMtNiwyLjctNiw2djhoMjJ2MjBIOFYyMGg2di04QzE0LDYuNSwxOC41LDIsMjQsMiBNMjQsMGMtNi42LDAtMTIsNS40LTEyLDEydjZIOEg2djJ2MjB2MmgyaDMyaDJ2LTJWMjB2LTJoLTJIMjB2LTZjMC0yLjIsMS44LTQsNC00czQsMS44LDQsNHYydjJoMmg0aDJ2LTJ2LTJDMzYsNS40LDMwLjYsMCwyNCwwTDI0LDB6Ii8+PC9nPjwvc3ZnPg==); }
-  .mapd3 .domain-input-group .domain-lock {
+  .d3-combo-chart .domain-input-group .domain-lock {
     cursor: pointer; }
-  .mapd3 .domain-input-group .hit-zone > div {
+  .d3-combo-chart .domain-input-group .hit-zone > div {
     opacity: 0;
     -webkit-transition: opacity 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out; }
-  .mapd3 .domain-input-group .hit-zone:hover > div {
+  .d3-combo-chart .domain-input-group .hit-zone:hover > div {
     opacity: 1;
     -webkit-transition: opacity 0.2s ease-in-out;
     transition: opacity 0.2s ease-in-out; }
 
-.mapd3 .brush-range-input-group {
+.d3-combo-chart .brush-range-input-group {
   white-space: nowrap;
   color: #868686; }
-  .mapd3 .brush-range-input-group .brush-range-input, .mapd3 .brush-range-input-group .separator {
+  .d3-combo-chart .brush-range-input-group .brush-range-input, .d3-combo-chart .brush-range-input-group .separator {
     padding: 0 2px; }
 
-.mapd3 .label-group {
+.d3-combo-chart .label-group {
   position: absolute;
   top: 0;
   left: 0;
   white-space: nowrap; }
-  .mapd3 .label-group .axis-label {
+  .d3-combo-chart .label-group .axis-label {
     position: absolute;
     color: #868686;
     font-size: 13px;
     overflow: hidden; }
-  .mapd3 .label-group .axis-label.x {
+  .d3-combo-chart .label-group .axis-label.x {
     -webkit-transform: translate(-50%);
             transform: translate(-50%); }
-  .mapd3 .label-group .axis-label.y {
+  .d3-combo-chart .label-group .axis-label.y {
     left: 0;
     -webkit-transform: translate(-50%) rotate(-90deg);
             transform: translate(-50%) rotate(-90deg); }
-  .mapd3 .label-group .axis-label.y2 {
+  .d3-combo-chart .label-group .axis-label.y2 {
     -webkit-transform: translate(-50%) rotate(-90deg);
             transform: translate(-50%) rotate(-90deg); }

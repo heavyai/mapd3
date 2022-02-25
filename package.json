@@ -1,8 +1,8 @@
 {
-  "name": "mapd3",
+  "name": "@heavyai/d3-combo-chart",
   "version": "0.19.0",
   "description": "A fast chart library for the fastest DB",
-  "main": "dist/mapd3.js",
+  "main": "dist/d3-combo-chart.js",
   "contributors": [
     {
       "name": "Christophe Viau",
@@ -35,7 +35,7 @@
     "es2015",
     "visualization"
   ],
-  "author": "MapD",
+  "author": "HEAVY.AI",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/mapd/mapd3/issues"

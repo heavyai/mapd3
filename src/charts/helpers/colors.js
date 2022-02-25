@@ -1,8 +1,8 @@
-export const mapdUI = {
+export const heavyUI = {
   skyBlue: "#22A7F0"
 }
 
-export const mapdColors = [
+export const d3ComboColors = [
   "#ea5545",
   "#bdcf32",
   "#b33dc6",
@@ -29,7 +29,7 @@ export const grey = [
 ]
 
 export const colors = {
-  mapdUI,
-  mapdColors,
+  heavyUI,
+  d3ComboColors,
   grey
 }

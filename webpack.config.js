@@ -7,7 +7,7 @@ const config = env => {
   if (env.prod) {
     return {
       entry: {
-        mapd3: bundleIndexPath
+        d3ComboChart: bundleIndexPath
       },
 
       devtool: "sourcemap",
@@ -66,7 +66,7 @@ const config = env => {
   } else if (env.dev) {
     return {
       entry: {
-        mapd3: bundleIndexPath
+        d3ComboChart: bundleIndexPath
       },
 
       devtool: "eval",

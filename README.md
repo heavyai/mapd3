@@ -1,8 +1,8 @@
-# MapD3
+# D3 Combo Chart
 
-MapD3 is a D3v4 charts library developed for [MapD Immerse](https://www.omnisci.com/platform/immerse/). It is in active development, currently at 0.16. We will accept PRs and bug reports once we reach 1.0.0.
+D3 Combo Chart is a D3v4 charts library developed for [HeavyImmerse](https://www.omnisci.com/platform/immerse/). It is in active development, currently at 0.16. We will accept PRs and bug reports once we reach 1.0.0.
 
-The main component is `mapd3.chart`, which is a wrapper for a suite of sub-components, like axis, tooltip, marks, labels, etc. The chart type is nothing more than a configuration option (currently line, area, bar and variants of those).
+The main component is `d3ComboChart.chart`, which is a wrapper for a suite of sub-components, like axis, tooltip, marks, labels, etc. The chart type is nothing more than a configuration option (currently line, area, bar and variants of those).
 
 ## Documentation
 The [documentation](https://omnisci.github.io/mapd3/doc/index.html) is generated with [documentationjs](http://documentation.js.org/).
@@ -10,7 +10,7 @@ The [documentation](https://omnisci.github.io/mapd3/doc/index.html) is generated
 The chart API is very simple: instantiate a chart, set configuration, set data, which automatically triggers a render, otherwise explicitely call render.
 
 ```javascript
-mapd3.Chart(document.querySelector('.chart'))
+d3ComboChart.Chart(document.querySelector('.chart'))
     .setConfig({
         width: 800,
         height: 400,

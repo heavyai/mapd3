@@ -16,7 +16,7 @@ import autoFormatter from "./charts/helpers/auto-format.js"
 import * as Constants from "./charts/helpers/constants"
 import * as _Utils from "./charts/helpers/common"
 import Scale from "./charts/scale"
-require("./styles/mapd3.scss")
+require("./styles/d3-combo-chart.scss")
 
 export {
   Chart,

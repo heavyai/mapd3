@@ -46,7 +46,7 @@ export default function Chart(_container) {
     animationDuration: 1500,
 
     // scale
-    colorSchema: colors.mapdColors.map(d => ({value: d})),
+    colorSchema: colors.d3ComboColors.map(d => ({value: d})),
     defaultColor: "skyblue",
     xDomain: "auto",
     yDomain: "auto",
@@ -185,7 +185,7 @@ export default function Chart(_container) {
 
   const createTemplate = chartType => {
     const className = getChartClass(chartType)
-    return `<div class="mapd3 mapd3-container ${className}">
+    return `<div class="d3-combo-chart d3-combo-chart-container ${className}">
         <div class="header-group"></div>
         <div class="y-axis-container">
           <svg>
@@ -220,7 +220,7 @@ export default function Chart(_container) {
         .html(createTemplate(config.chartType))
 
       cache.root = base
-        .select(".mapd3-container")
+        .select(".d3-combo-chart-container")
         .style("position", "relative")
 
       cache.svgWrapper = base.select(".svg-wrapper")

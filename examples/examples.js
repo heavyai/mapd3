@@ -1,10 +1,10 @@
 /**
-  * A data generator for MapD3 charts
+  * A data generator for D3 Combo Charts
   * @namespace DataGenerator
   * @name DataGenerator
   * @returns {object} The dataGenerator instance.
   * @example
-  * mapd3.DataGenerator()
+  * d3ComboChart.DataGenerator()
   *   .setConfig({
   *     keyType: "time",
   *     range: [0, 100],
@@ -18,7 +18,7 @@
 const keyType = "number" // time, number, string
 const chartType = "line" // line, area, stackedArea
 
-const dataGenerator = mapd3.DataGenerator()
+const dataGenerator = d3ComboChart.DataGenerator()
 
 /**
   * Configure the data manager
@@ -37,7 +37,7 @@ const dataGenerator = mapd3.DataGenerator()
   * @memberof DataGenerator
   * @instance
   * @example
-  * mapd3.DataGenerator()
+  * d3ComboChart.DataGenerator()
   *   .setConfig({
   *     keyType,
   *     range: [0, 100],
@@ -65,7 +65,7 @@ dataGenerator.setConfig({
   * @memberof DataGenerator
   * @instance
   * @example
-  * mapd3.DataGenerator()
+  * d3ComboChart.DataGenerator()
   *   .setConfig({
   *     keyType: "time",
   *     range: [0, 100],
@@ -123,7 +123,7 @@ const data = dataGenerator.generateTestDataset()
  * @param {object} container The DOM element or selector for the container
  * @returns {object} The chart instance.
  * @example
- * mapd3.Chart(document.querySelector('.chart'))
+ * d3ComboChart.Chart(document.querySelector('.chart'))
  *    .setConfig({
  *      width: 800,
  *      height: 400,
@@ -132,7 +132,7 @@ const data = dataGenerator.generateTestDataset()
  *    })
  *    .setData(data)
  */
-const chart = mapd3.Chart(document.querySelector(".chart1"))
+const chart = d3ComboChart.Chart(document.querySelector(".chart1"))
 
 /**
   * Configure the chart
@@ -235,13 +235,13 @@ const chart = mapd3.Chart(document.querySelector(".chart1"))
   * @param {Array.<string>} [config.selectedKeys=[]] Dimming all bars except for those listed in this array. Empty = none dimmed
 
   * <stacked>
-  * @param {string} [config.stackOffset="stackOffsetNone"] Type of offset for stacked chart, coming from d3 stackOffset https://github.com/d3/d3-shape#stack-offsets also available as constants (mapd3.Constants.stackOffset): NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
+  * @param {string} [config.stackOffset="stackOffsetNone"] Type of offset for stacked chart, coming from d3 stackOffset https://github.com/d3/d3-shape#stack-offsets also available as constants (d3ComboChart.Constants.stackOffset): NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
 
   * @returns {object} The chart instance.
   * @memberof Chart
   * @instance
   * @example
-  * mapd3.Chart(document.querySelector('.chart'))
+  * d3ComboChart.Chart(document.querySelector('.chart'))
   * .setConfig({
   *     width: 100
   * })
@@ -353,7 +353,7 @@ chart.setConfig({
   lineFx: null, // underline, shadow
 
   // stacked
-  stackOffset: mapd3.Constants.stackOffset.PERCENT // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
+  stackOffset: d3ComboChart.Constants.stackOffset.PERCENT // NONE, PERCENT, STREAMGRAPH, CENTERED, POSITIVE_NEGATIVE
 })
 
 /**
@@ -363,7 +363,7 @@ chart.setConfig({
   * @memberof Chart
   * @instance
   * @example
-  * mapd3.Chart(document.querySelector('.chart'))
+  * d3ComboChart.Chart(document.querySelector('.chart'))
   * .setData(data)
   */
 chart.setData(data)
@@ -376,7 +376,7 @@ chart.setData(data)
   * @memberof Chart
   * @instance
   * @example
-  * mapd3.Chart(document.querySelector('.chart'))
+  * d3ComboChart.Chart(document.querySelector('.chart'))
   * .setConfig({width: 100})
   * .render()
   */
@@ -389,7 +389,7 @@ chart.render()
   * @memberof Chart
   * @instance
   * @example
-  * mapd3.Chart(document.querySelector('.chart'))
+  * d3ComboChart.Chart(document.querySelector('.chart'))
   * .getEvents()
   */
 
@@ -416,7 +416,7 @@ chart.render()
   * @memberof EventManager
   * @instance
   * @example
-  * mapd3.Chart(document.querySelector('.chart'))
+  * d3ComboChart.Chart(document.querySelector('.chart'))
   * .getEvents()
   * .onBrush("brushStart", (d) => console.log(d))
   */

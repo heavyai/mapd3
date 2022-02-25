@@ -4,7 +4,7 @@ const bundleIndexPath = path.resolve("./src/bundle.js")
 
 module.exports = {
   entry: {
-    mapd3: bundleIndexPath
+    d3ComboChart: bundleIndexPath
   },
   output: {
     // use absolute paths in sourcemaps (important for debugging via IDE)

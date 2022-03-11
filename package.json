@@ -75,7 +75,7 @@
     "null-loader": "^0.1.1",
     "postcss-loader": "^2.1.5",
     "requirejs-plugins": "^1.0.2",
-    "sanitize-html": "^1.13.0",
+    "sanitize-html": "^2.3.2",
     "sass-loader": "^6.0.6",
     "sinon": "^4.5.0",
     "text": "requirejs/text",

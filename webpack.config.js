@@ -1,7 +1,8 @@
 const webpack = require("webpack");
 const path = require("path");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const bundleIndexPath = path.resolve("./src/bundle.js");
+const TerserPlugin = require('terser-webpack-plugin');
 
 const config = env => {
   if (env.prod) {
@@ -10,7 +11,7 @@ const config = env => {
         d3ComboChart: bundleIndexPath
       },
 
-      devtool: "sourcemap",
+      devtool: "source-map",
 
       output: {
         path: path.resolve(__dirname, "dist"),
@@ -34,33 +35,27 @@ const config = env => {
           },
           {
             test: /\.(sass|scss)$/,
-            use: ExtractTextPlugin.extract({
-              use: [
-                {
-                  loader: "css-loader"
-                },
-                {
-                  loader: "postcss-loader",
-                  options: {
-                    config: {
-                      path: "postcss.config.js"
-                    }
+            use: [
+              MiniCssExtractPlugin.loader,
+              "css-loader",
+              {
+                loader: "postcss-loader",
+                options: {
+                  postcssOptions: {
+                    config: "postcss.config.js"
                   }
-                },
-                {
-                  loader: "sass-loader"
                 }
-              ]
-            })
+              },
+              "sass-loader"
+            ]
           }
         ]
       },
       plugins: [
-        new ExtractTextPlugin({
-          filename: "[name].css",
-          allChunks: true
+        new MiniCssExtractPlugin({
+          filename: "[name].css"
         }),
-        new webpack.optimize.UglifyJsPlugin()
+        new TerserPlugin()
       ]
     };
   } else if (env.dev) {
@@ -93,31 +88,25 @@ const config = env => {
           },
           {
             test: /\.(sass|scss)$/,
-            use: ExtractTextPlugin.extract({
-              use: [
-                {
-                  loader: "css-loader"
-                },
-                {
-                  loader: "postcss-loader",
-                  options: {
-                    config: {
-                      path: "postcss.config.js"
-                    }
+            use: [
+              MiniCssExtractPlugin.loader,
+              "css-loader",
+              {
+                loader: "postcss-loader",
+                options: {
+                  postcssOptions: {
+                    config: "postcss.config.js"
                   }
-                },
-                {
-                  loader: "sass-loader"
                 }
-              ]
-            })
+              },
+              "sass-loader"
+            ]
           }
         ]
       },
       plugins: [
-        new ExtractTextPlugin({
-          filename: "[name].css",
-          allChunks: true
+        new MiniCssExtractPlugin({
+          filename: "[name].css"
         })
       ]
     };
